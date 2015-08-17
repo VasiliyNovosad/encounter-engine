@@ -1,0 +1,45 @@
+<fieldset>
+<% if signed_in? %>
+  <legend>
+    <%= link_to current_user.nickname, dashboard_path %>
+    <% if current_user.member_of_any_team? %>
+      (<%= link_to current_user.team.name, team_path(@current_user.team) %>)
+    <% end %>
+  </legend>
+
+  <p>
+    <%= link_to "Особистий кабінет", dashboard_path %>
+  </p>
+
+  <p>
+    <%= link_to "Профіль", users_path %>
+  </p>
+
+  <p>
+    <% if current_user.member_of_any_team? %>
+      <%= link_to "Кімната команди", team_path(@current_user.team) %>
+    <% else %>
+      <%= link_to "Створити команду", new_team_path %>
+    <% end %>
+  </p>
+
+  <p>
+    <%= link_to "Всі ігри домена", games_path %>
+  </p>
+
+  <p>
+    <%= link_to "Вийти", signout_path %>
+  </p>
+<% else %>
+  <legend>
+    &nbsp;Вхід&nbsp;
+  </legend>
+
+  <p>
+    <%= link_to "Увійти", signin_path %>
+  </p>
+
+  <p>
+    <%= link_to "Зареєструватися", signup_path %> <br />
+  </p>
+<% end %>

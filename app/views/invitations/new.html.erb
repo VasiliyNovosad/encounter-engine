@@ -1,0 +1,10 @@
+<%= form_for @invitation, url: invitations_path do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>  
+  <p>
+    <%= f.label "Запросити нового учасника" %>
+    <%= f.autocomplete_field :recepient_nickname, autocomplete_user_nickname_invitations_path %>
+  </p>
+  <p>
+    <%= f.submit "Запросити" %>
+  </p>
+<% end =%>

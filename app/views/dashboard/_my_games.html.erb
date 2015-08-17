@@ -1,0 +1,18 @@
+<% @my_games = Game.by(current_user) %>
+<fieldset id="mygames">
+  <legend>
+    Мої ігри (<%= @my_games.count %>)
+  </legend>
+
+  <p>
+    <%= render 'games/list', :games => @my_games %>
+  </p>
+
+  <br />
+  
+  <hr class="short-line" />
+
+  <p>
+    <%= link_to "Створити гру >> ", new_game_path %>
+  </p>
+</fieldset>

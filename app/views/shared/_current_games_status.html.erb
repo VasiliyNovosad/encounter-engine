@@ -1,0 +1,8 @@
+<% if game_entry %>
+  <% case game_entry.status %>
+  <% when "accepted" %>
+    <%= link_to "Грати!", url_for("show_current_level/#{game.id}") %>
+  <% else %>
+    Ви не зареєстровані
+  <% end %>
+<% end %>

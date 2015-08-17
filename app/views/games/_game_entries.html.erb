@@ -1,0 +1,19 @@
+<fieldset>
+  <legend>
+    Заявки на реєстрацію (<%= game_entries.count %>):
+  </legend>
+
+  <p>
+<% game_entries.each do |entry| %>
+<%
+  @team = Team.find(entry.team_id)
+  @game = Game.find(entry.game_id)
+%>
+  <p>
+    <strong><%= game_entries.index(entry) + 1 %>. <%= link_to @team.name, url: team_path(@team) %> <%= @game.name %></strong>
+    <em><%= link_to "(прийняти)", url_for("/game_entries/accept/#{entry.id}") %></em>
+    <em><%= link_to "(відмовити)", url_for("/game_entries/reject/#{entry.id}") %></em>
+  </p>
+<% end %>
+</p>
+</fieldset>

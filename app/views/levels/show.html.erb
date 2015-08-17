@@ -1,0 +1,75 @@
+<h2>
+  Завдання "<strong><%= @level.name %></strong>"
+</h2>
+
+<p>
+  <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
+</p>
+
+<br />
+
+<p>
+  <em>Текст завдання:</em>
+</p>
+
+<p>
+  <%= @level.text.html_safe %>
+</p>
+
+<p>
+  <%= link_to "Редагувати текст і назву завдання", edit_game_level_path(@game, @level) unless @level.game.started? %>
+</p>
+
+<br />
+
+<% unless @level.multi_question? %>
+  <p>
+    <em>Код:</em>
+    <div id="question-<%= @level.questions.first.id %>">
+      <%= @level.correct_answer %>
+      <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, @level.questions.first) %>
+    </div>
+  </p>
+<% else %>
+  <p>
+    <em>Коди (<%= @level.questions.count %>):</em>
+  </p>
+  <% @level.questions.each do |question| %>
+    <div id="question-<%=  question.id %>">
+      <p><%= question.correct_answer %></p>
+      <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, question) %>
+    </div>
+  <% end %>
+<% end %>
+
+<p>
+  <%= link_to "Додати ще один код", new_game_level_question_path(@game, @level) %>
+</p>
+
+<br />
+
+<fieldset>
+  <legend>
+    Подсказки:
+  </legend>
+
+  <p>
+    <%= render 'hints/list', :hints => @level.hints %>
+  </p>
+
+  <p>
+    <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) %>
+  </p>
+</fieldset>
+
+<br />
+
+<p>
+  <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br />
+</p>
+
+<br />
+
+<p>
+  <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>
+</p>

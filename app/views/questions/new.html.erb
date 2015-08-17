@@ -1,0 +1,15 @@
+<h2>
+  Завдання "<strong><%= @level.name %></strong>"
+</h2>
+
+<p>
+  <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
+</p>
+
+<br />
+
+<%= form_for @question, url: game_level_questions_path(@game, @level) do |f| %>
+  <p><%= f.label "Код" %><%= f.text_field :correct_answer %></p>
+  <%= f.submit "Додати код" %>
+  <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
+<% end =%>

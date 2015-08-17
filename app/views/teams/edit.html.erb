@@ -1,0 +1,29 @@
+<h2>
+  Поточна назва команди "<strong><%= @team.name %></strong>"
+</h2>
+
+<%= form_for @team, url: team_path(@team) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>  
+  <p><%= f.label "Нова назва команди:" %><%= f.text_field :name %></p>
+  <%= f.submit "Зберегти зміни" %>
+  <em><%= link_to "(відмінити)", team_path(@current_user.team) %></em>
+<% end =%>
+
+
+<br />
+
+<fieldset>
+  <legend>
+    Склад
+  </legend>
+
+  <% @team.members.each do |member| %>
+    <p>
+      <%= member.nickname %> <%= "- капітан" if member.captain? %>
+      <% if @current_user.captain? and not member.captain? %>
+        <em><%= link_to "(вилучити гравця)", url_for("/teams/edit/delete_member?member_id=#{member.id}") %></em>
+        <em><%= link_to "(призначити капітаном)", url_for("/teams/edit/captain?member_id=#{member.id}") %></em>
+      <% end %>
+    </p>
+  <% end %>
+</fieldset>

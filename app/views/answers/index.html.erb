@@ -1,0 +1,28 @@
+<h2>
+  Завдання "<strong><%= @level.name %></strong>"
+</h2>
+
+<p>
+  <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
+</p>
+
+<p>
+  <em>Варіанти кодів:</em>
+</p>
+<table>
+  <% @answers.each do |answer| %>
+  <tr id="answer-<%=  answer.id%>">
+    <td><%= answer.value %></td>
+    <td><%= link_to "(видалити)", game_level_question_answer_path(@game, @level, @question, answer), method: :delete, data: { confirm: 'Ви впевнені?' }  %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= form_for @answer, url: game_level_question_answers_path(@game, @level, @question) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>  
+  <p><%= f.label "Ще один варіант кода" %><%= f.text_field :value %></p>
+  <%= f.submit "Додати варіант кода" %>
+  <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
+<% end =%>

@@ -1,0 +1,14 @@
+<% games.each do |game| %>
+  <p>
+    <strong><%= link_to game.name, game_path(game) %></strong>
+    <em><%= link_to "(переглянути)", game_path(game) %></em>
+    <% if signed_in? and current_user.author_of?(game) %>
+        <em><%= link_to "(редагувати)", edit_game_path(game) %></em>
+        <em><%= link_to "(статистика)", url_for("/stats/index/#{game.id}") if game.started? %></em>
+        <em><%= link_to "(прямий ефір)", url_for("/logs/livechannel/#{game.id}") if game.started? %></em>
+        <em><%= link_to "(лог відповідей)", url_for("/logs/full/#{game.id}") if game.started? %></em>
+        <em><%= link_to "ЗАВЕРШИТИ ГРУ", url_for("/games/end_game/#{game.id}") if (game.started? and !game.author_finished?) %></em>
+        <em><%= "Ви завершили гру" if (game.started? and game.author_finished?) %></em>
+    <% end %>
+  </p>
+<% end %>

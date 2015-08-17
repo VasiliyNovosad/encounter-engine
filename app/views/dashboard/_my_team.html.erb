@@ -1,0 +1,36 @@
+<fieldset>
+  <legend>
+    Моя команда
+  </legend>
+  
+  <% unless @current_user.member_of_any_team? %>
+
+    <p>
+      Ви не входите в склад жодної із команд
+    </p>
+
+    <p>
+      <%= link_to "Створити команду", new_team_path %>
+    </p>
+    
+    <br />
+
+    <% @invitations.each do |invitation| %>
+      <p>Вас запрошено в команду <%= invitation.to_team.name %>
+        <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id) %></em>
+        <em><%= link_to "(відмовитись)", reject_invitation_path(invitation.id) %></em>
+      </p>
+    <% end %>
+
+  <% else %>
+
+    <p>
+      <%= @current_user.captain? ? "Ви - капітан команди" : "Ви входите в склад команди" %> <strong><%= @current_user.team.name %></strong>
+    </p>
+    
+    <p>
+      <%= link_to "Перейти в кімнату команди", team_path(@current_user.team) %>
+    </p>
+
+  <% end %>
+</fieldset>

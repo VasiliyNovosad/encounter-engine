@@ -1,0 +1,16 @@
+<h2>Редагування профіля гравця <%= @current_user.nickname %></h2>
+<br/>
+
+<%= form_for @user, url: user_path(@user) do  |f| %>
+  <%= render 'shared/error_messages', object: f.object %>  
+  <p><%= f.label "Ваше ім'я" %><%= f.text_field :nickname %></p>
+  <p><%= f.label "Дата народження" %><%= f.text_field :date_of_birth %></p>
+  <p><%= f.label "Номер ICQ" %><%= f.text_field :icq_number %></p>
+  <p><%= f.label "Jabber ID" %><%= f.text_field :jabber_id %></p>
+  <p><%= f.label "Контактний телефон"  if @user.captain?%><%= f.text_field :phone_number  if @user.captain?%></p>
+  <br/>
+  <p><%= f.label "Пароль" %><%= f.password_field :password %></p>
+  <p><%= f.label "Підтвердження пароля" %><%= f.password_field :password_confirm %></p>
+  <%= f.submit "Прийняти зміни" %>
+  <em><%= link_to "(відмінити)", users_path %></em>
+<% end =%>

@@ -1,0 +1,45 @@
+Вітаємо, ви закінчили гру!
+
+<table id="results">
+  <thead>
+    <tr>
+      <th>Місце</th>
+      <th>Команда</th>
+      <th>Час фінішу</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% game_passings = GamePassing.of_game(@game) %>
+    <% game_passings.finished.each do |game_passing| %>
+      <tr>
+        <td><%= @game.place_of(game_passing.team) %></td>
+        <td><%= game_passing.team.name %></td>
+        <td>
+          <% if game_passing.exited? %>
+            <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
+          <% else %>
+            <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    <% (game_passings.ended_by_author - game_passings.finished).each do |game_passing| %>
+        <tr>
+          <td>#</td>
+          <td><%= game_passing.team.name %></td>
+          <td>
+            Не фінішували
+          </td>
+        </tr>
+      <% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to "Лог відповідей", url_for("/logs/full/#{@game.id}") %>
+
+<% if @game.is_testing? %>
+  <br/>
+  <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}") %>
+<% end %>

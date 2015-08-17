@@ -1,0 +1,14 @@
+<fieldset>
+  <legend>
+    Беруть участь команди (<%= teams.count %>):
+  </legend>
+
+  <p>
+    <% teams.each do |team| %>
+      <p>
+        <strong><%= teams.index(team) + 1 %>. <%= link_to team.name, team_path(team) if logged_in?%></strong>
+        <strong><%= team.name  if !logged_in? %></strong>
+      </p>
+    <% end %>
+  </p>
+</fieldset>

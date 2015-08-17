@@ -1,0 +1,23 @@
+<% if game_entry %>
+  <% case game_entry.status %>
+  <% when "new" %>
+    Заявку подано
+    <%= link_to "Відізвати", "/game_entries/recall/#{game_entry.id}" %>
+  <% when "accepted"%> Вы зарегистрированы
+    <%= link_to "Відмовитись", "/game_entries/cancel/#{game_entry.id}" %>
+  <% when "recalled", "rejected", "canceled", nil %>
+    <% if game.requested_teams_number < game.max_team_number %>
+      <%= link_to "Подати заявку на реєстрацію знову", "/game_entries/reopen/#{game_entry.id}" %>
+    <% else %>
+      Ви не можете зареєструватися, оскільки перевищено кількість учасників
+    <% end %>
+  <% end %>
+<% else %>
+  <% if game.requested_teams_number >= game.max_team_number %>
+    Ви не можете зареєструватися, оскільки перевищено кількість учасників
+  <% elsif game.registration_deadline and game.registration_deadline <= Time.now %>
+    Ви не можете зареєструватися, оскільки спізнились на гру
+  <% else %>
+    <%= link_to "Подати заявку на реєстрацію", "/game_entries/new/#{game.id}/#{team.id}" %>
+  <% end %>
+<% end %>

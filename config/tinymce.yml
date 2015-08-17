@@ -1,0 +1,7 @@
+menubar: false
+toolbar:
+  - undo redo | styleselect | bold italic | image link | table
+plugins:
+  - image
+  - link
+  - table
