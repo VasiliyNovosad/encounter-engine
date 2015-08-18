@@ -36,7 +36,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Use ActiveModel has_secure_password
 gem 'bcrypt-ruby', '3.1.2'
 gem 'bcrypt'
-gem 'acts_as_list', git: 'git://github.com/swanandp/acts_as_list.git', require: 'act_as_list'
+gem 'acts_as_list', git: 'git://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
 gem "default_value_for", "~> 3.0.0"
 gem 'tinymce-rails'
 gem 'jquery-ui-rails'
