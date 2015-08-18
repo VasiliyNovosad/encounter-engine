@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'dotenv-rails', require: 'dotenv/rails-now'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.8'
@@ -44,8 +45,6 @@ gem 'rails-jquery-autocomplete'
 source 'https://rails-assets.org' do
   gem 'rails-assets-datetimepicker'
 end
-gem 'dotenv'
-gem 'dotenv-deployment', require: 'dotenv/deployment'
 # Use unicorn as the app server
 # gem 'unicorn'
 
