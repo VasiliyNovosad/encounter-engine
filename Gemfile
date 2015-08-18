@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
 gem 'rails', '4.1.8'
-gem 'pg'
+gem 'pg', require: 'pg'
 
 # Use sqlite3 as the database for Active Record
 group :development do
