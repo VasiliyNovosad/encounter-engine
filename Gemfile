@@ -1,8 +1,12 @@
 source 'https://rubygems.org'
-gem 'pg'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+
+group :production do
+  gem 'pg'
+end
+
 gem 'rails', '4.1.8'
 # Use sqlite3 as the database for Active Record
 group :development do
