@@ -6,6 +6,7 @@ gem 'pg'
 
 # Use sqlite3 as the database for Active Record
 group :development do
+  gem 'sqlite3'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false

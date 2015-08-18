@@ -1,0 +1,1 @@
+Користувач <%= invitation.for_user.nickname %> прийняв Ваше запрошення

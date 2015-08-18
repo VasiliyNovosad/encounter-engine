@@ -18,8 +18,8 @@ class InvitationsController < ApplicationController
     @invitation = Invitation.create(invitation_params)
     @invitation.to_team = @current_user.team
     if @invitation.save
-      #send_invitation_notification(@invitation)
       redirect_to new_invitation_path, :message => "Користувачу #{@invitation.recepient_nickname} надіслано запрошення"
+      InvitationsMailer.invitation_create(@invitation).deliver#send_invitation_notification(@invitation)
     else
       @all_users = User.all
       render "new"
@@ -32,39 +32,17 @@ class InvitationsController < ApplicationController
     #send_accept_notification(@invitation)
     reject_rest_of_invitations    
     redirect_to dashboard_path
+    InvitationsMailer.invitation_accept(@invitation).deliver
   end
 
   def reject    
     @invitation.delete
     #send_reject_notification(@invitation)
     redirect_to dashboard_path
+    InvitationsMailer.invitation_reject(@invitation).deliver
   end
 
 protected
-
-  def send_invitation_notification(invitation)
-    send_mail NotificationMailer, :invitation_notification,
-      { :to => invitation.for_user.email,
-        :from => "novosadvasiliy@gmail.com",
-        :subject => "Вас запрошено вступити в команду #{invitation.to_team.name}" },
-      { :team => invitation.to_team }
-  end
-
-  def send_reject_notification(invitation)
-    send_mail NotificationMailer, :reject_notification,
-      { :to => invitation.to_team.captain.email,
-        :from => "novosadvasiliy@gmail.com",
-        :subject => "Користувач #{invitation.for_user.nickname} відмовився від запрошення" },
-      { :user => invitation.for_user }
-  end
-
-  def send_accept_notification(invitation)
-    send_mail NotificationMailer, :accept_notification,
-      { :to => invitation.to_team.captain.email,
-        :from => "novosadvasiliy@gmail.com",
-        :subject => "Користувач #{invitation.for_user.nickname} прийняв Ваше запрошення" },
-      { :user => invitation.for_user }
-  end
 
   def add_user_to_team_members
     team = @invitation.to_team
@@ -74,6 +52,7 @@ protected
   def reject_rest_of_invitations
     Invitation.for(@current_user).each do |invitation|
       invitation.delete
+      InvitationsMailer.invitation_reject(invitation).deliver
       #send_reject_notification(invitation)
     end
   end
