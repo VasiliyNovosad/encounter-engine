@@ -62,6 +62,9 @@ GEM
     colorize (0.7.7)
     default_value_for (3.0.1)
       activerecord (>= 3.2.0, < 5.0)
+    dotenv (1.0.2)
+    dotenv-deployment (0.3.0)
+      dotenv (~> 1.0)
     erubis (2.7.0)
     execjs (2.5.2)
     hike (1.2.3)
@@ -162,6 +165,8 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   coffee-script-source (= 1.8.0)
   default_value_for (~> 3.0.0)
+  dotenv
+  dotenv-deployment
   jbuilder (~> 2.0)
   jquery-rails
   jquery-ui-rails
