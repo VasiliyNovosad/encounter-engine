@@ -22,4 +22,10 @@ test:
 
 production:
   <<: *default
+  adapter: postgresql
+  encoding: unicode
+  pool: 10
   database: db/production.sqlite3
+  database: encounter_engine
+  username: postgres
+  password: <%= ENV['EE_DATABASE_PASSWORD'] %>
