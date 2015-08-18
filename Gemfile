@@ -1,16 +1,11 @@
 source 'https://rubygems.org'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-
-group :development, :production do
-  gem 'pg'
-end
-
 gem 'rails', '4.1.8'
+gem 'pg'
+
 # Use sqlite3 as the database for Active Record
 group :development do
-  gem 'sqlite3'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
