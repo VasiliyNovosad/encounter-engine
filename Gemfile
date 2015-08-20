@@ -1,8 +1,14 @@
 source 'https://rubygems.org'
+ruby '2.1.5'
+
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
 gem 'rails', '4.1.8'
-gem 'pg'
+
+group :production do
+  gem 'pg'
+  gem 'rails_12factor'
+end
 
 # Use sqlite3 as the database for Active Record
 group :development do
