@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.5'
+ruby '2.2.1'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
@@ -8,6 +8,7 @@ gem 'rails', '4.1.8'
 group :production do
   gem 'pg'
   gem 'rails_12factor'
+  gem 'postmark-rails', '>= 0.10.0'
 end
 
 # Use sqlite3 as the database for Active Record

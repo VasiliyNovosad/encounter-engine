@@ -5,19 +5,19 @@ class Answer < ActiveRecord::Base
   before_save :strip_spaces
   before_create :assign_level
 
-  validates_presence_of :value, :message => "Не введено варіант коду"
+  validates_presence_of :value, message: 'Не введено варіант коду'
 
-  validates_uniqueness_of :value, :scope => [:level_id], :message => "Такий код вже є в завданні"
+  validates_uniqueness_of :value, scope: [:level_id], message: 'Такий код вже є в завданні'
 
-  scope :of_question, ->(question) { where(:question_id => question.id) }
+  scope :of_question, ->(question) { where(question_id: question.id) }
 
   protected
 
   def strip_spaces
-    self.value.strip!
+    value.strip!
   end
 
   def assign_level
-    self.level = self.question.level
+    self.level = question.level
   end
 end

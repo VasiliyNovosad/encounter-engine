@@ -1,11 +1,11 @@
 class Team < ActiveRecord::Base
-  has_many :game_entries, :class_name => "GameEntry"
-  has_many :members, :class_name => "User"
-  belongs_to :captain, :class_name => "User"
+  has_many :game_entries, class_name: 'GameEntry'
+  has_many :members, class_name: 'User'
+  belongs_to :captain, class_name: 'User'
 
-  validates_uniqueness_of :name, :message => "Команда з такою назвою уже існує"
+  validates_uniqueness_of :name, message: 'Команда з такою назвою уже існує'
 
-  validates_presence_of :name, :message => "Назва команди не повинна бути порожньою", :on => :create
+  validates_presence_of :name, message: 'Назва команди не повинна бути порожньою', on: :create
 
   before_save :adopt_captain
 
@@ -16,14 +16,12 @@ class Team < ActiveRecord::Base
 
   def finished?(game)
     game_passing = GamePassing.of(self, game)
-    !! game_passing.try(:finished?)
+    !!game_passing.try(:finished?)
   end
 
-protected
+  protected
 
   def adopt_captain
-    unless captain.nil?
-      self.members << captain unless members.include?(captain)
-    end
-  end 
+    members << captain unless captain.nil? || members.include?(captain)
+  end
 end

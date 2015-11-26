@@ -1,23 +1,22 @@
 class GamePassingsController < ApplicationController
-  
   include GamePassingsHelper
 
-  before_filter :find_game, :exclude => [:exit_game]
-  before_filter :find_game_by_id, :only => [:exit_game]
-  before_filter :find_team, :exclude => [:show_results, :index]
-  before_filter :find_or_create_game_passing, :exclude => [:show_results, :index]
-  before_filter :ensure_authenticated, :exclude => [:index, :show_results]
+  before_filter :find_game, exclude: [:exit_game]
+  before_filter :find_game_by_id, only: [:exit_game]
+  before_filter :find_team, exclude: [:show_results, :index]
+  before_filter :find_or_create_game_passing, exclude: [:show_results, :index]
+  before_filter :ensure_authenticated, exclude: [:index, :show_results]
   before_filter :ensure_game_is_started
-  before_filter :ensure_team_captain, :only => [:exit_game]
-  before_filter :ensure_not_finished, :exclude => [:index, :show_results]
-  before_filter :author_finished_at, :exclude => [:index, :show_results]
-  before_filter :ensure_team_member, :exclude => [:index, :show_results]
-  before_filter :ensure_not_author_of_the_game, :exclude => [:index, :show_results]
-  before_filter :ensure_author, :only => [:index]
-  before_filter :get_uniq_level_codes, :only => [:show_current_level]
+  before_filter :ensure_team_captain, only: [:exit_game]
+  before_filter :ensure_not_finished, exclude: [:index, :show_results]
+  before_filter :author_finished_at, exclude: [:index, :show_results]
+  before_filter :ensure_team_member, exclude: [:index, :show_results]
+  before_filter :ensure_not_author_of_the_game, exclude: [:index, :show_results]
+  before_filter :ensure_author, only: [:index]
+  before_filter :get_uniq_level_codes, only: [:show_current_level]
 
   def show_current_level
-    render :layout => 'in_game'
+    render layout: 'in_game'
   end
 
   def index
@@ -28,36 +27,34 @@ class GamePassingsController < ApplicationController
   def get_current_level_tip
     next_hint = @game_passing.upcoming_hints.first
 
-    render json: { :hint_num => @game_passing.hints_to_show.length,
-      :hint_text => @game_passing.hints_to_show.last.text.html_safe,
-      :next_available_in => next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
+    render json: { hint_num: @game_passing.hints_to_show.length,
+                   hint_text: @game_passing.hints_to_show.last.text.html_safe,
+                   next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
   end
 
   def post_answer
-    unless @game_passing.finished?
-     @answer = params[:answer].strip
-      save_log
-      @answer_was_correct = @game_passing.check_answer!(@answer)
-      unless @game_passing.finished?
-        get_uniq_level_codes
-        render "show_current_level", :layout => 'in_game'
-      else
-        render "show_results"
-      end
+    if @game_passing.finished?
+      render 'show_results'
     else
-      render "show_results"
+      @answer = params[:answer].strip
+      save_log if @game_passing.current_level.id
+      @answer_was_correct = @game_passing.check_answer!(@answer)
+      if @game_passing.finished?
+        render 'show_results'
+      else
+        get_uniq_level_codes
+        render 'show_current_level', layout: 'in_game'
+      end
     end
   end
 
   def save_log
-    if @game_passing.current_level.id
-      @level = Level.find(@game_passing.current_level.id)
-      Log.create! :game_id => @game.id,
-                  :level => @level.name,
-                  :team => @team.name,
-                  :time => Time.now,
-                  :answer => @answer
-    end
+    @level = Level.find(@game_passing.current_level.id)
+    Log.create! game_id: @game.id,
+                level: @level.name,
+                team: @team.name,
+                time: Time.now,
+                answer: @answer
   end
 
   def show_results
@@ -66,11 +63,10 @@ class GamePassingsController < ApplicationController
 
   def exit_game
     @game_passing.exit!
-    render "show_results"
+    render 'show_results'
   end
 
-
-protected
+  protected
 
   def find_game
     @game = Game.find(params[:game_id])
@@ -82,12 +78,12 @@ protected
 
   # TODO: must be a critical section, double creation is possible!
   def find_or_create_game_passing
-    @game_passing = GamePassing.of(@team,@game)
+    @game_passing = GamePassing.of(@team, @game)
 
     if @game_passing.nil?
-      @game_passing = GamePassing.create! :team => @team, 
-        :game => @game,
-        :current_level => @game.levels.first
+      @game_passing = GamePassing.create! team: @team,
+                                          game: @game,
+                                          current_level: @game.levels.first
     end
   end
 
@@ -96,30 +92,30 @@ protected
   end
 
   def ensure_game_is_started
-    raise "Заборонено грати в гру до її початку" unless @game.started? unless @game.is_testing?
+    fail 'Заборонено грати в гру до її початку' unless @game.is_testing? || @game.started?
   end
 
   def ensure_not_author_of_the_game
-    raise "Заборонено грати власні ігри" if @game.created_by?(current_user) unless @game.is_testing?
+    fail 'Заборонено грати власні ігри' unless @game.is_testing? || !@game.created_by?(current_user)
   end
-  
+
   def author_finished_at
-    raise "Гру завершено автором, і ви не можете її більше грати" if @game.author_finished?
+    fail 'Гру завершено автором, і ви не можете її більше грати' if @game.author_finished?
   end
-  
+
   def ensure_captain_exited
-    raise "Команда зійшла з дистанції" if @game_passing.exited?
+    fail 'Команда зійшла з дистанції' if @game_passing.exited?
   end
 
   def ensure_not_finished
-    self.author_finished_at
-    self.ensure_captain_exited
+    author_finished_at
+    ensure_captain_exited
   end
-  
+
   def get_uniq_level_codes
     correct_answers = []
     log_of_level = Log.of_game(@game).of_level(@game_passing.current_level).of_team(current_user.team)
-    entered_answers = log_of_level.map { |u| u.answer }.uniq
+    entered_answers = log_of_level.map(&:answer).uniq
     @entered_all_answers = entered_answers
     @game_passing.current_level.questions.each do |question|
       question.answers.each do |answer|

@@ -1,19 +1,19 @@
 class GamesController < ApplicationController
-  before_action :ensure_authenticated, :only => [:new, :create, :edit, :update, :delete, :start_test, :finish_test, :destroy]
-  before_action :find_game, :only => [:show, :edit, :update, :delete, :end_game, :destroy]
-  before_action :find_team, :only => [:show]
-  before_action :ensure_author_if_game_is_draft, :only => [:show]
-  before_action :ensure_author_if_no_start_time, :only =>[:show]
-  before_action :ensure_author, :only => [:edit, :update]
-  before_action :ensure_game_was_not_started, :only => [:edit, :update]
-  before_action :max_team_number_from_nz, :only => [:update]
+  before_action :ensure_authenticated, only: [:new, :create, :edit, :update, :delete, :start_test, :finish_test, :destroy]
+  before_action :find_game, only: [:show, :edit, :update, :delete, :end_game, :destroy]
+  before_action :find_team, only: [:show]
+  before_action :ensure_author_if_game_is_draft, only: [:show]
+  before_action :ensure_author_if_no_start_time, only: [:show]
+  before_action :ensure_author, only: [:edit, :update]
+  before_action :ensure_game_was_not_started, only: [:edit, :update]
+  before_action :max_team_number_from_nz, only: [:update]
 
   def index
-    unless params[:user_id].blank?
+    if params[:user_id].blank?
+      @games = Game.non_drafts
+    else
       user = User.find(params[:user_id])
       @games = user.created_games
-    else
-      @games = Game.non_drafts
     end
     render
   end
@@ -28,15 +28,15 @@ class GamesController < ApplicationController
     if @game.save
       redirect_to game_path(@game)
     else
-      render "new"
+      render 'new'
     end
   end
 
   def show
-    @game_entries = GameEntry.of_game(@game).with_status("new")
+    @game_entries = GameEntry.of_game(@game).with_status('new')
     @teams = []
     @levels = @game.levels
-    GameEntry.of_game(@game).with_status("accepted").each do |entry|
+    GameEntry.of_game(@game).with_status('accepted').each do |entry|
       @teams << Team.find(entry.team_id)
     end
     render
@@ -50,7 +50,7 @@ class GamesController < ApplicationController
     if @game.update_attributes(game_params)
       redirect_to game_path(@game)
     else
-      render "edit"
+      render 'edit'
     end
   end
 
@@ -67,14 +67,12 @@ class GamesController < ApplicationController
   def end_game
     @game.finish_game!
     game_passings = GamePassing.of_game(@game)
-    game_passings.each do |gp|
-      gp.end!
-    end
+    game_passings.each(&:end!)
     redirect_to dashboard_path
   end
 
   def start_test
-    game = self.find_game
+    game = find_game
     game.is_draft = 'f'
     game.is_testing = 't'
     game.test_date = game.starts_at
@@ -87,7 +85,7 @@ class GamesController < ApplicationController
   end
 
   def finish_test
-    game = self.find_game
+    game = find_game
     game.is_draft = 't'
     game.is_testing = 'f'
     game.starts_at = game.test_date
@@ -138,8 +136,6 @@ class GamesController < ApplicationController
   end
 
   def max_team_number_from_nz
-    if @game.max_team_number.nil? or @game.max_team_number.equal?(0)
-      @game.max_team_number = 10000
-    end
+    @game.max_team_number = 10_000 if @game.max_team_number.nil? || @game.max_team_number.equal?(0)
   end
 end

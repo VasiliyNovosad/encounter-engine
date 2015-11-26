@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
-  before_action :find_team, :only => [:update, :index, :show]
-  before_action :ensure_team_member, :exclude => [:new, :create]
-  before_action :ensure_team_captain, :only => [:edit]
+  before_action :find_team, only: [:update, :index, :show]
+  before_action :ensure_team_member, exclude: [:new, :create]
+  before_action :ensure_team_captain, only: [:edit]
 
   def index
     @teams = Team.all
@@ -18,7 +18,7 @@ class TeamsController < ApplicationController
     if @team.save
       redirect_to dashboard_path
     else
-      render "new"
+      render 'new'
     end
   end
 
@@ -28,13 +28,11 @@ class TeamsController < ApplicationController
   end
 
   def update
-    if params[:team][:name].blank?
-      params[:team][:name] = params[:team_old_name]
-    end
+    params[:team][:name] = params[:team_old_name] if params[:team][:name].blank?
     if @team.update_attributes(team_params)
       redirect_to team_path(@team)
     else
-      render "edit"
+      render 'edit'
     end
   end
 
@@ -43,12 +41,11 @@ class TeamsController < ApplicationController
   end
 
   def delete_member
-    #raise params.inspect
     who = User.find(params[:member_id])
     if @current_user.captain? && @current_user.team == who.team && !who.captain?
       who.team = nil
       who.save!
-      redirect_to "teams/edit"
+      redirect_to 'teams/edit'
     else
       redirect_to dashboard_path
     end
@@ -61,14 +58,13 @@ class TeamsController < ApplicationController
       who_team.captain = who
       who_team.save!
       who.save!
-      redirect_to("teams")
+      redirect_to('teams')
     else
       redirect_to(dashboard_path)
     end
   end
 
-
-protected
+  protected
 
   def team_params
     params.require(:team).permit(:name)

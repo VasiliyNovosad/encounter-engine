@@ -4,16 +4,16 @@ class DashboardController < ApplicationController
   before_filter :find_team
 
   def index
-    @games =Game.by(@current_user)
+    @games = Game.by(@current_user)
     @game_entries = []
     @teams = []
     @games.each do |game|
-      GameEntry.of_game(game).with_status("new").each do |entry|
-         @game_entries << entry
+      GameEntry.of_game(game).with_status('new').each do |entry|
+        @game_entries << entry
       end
-      GameEntry.of_game(game).with_status("accepted").each do |entry|
-         @teams << entry.team
-       end
+      GameEntry.of_game(game).with_status('accepted').each do |entry|
+        @teams << entry.team
+      end
     end
   end
 

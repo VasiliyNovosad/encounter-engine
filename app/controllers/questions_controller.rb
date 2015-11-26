@@ -17,10 +17,10 @@ class QuestionsController < ApplicationController
         redirect_to game_level_path(@level.game, @level)
       else
         @question.destroy
-        render "new"
+        render 'new'
       end
     else
-      render "new"
+      render 'new'
     end
   end
 
@@ -37,5 +37,4 @@ class QuestionsController < ApplicationController
   def find_level
     @level = Level.find(params[:level_id])
   end
-
 end

@@ -4,9 +4,9 @@ class AnswersController < ApplicationController
   before_filter :find_level
   before_filter :find_question
   before_filter :find_answers
-  before_filter :find_answer, :only => [:delete]
-  before_filter :build_answer, :only => [:create]
-  before_filter :build_answer_index, :only => [:index]
+  before_filter :find_answer, only: [:delete]
+  before_filter :build_answer, only: [:create]
+  before_filter :build_answer_index, only: [:index]
 
   def index
     render
@@ -26,12 +26,12 @@ class AnswersController < ApplicationController
       redirect_to game_level_question_answers_path(@game, @level, @question)
     else
       build_answer
-      @answer.errors.add(:question, "Повинен бути хоча б один варіант коду")
+      @answer.errors.add(:question, 'Повинен бути хоча б один варіант коду')
       render :index
     end
   end
 
-protected
+  protected
 
   def find_game
     @game = Game.find(params[:game_id])

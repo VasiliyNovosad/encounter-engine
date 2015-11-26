@@ -1,10 +1,10 @@
 class HintsController < ApplicationController
   before_filter :find_level
   before_filter :find_game
-  before_filter :find_hint, :only => [:edit, :update, :delete]
+  before_filter :find_hint, only: [:edit, :update, :delete]
 
   before_filter :ensure_author
-  before_filter :ensure_game_was_not_started, :only => [:new, :create, :edit, :update]  
+  before_filter :ensure_game_was_not_started, only: [:new, :create, :edit, :update]
 
   def new
     @hint = Hint.new
@@ -35,7 +35,7 @@ class HintsController < ApplicationController
 
   def delete
     @hint.destroy
-    redirect_to game_level_path(@level.game, @level) 
+    redirect_to game_level_path(@level.game, @level)
   end
 
   protected

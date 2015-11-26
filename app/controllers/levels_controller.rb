@@ -1,8 +1,8 @@
 class LevelsController < ApplicationController
   before_filter :find_game
   before_filter :ensure_author
-  before_filter :ensure_game_was_not_started, :only => [:new, :create, :edit, :update, :delete]
-  before_action :find_level, :only => [:show, :edit, :update, :delete, :move_up, :move_down]
+  before_filter :ensure_game_was_not_started, only: [:new, :create, :edit, :update, :delete]
+  before_action :find_level, only: [:show, :edit, :update, :delete, :move_up, :move_down]
 
   def new
     @level = Level.new
@@ -16,7 +16,7 @@ class LevelsController < ApplicationController
     @level.game = @game
     if @level.save
       redirect_to game_level_path(@game, @level)
-    else      
+    else
       render 'new'
     end
   end
@@ -52,8 +52,8 @@ class LevelsController < ApplicationController
     redirect_to game_path(@game)
   end
 
-protected
-  
+  protected
+
   def level_params
     params.require(:level).permit(:name, :text, :correct_answer)
   end
@@ -65,5 +65,4 @@ protected
   def find_level
     @level = Level.find(params[:id])
   end
-
 end
