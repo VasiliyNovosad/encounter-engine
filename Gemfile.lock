@@ -89,12 +89,6 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
     pg (0.18.2)
-    postmark (1.7.0)
-      json
-      rake
-    postmark-rails (0.12.0)
-      actionmailer (>= 3.0.0)
-      postmark (~> 1.7.0)
     rack (1.5.2)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -136,6 +130,9 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    sendgrid-rails (2.0.5)
+      actionmailer (>= 3.0.0)
+      activesupport (>= 2.1.0)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -185,13 +182,13 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   pg
-  postmark-rails (>= 0.10.0)
   rails (= 4.1.8)
   rails-assets-datetimepicker!
   rails-jquery-autocomplete
   rails_12factor
   sass-rails
   sdoc (~> 0.4.0)
+  sendgrid-rails
   sqlite3
   therubyracer
   tinymce-rails
