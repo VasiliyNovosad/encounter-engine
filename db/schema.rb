@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151127130249) do
+ActiveRecord::Schema.define(version: 20151127141850) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20151127130249) do
 
   create_table "games", force: :cascade do |t|
     t.string   "name"
-    t.string   "description"
+    t.text     "description"
     t.integer  "author_id"
     t.datetime "starts_at"
     t.boolean  "is_draft",               default: false, null: false
@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(version: 20151127130249) do
 
   create_table "hints", force: :cascade do |t|
     t.integer  "level_id"
-    t.string   "text"
+    t.text     "text"
     t.integer  "delay"
     t.datetime "created_at"
     t.datetime "updated_at"
