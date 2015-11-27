@@ -3,7 +3,7 @@ ruby '2.2.1'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
-gem 'rails', '4.1.8'
+gem 'rails', '4.2.4'
 
 group :production do
   gem 'pg'
@@ -40,8 +40,9 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Use ActiveModel has_secure_password
-gem 'bcrypt-ruby', '3.1.2'
-gem 'bcrypt'
+#gem 'bcrypt-ruby', '3.1.2'
+#gem 'bcrypt'
+gem 'devise'
 gem 'acts_as_list', git: 'git://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
 gem "default_value_for", "~> 3.0.0"
 gem 'tinymce-rails'

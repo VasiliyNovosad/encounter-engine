@@ -31,7 +31,8 @@
 
     <div>
       <br />
-      <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.questions.count %>:<br /><font color="236400"><%= @entered_correct_answers.sort!.join '<br />'  %></b></font>
+      <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.questions.count %>:<br /><font color="236400"><%= @entered_correct_answers.sort!.join '
+      '.html_safe  %></b></font>
       <hr>
       <hr>
     </div>

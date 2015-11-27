@@ -1,18 +1,16 @@
 class ApplicationController < ActionController::Base
-  before_filter :find_user_from_session
   protect_from_forgery with: :exception
 
   include SharedFilters
-  include SessionsHelper
 
-  def logged_in?
-    !!@current_user
-  end
+  before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   protected
 
-  def find_user_from_session
-    @current_user = current_user
+  def configure_devise_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) << :nickname
+    devise_parameter_sanitizer.for(:account_update) << :nickname
+    devise_parameter_sanitizer.for(:account_update) << :phone_number
   end
 
   def ensure_team_member
@@ -24,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_author
-    logged_in? && @current_user.author_of?(@game)
+    current_user && current_user.author_of?(@game)
   end
 
   def ensure_game_was_not_started

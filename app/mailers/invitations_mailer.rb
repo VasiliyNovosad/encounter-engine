@@ -1,5 +1,5 @@
 class InvitationsMailer < ActionMailer::Base
-  default from: "novosadvasiliy@gmail.com",
+  default from: "quest.racing.lutsk@gmail.com",
           template_path: 'mailers/invitations'
 
   def invitation_create(invitation)

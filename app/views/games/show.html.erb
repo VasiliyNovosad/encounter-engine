@@ -47,7 +47,7 @@
 
 <br />
 
-<% if signed_in? and @current_user.author_of?(@game) %>
+<% if user_signed_in? and current_user.author_of?(@game) %>
 
   <fieldset>
     <legend>
@@ -55,22 +55,23 @@
     </legend>
 
     <p>
-      <%= render 'levels/list', :levels => @game.levels  %>
+      <%= render 'levels/list', levels: @game.levels  %>
     </p>
 
     <p>
-      <%= link_to "Добавити нове завдання", new_game_level_path(@game) if ! @game.started? %>
+      <%= link_to "Добавити нове завдання", new_game_level_path(@game) if !@game.started? %>
     </p>
   </fieldset>
   <br/>
-      <%= render 'games/game_entries', :game_entries => @game_entries  %>
+<% end %>      
+<%= render 'game_entries', game_entries: @game_entries  %>
+<br/>
+<%= render 'teams', teams: @teams %>
+<br />
 
-    <br/>
-
-    <%= render 'games/teams', :teams => @teams %>
-  <br />
+<% if user_signed_in? and current_user.author_of?(@game) %>
   <p>
-    <%= link_to "Редагувати дану гру", edit_game_path(@game) if ! @game.started? %>
+    <%= link_to "Редагувати дану гру", edit_game_path(@game) if !@game.started? %>
   </p>
 
   <p>
@@ -79,7 +80,6 @@
 
 <% end %>
 
-<script type="text/javascript" src="/javascripts/jquery-1.3.2.min.js"></script>
 <%= render 'shared/countdown' %>
 <div id="countdown-example"></div>
 
@@ -92,9 +92,6 @@
     prefix:'До початку лишилось: '
   });
 </script>
-
-<br />
-<%= render 'teams' if (!signed_in?) || (signed_in? && !@current_user.author_of?(@game)) %>
 
 <% if @game.draft? and !@game.started? and @game.levels and @game.levels.count > 0 %>
    <%= link_to 'Почати тестування', url_for("/games/start_test/#{@game.id}") %>

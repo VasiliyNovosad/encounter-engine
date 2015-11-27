@@ -16,21 +16,21 @@
   <hr class="short-line" />
 
   <p>
-    <%= link_to "Запросити учасників", new_invitation_path if (@team.members.include? @current_user) && @current_user.captain? %>
+    <%= link_to "Запросити учасників", new_invitation_path if (@team.members.include? current_user) && current_user.captain? %>
   </p>
   <p>
-    <%= link_to "Редагувати команду", edit_team_path(@team) if (@team.members.include? @current_user) && @current_user.captain? %>
+    <%= link_to "Редагувати команду", edit_team_path(@team) if (@team.members.include? current_user) && current_user.captain? %>
   </p>
 </fieldset>
 
 <br />
 
-<%= render 'shared/current_games' if (@team.members.include? @current_user) %>
+<%= render 'shared/current_games' if (@team.members.include? current_user) %>
 
 <b />
 
-<%= render 'dashboard/coming_games' if (@team.members.include? @current_user) %>
+<%= render 'dashboard/coming_games' if (@team.members.include? current_user) %>
 
 <b />
 
-<%= render 'dashboard/finished_games' if (@team.members.include? @current_user) %>
+<%= render 'dashboard/finished_games' if (@team.members.include? current_user) %>

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -13,8 +14,6 @@ Rails.application.routes.draw do
   #   resources :products
   root 'index#index'
 
-  resources :sessions, only: [:new, :create, :destroy]
-
   resources :teams
 
   resources :invitations do
@@ -23,9 +22,9 @@ Rails.application.routes.draw do
     get :autocomplete_user_nickname, on: :collection
   end
 
-  #resources :game_passings do
-  #  get 'show_results', on: :member
-  #end
+  # resources :game_passings do
+  #   get 'show_results', on: :member
+  # end
 
   # Example resource route with options:
   #   resources :products do
@@ -61,16 +60,22 @@ Rails.application.routes.draw do
     end
   end
 
-  match '/game_passings/show_results',  to: 'game_passings#show_results', via: 'get'
+  get 'game_entries/recall/:id' => 'game_entries#recall'
+  get 'game_entries/reopen/:id' => 'game_entries#reopen'
+  get 'game_entries/cancel/:id' => 'game_entries#cancel'
+  get 'game_entries/accept/:id' => 'game_entries#accept'
+  get 'game_entries/reject/:id' => 'game_entries#reject'
+
+  match '/game_passings/show_results', to: 'game_passings#show_results', via: 'get'
   match '/play/:game_id/tip',  to: 'game_passings#get_current_level_tip', via: 'get'
   match '/play/:game_id',  to: 'game_passings#show_current_level', via: 'get'
   match '/play/:game_id',  to: 'game_passings#post_answer', via: 'post'
 
-  match '/stats/:action/:game_id',  to: 'game_passings#index', via: 'get'
-  match '/logs/livechannel/:game_id',  to: 'logs#show_live_channel', via: 'get'
-  match '/logs/level/:game_id/:team_id',  to: 'logs#show_level_log', via: 'get'
-  match '/logs/game/:game_id/:team_id',  to: 'logs#show_game_log', via: 'get'
-  match '/logs/full/:game_id',  to: 'logs#show_full_log', via: 'get'
+  match '/stats/:action/:game_id', to: 'game_passings#index', via: 'get'
+  match '/logs/livechannel/:game_id', to: 'logs#show_live_channel', via: 'get'
+  match '/logs/level/:game_id/:team_id', to: 'logs#show_level_log', via: 'get'
+  match '/logs/game/:game_id/:team_id', to: 'logs#show_game_log', via: 'get'
+  match '/logs/full/:game_id', to: 'logs#show_full_log', via: 'get'
 
   match '/game_entries/new/:game_id/:team_id',  to: 'game_entries#new', via: 'get'
   match '/signup',  to: 'users#new',            via: 'get'
@@ -80,12 +85,12 @@ Rails.application.routes.draw do
   match '/dashboard', to: 'dashboard#index',         via: 'get'
   match '/team-room', to: 'team_room#index',         via: 'get'
 
-  match '/games/end_game/:id',  to: 'games#end_game', via: 'get'
-  match '/games/start_test/:id',  to: 'games#start_test', via: 'get'
-  match '/games/finish_test/:id',  to: 'games#finish_test', via: 'get'
+  match '/games/end_game/:id', to: 'games#end_game', via: 'get'
+  match '/games/start_test/:id', to: 'games#start_test', via: 'get'
+  match '/games/finish_test/:id', to: 'games#finish_test', via: 'get'
 
-  match "/teams/edit/delete_member", to: 'teams#delete_member', via: 'get'
-  match "/teams/edit/captain", to: 'teams#captain', via: 'get'
+  match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'get'
+  match '/teams/edit/captain', to: 'teams#captain', via: 'get'
   # Example resource route with more complex sub-resources:
   #   resources :products do
   #     resources :comments

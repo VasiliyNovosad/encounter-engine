@@ -1,19 +1,19 @@
 class GamePassingsController < ApplicationController
   include GamePassingsHelper
 
-  before_filter :find_game, exclude: [:exit_game]
-  before_filter :find_game_by_id, only: [:exit_game]
-  before_filter :find_team, exclude: [:show_results, :index]
-  before_filter :find_or_create_game_passing, exclude: [:show_results, :index]
-  before_filter :ensure_authenticated, exclude: [:index, :show_results]
-  before_filter :ensure_game_is_started
-  before_filter :ensure_team_captain, only: [:exit_game]
-  before_filter :ensure_not_finished, exclude: [:index, :show_results]
-  before_filter :author_finished_at, exclude: [:index, :show_results]
-  before_filter :ensure_team_member, exclude: [:index, :show_results]
-  before_filter :ensure_not_author_of_the_game, exclude: [:index, :show_results]
-  before_filter :ensure_author, only: [:index]
-  before_filter :get_uniq_level_codes, only: [:show_current_level]
+  before_action :find_game, except: [:exit_game]
+  before_action :find_game_by_id, only: [:exit_game]
+  before_action :find_team, except: [:show_results, :index]
+  before_action :find_or_create_game_passing, except: [:show_results, :index]
+  before_action :authenticate_user!, except: [:index, :show_results]
+  before_action :ensure_game_is_started
+  before_action :ensure_team_captain, only: [:exit_game]
+  before_action :ensure_not_finished, except: [:index, :show_results]
+  before_action :author_finished_at, except: [:index, :show_results]
+  before_action :ensure_team_member, except: [:index, :show_results]
+  before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
+  before_action :ensure_author, only: [:index]
+  before_action :get_uniq_level_codes, only: [:show_current_level]
 
   def show_current_level
     render layout: 'in_game'

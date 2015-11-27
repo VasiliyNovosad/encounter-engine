@@ -36,11 +36,11 @@ class Game < ActiveRecord::Base
   end
 
   def draft?
-    is_draft
+    self.is_draft
   end
 
   def started?
-    starts_at.nil? ? false : Time.now > starts_at
+    self.starts_at.nil? ? false : Time.now > self.starts_at
   end
 
   def created_by?(user)
@@ -65,7 +65,7 @@ class Game < ActiveRecord::Base
   end
 
   def free_place_of_team!
-    if requested_teams_number > 0
+    if self.requested_teams_number > 0
       self.requested_teams_number -= 1
       save
     end
@@ -77,7 +77,7 @@ class Game < ActiveRecord::Base
   end
 
   def can_request?
-    self.requested_teams_number < max_team_number
+    self.max_team_number.nil? || self.requested_teams_number < self.max_team_number
     Game.all.select { |game| !game.started? }
   end
 
@@ -87,39 +87,39 @@ class Game < ActiveRecord::Base
   end
 
   def author_finished?
-    !author_finished_at.nil?
+    !self.author_finished_at.nil?
   end
 
   def is_testing?
-    is_testing
+    self.is_testing
   end
 
   protected
 
   def game_starts_in_the_future
-    if author_finished_at.nil? && starts_at && starts_at < Time.now
+    if self.author_finished_at.nil? && self.starts_at && self.starts_at < Time.now
       errors.add(:starts_at, 'Вибрано дату із минулого.')
     end
   end
 
   def valid_max_num
-    if max_team_number
-      if max_team_number < self.requested_teams_number
+    if self.max_team_number
+      if self.max_team_number < self.requested_teams_number
         errors.add(:max_team_number, 'Кількість команд, що подали заявку, перевищує дозволене число')
       end
     end
   end
 
   def deadline_is_in_future
-    if author_finished_at.nil? && registration_deadline &&
-        registration_deadline < Time.now
+    if self.author_finished_at.nil? && self.registration_deadline &&
+        self.registration_deadline < Time.now
       errors.add(:registration_deadline, 'Вказано кінцевий термін реєстрації із минулого')
     end
   end
 
   def deadline_is_before_game_start
-    if registration_deadline &&
-       starts_at && registration_deadline > starts_at
+    if self.registration_deadline &&
+       self.starts_at && self.registration_deadline > self.starts_at
       errors.add(:registration_deadline, 'Вказано кінцевий термін реєстрації пізніший дати початку гри')
     end
   end

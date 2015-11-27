@@ -1,12 +1,12 @@
 class AnswersController < ApplicationController
-  before_filter :find_game
-  before_filter :ensure_author
-  before_filter :find_level
-  before_filter :find_question
-  before_filter :find_answers
-  before_filter :find_answer, only: [:delete]
-  before_filter :build_answer, only: [:create]
-  before_filter :build_answer_index, only: [:index]
+  before_action :find_game
+  before_action :ensure_author
+  before_action :find_level
+  before_action :find_question
+  before_action :find_answers
+  before_action :find_answer, only: [:destroy]
+  before_action :build_answer, only: [:create]
+  before_action :build_answer_index, only: [:index]
 
   def index
     render
@@ -16,7 +16,7 @@ class AnswersController < ApplicationController
     if @answer.save
       redirect_to game_level_question_answers_path(@game, @level, @question)
     else
-      render 'index'
+      render :index
     end
   end
 
@@ -25,7 +25,7 @@ class AnswersController < ApplicationController
       @answer.destroy
       redirect_to game_level_question_answers_path(@game, @level, @question)
     else
-      build_answer
+      build_answer_index
       @answer.errors.add(:question, 'Повинен бути хоча б один варіант коду')
       render :index
     end

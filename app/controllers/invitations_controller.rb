@@ -1,6 +1,6 @@
 class InvitationsController < ApplicationController
   autocomplete :user, :nickname
-  before_filter :ensure_authenticated
+  before_filter :authenticate_user!
 
   before_action :ensure_team_captain, only: [:new, :create]
 

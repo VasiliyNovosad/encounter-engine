@@ -1,8 +1,8 @@
 class LevelsController < ApplicationController
-  before_filter :find_game
-  before_filter :ensure_author
-  before_filter :ensure_game_was_not_started, only: [:new, :create, :edit, :update, :delete]
-  before_action :find_level, only: [:show, :edit, :update, :delete, :move_up, :move_down]
+  before_action :find_game
+  before_action :ensure_author
+  before_action :ensure_game_was_not_started, except: [:show, :index, :move_up, :move_down]
+  before_action :find_level, except: [:new, :index, :create]
 
   def new
     @level = Level.new
@@ -37,7 +37,7 @@ class LevelsController < ApplicationController
     end
   end
 
-  def delete
+  def destroy
     @level.destroy
     redirect_to game_path(@game)
   end

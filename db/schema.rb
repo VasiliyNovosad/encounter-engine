@@ -11,9 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150422091853) do
+ActiveRecord::Schema.define(version: 20151126130007) do
 
-  create_table "answers", force: true do |t|
+  create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
     t.integer  "level_id"
     t.string   "value"
@@ -21,13 +21,13 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.datetime "updated_at"
   end
 
-  create_table "game_entries", force: true do |t|
+  create_table "game_entries", force: :cascade do |t|
     t.integer "game_id"
     t.integer "team_id"
     t.string  "status"
   end
 
-  create_table "game_passings", force: true do |t|
+  create_table "game_passings", force: :cascade do |t|
     t.integer  "game_id"
     t.integer  "team_id"
     t.integer  "current_level_id"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.datetime "updated_at"
   end
 
-  create_table "games", force: true do |t|
+  create_table "games", force: :cascade do |t|
     t.string   "name"
     t.string   "description"
     t.integer  "author_id"
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.datetime "updated_at"
   end
 
-  create_table "hints", force: true do |t|
+  create_table "hints", force: :cascade do |t|
     t.integer  "level_id"
     t.string   "text"
     t.integer  "delay"
@@ -63,14 +63,14 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.datetime "updated_at"
   end
 
-  create_table "invitations", force: true do |t|
+  create_table "invitations", force: :cascade do |t|
     t.integer  "to_team_id"
     t.integer  "for_user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "levels", force: true do |t|
+  create_table "levels", force: :cascade do |t|
     t.text     "text"
     t.integer  "game_id"
     t.integer  "position"
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.datetime "updated_at"
   end
 
-  create_table "logs", force: true do |t|
+  create_table "logs", force: :cascade do |t|
     t.integer  "game_id"
     t.string   "team"
     t.string   "level"
@@ -87,25 +87,22 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.datetime "time"
   end
 
-  create_table "questions", force: true do |t|
+  create_table "questions", force: :cascade do |t|
     t.string   "questions"
     t.integer  "level_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "teams", force: true do |t|
+  create_table "teams", force: :cascade do |t|
     t.string   "name"
     t.integer  "captain_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "email"
+  create_table "users", force: :cascade do |t|
     t.string   "nickname"
-    t.string   "crypted_password"
-    t.string   "salt"
     t.integer  "team_id"
     t.string   "jabber_id"
     t.string   "icq_number"
@@ -113,8 +110,19 @@ ActiveRecord::Schema.define(version: 20150422091853) do
     t.string   "phone_number"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "remember_token"
-    t.string   "password_digest"
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
   end
+
+  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end

@@ -1,10 +1,10 @@
 class DashboardController < ApplicationController
-  before_filter :ensure_authenticated
-  before_filter :find_invitations_for_current_user
-  before_filter :find_team
+  before_action :authenticate_user!
+  before_action :find_invitations_for_current_user
+  before_action :find_team
 
   def index
-    @games = Game.by(@current_user)
+    @games = Game.by(current_user)
     @game_entries = []
     @teams = []
     @games.each do |game|
@@ -20,7 +20,7 @@ class DashboardController < ApplicationController
   protected
 
   def find_invitations_for_current_user
-    @invitations = Invitation.for(@current_user)
+    @invitations = Invitation.for(current_user)
   end
 
   def find_team

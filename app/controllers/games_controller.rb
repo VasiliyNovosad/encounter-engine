@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :ensure_authenticated, only: [:new, :create, :edit, :update, :delete, :start_test, :finish_test, :destroy]
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :find_game, only: [:show, :edit, :update, :delete, :end_game, :destroy]
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
@@ -24,7 +24,7 @@ class GamesController < ApplicationController
 
   def create
     @game = Game.create(game_params)
-    @game.author = @current_user
+    @game.author = current_user
     if @game.save
       redirect_to game_path(@game)
     else
@@ -116,8 +116,8 @@ class GamesController < ApplicationController
   end
 
   def find_team
-    if @current_user
-      @team = @current_user.team
+    if current_user
+      @team = current_user.team
     else
       @team = nil
     end

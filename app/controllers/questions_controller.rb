@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
-  before_filter :find_game
-  before_filter :ensure_author
-  before_filter :find_level
+  before_action :find_game
+  before_action :ensure_author
+  before_action :find_level
 
   def new
     @question = Question.new

@@ -6,8 +6,9 @@
   <p>
     <% teams.each do |team| %>
       <p>
-        <strong><%= teams.index(team) + 1 %>. <%= link_to team.name, team_path(team) if logged_in?%></strong>
-        <strong><%= team.name  if !logged_in? %></strong>
+        <strong>
+          <%= teams.index(team) + 1 %>. <%= link_to team.name, team_path(team) if user_signed_in?%><%= team.name if !user_signed_in? %>
+        </strong>
       </p>
     <% end %>
   </p>
