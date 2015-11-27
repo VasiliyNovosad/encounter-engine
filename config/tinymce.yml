@@ -1,7 +1,37 @@
-menubar: false
 toolbar:
-  - undo redo | styleselect | bold italic | image link | table
+  - insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image
+  - print preview media | forecolor backcolor emoticons | fontselect fontsizeselect
 plugins:
   - image
   - link
-  - table
+  - advlist 
+  - autolink 
+  - lists 
+  - charmap 
+  - print 
+  - preview 
+  - hr 
+  - anchor 
+  - pagebreak
+  - searchreplace 
+  - wordcount 
+  - visualblocks 
+  - visualchars 
+  - code 
+  - fullscreen
+  - insertdatetime 
+  - media 
+  - nonbreaking 
+  - save 
+  - table 
+  - contextmenu 
+  - directionality
+  - emoticons 
+  - template 
+  - paste 
+  - textcolor 
+  - colorpicker 
+  - textpattern 
+  - imagetools
+fontsize_formats:
+  - 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 18pt 24pt 36pt 48pt
