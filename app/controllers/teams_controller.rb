@@ -14,7 +14,7 @@ class TeamsController < ApplicationController
 
   def create
     @team = Team.new(team_params)
-    @team.captain = @current_user
+    @team.captain = current_user
     if @team.save
       redirect_to dashboard_path
     else
@@ -23,7 +23,7 @@ class TeamsController < ApplicationController
   end
 
   def edit
-    @team = @current_user.team
+    @team = current_user.team
     render
   end
 
@@ -42,7 +42,7 @@ class TeamsController < ApplicationController
 
   def delete_member
     who = User.find(params[:member_id])
-    if @current_user.captain? && @current_user.team == who.team && !who.captain?
+    if current_user.captain? && current_user.team == who.team && !who.captain?
       who.team = nil
       who.save!
       redirect_to 'teams/edit'
@@ -53,8 +53,8 @@ class TeamsController < ApplicationController
 
   def make_member_captain
     who = User.find(params[:member_id])
-    if @current_user.captain? && @current_user.team == who.team && !who.captain?
-      who_team = @current_user.team
+    if current_user.captain? && current_user.team == who.team && !who.captain?
+      who_team = current_user.team
       who_team.captain = who
       who_team.save!
       who.save!

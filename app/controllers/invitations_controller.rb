@@ -10,12 +10,12 @@ class InvitationsController < ApplicationController
   def new
     @all_users = User.all
     @invitation = Invitation.new
-    @invitation.to_team = @current_user.team
+    @invitation.to_team = current_user.team
   end
 
   def create
     @invitation = Invitation.create(invitation_params)
-    @invitation.to_team = @current_user.team
+    @invitation.to_team = current_user.team
     if @invitation.save
       redirect_to new_invitation_path, message: "Користувачу #{@invitation.recepient_nickname} надіслано запрошення"
       InvitationsMailer.invitation_create(@invitation).deliver
@@ -43,11 +43,11 @@ class InvitationsController < ApplicationController
 
   def add_user_to_team_members
     team = @invitation.to_team
-    team.members << @current_user
+    team.members << current_user
   end
 
   def reject_rest_of_invitations
-    Invitation.for(@current_user).each do |invitation|
+    Invitation.for(current_user).each do |invitation|
       invitation.delete
       InvitationsMailer.invitation_reject(invitation).deliver
     end
@@ -59,7 +59,7 @@ class InvitationsController < ApplicationController
 
   def build_invitation
     @invitation = Invitation.new(invitation_params)
-    @invitation.to_team = @current_user.team
+    @invitation.to_team = current_user.team
   end
 
   def find_invitation
@@ -67,7 +67,7 @@ class InvitationsController < ApplicationController
   end
 
   def ensure_recepient
-    unless @current_user.id == @invitation.for_user.id
+    unless current_user.id == @invitation.for_user.id
       fail 'Ви повинні бути отримувачем запрошення для виконання цієї дії'
     end
   end
