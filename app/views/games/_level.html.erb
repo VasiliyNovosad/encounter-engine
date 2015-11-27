@@ -1,0 +1,16 @@
+<h3>
+   <%= "Рівень №#{level.position} \"#{level.name}\"" %>
+</h3>
+
+<fieldset>
+  <a name=<%= "level#{level.position}" %>></a>
+  <%= level.text.html_safe %>
+  <br />
+  <p>
+    <%= render 'hints', hints: level.hints %>
+  </p>
+  Відповіді:
+  <p>
+    <%= render 'answers', level: level %>
+  </p>
+</fieldset>

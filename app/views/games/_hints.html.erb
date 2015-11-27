@@ -1,0 +1,9 @@
+<% hints.each_with_index do |hint, index| %>
+  <p>
+    <%= "Підказка №#{index + 1} (#{hint.delay_in_minutes} хв)" %>
+  </p>
+  <p>
+    <%= hint.text.html_safe %>
+  </p>
+  <br />
+<% end %>

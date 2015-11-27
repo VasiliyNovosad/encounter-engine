@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :find_game, only: [:show, :edit, :update, :delete, :end_game, :destroy]
+  before_action :find_game, only: [:show, :edit, :update, :delete, :end_game, :destroy, :show_scenario]
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
   before_action :ensure_author_if_no_start_time, only: [:show]
@@ -99,6 +99,9 @@ class GamesController < ApplicationController
     logs.delete_all
 
     redirect_to game_path(@game)
+  end
+
+  def show_scenario
   end
 
   protected

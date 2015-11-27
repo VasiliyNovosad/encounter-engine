@@ -14,7 +14,7 @@
               <% else %>
                 <% if game.levels && game.levels.count > 0 %>
                   <%  @game_entry = GameEntry.of(@team,game) %>
-                  <%= render 'shared/current_games_status', :game_entry => @game_entry, :game => game %>
+                  <%= render 'shared/current_games_status', game_entry: @game_entry, game: game %>
                 <% else %>
                   Гра не містить завдань
                 <% end %>

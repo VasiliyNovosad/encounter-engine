@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       get 'move_up', on: :member
       get 'move_down', on: :member
     end
+    get 'show_scenario', on: :member
   end
 
   get 'game_entries/recall/:id' => 'game_entries#recall'

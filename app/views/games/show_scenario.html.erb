@@ -1,0 +1,11 @@
+<h2>
+  Сценарiй гри "<strong><%= link_to @game.name, @game %></strong>"
+</h2>
+
+<p>
+  <%= @game.levels.map { |level| "<a href=\"#level#{level.position}\">Рівень #{level.position}</a>"}.join(', ').html_safe %>
+</p>
+
+<% @game.levels.each do |level| %>
+  <%= render 'level', level: level %>
+<% end %>

@@ -1,6 +1,6 @@
-<% if signed_in? %>
-  <%= link_to "Особистий кабінет", dashboard_path, :class => "home-link" %>
+<% if user_signed_in? %>
+  <%= link_to "Особистий кабінет", dashboard_path, class: "home-link" %>
 <% else %>
-  <%= link_to "Головна", root_path, :class => "home-link" %>
+  <%= link_to "Головна", root_path, class: "home-link" %>
 <% end %>
 <%= Time.now.strftime("%Y-%m-%d %H:%M")%>

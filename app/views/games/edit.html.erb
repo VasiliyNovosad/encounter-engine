@@ -3,7 +3,7 @@
 <%= form_for @game,  url: game_path(@game) do |f| %>
   <%= render 'shared/error_messages', object:  f.object %>  
   <p><%= f.label "Назва" %><%= f.text_field :name %></p>
-  <p><%#= f.label "Опис" %><%= f.text_area :description, :class => "tinymce" %></p>
+  <p><%#= f.label "Опис" %><%= f.text_area :description, class: "tinymce" %></p>
   <p><%= f.label "Початок гри" %><%= f.text_field :starts_at %></p>
   <p><%= f.label "Крайній термін реєстрації" %><%= f.text_field :registration_deadline %></p>
   <br/><p><input id="max_team_checkbox" type="checkbox" onclick=toggle(this) /></p>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151126130007) do
+ActiveRecord::Schema.define(version: 20151127130249) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
@@ -104,9 +104,6 @@ ActiveRecord::Schema.define(version: 20151126130007) do
   create_table "users", force: :cascade do |t|
     t.string   "nickname"
     t.integer  "team_id"
-    t.string   "jabber_id"
-    t.string   "icq_number"
-    t.date     "date_of_birth"
     t.string   "phone_number"
     t.datetime "created_at"
     t.datetime "updated_at"

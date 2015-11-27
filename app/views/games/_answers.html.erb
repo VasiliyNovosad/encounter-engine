@@ -1,0 +1,5 @@
+<% level.questions.each_with_index do |question, index| %>
+  <p>
+    <%= "#{index + 1}. #{question.answers.map{|answer| answer.value}.join('<br/>&nbsp;&nbsp;&nbsp;')}".html_safe %>      
+  </p>
+<% end %>
