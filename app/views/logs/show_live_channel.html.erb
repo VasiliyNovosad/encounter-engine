@@ -7,6 +7,7 @@
       <th>Команда</th>
       <th>Завдання</th>
       <th>Код</th>
+      <th>Гравець</th>
     </tr>
   </thead>
   <tbody>
@@ -25,6 +26,7 @@
         <td><%= log.team %></td>
         <td><%= log.level %></td>
         <td><%= log.answer %></td>
+        <td><%= log.user.nickname %></td>
         </tr>
     <% end %>
   </tbody>

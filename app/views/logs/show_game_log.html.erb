@@ -6,7 +6,7 @@
   <ul>
   <% logs = Log.of_game(level) %>
   <% logs.each do |log| %>
-    <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S") %>&nbsp;<%= log.answer %></li>
+    <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S") %>&nbsp;<%= "#{log.answer} (#{log.user.nickname})" %></li>
   <% end %>
   </ul>
-<%  end %>
+<% end %>

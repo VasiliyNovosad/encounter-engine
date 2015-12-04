@@ -26,7 +26,7 @@
   <p>
     <em>Код:</em>
     <div id="question-<%= @level.questions.first.id %>">
-      <%= @level.correct_answer %>
+      <%= @level.answers.map { |answer| answer.value }.join(' або ') %>
       <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, @level.questions.first) %>
     </div>
   </p>
@@ -36,7 +36,7 @@
   </p>
   <% @level.questions.each do |question| %>
     <div id="question-<%=  question.id %>">
-      <p><%= question.correct_answer %></p>
+      <p><%= question.answers.map { |answer| answer.value }.join(' або ') %></p>
       <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, question) %>
     </div>
   <% end %>

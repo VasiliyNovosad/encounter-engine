@@ -54,7 +54,8 @@ class GamePassingsController < ApplicationController
                 level: @level.name,
                 team: @team.name,
                 time: Time.now,
-                answer: @answer
+                answer: @answer,
+                user: current_user
   end
 
   def show_results

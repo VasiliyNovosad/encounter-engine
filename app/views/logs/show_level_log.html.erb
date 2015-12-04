@@ -3,6 +3,6 @@
 <strong>Вірний код:</strong>&nbsp;<%= @level.questions.first.correct_answer %>
 <ul>
 <% @logs.each do |log| %>
-  <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S") %>&nbsp;<%= log.answer %></li>
+  <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S") %>&nbsp;<%= "#{log.answer} (#{log.user.nickname})" %></li>
 <% end %>
 </ul>

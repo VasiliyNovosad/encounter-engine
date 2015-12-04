@@ -23,7 +23,7 @@ class GamePassing < ActiveRecord::Base
     answer.strip!
 
     if correct_answer?(answer)
-      answered_question = current_level.find_question_by_answer(answer)
+      answered_question = current_level.find_questions_by_answer(answer)
       pass_question!(answered_question)
       pass_level! if all_questions_answered?
       true
@@ -32,8 +32,8 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def pass_question!(question)
-    answered_questions << question
+  def pass_question!(questions)
+    questions.each { |question| answered_questions << question }
     save!
   end
 

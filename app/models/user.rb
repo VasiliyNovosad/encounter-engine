@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   belongs_to :team
 
   has_many :created_games, class_name: 'Game', foreign_key: 'author_id'
+  has_many :logs
 
   before_save { self.email = email.downcase }
 

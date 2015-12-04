@@ -32,9 +32,9 @@ class Level < ActiveRecord::Base
     questions.count > 1
   end
 
-  def find_question_by_answer(answer_value)
+  def find_questions_by_answer(answer_value)
     require 'ee_strings.rb'
-    questions.detect do |question|
+    questions.select do |question|
       question.answers.any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
     end
   end
