@@ -53,6 +53,8 @@ Rails.application.routes.draw do
       resources :hints
       resources :questions do
         resources :answers
+        get 'move_up', on: :member
+        get 'move_down', on: :member
       end
 
       get 'move_up', on: :member

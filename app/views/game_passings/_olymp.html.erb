@@ -1,0 +1,23 @@
+<% @levels = Math.log2(@sectors.count + 1) %>
+<table class="olymp" border="1">
+  <tbody>
+    <% (1..(@sectors.count + 1) / 2).each do |i| %>
+      <tr>
+        <td>
+          <%= @sectors[i-1][:value].html_safe %>
+        </td>
+        
+        <% sum = 2**(@levels - 1) %>
+        
+        <% (1..(@levels - 1)).each do |j| %>
+          <% if (i % 2**j == 1) %>
+            <td rowspan="<%= 2**j %>">
+              <%= @sectors[sum + i / 2**j][:value].html_safe %>
+            </td>
+          <% end %>
+          <% sum += 2**(@levels - j - 1) %>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

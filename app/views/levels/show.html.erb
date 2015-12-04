@@ -36,6 +36,12 @@
   </p>
   <% @level.questions.each do |question| %>
     <div id="question-<%=  question.id %>">
+      <p>
+        <%= question.position %>. <%= link_to question.name, edit_game_level_question_path(question.level.game, question.level, question) %>
+        <%= link_to "↑", move_up_game_level_question_path(question.level.game, question.level, question) unless question.first? %>
+        <%= link_to "↓", move_down_game_level_question_path(question.level.game, question.level, question) unless question.last? %>:
+      </p>
+
       <p><%= question.answers.map { |answer| answer.value }.join(' або ') %></p>
       <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, question) %>
     </div>

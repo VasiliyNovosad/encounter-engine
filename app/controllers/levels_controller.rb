@@ -55,7 +55,7 @@ class LevelsController < ApplicationController
   protected
 
   def level_params
-    params.require(:level).permit(:name, :text, :correct_answer)
+    params.require(:level).permit(:name, :text, :correct_answer, :olymp)
   end
 
   def find_game

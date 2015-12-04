@@ -2,17 +2,14 @@ class Level < ActiveRecord::Base
   belongs_to :game
   acts_as_list scope: :game
 
-  has_many :questions, dependent: :destroy
+  has_many :questions, -> { order(:position) }, dependent: :destroy
   has_many :answers
   has_many :hints, -> { order(:delay) }
 
-  validates_presence_of :name, message: 'Не введено назву завдання'
-
-  validates_presence_of :text, message: 'Не введено текст завдання'
-
-  validates_presence_of :game
-
-  validates_uniqueness_of :name, scope: :game, message: 'Рівень з такою назвою уже є в даній грі'
+  validates :text, presence: { message: 'Не введено текст завдання' }
+  validates :game, presence: true
+  validates :name, presence: { message: 'Не введено назву завдання' }
+  validates :name, uniqueness: { scope: :game, message: 'Рівень з такою назвою уже є в даній грі' }
 
   scope :of_game, ->(game) { where(game_id: game.id) }
 
