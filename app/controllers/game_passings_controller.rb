@@ -116,10 +116,6 @@ class GamePassingsController < ApplicationController
   end
 
   def get_uniq_level_codes
-    unless @game_passing.current_level.multi_question?
-      @entered_all_answers = []
-      @entered_correct_answers = []
-      return
     correct_answers = []
     log_of_level = Log.of_game(@game).of_level(@game_passing.current_level).of_team(current_user.team)
     entered_answers = log_of_level.map(&:answer).uniq
