@@ -1,7 +1,6 @@
 class LevelsController < ApplicationController
   before_action :find_game
   before_action :ensure_author
-  #before_action :ensure_game_was_not_started, except: [:show, :index, :move_up, :move_down]
   before_action :find_level, except: [:new, :index, :create]
 
   def new

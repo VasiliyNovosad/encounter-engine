@@ -1,8 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  include SharedFilters
-
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
   protected
@@ -14,20 +12,24 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_team_member
-    current_user.member_of_any_team?
+    unless current_user.member_of_any_team?
+      redirect_to root_path, alert: 'Ви не авторизовані для відвідування цієї сторінки'
+    end
   end
 
   def ensure_team_captain
-    current_user.captain?
+    unless current_user.captain?
+      redirect_to root_path, alert: 'Ви повинні бути капітаном для виконання цієї дії'
+    end
   end
 
   def ensure_author
     unless user_signed_in? && current_user.author_of?(@game)
-      fail 'Вы должны быть автором игры, чтобы видеть эту страницу'
+      redirect_to root_path, alert: 'Ви повинні бути автором гри, щоб бачити цю сторінку'
     end
   end
 
   def ensure_game_was_not_started
-    @game.started?
+    redirect_to root_path, alert: 'Заборонено редагувати гру після її початку' if @game.started?      
   end
 end
