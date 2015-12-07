@@ -116,7 +116,6 @@ class GamePassingsController < ApplicationController
   end
 
   def get_uniq_level_codes
-    return unless @game_passing.current_level.multi_question?
     correct_answers = []
     log_of_level = Log.of_game(@game).of_level(@game_passing.current_level).of_team(current_user.team)
     entered_answers = log_of_level.map(&:answer).uniq
@@ -130,8 +129,8 @@ class GamePassingsController < ApplicationController
   end
 
   def get_answered_questions
-    return unless @game_passing.current_level.multi_question?
     @sectors = []
+    return unless @game_passing.current_level.multi_question?
     answered_questions = @game_passing.answered_questions
     @game_passing.current_level.questions.each do |question|
       value = @game_passing.current_level.olymp? ? question.name : '-' 
