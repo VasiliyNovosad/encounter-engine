@@ -22,7 +22,9 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_author
-    current_user && current_user.author_of?(@game)
+    unless user_signed_in? && current_user.author_of?(@game)
+      fail 'Вы должны быть автором игры, чтобы видеть эту страницу'
+    end
   end
 
   def ensure_game_was_not_started
