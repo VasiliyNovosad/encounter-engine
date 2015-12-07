@@ -94,6 +94,7 @@ Rails.application.routes.draw do
 
   match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'get'
   match '/teams/edit/captain', to: 'teams#captain', via: 'get'
+  post '/tinymce_assets' => 'tinymce_assets#create'
   # Example resource route with more complex sub-resources:
   #   resources :products do
   #     resources :comments
