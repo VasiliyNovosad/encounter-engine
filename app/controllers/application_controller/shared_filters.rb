@@ -4,7 +4,7 @@ class ApplicationController
     protected
 
     def ensure_authenticated
-      fail 'Нужно залогиниться, чтобы видеть эту страницу' unless signed_in?
+      fail 'Нужно залогиниться, чтобы видеть эту страницу' unless user_signed_in?
     end
 
     def ensure_team_member
@@ -20,7 +20,7 @@ class ApplicationController
     end
 
     def ensure_author
-      unless signed_in? && @current_user.author_of?(@game)
+      unless user_signed_in? && current_user.author_of?(@game)
         fail 'Вы должны быть автором игры, чтобы видеть эту страницу'
       end
     end
