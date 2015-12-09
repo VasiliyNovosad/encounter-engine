@@ -1,17 +1,17 @@
-<%= tinymce %>
+<%= tinymce language: 'uk' %>
 
 <%= form_for @game, url: games_path do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  
-  <p><%= f.label "Назва" %><%= f.text_field :name %></p>
+  <p><%= f.label :name %><%= f.text_field :name %></p>
   <p><%#= f.label "Опис" %><%= f.text_area :description, class: "tinymce" %></p>
-  <p><%= f.label "Початок гри" %><%= f.text_field :starts_at %></p>
-  <p><%= f.label "Кінцевий термін реєстрації" %><%= f.text_field :registration_deadline %></p>
-  <br/><p><input id="max_team_checkbox" type="checkbox" onclick=toggle(this) /></p>
-  <p><label for="max_team_checkbox">Обмежити</label>
-  <p><%= f.label "кількість команд" %><%= f.text_field :max_team_number %></p>
-  <p><%= f.label "Чорновик?" %><%= f.check_box :is_draft %></p>
+  <p><%= f.label :starts_at %><%= f.text_field :starts_at %></p>
+  <p><%= f.label :registration_deadline %><%= f.text_field :registration_deadline %></p>
+  <br/><p><input id="max_team_checkbox" type="checkbox" onclick=toggle(this) />
+  <label for="max_team_checkbox">Обмежити</label></p>
+  <p><%= f.label :max_team_number %><%= f.text_field :max_team_number %></p>
+  <p><%= f.label :is_draft %><%= f.check_box :is_draft %></p>
   <%= f.submit "Створити гру" %>
-<% end =%>
+<% end %>
 
 <br/>
 

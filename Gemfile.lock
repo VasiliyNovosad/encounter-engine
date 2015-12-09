@@ -205,6 +205,8 @@ GEM
     tilt (2.0.1)
     tinymce-rails (4.3.0)
       railties (>= 3.1.1)
+    tinymce-rails-langs (4.20140129)
+      tinymce-rails (~> 4.0)
     turbolinks (2.5.3)
       coffee-rails
     tzinfo (1.2.2)
@@ -245,6 +247,7 @@ DEPENDENCIES
   therubyracer
   tinymce-rails
   tinymce-rails-imageupload!
+  tinymce-rails-langs
   turbolinks
   tzinfo-data
   uglifier

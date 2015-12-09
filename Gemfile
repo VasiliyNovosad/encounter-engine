@@ -46,6 +46,7 @@ gem 'devise'
 gem 'acts_as_list', git: 'git://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
 gem "default_value_for", "~> 3.0.0"
 gem 'tinymce-rails'
+gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'PerfectlyNormal/tinymce-rails-imageupload'
 gem 'paperclip'
 gem 'jquery-ui-rails'

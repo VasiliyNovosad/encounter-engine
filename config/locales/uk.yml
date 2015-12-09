@@ -1,0 +1,97 @@
+uk:
+  activerecord:
+    attributes:
+      user:
+        nickname: "Ім'я"
+        current_password: "Поточний пароль"
+        email: "Email"
+        password: "Пароль"
+        password_confirmation: "Підтвердження пароля"
+        remember_me: "Запам'ятати мене"
+      game:
+        name: "Назва"
+        description: "Опис"
+        starts_at: "Початок гри"
+        registration_deadline: "Кінцевий термін реєстрації"
+        max_team_number: "кількість команд"
+        is_draft: "Чорновик"
+      level:
+        name: "Назва"
+        text: "Текст завдання"
+        olymp: "Олімпійка"
+        correct_answer: "Код"
+      hint:
+        text: "Текст"
+        delay_in_minutes: "Через"
+      answer:
+        value: "Код"
+      question:
+        name: "Назва"
+        correct_answer: "Код"
+      team:
+        name: "Назва"
+      invitation:
+        recepient_nickname: "Гравець"
+      game_passing:
+        answer: "Код"
+    models:
+      user: "Користувач"
+      game: "Гра"
+      level: "Завдання"
+      hint: "Підказка"
+      answer: "Відповідь"
+      question: "Сектор"
+      team: "Команда"
+      invitation: "Запрошення"
+      game_passing: "Сесія гри"
+      game_entry: "Заявка на гру"
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: "має бути прийнятий"
+      blank: "не може бути пустим"
+      confirmation: "не збігається з підтвердженням"
+      empty: "не може бути порожнім"
+      equal_to: "має дорівнювати %{count}"
+      even: "має бути парним"
+      exclusion: "зарезервовано"
+      greater_than: "має бути більше ніж %{count}"
+      greater_than_or_equal_to: "має бути більше ніж або дорівнювати %{count}"
+      inclusion: "не включено до переліку"
+      invalid: "недійсний"
+      less_than: "має бути менше ніж %{count}"
+      less_than_or_equal_to: "має бути менше ніж або дорівнювати %{count}"
+      not_a_number: "не число"
+      not_an_integer: "не є цілим числом"
+      odd: "має бути непарним"
+      record_invalid: "Виникли помилки: %{errors}"
+      taken: "вже зайнятий"
+      too_long:
+        few: "занадто довгий (максимум %{count} знаки)"
+        many: "занадто довгий (максимум %{count} знаків)"
+        one: "занадто довгий (максимум %{count} знак)"
+        other: "занадто довгий (максимум %{count} знаку)"
+      too_short:
+        few: "занадто короткий (мінімум %{count} знаки)"
+        many: "занадто короткий (мінімум %{count} знаків)"
+        one: "занадто короткий (мінімум %{count} знак)"
+        other: "занадто короткий (мінімум %{count} знаку)"
+      wrong_length:
+        few: "неправильна довжина (має бути %{count} знаки)"
+        many: "неправильна довжина (має бути %{count} знаків)"
+        one: "неправильна довжина (має бути %{count} знак)"
+        other: "неправильна довжина (має бути %{count} знаку)"
+    template:
+      body: "Помилки виявлено в таких полях:"
+      header:
+        few: "%{model} не збережено через %{count} помилки"
+        many: "%{model} не збережено через %{count} помилок"
+        one: "%{model} не збережено через %{count} помилку"
+        other: "%{model} не збережено через %{count} помилки"
+  helpers:
+    select:
+      prompt: "Оберіть:"
+    submit:
+      create: "Створити %{model}"
+      submit: "Зберегти %{model}"
+      update: "Змінити %{model}"
