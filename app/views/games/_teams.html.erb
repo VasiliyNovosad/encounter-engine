@@ -3,13 +3,11 @@
     Беруть участь команди (<%= teams.count %>):
   </legend>
 
-  <p>
-    <% teams.each do |team| %>
-      <p>
-        <strong>
-          <%= teams.index(team) + 1 %>. <%= link_to team.name, team_path(team) if user_signed_in?%><%= team.name if !user_signed_in? %>
-        </strong>
-      </p>
-    <% end %>
-  </p>
+  <% teams.each do |team| %>
+    <p>
+      <strong>
+        <%= teams.index(team) + 1 %>. <%= link_to team.name, team_path(team) if user_signed_in? %><%= team.name unless user_signed_in? %>
+      </strong>
+    </p>
+  <% end %>
 </fieldset>

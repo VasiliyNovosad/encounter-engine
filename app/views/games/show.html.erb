@@ -51,7 +51,7 @@
   <% end %>
 </p>
 
-<br />
+<br>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
 
@@ -68,12 +68,12 @@
       <%= link_to "Добавити нове завдання", new_game_level_path(@game) if !@game.started? %>
     </p>
   </fieldset>
-  <br/>
+  <br>
 <% end %>      
 <%= render 'game_entries', game_entries: @game_entries  %>
-<br/>
+<br>
 <%= render 'teams', teams: @teams %>
-<br />
+<br>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
   <p>
@@ -81,7 +81,7 @@
   </p>
 
   <p>
-    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } %> <br />
+    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
   </p>
 
 <% end %>
@@ -105,6 +105,6 @@
 
 <% if @game.is_testing? %>
    <%= link_to "Старт", url_for("/play/#{@game.id}") %>
-   <br />
+   <br>
    <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}") %>
 <% end %>

@@ -5,6 +5,6 @@
   <% Game.finished.each do |game | %>
     Завершено гру <b><%= link_to game.name, game_path(game) %></b> |
       <%= link_to "Переглянути результати", url_for("/game_passings/show_results?game_id=#{game.id}") %>
-    <br/>
+    <br>
   <% end %>
 </fieldset>

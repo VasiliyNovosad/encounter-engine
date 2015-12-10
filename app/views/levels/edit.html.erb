@@ -1,4 +1,4 @@
-<%= tinymce %>
+<%= tinymce language: 'uk' %>
 <h2>
   Завдання "<strong><%= @level.name %></strong>"
 </h2>
@@ -7,7 +7,7 @@
   <em>(гра "<%= link_to @level.game.name, game_path(@level.game) %>")</em>
 </p>
 
-<br />
+<br>
 
 <%= form_for @level, url: game_level_path(@level.game, @level) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  

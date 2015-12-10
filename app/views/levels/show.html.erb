@@ -6,7 +6,7 @@
   <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
 </p>
 
-<br />
+<br>
 
 <p>
   <em>Текст завдання:</em>
@@ -20,7 +20,7 @@
   <%= link_to "Редагувати текст і назву завдання", edit_game_level_path(@game, @level) unless @level.game.started? %>
 </p>
 
-<br />
+<br>
 
 <% unless @level.multi_question? %>
   <p>
@@ -52,7 +52,7 @@
   <%= link_to "Додати ще один код", new_game_level_question_path(@game, @level) %>
 </p>
 
-<br />
+<br>
 
 <fieldset>
   <legend>
@@ -68,13 +68,13 @@
   </p>
 </fieldset>
 
-<br />
+<br>
 
 <p>
-  <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br />
+  <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
 </p>
 
-<br />
+<br>
 
 <p>
   <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>

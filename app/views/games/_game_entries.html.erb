@@ -3,17 +3,15 @@
     Заявки на реєстрацію (<%= game_entries.count %>):
   </legend>
 
-  <p>
 <% game_entries.each do |entry| %>
-<%
-  @team = Team.find(entry.team_id)
-  @game = Game.find(entry.game_id)
-%>
+  <%
+    @team = Team.find(entry.team_id)
+    @game = Game.find(entry.game_id)
+  %>
   <p>
-    <strong><%= game_entries.index(entry) + 1 %>. <%= link_to @team.name, team_path(@team)  if user_signed_in?%> <%= @team.name  if !user_signed_in?%> </strong>
-    <em><%= link_to "(прийняти)", url_for("/game_entries/accept/#{entry.id}") if user_signed_in? and current_user.author_of?(@game) %></em>
-    <em><%= link_to "(відмовити)", url_for("/game_entries/reject/#{entry.id}") if user_signed_in? and current_user.author_of?(@game) %></em>
+    <strong><%= game_entries.index(entry) + 1 %>. <%= link_to @team.name, team_path(@team)  if user_signed_in? %> <%= @team.name  unless user_signed_in? %> </strong>
+    <em><%= link_to "(прийняти)", url_for("/game_entries/accept/#{entry.id}") if user_signed_in? && current_user.author_of?(@game) %></em>
+    <em><%= link_to "(відмовити)", url_for("/game_entries/reject/#{entry.id}") if user_signed_in? && current_user.author_of?(@game) %></em>
   </p>
 <% end %>
-</p>
 </fieldset>

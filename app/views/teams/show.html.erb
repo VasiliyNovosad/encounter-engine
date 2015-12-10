@@ -1,5 +1,5 @@
-Команда <%= @team.name %> <br />
-<br />
+Команда <%= @team.name %> <br>
+<br>
 
 <fieldset>
   <legend>
@@ -12,7 +12,7 @@
     </p>
   <% end %>
 
-  <br />
+  <br>
   <hr class="short-line" />
 
   <p>
@@ -23,14 +23,9 @@
   </p>
 </fieldset>
 
-<br />
-
+<br>
 <%= render 'shared/current_games' if (@team.members.include? current_user) %>
-
-<b />
-
+<br>
 <%= render 'dashboard/coming_games' if (@team.members.include? current_user) %>
-
-<b />
-
+<br>
 <%= render 'dashboard/finished_games' if (@team.members.include? current_user) %>

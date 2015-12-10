@@ -2,7 +2,7 @@
   Редагування підказки до завдання "<%= link_to @level.name, game_level_path(@game, @level) %>" гри "<%= link_to @game.name, game_path(@game) %>"
 </p>
 
-<br />
+<br>
 
 <%= form_for @hint, url: game_level_hint_path(@game, @level, @hint) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  

@@ -6,10 +6,10 @@
   <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
 </p>
 
-<br />
+<br>
 
 <%= form_for @question, url: game_level_question_path(@game, @level, @question) do |f| %>
   <p><%= f.label "Назва" %><%= f.text_field :name %></p>
   <%= f.submit "Змінити" %>
   <em><%= link_to "(відмінити)", game_level_question_path(@game, @level, @question) %></em>
-<% end =%>
+<% end %>

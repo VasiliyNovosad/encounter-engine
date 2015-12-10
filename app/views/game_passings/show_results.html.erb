@@ -35,11 +35,11 @@
   </tbody>
 </table>
 
-<br />
+<br>
 
 <%= link_to "Лог відповідей", url_for("/logs/full/#{@game.id}") %>
 
 <% if @game.is_testing? %>
-  <br/>
+  <br>
   <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}") %>
 <% end %>

@@ -1,6 +1,6 @@
-<%= tinymce %>
-Нове завдання для гри <%= @level.game.name %><br />
-<br />
+<%= tinymce language: 'uk' %>
+Нове завдання для гри <%= @level.game.name %><br>
+<br>
 
 <%= form_for @level, url: game_levels_path(@level.game) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  
@@ -13,4 +13,4 @@
   </p>
   <%= f.submit "Додати завдання" %>
   <em><%= link_to "(відмінити)", game_path(@level.game) %></em>
-<% end =%>
+<% end %>
