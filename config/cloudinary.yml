@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: dbfhy32lc
+  api_key: '989968629821493'
+  api_secret: UelN9AeGbNCIQiGDAdsZ8w3IrF0
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: dbfhy32lc
+  api_key: '989968629821493'
+  api_secret: UelN9AeGbNCIQiGDAdsZ8w3IrF0
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: dbfhy32lc
+  api_key: '989968629821493'
+  api_secret: UelN9AeGbNCIQiGDAdsZ8w3IrF0
+  enhance_image_tag: true
+  static_image_support: false

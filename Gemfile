@@ -28,7 +28,7 @@ gem 'uglifier'
 gem 'coffee-rails'
 gem 'coffee-script-source'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer',  platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -37,18 +37,20 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0',          group: :doc
+gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use ActiveModel has_secure_password
-#gem 'bcrypt-ruby', '3.1.2'
-#gem 'bcrypt'
+# gem 'bcrypt-ruby', '3.1.2'
+# gem 'bcrypt'
 gem 'devise'
 gem 'acts_as_list', git: 'git://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
-gem "default_value_for", "~> 3.0.0"
+gem 'default_value_for', '~> 3.0.0'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'PerfectlyNormal/tinymce-rails-imageupload'
 gem 'paperclip'
+gem 'carrierwave'
+gem 'cloudinary'
 gem 'jquery-ui-rails'
 gem 'rails-jquery-autocomplete'
 source 'https://rails-assets.org' do
