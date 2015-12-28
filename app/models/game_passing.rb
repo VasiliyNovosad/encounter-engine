@@ -21,13 +21,13 @@ class GamePassing < ActiveRecord::Base
     of_team(team).of_game(game).first
   end
 
-  def check_answer!(answer)
+  def check_answer!(answer, level = current_level)
     answer.strip!
 
-    if correct_answer?(answer)
-      answered_question = current_level.find_questions_by_answer(answer)
+    if correct_answer?(answer, level)
+      answered_question = level.find_questions_by_answer(answer)
       pass_question!(answered_question)
-      pass_level! if all_questions_answered?
+      pass_level!(level) if all_questions_answered?
       true
     else
       false
@@ -39,16 +39,16 @@ class GamePassing < ActiveRecord::Base
     save!
   end
 
-  def pass_level!
-    if last_level?
+  def pass_level!(level = current_level)
+    if last_level? && game.type == 'linear' ||
+       game.type == 'panic' && closed_levels.count == game.levels.count
       set_finish_time
     else
       update_current_level_entered_at
     end
-
+    closed_levels << level
     reset_answered_questions
-
-    self.current_level = current_level.next
+    self.current_level = current_level.next unless game.type == 'panic'
     save!
   end
 
@@ -56,16 +56,16 @@ class GamePassing < ActiveRecord::Base
     !!finished_at
   end
 
-  def hints_to_show
-    current_level.hints.select { |hint| hint.ready_to_show?(current_level_entered_at) }
+  def hints_to_show(level = current_level)
+    level.hints.select { |hint| hint.ready_to_show?(current_level_entered_at) }
   end
 
-  def upcoming_hints
-    current_level.hints.select { |hint| !hint.ready_to_show?(current_level_entered_at) }
+  def upcoming_hints(level = current_level)
+    level.hints.select { |hint| !hint.ready_to_show?(current_level_entered_at) }
   end
 
-  def correct_answer?(answer)
-    unanswered_questions.any? { |question| question.matches_any_answer(answer) }
+  def correct_answer?(answer, level = current_level)
+    unanswered_questions(level).any? { |question| question.matches_any_answer(answer) }
   end
 
   def time_at_level
@@ -74,12 +74,12 @@ class GamePassing < ActiveRecord::Base
     '%02d:%02d:%02d' % [hours, minutes, seconds]
   end
 
-  def unanswered_questions
-    current_level.questions - answered_questions
+  def unanswered_questions(level = current_level)
+    level.questions - answered_questions
   end
 
-  def all_questions_answered?
-    (current_level.questions - answered_questions).empty?
+  def all_questions_answered?(level = current_level)
+    (level.questions - answered_questions).empty?
   end
 
   def exit!
@@ -101,8 +101,8 @@ class GamePassing < ActiveRecord::Base
 
   protected
 
-  def last_level?
-    current_level.next.nil?
+  def last_level?(level = current_level)
+    level.next.nil?
   end
 
   def update_current_level_entered_at
