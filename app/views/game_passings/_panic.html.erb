@@ -1,0 +1,34 @@
+<h3>
+  <%= @game.levels.map { |level| level == @level ? "#{level.position}. #{level.name}" : "<a class=\"#{(@game_passing.closed?(level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{@game.id}?level=#{level.position}\">#{level.position}. #{level.name}</a>"}.join(', ').html_safe %>
+</h3>
+
+<fieldset>
+  <legend>
+    <%= @level.name %>
+  </legend>
+
+  <%= form_tag("/play/#{@game.id}", method: "post") do %>
+    <br>
+    Код: <%= text_field_tag(:answer) %> <%= submit_tag " надіслати " %>
+    <%= hidden_field_tag(:level_id, @level.id) %>
+    <hr>
+  <% end %>
+  <br>
+  <%= @level.text.html_safe %>
+</fieldset>
+
+<br>
+
+<%= render 'shared/countdown' %>
+<div id="countdown-example"></div>
+
+<script type="text/javascript">
+  <% unless @game.starts_at.nil? %>
+    var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
+  <% end %>
+
+  $("#countdown-example").countdown(date,{
+    prefix:'До завершення лишилось: '
+  });
+</script>
+

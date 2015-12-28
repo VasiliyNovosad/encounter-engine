@@ -21,7 +21,7 @@ class GamePassing < ActiveRecord::Base
     of_team(team).of_game(game).first
   end
 
-  def check_answer!(answer, level = current_level)
+  def check_answer!(answer, level = self.current_level)
     answer.strip!
 
     if correct_answer?(answer, level)
@@ -40,16 +40,20 @@ class GamePassing < ActiveRecord::Base
   end
 
   def pass_level!(level = current_level)
-    if last_level? && game.type == 'linear' ||
-       game.type == 'panic' && closed_levels.count == game.levels.count
+    if last_level? && game.game_type == 'linear' ||
+       game.game_type == 'panic' && !closed?(level) && closed_levels.count == game.levels.count - 1
       set_finish_time
     else
       update_current_level_entered_at
     end
-    closed_levels << level
+    closed_levels << level.id unless closed? level
     reset_answered_questions
-    self.current_level = current_level.next unless game.type == 'panic'
+    current_level = current_level.next unless game.game_type == 'panic'
     save!
+  end
+
+  def closed?(level)
+    closed_levels.include? level.id
   end
 
   def finished?

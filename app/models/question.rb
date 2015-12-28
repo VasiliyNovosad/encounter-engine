@@ -6,7 +6,7 @@ class Question < ActiveRecord::Base
   validates :name, presence: { message: 'Не введено назву сектора' }
   validates :name, uniqueness: { scope: :level, message: 'Сектор з такою назвою уже є на даному рівні' }
 
-  before_save :set_name
+  before_validation :set_name
 
   def correct_answer=(answer)
     if answers.empty?

@@ -107,7 +107,7 @@ class GamesController < ApplicationController
   protected
 
   def game_params
-    params.require(:game).permit(:name, :description, :starts_at, :registration_deadline, :max_team_number, :is_draft, :is_testing, :author, :test_date)
+    params.require(:game).permit(:name, :description, :game_type, :duration, :starts_at, :registration_deadline, :max_team_number, :is_draft, :is_testing, :author, :test_date)
   end
 
   def find_game

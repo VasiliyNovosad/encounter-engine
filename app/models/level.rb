@@ -3,8 +3,8 @@ class Level < ActiveRecord::Base
   acts_as_list scope: :game
 
   has_many :questions, -> { order(:position) }, dependent: :destroy
-  has_many :answers
-  has_many :hints, -> { order(:delay) }
+  has_many :answers, dependent: :destroy
+  has_many :hints, -> { order(:delay) }, dependent: :destroy
 
   validates :text, presence: { message: 'Не введено текст завдання' }
   validates :game, presence: true

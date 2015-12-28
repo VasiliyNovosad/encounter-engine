@@ -17,6 +17,7 @@ class GamePassingsController < ApplicationController
   before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
+    @level = params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first if @game.game_type == 'panic'
     render layout: 'in_game'
   end
 
@@ -38,25 +39,24 @@ class GamePassingsController < ApplicationController
       render 'show_results'
     else
       @answer = params[:answer].strip
-      @level = Level.find(params[:level_id])
-      save_log if @game_passing.current_level.id || @game.type == 'panic'
+      @level = @game.levels.find(params[:level_id])
+      save_log(@game.game_type == 'panic' ? @level : @game_passing.current_level) if @game_passing.current_level.id || @game.game_type == 'panic'
       @answer_was_correct = @game_passing.check_answer!(@answer, @level)
       if @game_passing.finished?
         render 'show_results'
       else
-        if @game.type == 'linear'
+        if @game.game_type == 'linear'
           get_uniq_level_codes
           get_answered_questions
         end
-        render 'show_current_level', layout: 'in_game'
+        render 'show_current_level',  layout: 'in_game'
       end
     end
   end
 
-  def save_log
-    @level = Level.find(@game_passing.current_level.id)
+  def save_log(level = @game_passing.current_level)
     Log.create! game_id: @game.id,
-                level: @level.name,
+                level: level.name,
                 team: @team.name,
                 time: Time.now,
                 answer: @answer,

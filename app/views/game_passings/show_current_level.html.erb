@@ -8,7 +8,7 @@
 <%= link_to "Оновити", url_for("/play/#{@game.id}") %>
 <br>
 
-<%= render @game.type == 'linear' ? 'linear' : 'panic' %>
+<%= render @game.game_type == 'linear' ? 'linear' : 'panic' %>
 
 <!--
 <% if current_user.captain? %>
