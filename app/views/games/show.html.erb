@@ -33,12 +33,22 @@
 </p>
 
 <p>
-  <em>Опис:</em>
+  <em>Послiдовнiсть проходження:</em> <%= @game.type == 'linear' ? ' Лiнiйна' : ' Панiка' %>
 </p>
 
+<% unless @game.type == 'linear' %>
+  <p>
+    <em>Тривалiсть гри:</em> <%= " #{@game.duration} хвилин" %>
+  </p>
+<% end %>
+
+<p>
+  <em>Опис:</em>
+</p>
 <p>
   <%= @game.description.html_safe %>
 </p>
+
 <p>
   <em>Максимальна кількість команд:</em>
 </p>

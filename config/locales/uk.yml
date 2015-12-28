@@ -15,6 +15,8 @@ uk:
         registration_deadline: "Кінцевий термін реєстрації"
         max_team_number: "кількість команд"
         is_draft: "Чорновик"
+        type: "Послiдовнiсть проходження"
+        duration: "Тривалiсть гри"
       level:
         name: "Назва"
         text: "Текст завдання"
