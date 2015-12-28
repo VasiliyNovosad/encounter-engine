@@ -38,13 +38,16 @@ class GamePassingsController < ApplicationController
       render 'show_results'
     else
       @answer = params[:answer].strip
-      save_log if @game_passing.current_level.id
-      @answer_was_correct = @game_passing.check_answer!(@answer)
+      @level = Level.find(params[:level_id])
+      save_log if @game_passing.current_level.id || @game.type == 'panic'
+      @answer_was_correct = @game_passing.check_answer!(@answer, @level)
       if @game_passing.finished?
         render 'show_results'
       else
-        get_uniq_level_codes
-        get_answered_questions
+        if @game.type == 'linear'
+          get_uniq_level_codes
+          get_answered_questions
+        end
         render 'show_current_level', layout: 'in_game'
       end
     end
@@ -95,19 +98,19 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_game_is_started
-    fail 'Заборонено грати в гру до її початку' unless @game.is_testing? || @game.started?
+    redirect_to game_path(@game), alert: 'Заборонено грати в гру до її початку' unless @game.is_testing? || @game.started?
   end
 
   def ensure_not_author_of_the_game
-    fail 'Заборонено грати власні ігри' unless @game.is_testing? || !@game.created_by?(current_user)
+    redirect_to game_path(@game), alert: 'Заборонено грати власні ігри' unless @game.is_testing? || !@game.created_by?(current_user)
   end
 
   def author_finished_at
-    fail 'Гру завершено автором, і ви не можете її більше грати' if @game.author_finished?
+    redirect_to game_path(@game), alert: 'Гру завершено автором, і ви не можете її більше грати' if @game.author_finished?
   end
 
   def ensure_captain_exited
-    fail 'Команда зійшла з дистанції' if @game_passing.exited?
+    redirect_to game_path(@game), alert: 'Команда зійшла з дистанції' if @game_passing.exited?
   end
 
   def ensure_not_finished
