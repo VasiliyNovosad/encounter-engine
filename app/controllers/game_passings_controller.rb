@@ -39,8 +39,8 @@ class GamePassingsController < ApplicationController
       render 'show_results'
     else
       @answer = params[:answer].strip
-      @level = @game.levels.find(params[:level_id])
-      save_log(@game.game_type == 'panic' ? @level : @game_passing.current_level) if @game_passing.current_level.id || @game.game_type == 'panic'
+      @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
+      save_log(@level) if @game_passing.current_level.id || @game.game_type == 'panic'
       @answer_was_correct = @game_passing.check_answer!(@answer, @level)
       if @game_passing.finished?
         render 'show_results'

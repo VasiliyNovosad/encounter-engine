@@ -198,3 +198,11 @@ textarea {
   margin-left: 120px;
   margin-top: 5px;  
 }
+
+.openedlevel {
+  color: red;
+}
+
+.closedlevel {
+  color: gray;
+}

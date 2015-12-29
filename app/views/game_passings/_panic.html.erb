@@ -11,6 +11,8 @@
     <br>
     Код: <%= text_field_tag(:answer) %> <%= submit_tag " надіслати " %>
     <%= hidden_field_tag(:level_id, @level.id) %>
+    <%= hidden_field_tag(:closed_level, @game_passing.closed?(@level)) %>
+    <%= hidden_field_tag(:closed_levels, @game_passing.closed_levels.count) %>
     <hr>
   <% end %>
   <br>
