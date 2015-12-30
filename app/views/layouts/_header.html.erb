@@ -3,4 +3,4 @@
 <% else %>
   <%= link_to "Головна", root_path, class: "home-link" %>
 <% end %>
-<%= Time.now.strftime("%Y-%m-%d %H:%M")%>
+<%= Time.zone.now.strftime("%Y-%m-%d %H:%M")%>

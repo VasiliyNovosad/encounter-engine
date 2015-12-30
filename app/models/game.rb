@@ -40,7 +40,7 @@ class Game < ActiveRecord::Base
   end
 
   def started?
-    self.starts_at.nil? ? false : Time.now > self.starts_at
+    self.starts_at.nil? ? false : Time.zone.now > self.starts_at
   end
 
   def created_by?(user)
@@ -82,7 +82,7 @@ class Game < ActiveRecord::Base
   end
 
   def finish_game!
-    self.author_finished_at = Time.now
+    self.author_finished_at = Time.zone.now
     self.save!
   end
 
@@ -97,7 +97,7 @@ class Game < ActiveRecord::Base
   protected
 
   def game_starts_in_the_future
-    if self.author_finished_at.nil? && self.starts_at && self.starts_at < Time.now
+    if self.author_finished_at.nil? && self.starts_at && self.starts_at < Time.zone.now
       errors.add(:starts_at, 'Вибрано дату із минулого.')
     end
   end
@@ -112,7 +112,7 @@ class Game < ActiveRecord::Base
 
   def deadline_is_in_future
     if self.author_finished_at.nil? && self.registration_deadline &&
-        self.registration_deadline < Time.now
+        self.registration_deadline < Time.zone.now
       errors.add(:registration_deadline, 'Вказано кінцевий термін реєстрації із минулого')
     end
   end

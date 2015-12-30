@@ -76,7 +76,7 @@ class GamesController < ApplicationController
     game.is_draft = 'f'
     game.is_testing = 't'
     game.test_date = game.starts_at
-    game.starts_at = Time.now + 0.1.second
+    game.starts_at = Time.zone.now + 0.1.second
     game.registration_deadline = nil
     game.save!
     sleep(rand(1))
@@ -89,7 +89,7 @@ class GamesController < ApplicationController
     game.is_draft = 't'
     game.is_testing = 'f'
     game.starts_at = game.test_date
-    game.test_date = Time.now
+    game.test_date = Time.zone.now
     game.save!
 
     game_passing = GamePassing.of_game(game)

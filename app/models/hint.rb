@@ -10,11 +10,11 @@ class Hint < ActiveRecord::Base
   end
 
   def ready_to_show?(current_level_entered_at)
-    seconds_passed = Time.now - current_level_entered_at
+    seconds_passed = Time.zone.now - current_level_entered_at
     seconds_passed >= delay
   end
 
   def available_in(current_level_entered_at)
-    (current_level_entered_at - Time.now).to_i + delay
+    (current_level_entered_at - Time.zone.now).to_i + delay
   end
 end

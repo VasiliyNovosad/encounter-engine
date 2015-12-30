@@ -26,6 +26,6 @@ class Question < ActiveRecord::Base
   end
 
   def set_name
-    self.name ||= "Сектор 1"
+    self.name ||= 'Сектор 1'
   end
 end

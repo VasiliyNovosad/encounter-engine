@@ -58,7 +58,7 @@ class GamePassingsController < ApplicationController
     Log.create! game_id: @game.id,
                 level: level.name,
                 team: @team.name,
-                time: Time.now,
+                time: Time.zone.now,
                 answer: @answer,
                 user: current_user
   end
