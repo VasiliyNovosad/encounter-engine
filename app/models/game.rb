@@ -53,10 +53,19 @@ class Game < ActiveRecord::Base
 
   def place_of(team)
     game_passing = GamePassing.of(team, self)
-    return nil unless game_passing && game_passing.finished?
-
-    count_of_finished_before =
-      GamePassing.of_game(self).finished_before(game_passing.finished_at).count
+    p self.game_type
+    return nil unless game_passing && (game_passing.finished? || self.game_type == 'panic')
+    if self.game_type == 'linear' || game_passing.finished_at
+      count_of_finished_before =
+        GamePassing.of_game(self).finished_before(game_passing.finished_at).count
+      p count_of_finished_before
+    else
+      count_of_finished = GamePassing.finished.count
+      p count_of_finished
+      count_of_finished_before = count_of_finished +
+        GamePassing.of_game(self).select { |game_pass| game_pass.closed_levels.count < game_passing.closed_levels.count || game_pass.closed_levels.count == game_passing.closed_levels.count && game_pass.current_level_entered_at < game_passing.current_level_entered_at }.count
+      p count_of_finished_before
+    end
     count_of_finished_before + 1
   end
 

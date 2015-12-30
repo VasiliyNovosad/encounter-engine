@@ -41,7 +41,9 @@ class GamePassingsController < ApplicationController
   end
 
   def post_answer
-    if @game_passing.finished?
+    if @game_passing.finished? ||
+       @game.game_type == 'panic' &&
+       @game.starts_at + 60 * @game.duration < Time.zone.now
       render 'show_results'
     else
       @answer = params[:answer].strip

@@ -1,39 +1,79 @@
 Вітаємо, ви закінчили гру!
 
-<table id="results">
-  <thead>
-    <tr>
-      <th>Місце</th>
-      <th>Команда</th>
-      <th>Час фінішу</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% game_passings = GamePassing.of_game(@game) %>
-    <% game_passings.finished.each do |game_passing| %>
+<% if @game.game_type == 'linear' %> 
+  <table id="results">
+    <thead>
       <tr>
-        <td><%= @game.place_of(game_passing.team) %></td>
-        <td><%= game_passing.team.name %></td>
-        <td>
-          <% if game_passing.exited? %>
-            <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
-          <% else %>
-            <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
-          <% end %>
-        </td>
+        <th>Місце</th>
+        <th>Команда</th>
+        <th>Час фінішу</th>
       </tr>
-    <% end %>
-    <% (game_passings.ended_by_author - game_passings.finished).each do |game_passing| %>
+    </thead>
+    <tbody>
+      <% game_passings = GamePassing.of_game(@game) %>
+      <% game_passings.finished.each do |game_passing| %>
         <tr>
-          <td>#</td>
+          <td><%= @game.place_of(game_passing.team) %></td>
           <td><%= game_passing.team.name %></td>
           <td>
-            Не фінішували
+            <% if game_passing.exited? %>
+              <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
+            <% else %>
+              <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
+            <% end %>
           </td>
         </tr>
       <% end %>
-  </tbody>
-</table>
+      <% (game_passings.ended_by_author - game_passings.finished).each do |game_passing| %>
+          <tr>
+            <td>#</td>
+            <td><%= game_passing.team.name %></td>
+            <td>
+              Не фінішували
+            </td>
+          </tr>
+        <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <table id="results">
+    <thead>
+      <tr>
+        <th>Місце</th>
+        <th>Команда</th>
+        <th>Час фінішу</th>
+        <th>Пройдено рівнів</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% game_passings = GamePassing.of_game(@game) %>
+      <% game_passings.finished.each do |game_passing| %>
+        <tr>
+          <td><%= @game.place_of(game_passing.team) %></td>
+          <td><%= game_passing.team.name %></td>
+          <td>
+            <% if game_passing.exited? %>
+              <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
+            <% else %>
+              <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
+            <% end %>
+          </td>
+          <td><%= game_passing.closed_levels.count %></td>
+        </tr>
+      <% end %>
+      <% (game_passings - game_passings.finished).sort { |a, b| (a..closed_levels.count <=> b.closed_levels.count).nonzero? || (a.current_level_entered_at <=> b.current_level_entered_at) }.each do |game_passing| %>
+          <tr>
+            <td><%= @game.place_of(game_passing.team) %></td>
+            <td><%= game_passing.team.name %></td>
+            <td>
+              <%= game_passing.current_level_entered_at.strftime('%H:%M:%S') %> <%= game_passing.current_level_entered_at.strftime('(%d.%m)') if game_passing.current_level_entered_at.day != @game.starts_at.day %>
+            </td>
+            <td><%= game_passing.closed_levels.count %></td>
+          </tr>
+        <% end %>
+    </tbody>
+  </table>
+<% end %>
 
 <br>
 
