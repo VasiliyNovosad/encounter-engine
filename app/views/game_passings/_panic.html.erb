@@ -1,3 +1,7 @@
+<%= link_to "Оновити", url_for("/play/#{@game.id}?level=#{@level.position}") %>
+<br>
+<br>
+
 <h3>
   <%= @game.levels.map { |level| level == @level ? "#{level.position}. #{level.name}" : "<a class=\"#{(@game_passing.closed?(level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{@game.id}?level=#{level.position}\">#{level.position}. #{level.name}</a>"}.join(', ').html_safe %>
 </h3>

@@ -5,9 +5,6 @@
 </h2>
 <br>
 
-<%= link_to "Оновити", url_for("/play/#{@game.id}") %>
-<br>
-
 <%= render @game.game_type == 'linear' ? 'linear' : 'panic' %>
 
 <!--
