@@ -35,11 +35,11 @@
     <hr>
     <hr>
   </div>
-    
+
+  <%= @game_passing.current_level.text.html_safe %>
 
   <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
  
-  <%= @game_passing.current_level.text.html_safe %>
 </fieldset>
 
 <br>

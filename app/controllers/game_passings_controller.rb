@@ -13,11 +13,13 @@ class GamePassingsController < ApplicationController
   before_action :ensure_team_member, except: [:index, :show_results]
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :ensure_author, only: [:index]
-  before_action :get_uniq_level_codes, only: [:show_current_level]
-  before_action :get_answered_questions, only: [:show_current_level]
+  #before_action :get_uniq_level_codes, only: [:show_current_level]
+  #before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
     @level = params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first if @game.game_type == 'panic'
+    get_uniq_level_codes(@level)
+    get_answered_questions(@level) unless @game.game_type == 'panic'
     render layout: 'in_game'
   end
 
@@ -45,11 +47,9 @@ class GamePassingsController < ApplicationController
       if @game_passing.finished?
         render 'show_results'
       else
-        if @game.game_type == 'linear'
-          get_uniq_level_codes
-          get_answered_questions
-        end
-        render 'show_current_level',  layout: 'in_game'
+        get_uniq_level_codes(@level)
+        get_answered_questions(@level) unless @game.game_type == 'panic'
+        render 'show_current_level', layout: 'in_game'
       end
     end
   end
@@ -118,12 +118,12 @@ class GamePassingsController < ApplicationController
     ensure_captain_exited
   end
 
-  def get_uniq_level_codes
+  def get_uniq_level_codes(level)
     correct_answers = []
-    log_of_level = Log.of_game(@game).of_level(@game_passing.current_level).of_team(current_user.team)
+    log_of_level = Log.of_game(@game).of_level(level).of_team(current_user.team)
     entered_answers = log_of_level.map(&:answer).uniq
     @entered_all_answers = entered_answers
-    @game_passing.current_level.questions.each do |question|
+    level.questions.each do |question|
       question.answers.each do |answer|
         correct_answers << answer.value
       end
@@ -131,13 +131,13 @@ class GamePassingsController < ApplicationController
     @entered_correct_answers = entered_answers & correct_answers
   end
 
-  def get_answered_questions
+  def get_answered_questions(level)
     @sectors = []
-    return unless @game_passing.current_level.multi_question?
+    return unless level.multi_question?
     answered_questions = @game_passing.answered_questions
     @game_passing.current_level.questions.each do |question|
-      value = @game_passing.current_level.olymp? ? question.name : '-' 
-      @sectors << { position: question.position, 
+      value = level.olymp? ? question.name : '-'
+      @sectors << { position: question.position,
                     name: question.name,
                     value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.correct_answer}</font></b>" : value }
     end
