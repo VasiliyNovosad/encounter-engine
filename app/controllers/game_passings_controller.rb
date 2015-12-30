@@ -17,7 +17,11 @@ class GamePassingsController < ApplicationController
   #before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
-    @level = params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first if @game.game_type == 'panic'
+    @level = if @game.game_type == 'panic'
+             params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
+            else
+              @game_passing.current_level
+            end
     get_uniq_level_codes(@level)
     get_answered_questions(@level) unless @game.game_type == 'panic'
     render layout: 'in_game'
