@@ -89,11 +89,7 @@
   <p>
     <%= link_to "Редагувати дану гру", edit_game_path(@game) if !@game.started? %>
   </p>
-
-  <p>
-    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
-  </p>
-
+  <br>
 <% end %>
 
 <%= render 'shared/countdown' %>
@@ -117,4 +113,14 @@
    <%= link_to "Старт", url_for("/play/#{@game.id}") %>
    <br>
    <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}") %>
+<% end %>
+
+<% if user_signed_in? && current_user.author_of?(@game) %>
+  <br>
+  <br>
+  <br>
+  <br>
+  <p>
+    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } %>
+  </p>
 <% end %>

@@ -1,5 +1,5 @@
 <h2>
-  Завдання "<strong><%= @level.name %></strong>"
+  Завдання "<strong><%= link_to @level.name, game_level_path(@game, @level) %></strong>"
 </h2>
 
 <p>
