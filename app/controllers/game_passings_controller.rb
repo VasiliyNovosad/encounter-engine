@@ -65,7 +65,7 @@ class GamePassingsController < ApplicationController
                 level: level.name,
                 team: @team.name,
                 time: Time.zone.now,
-                answer: @answer,
+                answer: @answer ? @answer : 'timeout',
                 user: current_user
   end
 
@@ -76,6 +76,20 @@ class GamePassingsController < ApplicationController
   def exit_game
     @game_passing.exit!
     render 'show_results'
+  end
+
+  def autocomplete_level
+    if @game_passing.finished?
+      render 'show_results'
+    else
+      @game_passing.autocomplete_level!(@game_passing.current_level)
+      save_log(@game_passing.current_level)
+      if @game_passing.finished?
+        render 'show_results'
+      else
+        render 'show_current_level', layout: 'in_game'
+      end
+    end
   end
 
   protected
