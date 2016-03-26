@@ -75,7 +75,7 @@
     </p>
 
     <p>
-      <%= link_to "Добавити нове завдання", new_game_level_path(@game) if !@game.started? %>
+      <%= link_to "Додати нове завдання", new_game_level_path(@game) %>
     </p>
   </fieldset>
   <br>
@@ -87,7 +87,7 @@
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
   <p>
-    <%= link_to "Редагувати дану гру", edit_game_path(@game) if !@game.started? %>
+    <%= link_to "Редагувати дану гру", edit_game_path(@game) %>
   </p>
   <br>
 <% end %>

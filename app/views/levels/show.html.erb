@@ -17,7 +17,7 @@
 </p>
 
 <p>
-  <%= link_to "Редагувати текст і назву завдання", edit_game_level_path(@game, @level) unless @level.game.started? %>
+  <%= link_to "Редагувати текст і назву завдання", edit_game_level_path(@game, @level) %>
 </p>
 
 <br>
@@ -69,13 +69,15 @@
 </fieldset>
 
 <br>
-
+<p>
+  <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>
+</p>
+<br>
+<br>
+<br>
+<br>
+<br>
 <p>
   <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
 </p>
 
-<br>
-
-<p>
-  <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>
-</p>

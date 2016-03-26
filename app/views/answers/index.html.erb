@@ -22,7 +22,7 @@
 
 <%= form_for @answer, url: game_level_question_answers_path(@game, @level, @question) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  
-  <p><%= f.label "Ще один варіант кода" %><%= f.text_field :value %></p>
-  <%= f.submit "Додати варіант кода" %>
+  <p><%= f.label "Ще один варіант коду" %><%= f.text_field :value %></p>
+  <%= f.submit "Додати варіант коду" %>
   <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
 <% end =%>
