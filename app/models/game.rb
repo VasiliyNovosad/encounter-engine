@@ -21,7 +21,7 @@ class Game < ActiveRecord::Base
 
   validates_presence_of :author
 
-  validate :game_starts_in_the_future
+  #validate :game_starts_in_the_future
   validate :valid_max_num
 
   validate :deadline_is_in_future
