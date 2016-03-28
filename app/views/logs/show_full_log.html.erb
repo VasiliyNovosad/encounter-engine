@@ -4,7 +4,7 @@
   <tbody>
     <% @levels.each do |level| %>
       <tr align="center">
-        <td colspan="0">
+        <td colspan="#{@teams.count}">
           <h2><%= level.name %></h2>
           <% if level.questions.count == 1 %>
             <strong>Вірний код:</strong><%= level.questions.first.correct_answer %>
