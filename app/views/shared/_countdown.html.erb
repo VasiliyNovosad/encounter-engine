@@ -69,7 +69,7 @@
       seconds = end.getSeconds()  - begin.getSeconds(),
       minutes = end.getMinutes()  - begin.getMinutes(),
       hours   = end.getHours()  - begin.getHours(),
-      date = new Date();
+      date = <% Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time %>;
       if (seconds < 0) {
         seconds += 60;
         minutes--;
