@@ -101,7 +101,7 @@
     };
     var elem = $(this);
     var timeUpdate = function () {
-      var s = timeDifference(new Date(<%= Time.zone.now.strftime("%Y,%m,%d,%H,%M,%S") %>), date);
+      var s = timeDifference(new Date, date);
       if (s.length) {
         elem.html(countdown_settings.prefix + s);
       } else {
