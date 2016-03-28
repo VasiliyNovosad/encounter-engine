@@ -1,4 +1,5 @@
-<% @sectors.each do |sector| %>
-	<p><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></p>
-	<br>
-<% end %>
+<ul>
+  <% @sectors.each do |sector| %>
+      <li><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></li>
+  <% end %>
+</ul>
