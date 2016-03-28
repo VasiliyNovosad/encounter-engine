@@ -6,7 +6,7 @@
           <em>Через</em> <strong><%= link_to hint.delay_in_minutes, edit_game_level_hint_path(hint.level.game, hint.level, hint) %></strong> <em>хвилин:</em>
           <em>
             <%= link_to "(редагувати)", edit_game_level_hint_path(hint.level.game, hint.level, hint) %>
-            <%= link_to "(видалити)", game_level_hint_path(hint.level.game, hint.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' }
+            <%= link_to "(видалити)", game_level_hint_path(hint.level.game, hint.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
           </em>
         </p>
         <p>
