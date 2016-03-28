@@ -69,7 +69,7 @@
       seconds = end.getSeconds()  - begin.getSeconds(),
       minutes = end.getMinutes()  - begin.getMinutes(),
       hours   = end.getHours()  - begin.getHours(),
-      date = new Date(<%= Time.zone.now.strftime("%Y,%m-1,%d,%H,%M,%S") %>);
+      date = new Date(<%= Time.zone.now.strftime("%Y,%m,%d,%H,%M,%S") %>);
       if (seconds < 0) {
         seconds += 60;
         minutes--;
@@ -101,7 +101,7 @@
     };
     var elem = $(this);
     var timeUpdate = function () {
-      var s = timeDifference(new Date(<%= Time.zone.now.strftime("%Y,%m-1,%d,%H,%M,%S") %>), date);
+      var s = timeDifference(new Date(<%= Time.zone.now.strftime("%Y,%m,%d,%H,%M,%S") %>), date);
       if (s.length) {
         elem.html(countdown_settings.prefix + s);
       } else {
