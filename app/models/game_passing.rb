@@ -73,7 +73,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def time_at_level
-    difference = Time.zone.now - current_level_entered_at
+    difference = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_datetime - current_level_entered_at
     hours, minutes, seconds = seconds_fraction_to_time(difference)
     '%02d:%02d:%02d' % [hours, minutes, seconds]
   end
@@ -87,7 +87,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def exit!
-    self.finished_at = Time.zone.now
+    self.finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_datetime
     self.status = 'exited'
     self.save!
   end
@@ -110,11 +110,11 @@ class GamePassing < ActiveRecord::Base
   end
 
   def update_current_level_entered_at
-    self.current_level_entered_at = Time.zone.now
+    self.current_level_entered_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_datetime
   end
 
   def set_finish_time
-    self.finished_at = Time.zone.now
+    self.finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_datetime
   end
 
   def reset_answered_questions
