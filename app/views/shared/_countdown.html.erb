@@ -57,7 +57,7 @@
       }
     };
     countdown_settings = jQuery.extend(countdown_settings, settings);
-    var time_dif = (new Date()) - (new Date(<%= Time.zone.now.strftime('%Y,%m,%d,%H,%M,%S') %>));
+    var time_dif = (new Date()) - (new Date(<%= Time.zone.now.strftime('%Y,%m,%d,%H,%M,%S') %>)) / 1000;
 
     var timeDifference = function(begin, end) {
       if (end < begin) {
@@ -102,7 +102,7 @@
     };
     var elem = $(this);
     var timeUpdate = function () {
-      var s = timeDifference(new Date, date + time_dif);
+      var s = timeDifference(new Date, date.setSeconds(date.getSeconds() + time_dif););
       if (s.length) {
         elem.html(countdown_settings.prefix + s);
       } else {
