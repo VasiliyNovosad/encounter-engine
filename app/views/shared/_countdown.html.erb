@@ -57,7 +57,7 @@
       }
     };
     countdown_settings = jQuery.extend(countdown_settings, settings);
-    var time_dif = (new Date()) - (new Date(<%= Time.zone.now.strftime('%Y,%m,%d,%H,%M,%S') %>)) / 1000;
+    var time_dif = ((new Date()) - (new Date(<%= Time.zone.now.strftime('%Y,%m,%d,%H,%M,%S') %>))) / 1000;
 
     var timeDifference = function(begin, end) {
       if (end < begin) {
