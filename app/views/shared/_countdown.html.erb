@@ -102,7 +102,7 @@
     };
     var elem = $(this);
     var timeUpdate = function () {
-      var s = timeDifference(new Date, date.setSeconds(date.getSeconds() + time_dif););
+      var s = timeDifference(new Date, date.setSeconds(date.getSeconds() + time_dif));
       if (s.length) {
         elem.html(countdown_settings.prefix + s);
       } else {
