@@ -60,7 +60,7 @@
 
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
-    var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m,%d,%H,%M,%S") %>);
+    var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
   <% end %>
 
   $("#countdown-example").countdown(date,{
