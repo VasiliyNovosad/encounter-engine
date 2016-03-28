@@ -43,7 +43,7 @@ class GamePassingsController < ApplicationController
   def post_answer
     if @game_passing.finished? ||
        @game.game_type == 'panic' &&
-       @game.starts_at + 60 * @game.duration < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_datetime
+       @game.starts_at + 60 * @game.duration < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
       render 'show_results'
     else
       @answer = params[:answer].strip
@@ -64,7 +64,7 @@ class GamePassingsController < ApplicationController
     Log.create! game_id: @game.id,
                 level: level.name,
                 team: @team.name,
-                time: Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_datetime,
+                time: Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time,
                 answer: @answer,
                 user: current_user
   end
