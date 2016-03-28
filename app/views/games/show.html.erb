@@ -98,8 +98,6 @@
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
     var date = new Date(<%= (@game.starts_at + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
-    var time_dif = ((new Date()) - (new Date(<%= Time.zone.now.strftime('%Y,%m,%d,%H,%M,%S') %>))) / 1000;
-    date.setSeconds(date.getSeconds() + time_dif)
   <% end %>
 
   $("#countdown-example").countdown(date,{
