@@ -2,7 +2,7 @@ class Invitation < ActiveRecord::Base
   belongs_to :to_team, class_name: 'Team'
   belongs_to :for_user, class_name: 'User'
 
-  scope :for, ->(user) { where(for_user_id: user.id).where('to_team is not null') }
+  scope :for, ->(user) { where(for_user_id: user.id) }
 
   attr_accessor :recepient_nickname
 
