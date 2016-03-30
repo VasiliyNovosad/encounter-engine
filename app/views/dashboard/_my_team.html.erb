@@ -5,10 +5,12 @@
 
   <% unless current_user.captain? %>
     <% @invitations.each do |invitation| %>
-        <p>Вас запрошено в команду <%= invitation.to_team.name %>
-          <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id) %></em>
-          <em><%= link_to "(відмовитись)", reject_invitation_path(invitation.id) %></em>
-        </p>
+        <% if invitation.to_team %>
+          <p>Вас запрошено в команду <%= invitation.to_team.name %>
+            <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id) %></em>
+            <em><%= link_to "(відмовитись)", reject_invitation_path(invitation.id) %></em>
+          </p>
+        <% end %>
     <% end %>
   <% end %>
 
