@@ -20,7 +20,7 @@
         <% @teams.each do |team| %>
         <td>
           <%= team.name %>
-          <% team_logs = Log.of_team(team).of_level(level) %>
+          <% team_logs = Log.of_team(team).of_level(level).sort(:time) %>
           <ul>
           <% team_logs.each do |team_log| %>
             <li><%= team_log.time.strftime("%Y-%m-%d %H:%M:%S") %>&nbsp;<%= "#{team_log.answer} (#{team_log.user.nickname})" %></li>
