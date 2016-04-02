@@ -11,7 +11,7 @@ class Level < ActiveRecord::Base
   validates :name, presence: { message: 'Не введено назву завдання' }
   validates :name, uniqueness: { scope: :game, message: 'Рівень з такою назвою уже є в даній грі' }
 
-  scope :of_game, ->(game) { where(game_id: game.id) }
+  scope :of_game, ->(game) { where(game_id: game.id).order(:position) }
 
   def next
     lower_item
