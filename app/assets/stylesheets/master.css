@@ -206,3 +206,7 @@ textarea {
 .closedlevel {
   color: gray;
 }
+
+#results {
+    border: solid;
+}
