@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   match '/logs/level/:game_id/:team_id', to: 'logs#show_level_log', via: 'get'
   match '/logs/game/:game_id/:team_id', to: 'logs#show_game_log', via: 'get'
   match '/logs/full/:game_id', to: 'logs#show_full_log', via: 'get'
+  match '/logs/short/:game_id', to: 'logs#show_short_log', via: 'get'
 
   match '/game_entries/new/:game_id/:team_id',  to: 'game_entries#new', via: 'get'
   match '/signup',  to: 'users#new',            via: 'get'
