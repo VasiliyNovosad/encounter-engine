@@ -39,17 +39,13 @@
         <%
         if @team && @game
           @game_entry = GameEntry.of(@team,@game)
-          if @game_entry
-            if @game_entry.status == "accepted"
-            %>
-              var game_id = <%= @game.id %>
-              return window.location = "/play/"+game_id+"/";
-            <%
-            else
-            %> document.write("<h1>You are not registered</h1>"); <%
-            end
+          if @game_entry && @game_entry.status == "accepted"
+          %>
+            var game_id = <%= @game.id %>
+            return window.location = "/play/"+game_id+"/";
+          <%
           else
-          %> document.write("<h1>You are not registered</h1>"); <%
+          %> document.write("<h1>Ви не зареєстровані на гру</h1>"); <%
           end
         end
         %>
