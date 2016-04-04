@@ -1,4 +1,4 @@
-Вітаємо, ви закінчили гру!
+Гра "<%= link_to @game.name, game_path(@game) %>"
 
 <% if @game.game_type == 'linear' %> 
   <table id="results" border="1">
