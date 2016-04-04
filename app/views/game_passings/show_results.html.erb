@@ -17,7 +17,7 @@
         <tr>
           <td><%= @game.place_of(game_passing.team) %></td>
           <td><%= game_passing.team.name %></td>
-          <td><%= @game.starts_at.strftime('%H:%M:%S') %></td>
+          <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
           <td>
             <% if game_passing.exited? %>
               <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
@@ -32,7 +32,7 @@
           <tr>
             <td>#</td>
             <td><%= game_passing.team.name %></td>
-            <td><%= @game.starts_at.strftime('%H:%M:%S') %></td>
+            <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
             <td>
               Не фінішували
             </td>
