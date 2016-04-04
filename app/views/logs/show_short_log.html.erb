@@ -14,7 +14,7 @@
               <%= team.name %>
               <% team_logs = Log.of_team(team).of_level(level) %>
               <ul>
-                <% team_log = team_logs.last %>
+                <% team_log = team_logs.count > 0 ? team_logs.last : nil %>
                 <li><%= team_log.time.strftime("%Y-%m-%d %H:%M:%S") if team_log %>&nbsp;<%= "(#{team_log.user.nickname})" if team_log %></li>
               </ul>
             </td>
