@@ -25,7 +25,7 @@
               <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
             <% end %>
           </td>
-          <td>game_passing.finished_at - @game.starts_at </td>
+          <td><%= Time.at(game_passing.finished_at - @game.starts_at).utc.strftime("%H:%M:%S") %> </td>
         </tr>
       <% end %>
       <% (game_passings.ended_by_author - game_passings.finished).each do |game_passing| %>
