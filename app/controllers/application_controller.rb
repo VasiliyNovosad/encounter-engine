@@ -12,13 +12,13 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_team_member
-    unless current_user.member_of_any_team?
+    unless  user_signed_in? && current_user.member_of_any_team?
       redirect_to root_path, alert: 'Ви не авторизовані для відвідування цієї сторінки'
     end
   end
 
   def ensure_team_captain
-    unless current_user.captain?
+    unless  user_signed_in? && current_user.captain?
       redirect_to root_path, alert: 'Ви повинні бути капітаном для виконання цієї дії'
     end
   end
