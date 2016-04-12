@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :find_game
   before_action :ensure_author
   before_action :find_level
-  before_action :find_question, only: [:edit, :update, :move_up, :move_down]
+  before_action :find_question, only: [:edit, :update, :move_up, :move_down, :destroy]
 
   def new
     @question = Question.new
@@ -47,6 +47,12 @@ class QuestionsController < ApplicationController
 
   def move_down
     @question.move_lower
+    redirect_to game_level_path(@level.game, @level)
+  end
+
+  def destroy
+    @question.answers.each { |answer| answer.destroy }
+    @question.destroy
     redirect_to game_level_path(@level.game, @level)
   end
 
