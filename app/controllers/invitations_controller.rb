@@ -28,7 +28,7 @@ class InvitationsController < ApplicationController
   def accept
     add_user_to_team_members
     @invitation.delete
-    reject_rest_of_invitations
+    # reject_rest_of_invitations
     redirect_to dashboard_path
     InvitationsMailer.invitation_accept(@invitation).deliver
   end
