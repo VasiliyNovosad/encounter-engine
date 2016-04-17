@@ -17,6 +17,7 @@ class GamePassingsController < ApplicationController
   #before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
+    render 'show_results' unless @game_passing.finished_at.nil?
     @level = if @game.game_type == 'panic'
              params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
             else
