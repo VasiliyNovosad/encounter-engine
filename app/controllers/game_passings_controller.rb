@@ -17,14 +17,18 @@ class GamePassingsController < ApplicationController
   #before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
-    @level = if @game.game_type == 'panic'
-             params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
-            else
-              @game_passing.current_level
-            end
-    get_uniq_level_codes(@level)
-    get_answered_questions(@level) unless @game.game_type == 'panic'
-    render layout: 'in_game'
+    if @game_passing.finished_at.nil?
+      @level = if @game.game_type == 'panic'
+               params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
+              else
+                @game_passing.current_level
+              end
+      get_uniq_level_codes(@level)
+      get_answered_questions(@level) unless @game.game_type == 'panic'
+      render layout: 'in_game'
+    else
+      render 'show_results'
+    end
   end
 
   def index
@@ -80,14 +84,14 @@ class GamePassingsController < ApplicationController
 
   def autocomplete_level
     if @game_passing.finished?
-      render 'show_results'
+      render json: { result: true }.to_json
     else
       @game_passing.autocomplete_level!(@game_passing.current_level)
       save_log(@game_passing.current_level)
       if @game_passing.finished?
-        render 'show_results'
+        render json: { result: true }.to_json
       else
-        render 'show_current_level', layout: 'in_game'
+        render json: { result: true }.to_json
       end
     end
   end

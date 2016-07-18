@@ -73,7 +73,7 @@ Rails.application.routes.draw do
   match '/play/:game_id/tip',  to: 'game_passings#get_current_level_tip', via: 'get'
   match '/play/:game_id',  to: 'game_passings#show_current_level', via: 'get'
   match '/play/:game_id',  to: 'game_passings#post_answer', via: 'post'
-  match '/play/:game_id/autocomplete_level',  to: 'game_passings#autocomplete_level', via: 'post'
+  match '/play/:game_id/autocomplete_level',  to: 'game_passings#autocomplete_level', via: 'get'
 
   match '/stats/:action/:game_id', to: 'game_passings#index', via: 'get'
   match '/logs/livechannel/:game_id', to: 'logs#show_live_channel', via: 'get'

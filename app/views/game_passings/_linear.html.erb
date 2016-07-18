@@ -82,7 +82,7 @@
   
   <script>
     LevelCompleter.setup({
-      initialCountdownValue: <%= @game_passing.current_level_entered_at - Time.zone.now.to_i + @game_passing.current_level.complete_later %>
+      initialCountdownValue: <%= (@game_passing.current_level_entered_at - Time.zone.now).to_i + @game_passing.current_level.complete_later %>
       ,gameId: <%= @game_passing.game_id %>
     })
   </script>

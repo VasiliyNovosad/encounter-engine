@@ -1,31 +1,25 @@
 var LevelCompleter = function() {
-    var
-    countdownValue = 0
-    ,gameId = 0
-    ,intervalId = null;
+    var countdownValue = 0 ,gameId = 0, intervalId = null;
 
-    var
-    $countdownContainer
-    ,$countdownTimerText;
+    var $countdownContainer, $countdownTimerText;
 
-    var
-    start = function(initialCountdownValue) {
+    var start = function(initialCountdownValue) {
         countdownValue = initialCountdownValue;
 
         updateCountdown();
         intervalId = setInterval(updateCountdown, 1000);
 
         setTimeout(stop, countdownValue * 1000 + 1000);
-    }
+    };
 
-    ,stop = function() {
+    var stop = function() {
         clearInterval(intervalId);
         countdownValue = 0;
 
         autocompleteLevel();
-    }
+    };
 
-    ,updateCountdown = function() {
+    var updateCountdown = function() {
         var minutes = countdownValue / 60
         ,seconds = 0;
 
@@ -38,20 +32,20 @@ var LevelCompleter = function() {
 
         $countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
         countdownValue--;
-    }
+    };
 
-    ,showCountdownContainer = function() {
+    var showCountdownContainer = function() {
         $countdownContainer.show();
-    }
+    };
 
-    ,autocompleteLevel = function() {
+    var autocompleteLevel = function() {
         $.ajax({
-            url: '/play/' + gameId + '/autocomplete_level', method: 'POST',
-            success: function(data) {
-                return true
+            url: '/play/' + gameId + '/autocomplete_level', method: 'GET',
+            success: function() {
+                window.location.reload();
             }
         });
-    }
+    };
 
     return {
         setup: function(config) {
