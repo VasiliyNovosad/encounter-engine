@@ -34,10 +34,6 @@ var LevelCompleter = function() {
         countdownValue--;
     };
 
-    var showCountdownContainer = function() {
-        $countdownContainer.show();
-    };
-
     var autocompleteLevel = function() {
         $.ajax({
             url: '/play/' + gameId + '/autocomplete_level?level=' + levelId, method: 'GET',
