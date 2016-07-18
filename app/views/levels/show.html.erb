@@ -26,7 +26,7 @@
   <p>
     <em>Код:</em>
     <div id="question-<%= @level.questions.first.id %>">
-      <%= @level.answers.map { |answer| answer.value }.join(' або ') %>
+      <%= @level.questions.first.answers.map { |answer| answer.value }.join(' або ') %>
       <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, @level.questions.first) %>
     </div>
   </p>
@@ -44,6 +44,7 @@
 
       <p><%= question.answers.map { |answer| answer.value }.join(' або ') %></p>
       <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, question) %>
+      <%= link_to "(видалити)", game_level_question_path(@game, @level, question), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
     </div>
   <% end %>
 <% end %>

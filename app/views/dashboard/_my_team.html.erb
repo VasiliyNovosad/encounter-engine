@@ -2,7 +2,18 @@
   <legend>
     Моя команда
   </legend>
-  
+
+  <% unless current_user.captain? %>
+    <% @invitations.each do |invitation| %>
+        <% if invitation.to_team %>
+          <p>Вас запрошено в команду <%= invitation.to_team.name %>
+            <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id) %></em>
+            <em><%= link_to "(відмовитись)", reject_invitation_path(invitation.id) %></em>
+          </p>
+        <% end %>
+    <% end %>
+  <% end %>
+
   <% unless current_user.member_of_any_team? %>
 
     <p>
@@ -14,13 +25,6 @@
     </p>
     
     <br>
-
-    <% @invitations.each do |invitation| %>
-      <p>Вас запрошено в команду <%= invitation.to_team.name %>
-        <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id) %></em>
-        <em><%= link_to "(відмовитись)", reject_invitation_path(invitation.id) %></em>
-      </p>
-    <% end %>
 
   <% else %>
 

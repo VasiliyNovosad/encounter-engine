@@ -16,7 +16,7 @@ class Invitation < ActiveRecord::Base
                           scope: [:to_team_id],
                           message: 'Запрошення даному користувачу уже відправлено і він ще не відповів'
 
-  validate :recepient_is_not_member_of_any_team
+  #validate :recepient_is_not_member_of_any_team
 
   before_validation :find_user
 

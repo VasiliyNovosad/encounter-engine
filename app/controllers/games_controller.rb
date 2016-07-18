@@ -7,6 +7,7 @@ class GamesController < ApplicationController
   before_action :ensure_author, only: [:edit, :update]
   #before_action :ensure_game_was_not_started, only: [:edit, :update]
   before_action :max_team_number_from_nz, only: [:update]
+  before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
 
   def index
     if params[:user_id].blank?
@@ -130,12 +131,20 @@ class GamesController < ApplicationController
     @game.starts_at.nil?
   end
 
+  def no_finish_time?
+    @game.author_finished_at.nil?
+  end
+
   def ensure_author_if_game_is_draft
     ensure_author if game_is_draft?
   end
 
   def ensure_author_if_no_start_time
     ensure_author if no_start_time?
+  end
+
+  def ensure_author_if_no_finish_time
+    ensure_author if no_finish_time?
   end
 
   def max_team_number_from_nz

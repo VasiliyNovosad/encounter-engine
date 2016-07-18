@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-  root 'index#index'
+  root 'games#index'
 
   resources :teams
 
@@ -80,6 +80,7 @@ Rails.application.routes.draw do
   match '/logs/level/:game_id/:team_id', to: 'logs#show_level_log', via: 'get'
   match '/logs/game/:game_id/:team_id', to: 'logs#show_game_log', via: 'get'
   match '/logs/full/:game_id', to: 'logs#show_full_log', via: 'get'
+  match '/logs/short/:game_id', to: 'logs#show_short_log', via: 'get'
 
   match '/game_entries/new/:game_id/:team_id',  to: 'game_entries#new', via: 'get'
   match '/signup',  to: 'users#new',            via: 'get'
@@ -94,7 +95,7 @@ Rails.application.routes.draw do
   match '/games/finish_test/:id', to: 'games#finish_test', via: 'get'
 
   match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'get'
-  match '/teams/edit/captain', to: 'teams#captain', via: 'get'
+  match '/teams/edit/captain', to: 'teams#make_member_captain', via: 'get'
   post '/tinymce_assets' => 'tinymce_assets#create'
   # Example resource route with more complex sub-resources:
   #   resources :products do

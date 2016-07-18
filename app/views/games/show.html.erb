@@ -11,7 +11,7 @@
   <em>Автор</em> - <strong><%= @game.author.nickname %></strong>
 </p>
 
-<% if user_signed_in? && (current_user.author_of?(@game) || @game.author_finished_at) %>
+<% if user_signed_in? && (current_user.author_of?(@game) || @game.author_finished?) %>
   <p>
     <em>Сценарiй:</em> <strong><%=link_to 'доступний', show_scenario_game_path(@game) %></strong>
   </p>
@@ -80,6 +80,7 @@
   </fieldset>
   <br>
 <% end %>      
+
 <%= render 'game_entries', game_entries: @game_entries  %>
 <br>
 <%= render 'teams', teams: @teams %>

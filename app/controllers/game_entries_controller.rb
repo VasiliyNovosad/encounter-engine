@@ -24,13 +24,13 @@ class GameEntriesController < ApplicationController
 
   def accept
     @entry.accept! if @entry.status == 'new'
-    redirect_to dashboard_path
+    redirect_to game_path(@game)
   end
 
   def reject
     @entry.reject! if @entry.status == 'new'
     @game.free_place_of_team!
-    redirect_to dashboard_path
+    redirect_to game_path(@game)
   end
 
   def recall
