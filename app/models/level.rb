@@ -35,4 +35,13 @@ class Level < ActiveRecord::Base
       question.answers.any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
     end
   end
+
+  def complete_later_minutes
+    complete_later.nil? ? nil : complete_later / 60
+  end
+
+  def complete_later_minutes=(value)
+    self.complete_later = value.to_i * 60
+  end
+
 end

@@ -26,53 +26,64 @@
       </p>
     <% end %>
 
-    <!--
     <p id="entered_codes">
         <br>Введено коди:
-      <#%= @entered_all_answers.join ', '  %><hr>
+      <%= @entered_all_answers.join ', '  %><hr>
     </p>
-    -->
 
   <% end %>  
 
   <div>
     <br>
-    <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.questions.count %>:<!--<br /><font color="236400"><#%= "#{@entered_correct_answers.sort!.join '<br>'}".html_safe  %>--></b></font>
+    <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.questions.count %>:<!--<br /><font color="236400"><%#= "#{@entered_correct_answers.sort!.join '<br>'}".html_safe  %>--></b></font>
     <hr>
     <hr>
   </div>
 
   <%= @game_passing.current_level.text.html_safe %>
 
-  <div id="LevelHintsContainer">
-    <% @game_passing.hints_to_show.each_with_index do |hint, index| %>
-        <fieldset>
-          <legend>
-            Підказка <%= index + 1 %>
-          </legend>
-          <%= hint.text.html_safe %>
-        </fieldset>
-        <br>
-    <% end %>
-  </div>
+  <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
+ 
 </fieldset>
 
-  <% unless @game_passing.upcoming_hints.empty?  %>
-      <div id="LevelHintCountdownContainer">До наступної підказки <span id="LevelHintCountdownTimerText">3 хвилини</span></div>
-      <div id="LevelHintCountdownLoadIndicator" style="display: none;">Завантаження...</div>
+<br>
 
-      <script>
-        LevelHintUpdater.setup({
-          initialCountdownValue: <%= @game_passing.upcoming_hints.first.available_in(@game_passing.current_level_entered_at) %>
-          ,gameId: <%= @game_passing.game_id %>
-        })
-      </script>
-  <% else %>
-      <div>
-        Підказок більше не буде
-      </div>
+<div id="LevelHintsContainer">
+  <% @game_passing.hints_to_show.each_with_index do |hint, index| %>
+    <fieldset>
+      <legend>
+        Підказка <%= index + 1 %>
+      </legend>
+      <%= hint.text.html_safe %>
+    </fieldset>
+    <br>
   <% end %>
+</div>
 
-  <br>  <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
+<% unless @game_passing.upcoming_hints.empty?  %>
+  <div id="LevelHintCountdownContainer">До наступної підказки <span id="LevelHintCountdownTimerText">3 хвилини</span></div>
+  <div id="LevelHintCountdownLoadIndicator" style="display: none;">Завантаження...</div>
+
+  <script>
+    LevelHintUpdater.setup({
+      initialCountdownValue: <%= @game_passing.upcoming_hints.first.available_in(@game_passing.current_level_entered_at) %>
+      ,gameId: <%= @game_passing.game_id %>
+    })
+  </script>
+<% else %>
+  <div>
+  Підказок більше не буде
+  </div>
+<% end %>
 
 <br>
+
+<div id="LevelCompleteCountdownContainer">До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
+  
+  <script>
+    LevelCompleter.setup({
+      initialCountdownValue: <%= (@game_passing.current_level_entered_at - Time.zone.now).to_i + @game_passing.current_level.complete_later %>
+      ,gameId: <%= @game_passing.game_id %>
+    })
+  </script>
+
