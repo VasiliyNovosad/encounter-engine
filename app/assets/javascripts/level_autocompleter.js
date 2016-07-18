@@ -1,5 +1,5 @@
 var LevelCompleter = function() {
-    var countdownValue = 0 ,gameId = 0, intervalId = null;
+    var countdownValue = 0 ,gameId = 0, levelId = 0, intervalId = null;
 
     var $countdownContainer, $countdownTimerText;
 
@@ -40,7 +40,7 @@ var LevelCompleter = function() {
 
     var autocompleteLevel = function() {
         $.ajax({
-            url: '/play/' + gameId + '/autocomplete_level', method: 'GET',
+            url: '/play/' + gameId + '/autocomplete_level?level=' + levelId, method: 'GET',
             success: function() {
                 window.location.reload();
             }
@@ -54,6 +54,7 @@ var LevelCompleter = function() {
                 $countdownTimerText = $('#LevelCompleteCountdownTimerText');
                 
                 gameId = config.gameId;
+                levelId = config.levelId;
                 start(config.initialCountdownValue);
             });
         }

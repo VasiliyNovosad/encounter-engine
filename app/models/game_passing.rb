@@ -104,16 +104,15 @@ class GamePassing < ActiveRecord::Base
   end
 
   def autocomplete_level!(level)
-    if level == self.current_level
-      if last_level?
-        set_finish_time
-      else
-        update_current_level_entered_at
-        reset_answered_questions
-        self.current_level = self.current_level.next
-      end
-      save!
+    lock!
+    if last_level?
+      set_finish_time
+    else
+      update_current_level_entered_at
+      reset_answered_questions
+      self.current_level = self.current_level.next
     end
+    save!
   end
 
   protected

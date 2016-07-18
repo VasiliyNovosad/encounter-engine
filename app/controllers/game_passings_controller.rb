@@ -83,17 +83,15 @@ class GamePassingsController < ApplicationController
   end
 
   def autocomplete_level
-    if @game_passing.finished?
-      render json: { result: true }.to_json
-    else
-      @game_passing.autocomplete_level!(@game_passing.current_level)
-      save_log(@game_passing.current_level)
-      if @game_passing.finished?
-        render json: { result: true }.to_json
-      else
-        render json: { result: true }.to_json
+    level_id = params[:level]
+    unless @game_passing.finished?
+      level = Level.find(level_id)
+      if level == @game_passing.current_level
+        @game_passing.autocomplete_level!(level)
+        save_log(level)
       end
     end
+    render json: { result: true }.to_json
   end
 
   protected

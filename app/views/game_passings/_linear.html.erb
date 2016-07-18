@@ -78,12 +78,14 @@
 
 <br>
 
-<div id="LevelCompleteCountdownContainer">До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
-  
+<% if @game_passing.current_level.complete_later > 0 %>
+  <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
+
   <script>
     LevelCompleter.setup({
       initialCountdownValue: <%= (@game_passing.current_level_entered_at - Time.zone.now).to_i + @game_passing.current_level.complete_later %>
-      ,gameId: <%= @game_passing.game_id %>
+      ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>
     })
   </script>
+<% end %>
 
