@@ -206,3 +206,7 @@ textarea {
 .closedlevel {
   color: gray;
 }
+
+.LevelCompleteCountdownContainer, .LevelHintCountdownContainer {
+    color: #FF7A1C;
+}
