@@ -1,0 +1,14 @@
+<p>
+  Персональне командне завдання на рівні "<%= link_to @level.name, game_level_path(@game, @level) %>" гри "<%= link_to @game.name, game_path(@game) %>"
+</p>
+
+<br>
+
+<%= form_for @task, url: game_level_tasks_path(@game, @level) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+
+    <%= render 'form', f: f %>
+
+    <%= f.submit "Додати завдання", style: "width:170px" %>
+    <em><%= link_to "(відмінити)", game_level_path(@task.level.game, @task.level) %></em>
+<% end %>

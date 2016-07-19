@@ -1,0 +1,3 @@
+<%= tinymce language: 'uk' %>
+<p><%#= f.label "Текст" %><%= f.text_area :text, class: "tinymce" %></p>
+<p><%= f.label "Команда" %><%= f.collection_select(:team_id, @teams, :id, :name) %></p>

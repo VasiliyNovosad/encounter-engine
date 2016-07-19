@@ -1,0 +1,17 @@
+<% if tasks.empty? %>
+    <em>Персональних командних завдань немає</em>
+<% else %>
+    <% tasks.each do |task| %>
+        <p>
+          <em>Для команди</em> <strong><%= link_to task.team.name, edit_game_level_task_path(task.level.game, task.level, task) %></strong> <em>хвилин:</em>
+          <em>
+            <%= link_to "(редагувати)", edit_game_level_task_path(task.level.game, task.level, task) %>
+            <%= link_to "(видалити)", game_level_task_path(task.level.game, task.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+          </em>
+        </p>
+        <p>
+          <%= task.text.html_safe %>
+        </p>
+        <br>
+    <% end %>
+<% end %>

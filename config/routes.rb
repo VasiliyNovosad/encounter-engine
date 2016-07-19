@@ -50,6 +50,7 @@ Rails.application.routes.draw do
 
   resources :games do
     resources :levels do
+      resources :tasks
       resources :hints
       resources :questions do
         resources :answers
