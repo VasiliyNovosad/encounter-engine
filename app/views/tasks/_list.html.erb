@@ -3,10 +3,10 @@
 <% else %>
     <% tasks.each do |task| %>
         <p>
-          <em>Для команди</em> <strong><%= link_to task.team.name, edit_game_level_task_path(task.level.game, task.level, task) %></strong> <em>хвилин:</em>
+          <em>Для команди</em> <strong><%= link_to task.team.name, team_path(task.team) %></strong>:
           <em>
             <%= link_to "(редагувати)", edit_game_level_task_path(task.level.game, task.level, task) %>
-            <%= link_to "(видалити)", game_level_task_path(task.level.game, task.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+            <%= link_to "(видалити)", game_level_task_path(task.level.game, task.level, task), method: :delete, data: { confirm: 'Ви впевнені?' } %>
           </em>
         </p>
         <p>

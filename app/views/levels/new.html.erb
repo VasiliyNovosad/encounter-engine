@@ -1,5 +1,5 @@
 <%= tinymce language: 'uk' %>
-Нове завдання для гри <%= @level.game.name %><br>
+Новий рівень для гри <%= @level.game.name %><br>
 <br>
 
 <%= form_for @level, url: game_levels_path(@level.game) do |f| %>
@@ -12,6 +12,6 @@
     <%= f.label :correct_answer, "Код" %><%= f.text_field :correct_answer %>
     <em>після створення Ви зможете додати більше кодів в завдання</em>
   </p>
-  <%= f.submit "Додати завдання" %>
+  <%= f.submit "Додати рівень" %>
   <em><%= link_to "(відмінити)", game_path(@level.game) %></em>
 <% end %>

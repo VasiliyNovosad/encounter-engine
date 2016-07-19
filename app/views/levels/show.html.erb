@@ -1,5 +1,5 @@
 <h2>
-  Завдання "<strong><%= @level.name %></strong>"
+  Рівень "<strong><%= @level.name %></strong>"
 </h2>
 
 <p>
@@ -17,10 +17,26 @@
 </p>
 
 <p>
-  <%= link_to "Редагувати текст і назву завдання", edit_game_level_path(@game, @level) %>
+  <%= link_to "Редагувати текст завдання і назву рівня", edit_game_level_path(@game, @level) %>
 </p>
 
 <br>
+
+<% unless GameEntry.of_game(@game).with_status('accepted').count == 0 %>
+  <fieldset>
+    <legend>
+      Персональні командні завдання:
+    </legend>
+
+    <p>
+      <%= render 'tasks/list', tasks: @level.tasks %>
+    </p>
+
+    <p>
+      <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
+    </p>
+  </fieldset>
+<% end %>
 
 <% unless @level.multi_question? %>
   <p>

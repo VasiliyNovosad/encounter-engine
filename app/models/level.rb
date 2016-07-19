@@ -7,7 +7,7 @@ class Level < ActiveRecord::Base
   has_many :hints, -> { order(:delay) }, dependent: :destroy
   has_many :tasks, dependent: :destroy
 
-  validates :text, presence: { message: 'Не введено текст завдання' }
+  validates :text, presence: { message: 'Не введено текст завдання' }, if: :tasks_not_presence?
   validates :game, presence: true
   validates :name, presence: { message: 'Не введено назву завдання' }
   validates :name, uniqueness: { scope: :game, message: 'Рівень з такою назвою уже є в даній грі' }
@@ -43,6 +43,10 @@ class Level < ActiveRecord::Base
 
   def complete_later_minutes=(value)
     self.complete_later = value.to_i * 60
+  end
+
+  def tasks_not_presence?
+    tasks.nil? || tasks.count == 0
   end
 
 end
