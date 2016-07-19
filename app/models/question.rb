@@ -1,5 +1,6 @@
 class Question < ActiveRecord::Base
   belongs_to :level
+  belongs_to :team
   has_many :answers, dependent: :destroy
   acts_as_list scope: :level
 

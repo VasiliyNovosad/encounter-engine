@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160326213054) do
+ActiveRecord::Schema.define(version: 20160719130733) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20160326213054) do
     t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "team_id"
   end
 
   create_table "game_entries", force: :cascade do |t|
@@ -64,6 +65,7 @@ ActiveRecord::Schema.define(version: 20160326213054) do
     t.integer  "delay"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "team_id"
   end
 
   create_table "images", force: :cascade do |t|
@@ -111,6 +113,15 @@ ActiveRecord::Schema.define(version: 20160326213054) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position"
+    t.integer  "team_id"
+  end
+
+  create_table "tasks", force: :cascade do |t|
+    t.integer  "level_id"
+    t.string   "text"
+    t.integer  "team_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "teams", force: :cascade do |t|

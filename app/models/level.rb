@@ -5,6 +5,7 @@ class Level < ActiveRecord::Base
   has_many :questions, -> { order(:position) }, dependent: :destroy
   has_many :answers, dependent: :destroy
   has_many :hints, -> { order(:delay) }, dependent: :destroy
+  has_many :tasks, dependent: :destroy
 
   validates :text, presence: { message: 'Не введено текст завдання' }
   validates :game, presence: true

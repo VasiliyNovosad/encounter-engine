@@ -1,6 +1,7 @@
 class Answer < ActiveRecord::Base
   belongs_to :question
   belongs_to :level
+  belongs_to :team
 
   before_save :strip_spaces
   before_create :assign_level

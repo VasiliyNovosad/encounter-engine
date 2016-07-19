@@ -2,6 +2,10 @@ class Team < ActiveRecord::Base
   has_many :game_entries, class_name: 'GameEntry'
   has_many :members, class_name: 'User'
   belongs_to :captain, class_name: 'User'
+  has_many :tasks
+  has_many :hints
+  has_many :questions
+  has_many :answers
 
   validates_uniqueness_of :name, message: 'Команда з такою назвою уже існує'
 
