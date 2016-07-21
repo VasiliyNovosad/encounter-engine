@@ -3,6 +3,7 @@ class QuestionsController < ApplicationController
   before_action :ensure_author
   before_action :find_level
   before_action :find_question, only: [:edit, :update, :move_up, :move_down, :destroy]
+  before_action :find_teams, only: [:new, :edit]
 
   def new
     @question = Question.new
@@ -40,16 +41,6 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def move_up
-    @question.move_higher
-    redirect_to game_level_path(@level.game, @level)
-  end
-
-  def move_down
-    @question.move_lower
-    redirect_to game_level_path(@level.game, @level)
-  end
-
   def destroy
     @question.answers.each { |answer| answer.destroy }
     @question.destroy
@@ -59,7 +50,7 @@ class QuestionsController < ApplicationController
   protected
 
   def question_params
-    params.require(:question).permit(:name, :correct_answer)
+    params.require(:question).permit(:name, :correct_answer, :team_id)
   end
 
   def find_game
@@ -73,4 +64,9 @@ class QuestionsController < ApplicationController
   def find_question
     @question = Question.find(params[:id])
   end
+
+  def find_teams
+    @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
+  end
+
 end

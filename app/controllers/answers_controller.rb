@@ -4,31 +4,45 @@ class AnswersController < ApplicationController
   before_action :find_level
   before_action :find_question
   before_action :find_answers
-  before_action :find_answer, only: [:destroy]
-  before_action :build_answer, only: [:create]
-  before_action :build_answer_index, only: [:index]
+  before_action :find_answer, only: [:edit, :update, :destroy]
+  before_action :find_teams, only: [:new, :edit]
 
   def index
     render
   end
 
+  def new
+    @answer = Answer.new
+    @answer.level = @level
+    @answer.question = @question
+  end
+
   def create
+    @answer = Answer.create(answer_params)
+    @answer.level = @level
+    @answer.question = @question
     if @answer.save
-      redirect_to game_level_question_answers_path(@game, @level, @question)
+      redirect_to game_level_path(@game, @level)
     else
-      render :index
+      render :new
+    end
+  end
+
+  def edit
+    render
+  end
+
+  def update
+    if @answer.update_attributes(answer_params)
+      redirect_to game_level_path(@level.game, @level)
+    else
+      render 'edit'
     end
   end
 
   def destroy
-    if @answers.count > 1
-      @answer.destroy
-      redirect_to game_level_question_answers_path(@game, @level, @question)
-    else
-      build_answer_index
-      @answer.errors.add(:question, 'Повинен бути хоча б один варіант коду')
-      render :index
-    end
+    @answer.destroy
+    redirect_to game_level_path(@game, @level)
   end
 
   protected
@@ -53,19 +67,12 @@ class AnswersController < ApplicationController
     @answers = Answer.of_question(@question)
   end
 
-  def build_answer
-    @answer = Answer.new(answer_params)
-    @answer.level = @level
-    @answer.question = @question
-  end
-
-  def build_answer_index
-    @answer = Answer.new
-    @answer.level = @level
-    @answer.question = @question
-  end
-
   def answer_params
-    params.require(:answer).permit(:value)
+    params.require(:answer).permit(:value, :team_id)
   end
+
+  def find_teams
+    @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
+  end
+
 end

@@ -1,17 +1,23 @@
-<% if hints.empty? %>
-    <em>Підказок немає</em>
-<% else %>
+<% unless hints.empty? %>
     <% hints.each do |hint| %>
-        <p>
-          <em>Через</em> <strong><%= link_to hint.delay_in_minutes, edit_game_level_hint_path(hint.level.game, hint.level, hint) %></strong> <em>хвилин:</em>
-          <em>
-            <%= link_to "(редагувати)", edit_game_level_hint_path(hint.level.game, hint.level, hint) %>
-            <%= link_to "(видалити)", game_level_hint_path(hint.level.game, hint.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-          </em>
-        </p>
-        <p>
-          <%= hint.text.html_safe %>
-        </p>
-        <br>
+        <fieldset>
+          <legend>
+            <% if hint.team.nil? %>
+                <em>Для всіх</em>:
+            <% else %>
+                <em>Для </em> <strong><%= link_to hint.team.name, team_path(hint.team) %></strong>:
+            <% end %>
+            <em>
+              <%= link_to "(редагувати)", edit_game_level_hint_path(hint.level.game, hint.level, hint) %>
+              <%= link_to "(видалити)", game_level_hint_path(hint.level.game, hint.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+            </em>
+          </legend>
+          <p>
+            <em>Через</em> <strong><%= link_to hint.delay_in_minutes, edit_game_level_hint_path(hint.level.game, hint.level, hint) %></strong> <em>хвилин:</em>
+          </p>
+          <p>
+            <%= hint.text.html_safe %>
+          </p>
+        </fieldset>
     <% end %>
 <% end %>

@@ -4,7 +4,6 @@ class Answer < ActiveRecord::Base
   belongs_to :team
 
   before_save :strip_spaces
-  before_create :assign_level
 
   validates_presence_of :value, message: 'Не введено варіант коду'
 
@@ -18,7 +17,4 @@ class Answer < ActiveRecord::Base
     value.strip!
   end
 
-  def assign_level
-    self.level = question.level
-  end
 end

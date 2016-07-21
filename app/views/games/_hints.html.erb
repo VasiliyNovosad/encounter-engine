@@ -1,6 +1,9 @@
-<% hints.each_with_index do |hint, index| %>
+<% hints.each do |hint| %>
   <p>
-    <%= "Підказка №#{index + 1} (#{hint.delay_in_minutes} хв)" %>
+    <%= "Для #{ hint.team.nil? ? 'всіх' : hint.team.name}:" %>
+  </p>
+  <p>
+    <%= "через #{hint.delay_in_minutes} хв" %>
   </p>
   <p>
     <%= hint.text.html_safe %>

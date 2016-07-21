@@ -9,6 +9,7 @@
 <br>
 
 <%= form_for @question, url: game_level_questions_path(@game, @level) do |f| %>
+  <p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
   <p><%= f.label "Назва" %><%= f.text_field :name %></p>
   <p><%= f.label "Код" %><%= f.text_field :correct_answer %></p>
   <%= f.submit "Додати код" %>

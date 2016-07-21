@@ -9,68 +9,25 @@
 <br>
 
 <p>
-  <em>Текст завдання:</em>
-</p>
-
-<p>
-  <%= @level.text.html_safe %>
-</p>
-
-<p>
-  <%= link_to "Редагувати текст завдання і назву рівня", edit_game_level_path(@game, @level) %>
+  <%= link_to "Редагувати назву рівня", edit_game_level_path(@game, @level) %>
 </p>
 
 <br>
 
-<% unless GameEntry.of_game(@game).with_status('accepted').count == 0 %>
-  <fieldset>
-    <legend>
-      Персональні командні завдання:
-    </legend>
+<fieldset>
+  <legend>
+    Завдання:
+  </legend>
 
-    <p>
-      <%= render 'tasks/list', tasks: @level.tasks %>
-    </p>
-
-    <p>
-      <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
-    </p>
-  </fieldset>
-<% end %>
-
-<% unless @level.multi_question? %>
   <p>
-    <em>Код:</em>
-    <div id="question-<%= @level.questions.first.id %>">
-      <%= @level.questions.first.answers.map { |answer| answer.value }.join(' або ') %>
-      <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, @level.questions.first) %>
-    </div>
+    <%= render 'tasks/list', tasks: @level.tasks %>
   </p>
-<% else %>
+
   <p>
-    <em>Коди (<%= @level.questions.count %>):</em>
+    <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
   </p>
-  <% @level.questions.each do |question| %>
-    <div id="question-<%=  question.id %>">
-      <p>
-        <%= question.position %>. <%= link_to question.name, edit_game_level_question_path(question.level.game, question.level, question) %>
-        <%= link_to "↑", move_up_game_level_question_path(question.level.game, question.level, question) unless question.first? %>
-        <%= link_to "↓", move_down_game_level_question_path(question.level.game, question.level, question) unless question.last? %>:
-      </p>
-
-      <p><%= question.answers.map { |answer| answer.value }.join(' або ') %></p>
-      <%= link_to "(редагувати)", game_level_question_answers_path(@game, @level, question) %>
-      <%= link_to "(видалити)", game_level_question_path(@game, @level, question), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
-    </div>
-  <% end %>
-<% end %>
-
-<p>
-  <%= link_to "Додати ще один код", new_game_level_question_path(@game, @level) %>
-</p>
-
+</fieldset>
 <br>
-
 <fieldset>
   <legend>
     Пiдказки:
@@ -84,7 +41,20 @@
     <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) %>
   </p>
 </fieldset>
+<br>
+<fieldset>
+  <legend>
+    Відповіді:
+  </legend>
 
+  <p>
+    <%= render 'questions/list', questions: @level.questions %>
+  </p>
+
+  <p>
+    <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
+  </p>
+</fieldset>
 <br>
 <p>
   <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>

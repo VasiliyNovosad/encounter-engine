@@ -2,16 +2,15 @@ class Question < ActiveRecord::Base
   belongs_to :level
   belongs_to :team
   has_many :answers, dependent: :destroy
-  acts_as_list scope: :level
 
   validates :name, presence: { message: 'Не введено назву сектора' }
-  validates :name, uniqueness: { scope: :level, message: 'Сектор з такою назвою уже є на даному рівні' }
+  validates :name, uniqueness: { scope: [:level, :team], message: 'Сектор з такою назвою уже є на даному рівні' }
 
   before_validation :set_name
 
   def correct_answer=(answer)
     if answers.empty?
-      answers.build(value: answer)
+      answers.build(value: answer, team_id: team.nil? ? nil : team.id)
     else
       answers.first.value = answer
     end

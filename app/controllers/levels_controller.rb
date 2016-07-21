@@ -6,8 +6,8 @@ class LevelsController < ApplicationController
   def new
     @level = Level.new
     @level.game = @game
-    @level.questions.build
-    @level.questions.first.answers.build
+    # @level.questions.build
+    # @level.questions.first.answers.build
   end
 
   def create
@@ -54,7 +54,8 @@ class LevelsController < ApplicationController
   protected
 
   def level_params
-    params.require(:level).permit(:name, :text, :correct_answer, :olymp, :complete_later_minutes)
+    # params.require(:level).permit(:name, :text, :correct_answer, :olymp, :complete_later_minutes)
+    params.require(:level).permit(:name, :olymp, :complete_later_minutes)
   end
 
   def find_game

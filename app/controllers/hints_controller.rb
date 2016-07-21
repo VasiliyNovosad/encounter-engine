@@ -2,6 +2,7 @@ class HintsController < ApplicationController
   before_action :find_level
   before_action :find_game
   before_action :find_hint, only: [:edit, :update, :destroy]
+  before_action :find_teams, only: [:new, :edit]
 
   before_action :ensure_author
   before_action :ensure_game_was_not_started, only: [:new, :create, :edit, :update]
@@ -41,7 +42,7 @@ class HintsController < ApplicationController
   protected
 
   def hint_params
-    params.require(:hint).permit(:level_id, :text, :delay_in_minutes)
+    params.require(:hint).permit(:level_id, :text, :delay_in_minutes, :team_id)
   end
 
   def find_level
@@ -55,4 +56,9 @@ class HintsController < ApplicationController
   def find_hint
     @hint = Hint.find(params[:id])
   end
+
+  def find_teams
+    @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
+  end
+
 end
