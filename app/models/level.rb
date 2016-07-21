@@ -50,17 +50,17 @@ class Level < ActiveRecord::Base
   end
 
   def team_questions(team_id)
-    questions.where("team_id = NULL OR team_id = #{team_id}")
+    questions.where("team_id IS NULL OR team_id = #{team_id}")
   end
 
   def team_task(team_id)
     team_tasks = tasks.where(team_id: team_id).first
-    if team_tasks.count == 1
-      return team_tasks[0].text
+    if !team_tasks.nil?
+      return team_tasks.text
     end
-    team_tasks = tasks.where(team_id: nil).first
-    if team_tasks.count == 1
-      return team_tasks[0].text
+    team_tasks = tasks.where('team_id IS NULL').first
+    if !team_tasks.nil?
+      return team_tasks.text
     end
     text
   end

@@ -61,11 +61,11 @@ class GamePassing < ActiveRecord::Base
   end
 
   def hints_to_show(level = self.current_level)
-    level.hints.where("team_id = NULL OR team_id = #{team.id}").select { |hint| hint.ready_to_show?(current_level_entered_at) }
+    level.hints.where("team_id IS NULL OR team_id = #{team.id}").select { |hint| hint.ready_to_show?(current_level_entered_at) }
   end
 
   def upcoming_hints(level = self.current_level)
-    level.hints.where("team_id = NULL OR team_id = #{team.id}").select { |hint| !hint.ready_to_show?(current_level_entered_at) }
+    level.hints.where("team_id IS NULL OR team_id = #{team.id}").select { |hint| !hint.ready_to_show?(current_level_entered_at) }
   end
 
   def correct_answer?(answer, level)
@@ -83,7 +83,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def all_questions_answered?(level)
-    (level.questions.team_questions(team.id) - answered_questions).empty?
+    (level.team_questions(team.id) - answered_questions).empty?
   end
 
   def exit!

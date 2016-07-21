@@ -30,7 +30,7 @@ class Question < ActiveRecord::Base
   end
 
   def team_answers(team_id)
-    answers.where("team_id = NULL OR team_id = #{team_id}")
+    answers.where("team_id IS NULL OR team_id = #{team_id}")
   end
 
   def team_correct_answer(team_id)
