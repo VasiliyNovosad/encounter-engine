@@ -35,12 +35,12 @@
 
   <div>
     <br>
-    <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.questions.count %>:<!--<br /><font color="236400"><%#= "#{@entered_correct_answers.sort!.join '<br>'}".html_safe  %>--></b></font>
+    <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.team_questions(@team.id).count %>:<!--<br /><font color="236400"><%#= "#{@entered_correct_answers.sort!.join '<br>'}".html_safe  %>--></b></font>
     <hr>
     <hr>
   </div>
 
-  <%= @game_passing.current_level.text.html_safe %>
+  <%= @game_passing.current_level.team_task(@team.id).html_safe %>
 
   <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
  

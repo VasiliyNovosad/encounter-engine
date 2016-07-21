@@ -38,9 +38,10 @@ class GamePassingsController < ApplicationController
 
   def get_current_level_tip
     next_hint = @game_passing.upcoming_hints.first
+    hints_to_show = @game_passing.hints_to_show
 
-    render json: { hint_num: @game_passing.hints_to_show.length,
-                   hint_text: @game_passing.hints_to_show.last.text.html_safe,
+    render json: { hint_num: hints_to_show.length,
+                   hint_text: hints_to_show.last.text.html_safe,
                    next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
   end
 
@@ -145,8 +146,8 @@ class GamePassingsController < ApplicationController
     log_of_level = Log.of_game(@game).of_level(level).of_team(current_user.team)
     entered_answers = log_of_level.map(&:answer).uniq
     @entered_all_answers = entered_answers
-    level.questions.each do |question|
-      question.answers.each do |answer|
+    level.team_questions(current_user.team.id).each do |question|
+      question.team_answers(current_user.team.id).each do |answer|
         correct_answers << answer.value
       end
     end
@@ -155,13 +156,13 @@ class GamePassingsController < ApplicationController
 
   def get_answered_questions(level)
     @sectors = []
-    return unless level.multi_question?
+    return unless level.multi_question?(@team.id)
     answered_questions = @game_passing.answered_questions
-    @game_passing.current_level.questions.each do |question|
+    @game_passing.current_level.team_questions(current_user.team.id).each do |question|
       value = level.olymp? ? question.name : '-'
       @sectors << { position: question.position,
                     name: question.name,
-                    value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.correct_answer}</font></b>" : value }
+                    value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.team_correct_answer(current_user.team.id)}</font></b>" : value }
     end
   end
 end

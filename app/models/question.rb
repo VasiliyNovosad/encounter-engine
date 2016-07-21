@@ -20,12 +20,20 @@ class Question < ActiveRecord::Base
     answers.empty? ? nil : answers.first.value
   end
 
-  def matches_any_answer(answer_value)
+  def matches_any_answer(answer_value, team_id)
     require 'ee_strings.rb'
-    answers.any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
   end
 
   def set_name
     self.name ||= 'Сектор 1'
+  end
+
+  def team_answers(team_id)
+    answers.where("team_id = NULL OR team_id = #{team_id}")
+  end
+
+  def team_correct_answer(team_id)
+    team_answers(team_id).empty? ? nil : team_answers(team_id).first.value
   end
 end

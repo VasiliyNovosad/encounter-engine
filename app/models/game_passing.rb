@@ -61,15 +61,15 @@ class GamePassing < ActiveRecord::Base
   end
 
   def hints_to_show(level = self.current_level)
-    level.hints.select { |hint| hint.ready_to_show?(current_level_entered_at) }
+    level.hints.where("team_id = NULL OR team_id = #{team.id}").select { |hint| hint.ready_to_show?(current_level_entered_at) }
   end
 
   def upcoming_hints(level = self.current_level)
-    level.hints.select { |hint| !hint.ready_to_show?(current_level_entered_at) }
+    level.hints.where("team_id = NULL OR team_id = #{team.id}").select { |hint| !hint.ready_to_show?(current_level_entered_at) }
   end
 
   def correct_answer?(answer, level)
-    unanswered_questions(level).any? { |question| question.matches_any_answer(answer) }
+    unanswered_questions(level).any? { |question| question.matches_any_answer(answer, team.id) }
   end
 
   def time_at_level
@@ -79,11 +79,11 @@ class GamePassing < ActiveRecord::Base
   end
 
   def unanswered_questions(level)
-    level.questions - self.answered_questions
+    level.team_questions(team.id) - answered_questions
   end
 
   def all_questions_answered?(level)
-    (level.questions - answered_questions).empty?
+    (level.questions.team_questions(team.id) - answered_questions).empty?
   end
 
   def exit!

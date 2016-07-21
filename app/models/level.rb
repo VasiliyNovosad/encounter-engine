@@ -26,8 +26,8 @@ class Level < ActiveRecord::Base
     questions.empty? ? nil : questions.first.answers.first.value
   end
 
-  def multi_question?
-    questions.count > 1
+  def multi_question?(team_id)
+    team_questions(team_id).count > 1
   end
 
   def find_questions_by_answer(answer_value)
@@ -47,6 +47,22 @@ class Level < ActiveRecord::Base
 
   def tasks_not_presence?
     tasks.nil? || tasks.count == 0
+  end
+
+  def team_questions(team_id)
+    questions.where("team_id = NULL OR team_id = #{team_id}")
+  end
+
+  def team_task(team_id)
+    team_tasks = tasks.where(team_id: team_id).first
+    if team_tasks.count == 1
+      return team_tasks[0].text
+    end
+    team_tasks = tasks.where(team_id: nil).first
+    if team_tasks.count == 1
+      return team_tasks[0].text
+    end
+    text
   end
 
 end

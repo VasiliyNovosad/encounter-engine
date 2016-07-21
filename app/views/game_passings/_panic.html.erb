@@ -34,7 +34,7 @@
     <% else %>
       <% if @game_passing.closed?(@level) %>
         <div>
-          Код <font color="236400"><b><%= @level.questions.first.answers.first.value %></b></font> вірний.<br><hr>
+          Код <font color="236400"><b><%= @level.team_questions(@team.id).first.team_answers(@team.id).first.value %></b></font> вірний.<br><hr>
         </div>
       <% end %>
     <% end %>
@@ -49,7 +49,7 @@
   <% end %> 
 
   <br>
-  <%= @level.text.html_safe %>
+  <%= @level.team_task(@team.id).html_safe %>
   <br>
 
 
