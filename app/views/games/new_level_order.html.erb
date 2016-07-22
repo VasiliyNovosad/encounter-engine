@@ -1,0 +1,20 @@
+Порядок проходження рівнів:
+<%= form_tag("/games/#{@game.id}/create_level_order") do %>
+  <table>
+    <tr>
+      <td><%= label_tag(:q, "№ рівня") %></td>
+      <% @teams.each do |team| %>
+          <td><%= label_tag(:team_id, "#{team.name}") %></td>
+      <% end %>
+    </tr>
+    <% @level_orders.each do |level_index, levels_values| %>
+        <tr>
+          <td><%= label_tag(:q, "#{level_index}") %></td>
+          <% levels_values.each do |levels_value| %>
+              <td><%= select_tag(:level_id, options_for_select(@levels.map{ |level| [level.name, level.id] }, levels_value)) %></td>
+          <% end %>
+        </tr>
+    <% end %>
+  </table>
+  <%= submit_tag "Заповнити" %>
+<% end %>
