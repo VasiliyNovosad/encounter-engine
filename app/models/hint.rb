@@ -1,5 +1,6 @@
 class Hint < ActiveRecord::Base
   belongs_to :level
+  belongs_to :team
 
   def delay_in_minutes
     delay.nil? ? nil : delay / 60

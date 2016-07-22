@@ -13,6 +13,7 @@ class GamePassingsController < ApplicationController
   before_action :ensure_team_member, except: [:index, :show_results]
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :ensure_author, only: [:index]
+  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer]
   #before_action :get_uniq_level_codes, only: [:show_current_level]
   #before_action :get_answered_questions, only: [:show_current_level]
 
@@ -37,10 +38,11 @@ class GamePassingsController < ApplicationController
   end
 
   def get_current_level_tip
-    next_hint = @game_passing.upcoming_hints.first
+    next_hint = @game_passing.upcoming_hints(@team_id).first
+    hints_to_show = @game_passing.hints_to_show(@team_id)
 
-    render json: { hint_num: @game_passing.hints_to_show.length,
-                   hint_text: @game_passing.hints_to_show.last.text.html_safe,
+    render json: { hint_num: hints_to_show.length,
+                   hint_text: hints_to_show.last.text.html_safe,
                    next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
   end
 
@@ -53,7 +55,7 @@ class GamePassingsController < ApplicationController
       @answer = params[:answer].strip
       @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       save_log(@level) if @game_passing.current_level.id || @game.game_type == 'panic'
-      @answer_was_correct = @game_passing.check_answer!(@answer, @level)
+      @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id)
       if @game_passing.finished?
         render 'show_results'
       else
@@ -119,6 +121,13 @@ class GamePassingsController < ApplicationController
     @team = current_user.team
   end
 
+  def find_team_id
+    @team_id = current_user.team.id
+    if @game.is_testing? && !@game.tested_team_id.nil?
+      @team_id = @game.tested_team_id
+    end
+  end
+
   def ensure_game_is_started
     redirect_to game_path(@game), alert: 'Заборонено грати в гру до її початку' unless @game.is_testing? || @game.started?
   end
@@ -142,11 +151,11 @@ class GamePassingsController < ApplicationController
 
   def get_uniq_level_codes(level)
     correct_answers = []
-    log_of_level = Log.of_game(@game).of_level(level).of_team(current_user.team)
+    log_of_level = Log.of_game(@game).of_level(level).of_team(Team.find(@team_id))
     entered_answers = log_of_level.map(&:answer).uniq
     @entered_all_answers = entered_answers
-    level.questions.each do |question|
-      question.answers.each do |answer|
+    level.team_questions(@team_id).each do |question|
+      question.team_answers(@team_id).each do |answer|
         correct_answers << answer.value
       end
     end
@@ -155,13 +164,13 @@ class GamePassingsController < ApplicationController
 
   def get_answered_questions(level)
     @sectors = []
-    return unless level.multi_question?
+    return unless level.multi_question?(@team_id)
     answered_questions = @game_passing.answered_questions
-    @game_passing.current_level.questions.each do |question|
+    @game_passing.current_level.team_questions(@team_id).each do |question|
       value = level.olymp? ? question.name : '-'
       @sectors << { position: question.position,
                     name: question.name,
-                    value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.correct_answer}</font></b>" : value }
+                    value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.team_correct_answer(@team_id)}</font></b>" : value }
     end
   end
 end

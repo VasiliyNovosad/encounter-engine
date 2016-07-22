@@ -207,6 +207,6 @@ textarea {
   color: gray;
 }
 
-.LevelCompleteCountdownContainer, .LevelHintCountdownContainer {
-    color: #FF7A1C;
+#LevelCompleteCountdownContainer, #LevelHintCountdownContainer {
+    color: #ff570a;
 }

@@ -1,0 +1,14 @@
+<p>
+  Редагування персонального командного завдання на рівні "<%= link_to @level.name, game_level_path(@game, @level) %>" гри "<%= link_to @game.name, game_path(@game) %>"
+</p>
+
+<br>
+
+<%= form_for @task, url: game_level_task_path(@game, @level, @task) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+
+    <%= render 'form', f: f %>
+
+    <%= f.submit "Редагувати", style: "width:150px" %>
+    <em><%= link_to "(відмінити)", game_level_path(@level.game, @level) %></em>
+<% end %>

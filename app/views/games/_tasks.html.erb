@@ -1,0 +1,9 @@
+<% tasks.each do |task| %>
+    <p>
+      <%= "Для #{task.team.nil? ? 'всіх' : task.team.name}:" %>
+    </p>
+    <p>
+      <%= task.text.html_safe %>
+    </p>
+    <br>
+<% end %>

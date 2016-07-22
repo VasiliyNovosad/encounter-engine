@@ -31,16 +31,16 @@
       <%= @entered_all_answers.join ', '  %><hr>
     </p>
 
-  <% end %>  
+  <% end %>
+
+  <%= @game_passing.current_level.team_task(@team_id).html_safe %>
 
   <div>
     <br>
-    <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.questions.count %>:<!--<br /><font color="236400"><%#= "#{@entered_correct_answers.sort!.join '<br>'}".html_safe  %>--></b></font>
+    <b>Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.team_questions(@team_id).count %>:<!--<br /><font color="236400"><%#= "#{@entered_correct_answers.sort!.join '<br>'}".html_safe  %>--></b></font>
     <hr>
     <hr>
   </div>
-
-  <%= @game_passing.current_level.text.html_safe %>
 
   <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
  
@@ -49,7 +49,7 @@
 <br>
 
 <div id="LevelHintsContainer">
-  <% @game_passing.hints_to_show.each_with_index do |hint, index| %>
+  <% @game_passing.hints_to_show(@team_id).each_with_index do |hint, index| %>
     <fieldset>
       <legend>
         Підказка <%= index + 1 %>
@@ -60,14 +60,14 @@
   <% end %>
 </div>
 
-<% unless @game_passing.upcoming_hints.empty?  %>
+<% unless @game_passing.upcoming_hints(@team_id).empty?  %>
   <div id="LevelHintCountdownContainer">До наступної підказки <span id="LevelHintCountdownTimerText">3 хвилини</span></div>
   <div id="LevelHintCountdownLoadIndicator" style="display: none;">Завантаження...</div>
 
   <script>
     LevelHintUpdater.setup({
-      initialCountdownValue: <%= @game_passing.upcoming_hints.first.available_in(@game_passing.current_level_entered_at) %>
-      ,gameId: <%= @game_passing.game_id %>
+      initialCountdownValue: <%= @game_passing.upcoming_hints(@team_id).first.available_in(@game_passing.current_level_entered_at) %>
+      ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>
     })
   </script>
 <% else %>

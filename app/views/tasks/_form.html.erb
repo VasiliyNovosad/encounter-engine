@@ -1,0 +1,3 @@
+<%= tinymce language: 'uk' %>
+<p><%#= f.label "Текст" %><%= f.text_area :text, class: "tinymce" %></p>
+<p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>

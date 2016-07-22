@@ -17,6 +17,7 @@
     <%= hidden_field_tag(:level_id, @level.id) %>
     <%= hidden_field_tag(:closed_level, @game_passing.closed?(@level)) %>
     <%= hidden_field_tag(:closed_levels, @game_passing.closed_levels.count) %>
+    <%= hidden_field_tag(:team_id, @team_id) %>
     <hr>
   <% end %>
   <br>
@@ -34,7 +35,7 @@
     <% else %>
       <% if @game_passing.closed?(@level) %>
         <div>
-          Код <font color="236400"><b><%= @level.questions.first.answers.first.value %></b></font> вірний.<br><hr>
+          Код <font color="236400"><b><%= @level.team_questions(@team_id).first.team_answers(@team_id).first.value %></b></font> вірний.<br><hr>
         </div>
       <% end %>
     <% end %>
@@ -49,7 +50,7 @@
   <% end %> 
 
   <br>
-  <%= @level.text.html_safe %>
+  <%= @level.team_task(@team_id).html_safe %>
   <br>
 
 

@@ -21,13 +21,13 @@ class GamePassing < ActiveRecord::Base
     of_team(team).of_game(game).first
   end
 
-  def check_answer!(answer, level)
+  def check_answer!(answer, level, team_id)
     answer.strip!
 
-    if correct_answer?(answer, level)
-      answered_question = level.find_questions_by_answer(answer)
+    if correct_answer?(answer, level, team_id)
+      answered_question = level.find_questions_by_answer(answer, team_id)
       pass_question!(answered_question)
-      pass_level!(level) if all_questions_answered?(level)
+      pass_level!(level) if all_questions_answered?(level, team_id)
       true
     else
       false
@@ -60,16 +60,16 @@ class GamePassing < ActiveRecord::Base
     !!finished_at
   end
 
-  def hints_to_show(level = self.current_level)
-    level.hints.select { |hint| hint.ready_to_show?(current_level_entered_at) }
+  def hints_to_show(team_id, level = self.current_level)
+    level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| hint.ready_to_show?(current_level_entered_at) }
   end
 
-  def upcoming_hints(level = self.current_level)
-    level.hints.select { |hint| !hint.ready_to_show?(current_level_entered_at) }
+  def upcoming_hints(team_id, level = self.current_level)
+    level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| !hint.ready_to_show?(current_level_entered_at) }
   end
 
-  def correct_answer?(answer, level)
-    unanswered_questions(level).any? { |question| question.matches_any_answer(answer) }
+  def correct_answer?(answer, level, team_id)
+    unanswered_questions(level, team_id).any? { |question| question.matches_any_answer(answer, team_id) }
   end
 
   def time_at_level
@@ -78,12 +78,12 @@ class GamePassing < ActiveRecord::Base
     '%02d:%02d:%02d' % [hours, minutes, seconds]
   end
 
-  def unanswered_questions(level)
-    level.questions - self.answered_questions
+  def unanswered_questions(level, team_id)
+    level.team_questions(team_id) - answered_questions
   end
 
-  def all_questions_answered?(level)
-    (level.questions - answered_questions).empty?
+  def all_questions_answered?(level, team_id)
+    (level.team_questions(team_id) - answered_questions).empty?
   end
 
   def exit!

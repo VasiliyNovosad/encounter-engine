@@ -1,5 +1,20 @@
-<% level.questions.each_with_index do |question, index| %>
+<% level.questions.each do |question| %>
   <p>
-    <%= "#{index + 1}. #{question.answers.map{|answer| answer.value}.join('<br/>&nbsp;&nbsp;&nbsp;')}".html_safe %>      
+    <%= question.name %>
+    <% if question.team.nil? %>
+        <em> (для всіх)</em>
+    <% else %>
+        <em> (для <%= question.team.name %>)</em>
+    <% end %>
+  </p>
+  <p>
+    <% question.answers.each do |answer| %>
+        <%= answer.value %>
+        <% if answer.team.nil? %>
+            <em> (для всіх)</em>
+        <% else %>
+            <em> (для <%= answer.team.name %>)</em>
+        <% end %>
+    <% end %>
   </p>
 <% end %>

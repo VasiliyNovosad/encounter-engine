@@ -5,7 +5,12 @@
 
 <fieldset>
   <%= level.text.html_safe %>
+  <p>
+    Завдання:
+    <%= render 'tasks', tasks: level.tasks %>
+  </p>
   <br>
+  Підказки:
   <p>
     <%= render 'hints', hints: level.hints %>
   </p>

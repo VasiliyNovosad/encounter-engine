@@ -1,21 +1,21 @@
-class HintsController < ApplicationController
+class TasksController < ApplicationController
   before_action :find_level
   before_action :find_game
-  before_action :find_hint, only: [:edit, :update, :destroy]
   before_action :find_teams, only: [:new, :edit]
+  before_action :find_task, only: [:edit, :update, :destroy]
 
   before_action :ensure_author
   before_action :ensure_game_was_not_started, only: [:new, :create, :edit, :update]
 
   def new
-    @hint = Hint.new
-    @hint.level = @level
+    @task = Task.new
+    @task.level = @level
   end
 
   def create
-    @hint = Hint.create(hint_params)
-    @hint.level = @level
-    if @hint.save
+    @task = Task.create(task_params)
+    @task.level = @level
+    if @task.save
       redirect_to game_level_path(@game, @level)
     else
       render 'new'
@@ -27,7 +27,7 @@ class HintsController < ApplicationController
   end
 
   def update
-    if @hint.update_attributes(hint_params)
+    if @task.update_attributes(task_params)
       redirect_to game_level_path(@level.game, @level)
     else
       render 'edit'
@@ -35,14 +35,14 @@ class HintsController < ApplicationController
   end
 
   def destroy
-    @hint.destroy
+    @task.destroy
     redirect_to game_level_path(@level.game, @level)
   end
 
   protected
 
-  def hint_params
-    params.require(:hint).permit(:level_id, :text, :delay_in_minutes, :team_id)
+  def task_params
+    params.require(:task).permit(:level_id, :text, :team_id)
   end
 
   def find_level
@@ -53,12 +53,11 @@ class HintsController < ApplicationController
     @game = @level.game
   end
 
-  def find_hint
-    @hint = Hint.find(params[:id])
-  end
-
   def find_teams
     @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
   end
 
+  def find_task
+    @task = Task.find(params[:id])
+  end
 end
