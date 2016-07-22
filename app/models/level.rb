@@ -2,7 +2,7 @@ class Level < ActiveRecord::Base
   belongs_to :game
   acts_as_list scope: :game
 
-  has_many :questions, dependent: :destroy
+  has_many :questions, -> { order(:position) }, dependent: :destroy
   has_many :answers, dependent: :destroy
   has_many :hints, -> { order(:delay) }, dependent: :destroy
   has_many :tasks, dependent: :destroy
