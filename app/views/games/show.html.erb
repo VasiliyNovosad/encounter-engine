@@ -107,10 +107,17 @@
 </script>
 
 <% if @game.draft? && !@game.started? && @game.levels && @game.levels.count > 0 %>
-   <%= link_to 'Почати тестування', url_for("/games/start_test/#{@game.id}") %>
+
     <% if game_with_personal? %>
-      для команди:
+        <%= form_tag "/games/start_test/#{@game.id}", method: 'get' do %>
+            <%= label_tag "Почати тестування для команди" %>
+            <%= select_tag(:team_id, options_for_select(@teams.map{ |team| [team.name, team.id] })) %>
+            <%= submit_tag "Старт" %>
+        <% end %>
+    <% else %>
+        <%= link_to 'Почати тестування', url_for("/games/start_test/#{@game.id}") %>
     <% end %>
+
 <% end %>
 
 <% if @game.is_testing? %>

@@ -30,10 +30,10 @@ class Level < ActiveRecord::Base
     team_questions(team_id).count > 1
   end
 
-  def find_questions_by_answer(answer_value)
+  def find_questions_by_answer(answer_value, team_id)
     require 'ee_strings.rb'
-    questions.select do |question|
-      question.answers.any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    team_questions(team_id).select do |question|
+      question.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
     end
   end
 
@@ -55,11 +55,11 @@ class Level < ActiveRecord::Base
 
   def team_task(team_id)
     team_tasks = tasks.where(team_id: team_id).first
-    if !team_tasks.nil?
+    unless team_tasks.nil?
       return team_tasks.text
     end
     team_tasks = tasks.where('team_id IS NULL').first
-    if !team_tasks.nil?
+    unless team_tasks.nil?
       return team_tasks.text
     end
     text

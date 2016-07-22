@@ -2,6 +2,7 @@ var LevelHintUpdater = function() {
     var
     countdownValue = 0
     ,gameId = 0
+    ,teamId = 0
     ,intervalId = null;
 
     var
@@ -67,7 +68,7 @@ var LevelHintUpdater = function() {
         showLoadIndicator();
 
         $.ajax({
-            url: '/play/' + gameId + '/tip', method: 'GET', dataType: 'json',
+            url: '/play/' + gameId + '/tip?team_id='+teamId, method: 'GET', dataType: 'json',
             success: function(data) {
                 hideLoadIndicator();
                 showCountdownContainer();
@@ -92,6 +93,7 @@ var LevelHintUpdater = function() {
                 $loadingIndicator = $('#LevelHintCountdownLoadIndicator');
 
                 gameId = config.gameId;
+                teamId = config.teamId;
                 start(config.initialCountdownValue);
             });
         }

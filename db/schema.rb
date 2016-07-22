@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160719130733) do
+ActiveRecord::Schema.define(version: 20160722061402) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20160719130733) do
     t.datetime "updated_at"
     t.string   "game_type",              default: "linear"
     t.integer  "duration"
+    t.integer  "tested_team_id"
   end
 
   create_table "hints", force: :cascade do |t|

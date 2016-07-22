@@ -8,6 +8,7 @@ class GamesController < ApplicationController
   #before_action :ensure_game_was_not_started, only: [:edit, :update]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
+  before_action :find_teams, only: [:show]
 
   def index
     if params[:user_id].blank?
@@ -79,6 +80,7 @@ class GamesController < ApplicationController
     game.test_date = game.starts_at
     game.starts_at = Time.zone.now + 0.1.second
     game.registration_deadline = nil
+    game.tested_team_id = params[:team_id]
     game.save!
     sleep(rand(1))
 
@@ -91,6 +93,7 @@ class GamesController < ApplicationController
     game.is_testing = 'f'
     game.starts_at = game.test_date
     game.test_date = Time.zone.now
+    game.tested_team_id = nil
     game.save!
 
     game_passing = GamePassing.of_game(game)
@@ -108,7 +111,7 @@ class GamesController < ApplicationController
   protected
 
   def game_params
-    params.require(:game).permit(:name, :description, :game_type, :duration, :starts_at, :registration_deadline, :max_team_number, :is_draft, :is_testing, :author, :test_date)
+    params.require(:game).permit(:name, :description, :game_type, :duration, :starts_at, :registration_deadline, :max_team_number, :is_draft, :is_testing, :author, :test_date, :tested_team_id)
   end
 
   def find_game
@@ -125,6 +128,10 @@ class GamesController < ApplicationController
     else
       @team = nil
     end
+  end
+
+  def find_teams
+    @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
   end
 
   def no_start_time?
