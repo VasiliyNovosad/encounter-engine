@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :find_game, only: [:show, :edit, :update, :delete, :end_game, :destroy, :show_scenario]
+  before_action :find_game, except: [:index, :new, :create]
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
   before_action :ensure_author_if_no_start_time, only: [:show]
@@ -8,7 +8,7 @@ class GamesController < ApplicationController
   #before_action :ensure_game_was_not_started, only: [:edit, :update]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
-  before_action :find_teams, only: [:show]
+  before_action :find_teams, only: [:show, :new_level_order]
 
   def index
     if params[:user_id].blank?
@@ -35,12 +35,9 @@ class GamesController < ApplicationController
   end
 
   def show
+    @teams_for_test = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
     @game_entries = GameEntry.of_game(@game).with_status('new')
-    @teams = []
     @levels = @game.levels
-    GameEntry.of_game(@game).with_status('accepted').each do |entry|
-      @teams << Team.find(entry.team_id)
-    end
     render
   end
 
@@ -62,6 +59,7 @@ class GamesController < ApplicationController
   end
 
   def destroy
+    @game.levels.each { |level| level.destroy }
     @game.destroy
     redirect_to dashboard_path
   end
@@ -106,6 +104,39 @@ class GamesController < ApplicationController
   end
 
   def show_scenario
+  end
+
+  def new_level_order
+    @levels = @game.levels
+    @level_orders = {}
+    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    (1..@levels.count).each do |index|
+      levels = {}
+      @teams.each do |team|
+        ordered_level = LevelOrder.of(@game, team).where(position: index).first
+        new_level = @levels.where(position: index).first
+        levels[team.id] = (ordered_level.nil? ? new_level.id : ordered_level.level_id)
+      end
+      @level_orders[index] = levels
+    end
+    render
+  end
+
+  def create_level_order
+    @levels = @game.levels
+    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    (1..@levels.count).each do |index|
+      @teams.each do |team|
+        selected_level = params["level_id_#{index}_#{team.id}"]
+        level_order = LevelOrder.where(game_id: @game.id, team_id: team.id, position: index).first
+        if level_order.nil?
+          level_order = LevelOrder.create!(game_id: @game.id, team_id: team.id, level_id: selected_level, position: index)
+        else
+          level_order.update!(game_id: @game.id, team_id: team.id, level_id: selected_level, position: index)
+        end
+      end
+    end
+    redirect_to game_path(@game)
   end
 
   protected

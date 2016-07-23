@@ -1,6 +1,7 @@
 class Game < ActiveRecord::Base
   belongs_to :author, class_name: 'User'
   has_many :levels, -> { order(:position) }
+  has_many :level_orders
   has_many :logs, -> { order(:time) }
   has_many :game_entries, class_name: 'GameEntry'
   has_many :game_passings, class_name: 'GamePassing'

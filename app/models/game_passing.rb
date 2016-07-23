@@ -27,7 +27,7 @@ class GamePassing < ActiveRecord::Base
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id)
       pass_question!(answered_question)
-      pass_level!(level) if all_questions_answered?(level, team_id)
+      pass_level!(level, team_id) if all_questions_answered?(level, team_id)
       true
     else
       false
@@ -39,16 +39,21 @@ class GamePassing < ActiveRecord::Base
     save!
   end
 
-  def pass_level!(level)
-    if last_level? && game.game_type == 'linear' ||
-       game.game_type == 'panic' && !closed?(level) && closed_levels.count == game.levels.count - 1
+  def pass_level!(level, team_id)
+    if game.game_type == 'linear' && last_level? ||
+       game.game_type == 'panic' && !closed?(level) && closed_levels.count == game.levels.count - 1 ||
+       game.game_type == 'selected' && last_level_selected?(team_id)
       set_finish_time
     else
       update_current_level_entered_at
+      closed_levels << level.id unless closed? level
+      reset_answered_questions
+      if game.game_type == 'linear'
+        self.current_level = self.current_level.next
+      elsif game.game_type == 'selected'
+        self.current_level = next_selected_level(team_id)
+      end
     end
-    closed_levels << level.id unless closed? level
-    reset_answered_questions
-    self.current_level = self.current_level.next unless game.game_type == 'panic'
     save!
   end
 
@@ -103,14 +108,18 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def autocomplete_level!(level)
+  def autocomplete_level!(level, team_id)
     lock!
     if last_level?
       set_finish_time
     else
       update_current_level_entered_at
       reset_answered_questions
-      self.current_level = self.current_level.next
+      if game.game_type == 'linear'
+        self.current_level = self.current_level.next
+      elsif game.game_type == 'selected'
+        self.current_level = next_selected_level(team_id)
+      end
     end
     save!
   end
@@ -119,6 +128,16 @@ class GamePassing < ActiveRecord::Base
 
   def last_level?
     self.current_level.next.nil?
+  end
+
+  def last_level_selected?(team_id)
+    level_position = LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: current_level.id).first.position
+    LevelOrder.of(game, Team.find_by_id(team_id)).where(position: level_position + 1).first.nil?
+  end
+
+  def next_selected_level(team_id)
+    level_position = LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: current_level.id).first.position
+    Level.find_by_id(LevelOrder.of(game, Team.find_by_id(team_id)).where(position: level_position + 1).first.level_id)
   end
 
   def update_current_level_entered_at

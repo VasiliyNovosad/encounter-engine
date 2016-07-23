@@ -6,6 +6,7 @@ class Team < ActiveRecord::Base
   has_many :hints
   has_many :questions
   has_many :answers
+  has_many :level_orders
 
   validates_uniqueness_of :name, message: 'Команда з такою назвою уже існує'
 
