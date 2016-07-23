@@ -1,6 +1,6 @@
 Гра "<%= link_to @game.name, game_path(@game) %>"
 
-<% if @game.game_type == 'linear' %> 
+<% if @game.game_type == 'linear' || @game.game_type == 'selected' %>
   <table id="results" border="1">
     <thead>
       <tr>
