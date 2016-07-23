@@ -93,6 +93,11 @@
   <br>
 <% end %>
 
+<% if @game.game_type == 'selected' && @teams_for_test.count > 0 %>
+  <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order") %></p>
+<% end %>
+<br>
+<br>
 <%= render 'shared/countdown' %>
 <div id="countdown-example"></div>
 

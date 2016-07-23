@@ -1,4 +1,10 @@
-Порядок проходження рівнів:
+<h2>
+  "<strong><%= @game.name %></strong>"
+  <br>
+  Порядок проходження рівнів:
+</h2>
+<br>
+
 <%= form_tag("/games/#{@game.id}/create_level_order") do %>
   <table>
     <tr>
@@ -16,5 +22,10 @@
         </tr>
     <% end %>
   </table>
-  <%= submit_tag "Заповнити" %>
+  <%= submit_tag "Зберегти" %>
 <% end %>
+<br>
+<p>
+  <%= link_to "Повернутися до гри \"#{@game.name}\"", game_path(@game) %>
+</p>
+<br>
