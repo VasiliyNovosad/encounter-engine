@@ -10,7 +10,7 @@
   <p><label for="max_team_checkbox">Обмежити</label>
   <p><%= f.label :max_team_number %><%= f.text_field :max_team_number %></p>
   <p><%= f.label :is_draft %><%= f.check_box :is_draft %></p>
-  <p><%= f.label :game_type %><%= f.select(:game_type, [['Лінійна', 'linear'],['Паніка', 'panic']]) %></p>
+  <p><%= f.label :game_type %><%= f.select(:game_type, [['Лінійна', 'linear'], ['Паніка', 'panic'], ['Лінійна (вказана)', 'selected']]) %></p>
   <p><%= f.label :duration %><%= f.number_field :duration %></p>
   <%= f.submit "Змінити гру" %>
   <em><%= link_to "(відмінити)", game_path(@game) %></em>

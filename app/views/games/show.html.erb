@@ -33,10 +33,10 @@
 </p>
 
 <p>
-  <em>Послiдовнiсть проходження:</em> <%= @game.game_type == 'linear' ? ' Лiнiйна' : ' Панiка' %>
+  <em>Послiдовнiсть проходження:</em> <%= @game.game_type == 'linear' ? ' Лiнiйна' : @game.game_type == 'panic' ? ' Панiка' : 'Лінійна (вказана)' %>
 </p>
 
-<% unless @game.game_type == 'linear' %>
+<% if @game.game_type == 'panic' %>
   <p>
     <em>Тривалiсть гри:</em> <%= " #{@game.duration} хвилин" %>
   </p>
@@ -108,10 +108,10 @@
 
 <% if @game.draft? && !@game.started? && @game.levels && @game.levels.count > 0 %>
 
-    <% if game_with_personal? %>
+    <% if game_with_personal? || @game.game_type == 'selected' %>
         <%= form_tag "/games/start_test/#{@game.id}", method: 'get' do %>
             <%= label_tag "Почати тестування для команди" %>
-            <%= select_tag(:team_id, options_for_select(@teams.map{ |team| [team.name, team.id] })) %>
+            <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
             <%= submit_tag "Старт" %>
         <% end %>
     <% else %>
