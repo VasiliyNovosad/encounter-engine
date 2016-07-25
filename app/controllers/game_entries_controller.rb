@@ -3,8 +3,8 @@ class GameEntriesController < ApplicationController
   before_action :find_game, only: :new
   before_action :find_team, only: :new
   before_action :find_entry, except: :new
-  before_action :ensure_author, only: [:accept, :reject]
-  before_action :ensure_team_captain, except: [:accept, :reject]
+  before_action :ensure_author, only: [:accept, :reject, :reaccept]
+  before_action :ensure_team_captain, except: [:accept, :reject, :reaccept]
 
   def new
     if @game.can_request?
@@ -44,6 +44,13 @@ class GameEntriesController < ApplicationController
     @game.free_place_of_team!
     redirect_to dashboard_path
   end
+
+  def reaccept
+    @entry.reopen! if @entry.status == 'accepted'
+    redirect_to game_path(@game)
+  end
+
+
 
   protected
 

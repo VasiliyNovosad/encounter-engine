@@ -1,13 +1,17 @@
 <fieldset>
   <legend>
-    Беруть участь команди (<%= teams.count %>):
+    Беруть участь команди (<%= accepted_game_entries.count %>):
   </legend>
 
-  <% teams.each do |team| %>
+  <% accepted_game_entries.each do |entry| %>
     <p>
       <strong>
-        <%= teams.index(team) + 1 %>. <%= link_to team.name, team_path(team) if user_signed_in? %><%= team.name unless user_signed_in? %>
+        <%= accepted_game_entries.index(entry) + 1 %>. <%= link_to entry.team.name, team_path(entry.team) if user_signed_in? %>
+        <%= entry.team.name unless user_signed_in? %>
       </strong>
+      <em>
+        <%= link_to "(відмінити)", url_for("/game_entries/reaccept/#{entry.id}") if user_signed_in? && current_user.author_of?(@game) %>
+      </em>
     </p>
   <% end %>
 </fieldset>

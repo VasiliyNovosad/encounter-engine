@@ -4,7 +4,7 @@ class GamePassingsController < ApplicationController
   before_action :find_game, except: [:exit_game]
   before_action :find_game_by_id, only: [:exit_game]
   before_action :find_team, except: [:show_results, :index]
-  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer]
+  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level]
   before_action :find_or_create_game_passing, except: [:show_results, :index]
   before_action :authenticate_user!, except: [:index, :show_results]
   before_action :ensure_game_is_started
@@ -89,7 +89,7 @@ class GamePassingsController < ApplicationController
     unless @game_passing.finished?
       level = Level.find(level_id)
       if level == @game_passing.current_level
-        @game_passing.autocomplete_level!(level, @team.id)
+        @game_passing.autocomplete_level!(level, @team_id)
         save_log(level)
       end
     end

@@ -162,7 +162,7 @@ class GamesController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
+    @accepted_game_entries = GameEntry.of_game(@game).with_status('accepted')
   end
 
   def no_start_time?

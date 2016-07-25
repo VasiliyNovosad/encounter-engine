@@ -54,7 +54,7 @@ class TasksController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game).with_status('accepted').map{ |game_entry| game_entry.team }
+    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
   end
 
   def find_task

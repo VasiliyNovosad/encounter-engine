@@ -110,7 +110,8 @@ class GamePassing < ActiveRecord::Base
 
   def autocomplete_level!(level, team_id)
     lock!
-    if last_level?
+    if game.game_type == 'linear' && last_level? ||
+       game.game_type == 'selected' && last_level_selected?(team_id)
       set_finish_time
     else
       update_current_level_entered_at
@@ -122,6 +123,10 @@ class GamePassing < ActiveRecord::Base
       end
     end
     save!
+  end
+
+  def current_level_position(team_id)
+    LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: current_level.id).first.position
   end
 
   protected

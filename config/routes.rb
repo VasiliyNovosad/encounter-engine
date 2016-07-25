@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get 'game_entries/cancel/:id' => 'game_entries#cancel'
   get 'game_entries/accept/:id' => 'game_entries#accept'
   get 'game_entries/reject/:id' => 'game_entries#reject'
+  get 'game_entries/reaccept/:id' => 'game_entries#reaccept'
 
   match '/game_passings/show_results', to: 'game_passings#show_results', via: 'get'
   match '/play/:game_id/tip',  to: 'game_passings#get_current_level_tip', via: 'get'
