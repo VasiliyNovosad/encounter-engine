@@ -9,7 +9,7 @@
 
   <%= form_tag("/play/#{@game.id}", method: "post") do %>
     <br>Код:
-    <%= text_field_tag(:answer) %>
+    <%= text_field_tag(:answer, nil, autofocus: true) %>
     <%= submit_tag " надіслати " %>
     <hr>
   <% end %>

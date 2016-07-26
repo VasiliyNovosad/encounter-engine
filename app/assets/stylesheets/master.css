@@ -84,8 +84,9 @@ h3 {
   padding: 15px;
   border-left: 1px solid silver;
   min-height: 400px;
-  width: 400px;
+  /*width: 400px;*/
 }
+
 p {
   color: #000;
   background-color: #fff;

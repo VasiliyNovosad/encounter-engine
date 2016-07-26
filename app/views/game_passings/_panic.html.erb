@@ -13,7 +13,7 @@
 
   <%= form_tag("/play/#{@game.id}", method: "post") do %>
     <br>
-    Код: <%= text_field_tag(:answer) %> <%= submit_tag " надіслати " %>
+    Код: <%= text_field_tag(:answer, nil, autofocus: true) %> <%= submit_tag " надіслати " %>
     <%= hidden_field_tag(:level_id, @level.id) %>
     <%= hidden_field_tag(:closed_level, @game_passing.closed?(@level)) %>
     <%= hidden_field_tag(:closed_levels, @game_passing.closed_levels.count) %>

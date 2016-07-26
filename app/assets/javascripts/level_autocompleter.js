@@ -38,7 +38,7 @@ var LevelCompleter = function() {
         $.ajax({
             url: '/play/' + gameId + '/autocomplete_level?level=' + levelId, method: 'GET',
             success: function() {
-                window.location.reload();
+                window.location = '/play/' + gameId;
             }
         });
     };
