@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-ruby '2.2.1'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
@@ -14,11 +13,19 @@ end
 gem 'puma'
 # Use sqlite3 as the database for Active Record
 group :development do
-  gem 'sqlite3'
+  gem 'sqlite3', '~> 1.3', '>=1.3.10'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false
+end
+
+group :test do
+  gem 'cucumber-rails', require: false
+end
+
+group :development, :test do
+  gem 'rspec-rails'
 end
 
 # Use SCSS for stylesheets
@@ -44,7 +51,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'bcrypt-ruby', '3.1.2'
 # gem 'bcrypt'
 gem 'devise'
-gem 'acts_as_list', git: 'git://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
+gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
 gem 'default_value_for', '~> 3.0.0'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
