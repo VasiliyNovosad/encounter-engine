@@ -16,7 +16,7 @@ class Team < ActiveRecord::Base
 
   def current_level_in(game)
     game_passing = GamePassing.of(self, game)
-    game_passing.try :current_level
+    game_passing.try(:current_level)
   end
 
   def finished?(game)
