@@ -16,7 +16,7 @@ class Invitation < ActiveRecord::Base
                           scope: [:to_team_id],
                           message: 'Запрошення даному користувачу уже відправлено і він ще не відповів'
 
-  #validate :recepient_is_not_member_of_any_team
+  validate :recepient_is_not_member_of_team
 
   before_validation :find_user
 
@@ -29,7 +29,7 @@ class Invitation < ActiveRecord::Base
     self.for_user = User.find_by_nickname(recepient_nickname)
   end
 
-  def recepient_is_not_member_of_any_team
-    errors.add_to_base('Користувач уже є членом однієй із команд') if for_user && for_user.member_of_any_team?
+  def recepient_is_not_member_of_team
+    errors.add(:base, 'Користувач уже є членом даної команди') if for_user && for_user.team == to_team
   end
 end
