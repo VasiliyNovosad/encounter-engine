@@ -22,6 +22,9 @@ Rails.application.routes.draw do
       resources :questions do
         resources :answers
       end
+      resources :bonuses do
+        resources :bonus_answers
+      end
 
       get 'move_up', on: :member
       get 'move_down', on: :member
