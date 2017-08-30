@@ -1,0 +1,16 @@
+<h2>
+  Завдання "<strong><%= link_to @level.name, game_level_path(@game, @level) %></strong>"
+</h2>
+
+<p>
+  <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
+</p>
+
+<br>
+
+<%= form_for @bonus, url: game_level_bonuse_path(@game, @level, @bonus) do |f| %>
+  <p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
+  <p><%= f.label "Назва" %><%= f.text_field :name %></p>
+  <%= f.submit "Змінити" %>
+  <em><%= link_to "(відмінити)", game_level_bonuse_path(@game, @level, @bonus) %></em>
+<% end %>
