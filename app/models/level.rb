@@ -39,6 +39,10 @@ class Level < ActiveRecord::Base
     team_questions(team_id).count > 1
   end
 
+  def has_bonuses?(team_id)
+    team_bonuses(team_id).count > 0
+  end
+
   def find_questions_by_answer(answer_value, team_id)
     require 'ee_strings.rb'
     team_questions(team_id).select do |question|

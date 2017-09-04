@@ -14,8 +14,8 @@ class GamePassingsController < ApplicationController
   before_action :ensure_team_member, except: [:index, :show_results]
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :ensure_author, only: [:index]
-  #before_action :get_uniq_level_codes, only: [:show_current_level]
-  #before_action :get_answered_questions, only: [:show_current_level]
+  # before_action :get_uniq_level_codes, only: [:show_current_level]
+  # before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
     if @game_passing.finished_at.nil?
@@ -25,6 +25,7 @@ class GamePassingsController < ApplicationController
                 @game_passing.current_level
               end
       get_uniq_level_codes(@level)
+      get_answered_bonuses(@level) unless @game.game_type == 'panic'
       get_answered_questions(@level) unless @game.game_type == 'panic'
       render layout: 'in_game'
     else
@@ -60,6 +61,7 @@ class GamePassingsController < ApplicationController
         render 'show_results'
       else
         get_uniq_level_codes(@level)
+        get_answered_bonuses(@level) unless @game.game_type == 'panic'
         get_answered_questions(@level) unless @game.game_type == 'panic'
         render 'show_current_level', layout: 'in_game'
       end
@@ -171,6 +173,23 @@ class GamePassingsController < ApplicationController
       @sectors << { position: question.position,
                     name: question.name,
                     value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.team_correct_answer(@team_id)}</font></b>" : value }
+    end
+  end
+
+  def get_answered_bonuses(level)
+    @bonuses = []
+    return unless level.has_bonuses?(@team_id)
+    answered_bonuses = @game_passing.answered_bonuses
+    @bonuses = @game_passing.current_level.team_bonuses(@team_id).map do |bonus|
+      {
+        position: bonus.position,
+        name: bonus.name,
+        answered: answered_bonuses.include?(bonus),
+        value: answered_bonuses.include?(bonus) ? "<b><font color=\"236400\">#{bonus.team_correct_answer(@team_id)}</font></b>" : nil,
+        task: bonus.task,
+        help: answered_bonuses.include?(bonus) ? bonus.help : nil,
+        award: answered_bonuses.include?(bonus) ? bonus.award_time : nil
+      }
     end
   end
 end

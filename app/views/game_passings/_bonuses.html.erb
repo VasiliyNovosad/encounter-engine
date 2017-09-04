@@ -1,0 +1,5 @@
+<ul>
+  <% @bonuses.each do |bonus| %>
+      <li><%= "#{bonus[:name]}: #{bonus[:value]}".html_safe %></li>
+  <% end %>
+</ul>
