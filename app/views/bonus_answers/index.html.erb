@@ -13,14 +13,14 @@
   <% @bonus_answers.each do |answer| %>
   <tr id="answer-<%= answer.id %>">
     <td><%= answer.value %></td>
-    <td><%= link_to "(видалити)", game_level_bonuse_bonus_answer_path(@game, @level, @bonus, answer), method: :delete, data: { confirm: 'Ви впевнені?' }  %></td>
+    <td><%= link_to "(видалити)", game_level_bonus_bonus_answer_path(@game, @level, @bonus, answer), method: :delete, data: { confirm: 'Ви впевнені?' }  %></td>
   </tr>
 <% end %>
 </table>
 
 <br>
 
-<%= form_for @bonus_answer, url: game_level_bonuse_bonus_answers_path(@game, @level, @bonus) do |f| %>
+<%= form_for @bonus_answer, url: game_level_bonus_bonus_answers_path(@game, @level, @bonus) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  
   <p><%= f.label "Ще один варіант коду" %><%= f.text_field :value %></p>
   <%= f.submit "Додати варіант коду" %>

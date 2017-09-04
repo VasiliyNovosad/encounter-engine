@@ -1,14 +1,14 @@
-<% level.questions.each do |question| %>
+<% bonuses.each do |bonus| %>
   <p>
-    <%= question.name %>
-    <% if question.team.nil? %>
+    <%= bonus.name %>
+    <% if bonus.team.nil? %>
         <em> (для всіх)</em>
     <% else %>
-        <em> (для <%= question.team.name %>)</em>
+        <em> (для <%= bonus.team.name %>)</em>
     <% end %>
   </p>
   <p>
-    <% question.answers.each do |answer| %>
+    <% bonus.bonus_answers.each do |answer| %>
         <%= answer.value %>
         <% if answer.team.nil? %>
             <em> (для всіх)</em>
@@ -17,5 +17,4 @@
         <% end %>
     <% end %>
   </p>
-  <br>
 <% end %>

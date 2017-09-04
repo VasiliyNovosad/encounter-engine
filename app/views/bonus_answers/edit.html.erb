@@ -4,7 +4,7 @@
 
 <br>
 
-<%= form_for @bonus_answer, url: game_level_bonuse_bonus_answer_path(@game, @level, @bonus, @bonus_answer) do |f| %>
+<%= form_for @bonus_answer, url: game_level_bonus_bonus_answer_path(@game, @level, @bonus, @bonus_answer) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
     <%= render 'form', f: f %>

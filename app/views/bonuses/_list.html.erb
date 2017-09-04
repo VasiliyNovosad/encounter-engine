@@ -9,12 +9,21 @@
                   <em>Для </em> <strong><%= link_to bonus.team.name, team_path(bonus.team) %></strong>:
               <% end %>
               <em>
-                <%= link_to "(редагувати)", edit_game_level_bonuse_path(bonus.level.game, bonus.level, bonus) %>
-                <%= link_to "(видалити)", game_level_bonuse_path(bonus.level.game, bonus.level, bonus), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+                <%= link_to "(редагувати)", edit_game_level_bonus_path(bonus.level.game, bonus.level, bonus) %>
+                <%= link_to "(видалити)", game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :delete, data: { confirm: 'Ви впевнені?' } %>
               </em>
             </legend>
             <p>
               <strong><%= bonus.name %>:</strong>
+            </p>
+            <p>
+              <strong>Завдання: </strong><%= bonus.task.html_safe %>
+            </p>
+            <p>
+              <strong>Підказка: </strong><%= bonus.help.html_safe %>
+            </p>
+            <p>
+              <strong>Винагорода: </strong><%= bonus.award_time %> секунд
             </p>
             <% bonus.bonus_answers.each do |answer| %>
               <p>
@@ -24,12 +33,12 @@
                 <% else %>
                     <em> (для </em> <strong><%= link_to answer.team.name, team_path(answer.team) %></strong>)
                 <% end %>
-                <%= link_to "(редагувати)", edit_game_level_bonuse_bonus_answer_path(@game, @level, bonus, answer) %>
-                <%= link_to "(видалити)", game_level_bonuse_bonus_answer_path(@game, @level, bonus, answer), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+                <%= link_to "(редагувати)", edit_game_level_bonus_bonus_answer_path(@game, @level, bonus, answer) %>
+                <%= link_to "(видалити)", game_level_bonus_bonus_answer_path(@game, @level, bonus, answer), method: :delete, data: { confirm: 'Ви впевнені?' } %>
               </p>
             <% end %>
             <br>
-            <%= link_to "Додати відповідь", new_game_level_bonuse_bonus_answer_path(@game, @level, bonus) %>
+            <%= link_to "Додати відповідь", new_game_level_bonus_bonus_answer_path(@game, @level, bonus) %>
           </fieldset>
         </div>
         <br>

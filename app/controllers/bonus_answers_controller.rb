@@ -53,7 +53,7 @@ class BonusAnswersController < ApplicationController
     @level = Level.find(params[:level_id])
   end
 
-  def find_question
+  def find_bonus
     @bonus = Bonus.find(params[:bonus_id])
   end
 
