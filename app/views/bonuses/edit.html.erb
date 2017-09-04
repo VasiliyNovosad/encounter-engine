@@ -9,11 +9,8 @@
 <br>
 
 <%= form_for @bonus, url: game_level_bonus_path(@game, @level, @bonus) do |f| %>
-  <p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
-  <p><%= f.label "Назва" %><%= f.text_field :name %></p>
-  <p><%= f.label "Завдання" %><%= f.text_field :task %></p>
-  <p><%= f.label "Підказка" %><%= f.text_field :help %></p>
-  <p><%= f.label "Винагорода" %><%= f.text_field :award_time %> секунд</p>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= render 'form', f: f %>
   <%= f.submit "Змінити" %>
   <em><%= link_to "(відмінити)", game_level_bonus_path(@game, @level, @bonus) %></em>
 <% end %>

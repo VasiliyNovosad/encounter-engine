@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170830141456) do
+ActiveRecord::Schema.define(version: 20170904141015) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
@@ -33,8 +33,8 @@ ActiveRecord::Schema.define(version: 20170830141456) do
   create_table "bonuses", force: :cascade do |t|
     t.integer  "level_id"
     t.string   "name"
-    t.string   "task"
-    t.string   "help"
+    t.text     "task"
+    t.text     "help"
     t.integer  "team_id"
     t.integer  "award_time"
     t.integer  "position"
