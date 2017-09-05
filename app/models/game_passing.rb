@@ -14,7 +14,7 @@ class GamePassing < ActiveRecord::Base
   scope :of_team, ->(team) { where(team_id: team.id) }
   scope :ended_by_author, -> { where(status: 'ended').order('current_level_id DESC') }
   scope :exited, -> { where(status: 'exited').order('finished_at DESC') }
-  scope :finished, -> { where('finished_at IS NOT NULL').order('(finished_at - sum_bonuses) ASC') }
+  scope :finished, -> { where('finished_at IS NOT NULL').order('(finished_at) ASC') }
   scope :finished_before, ->(time) { where('finished_at < ?', time) }
 
   before_create :update_current_level_entered_at
