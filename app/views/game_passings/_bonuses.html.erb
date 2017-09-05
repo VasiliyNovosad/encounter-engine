@@ -1,10 +1,13 @@
 <ul>
   <% @bonuses.each do |bonus| %>
-      <li><p><%= "#{bonus[:answered] ? "#{bonus[:name]}: бонус #{bonus[:award]} секунд" : bonus[:name]}" %></p>
+      <li>
       <% if bonus[:answered] %>
+        <p class="bonus_answered"><b><%= "#{bonus[:award] > 0 ? "#{bonus[:name]}: нагорода #{bonus[:award]} секунд" : "#{bonus[:name]}: виконано"}" %></b></p>
         <%= bonus[:help].html_safe %>
       <% else %>
+        <p class="bonus"><b><%= bonus[:name] %></b></p>
         <%= bonus[:task].html_safe %>
       <% end %></li>
+      <br>
   <% end %>
 </ul>

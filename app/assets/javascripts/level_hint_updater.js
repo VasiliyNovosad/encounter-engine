@@ -59,8 +59,8 @@ var LevelHintUpdater = function() {
         $loadingIndicator.hide();
     }
 
-    ,appendHint = function(hintNum, hintText) {
-        $hintsContainer.append('<fieldset><legend>Підказка ' + hintNum + '</legend>' + hintText + '</br></fieldset>');
+    ,appendHint = function(hintNum, hintText, hintCount) {
+        $hintsContainer.append('<fieldset><legend>Підказка ' + hintNum + ' із ' + hintCount + '</legend>' + hintText + '</br></fieldset>');
     }
 
     ,loadHint = function() {
@@ -73,7 +73,7 @@ var LevelHintUpdater = function() {
                 hideLoadIndicator();
                 showCountdownContainer();
 
-                appendHint(data.hint_num, data.hint_text);
+                appendHint(data.hint_num, data.hint_text, data.hint_count);
 
                 if ( !data.next_available_in ) {
                     $countdownContainer.text('Підказок більше не буде');
@@ -82,7 +82,7 @@ var LevelHintUpdater = function() {
                 }
             }
         });
-    }
+    };
 
     return {
         setup: function(config) {

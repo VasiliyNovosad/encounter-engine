@@ -44,6 +44,7 @@ class GamePassingsController < ApplicationController
 
     render json: { hint_num: hints_to_show.length,
                    hint_text: hints_to_show.last.text.html_safe,
+                   hint_count: @game_passing.hints_to_show(@team_id).count + @game_passing.upcoming_hints(@team_id).count,
                    next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
   end
 
