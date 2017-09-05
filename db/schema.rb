@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20170905090645) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
     t.integer  "level_id"
@@ -54,13 +57,13 @@ ActiveRecord::Schema.define(version: 20170905090645) do
     t.integer  "current_level_id"
     t.datetime "finished_at"
     t.datetime "current_level_entered_at"
-    t.text     "answered_questions",       limit: 255
+    t.text     "answered_questions"
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "closed_levels"
     t.text     "answered_bonuses"
-    t.integer  "sum_bonuses",                          default: 0
+    t.integer  "sum_bonuses",              default: 0
   end
 
   create_table "games", force: :cascade do |t|
@@ -180,8 +183,8 @@ ActiveRecord::Schema.define(version: 20170905090645) do
     t.string   "unconfirmed_email"
   end
 
-  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
