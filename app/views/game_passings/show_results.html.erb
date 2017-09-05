@@ -8,6 +8,7 @@
         <th>Команда</th>
         <th>Час старту</th>
         <th>Час фінішу</th>
+        <th>Сума бонусів</th>
         <th>Час гри</th>
       </tr>
     </thead>
@@ -25,7 +26,8 @@
               <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
             <% end %>
           </td>
-          <td><%= Time.at(game_passing.finished_at - @game.starts_at).utc.strftime("%H:%M:%S") %> </td>
+          <td><%= Time.at(game_passing.sum_bonuses).utc.strftime("%H:%M:%S") %></td>
+          <td><%= Time.at(game_passing.finished_at - @game.starts_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S") %> </td>
         </tr>
       <% end %>
       <% (game_passings.ended_by_author - game_passings.finished).each do |game_passing| %>
@@ -36,6 +38,7 @@
             <td>
               Не фінішували
             </td>
+            <td><%= game_passing.sum_bonuses %></td>
             <td>-</td>
           </tr>
         <% end %>

@@ -1,6 +1,8 @@
 class GamePassing < ActiveRecord::Base
   serialize :answered_questions
   default_value_for :answered_questions, []
+  serialize :answered_bonuses
+  default_value_for :answered_bonuses, []
   serialize :closed_levels
   default_value_for :closed_levels, []
 
@@ -12,7 +14,7 @@ class GamePassing < ActiveRecord::Base
   scope :of_team, ->(team) { where(team_id: team.id) }
   scope :ended_by_author, -> { where(status: 'ended').order('current_level_id DESC') }
   scope :exited, -> { where(status: 'exited').order('finished_at DESC') }
-  scope :finished, -> { where('finished_at IS NOT NULL').order('finished_at ASC') }
+  scope :finished, -> { where('finished_at IS NOT NULL').order('(finished_at - sum_bonuses) ASC') }
   scope :finished_before, ->(time) { where('finished_at < ?', time) }
 
   before_create :update_current_level_entered_at
@@ -23,19 +25,33 @@ class GamePassing < ActiveRecord::Base
 
   def check_answer!(answer, level, team_id)
     answer.strip!
+    is_correct_answer = false
+    is_correct_bonus_answer = false
 
+    if correct_bonus_answer?(answer, level, team_id)
+      answered_bonus = level.find_bonuses_by_answer(answer, team_id)
+      pass_bonus!(answered_bonus)
+      is_correct_bonus_answer = true
+    end
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id)
       pass_question!(answered_question)
       pass_level!(level, team_id) if all_questions_answered?(level, team_id)
-      true
-    else
-      false
+      is_correct_answer = true
     end
+    is_correct_bonus_answer || is_correct_answer
   end
 
   def pass_question!(questions)
     questions.each { |question| answered_questions << question }
+    save!
+  end
+
+  def pass_bonus!(bonuses)
+    bonuses.each do |bonus|
+      answered_bonuses << bonus
+      self.sum_bonuses = self.sum_bonuses + bonus.award_time
+    end
     save!
   end
 
@@ -77,6 +93,10 @@ class GamePassing < ActiveRecord::Base
     unanswered_questions(level, team_id).any? { |question| question.matches_any_answer(answer, team_id) }
   end
 
+  def correct_bonus_answer?(answer, level, team_id)
+    unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
+  end
+
   def time_at_level
     difference = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time - current_level_entered_at
     hours, minutes, seconds = seconds_fraction_to_time(difference)
@@ -89,6 +109,10 @@ class GamePassing < ActiveRecord::Base
 
   def all_questions_answered?(level, team_id)
     (level.team_questions(team_id) - answered_questions).empty?
+  end
+
+  def unanswered_bonuses(level, team_id)
+    level.team_bonuses(team_id) - answered_bonuses
   end
 
   def exit!

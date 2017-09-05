@@ -14,8 +14,8 @@ class GamePassingsController < ApplicationController
   before_action :ensure_team_member, except: [:index, :show_results]
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :ensure_author, only: [:index]
-  #before_action :get_uniq_level_codes, only: [:show_current_level]
-  #before_action :get_answered_questions, only: [:show_current_level]
+  # before_action :get_uniq_level_codes, only: [:show_current_level]
+  # before_action :get_answered_questions, only: [:show_current_level]
 
   def show_current_level
     if @game_passing.finished_at.nil?
@@ -25,6 +25,7 @@ class GamePassingsController < ApplicationController
                 @game_passing.current_level
               end
       get_uniq_level_codes(@level)
+      get_answered_bonuses(@level) unless @game.game_type == 'panic'
       get_answered_questions(@level) unless @game.game_type == 'panic'
       render layout: 'in_game'
     else
@@ -43,6 +44,7 @@ class GamePassingsController < ApplicationController
 
     render json: { hint_num: hints_to_show.length,
                    hint_text: hints_to_show.last.text.html_safe,
+                   hint_count: @game_passing.hints_to_show(@team_id).count + @game_passing.upcoming_hints(@team_id).count,
                    next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
   end
 
@@ -56,10 +58,12 @@ class GamePassingsController < ApplicationController
       @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       save_log(@level) if @game_passing.current_level.id || @game.game_type == 'panic'
       @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id)
+      @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       if @game_passing.finished?
         render 'show_results'
       else
         get_uniq_level_codes(@level)
+        get_answered_bonuses(@level) unless @game.game_type == 'panic'
         get_answered_questions(@level) unless @game.game_type == 'panic'
         render 'show_current_level', layout: 'in_game'
       end
@@ -119,6 +123,9 @@ class GamePassingsController < ApplicationController
 
   def find_team
     @team = current_user.team
+    if @game.is_testing? && !@game.tested_team_id.nil?
+      @team = Team.find(@game.tested_team_id)
+    end
   end
 
   def find_team_id
@@ -159,6 +166,11 @@ class GamePassingsController < ApplicationController
         correct_answers << answer.value
       end
     end
+    level.team_bonuses(@team_id).each do |bonus|
+      bonus.team_answers(@team_id).each do |answer|
+        correct_answers << answer.value
+      end
+    end
     @entered_correct_answers = entered_answers & correct_answers
   end
 
@@ -172,5 +184,23 @@ class GamePassingsController < ApplicationController
                     name: question.name,
                     value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.team_correct_answer(@team_id)}</font></b>" : value }
     end
+  end
+
+  def get_answered_bonuses(level)
+    @bonuses = []
+    return unless level.has_bonuses?(@team_id)
+    answered_bonuses = @game_passing.answered_bonuses
+    @bonuses = @game_passing.current_level.team_bonuses(@team_id).map do |bonus|
+      {
+        position: bonus.position,
+        name: bonus.name,
+        answered: answered_bonuses.include?(bonus),
+        value: answered_bonuses.include?(bonus) ? "<b><font color=\"236400\">#{bonus.team_correct_answer(@team_id)}</font></b>" : nil,
+        task: bonus.task,
+        help: answered_bonuses.include?(bonus) ? bonus.help : nil,
+        award: answered_bonuses.include?(bonus) ? bonus.award_time : nil
+      }
+    end
+    @bonuses
   end
 end

@@ -211,3 +211,11 @@ textarea {
 #LevelCompleteCountdownContainer, #LevelHintCountdownContainer {
     color: #ff570a;
 }
+
+.bonus {
+    color: #33ccff;
+}
+
+.bonus_answered {
+    color: #4d9b12;
+}

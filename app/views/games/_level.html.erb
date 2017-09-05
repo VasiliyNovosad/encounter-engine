@@ -10,10 +10,20 @@
     <%= render 'tasks', tasks: level.tasks %>
   </p>
   <br>
-  Підказки:
-  <p>
-    <%= render 'hints', hints: level.hints %>
-  </p>
+  <% if level.hints.count > 0 %>
+    Підказки:
+    <p>
+      <%= render 'hints', hints: level.hints %>
+    </p>
+    <br>
+  <% end %>
+  <% if level.bonuses.count > 0 %>
+    Бонуси:
+    <p>
+      <%= render 'bonuses', bonuses: level.bonuses %>
+    </p>
+    <br>
+  <% end %>
   Відповіді:
   <p>
     <%= render 'answers', level: level %>

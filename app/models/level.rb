@@ -6,6 +6,7 @@ class Level < ActiveRecord::Base
   has_many :answers, dependent: :destroy
   has_many :hints, -> { order(:delay) }, dependent: :destroy
   has_many :tasks, dependent: :destroy
+  has_many :bonuses, -> { order(:position) }, dependent: :destroy
 
   # validates :text, presence: { message: 'Не введено текст завдання' }, if: :tasks_not_presence?
   validates :game, presence: true
@@ -26,14 +27,33 @@ class Level < ActiveRecord::Base
     questions.empty? ? nil : questions.first.answers.first.value
   end
 
+  def bonus_correct_answer=(answer)
+    bonuses.build(correct_answer: answer)
+  end
+
+  def bonus_correct_answer
+    bonuses.empty? ? nil : bonuses.first.bonus_answers.first.value
+  end
+
   def multi_question?(team_id)
     team_questions(team_id).count > 1
+  end
+
+  def has_bonuses?(team_id)
+    team_bonuses(team_id).count > 0
   end
 
   def find_questions_by_answer(answer_value, team_id)
     require 'ee_strings.rb'
     team_questions(team_id).select do |question|
       question.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    end
+  end
+
+  def find_bonuses_by_answer(answer_value, team_id)
+    require 'ee_strings.rb'
+    team_bonuses(team_id).select do |bonus|
+      bonus.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
     end
   end
 
@@ -63,6 +83,10 @@ class Level < ActiveRecord::Base
       return team_tasks.text
     end
     text
+  end
+
+  def team_bonuses(team_id)
+    bonuses.where("team_id IS NULL OR team_id = #{team_id}")
   end
 
 end

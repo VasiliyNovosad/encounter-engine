@@ -1,0 +1,14 @@
+<p>
+  Нова відповідь для бонуса "<%= @bonus.name %>" до завдання "<%= link_to @level.name, game_level_path(@game, @level) %>" гри "<%= link_to @game.name, game_path(@game) %>"
+</p>
+
+<br>
+
+<%= form_for @bonus_answer, url: game_level_bonus_bonus_answers_path(@game, @level, @bonus) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+
+    <%= render 'form', f: f %>
+
+    <%= f.submit "Додати відповідь", style: "width:170px" %>
+    <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
+<% end %>

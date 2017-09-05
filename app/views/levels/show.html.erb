@@ -56,6 +56,20 @@
   </p>
 </fieldset>
 <br>
+<fieldset>
+  <legend>
+    Бонуси:
+  </legend>
+
+  <p>
+    <%= render 'bonuses/list', bonuses: @level.bonuses %>
+  </p>
+
+  <p>
+    <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
+  </p>
+</fieldset>
+<br>
 <p>
   <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>
 </p>
