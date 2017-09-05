@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170904143611) do
+ActiveRecord::Schema.define(version: 20170905090645) do
 
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 20170904143611) do
     t.datetime "updated_at"
     t.text     "closed_levels"
     t.text     "answered_bonuses"
+    t.integer  "sum_bonuses",                          default: 0
   end
 
   create_table "games", force: :cascade do |t|

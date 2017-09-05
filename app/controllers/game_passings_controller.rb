@@ -57,6 +57,7 @@ class GamePassingsController < ApplicationController
       @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       save_log(@level) if @game_passing.current_level.id || @game.game_type == 'panic'
       @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id)
+      @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       if @game_passing.finished?
         render 'show_results'
       else
@@ -121,6 +122,9 @@ class GamePassingsController < ApplicationController
 
   def find_team
     @team = current_user.team
+    if @game.is_testing? && !@game.tested_team_id.nil?
+      @team = Team.find(@game.tested_team_id)
+    end
   end
 
   def find_team_id
@@ -161,6 +165,11 @@ class GamePassingsController < ApplicationController
         correct_answers << answer.value
       end
     end
+    level.team_bonuses(@team_id).each do |bonus|
+      bonus.team_answers(@team_id).each do |answer|
+        correct_answers << answer.value
+      end
+    end
     @entered_correct_answers = entered_answers & correct_answers
   end
 
@@ -191,5 +200,6 @@ class GamePassingsController < ApplicationController
         award: answered_bonuses.include?(bonus) ? bonus.award_time : nil
       }
     end
+    @bonuses
   end
 end
