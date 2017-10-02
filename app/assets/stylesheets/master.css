@@ -80,8 +80,8 @@ h3 {
 }
 
 #main-container {
-  margin: 5px 5px 5px 260px;
-  padding: 15px;
+  margin: 5px 5px 5px 180px;
+  padding: 0;
   border-left: 1px solid silver;
   min-height: 400px;
   /*width: 400px;*/
