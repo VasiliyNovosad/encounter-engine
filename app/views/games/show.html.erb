@@ -103,7 +103,7 @@
 
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
-    var seconds_to_game = <%= (@game.starts_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time) %>;
+    var seconds_to_game = <%= (@game.starts_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time + 1) %>;
     console.log(seconds_to_game);
 //    var date = new Date();
 //    date.setMilliseconds(date.getTime() + 1000 * seconds_to_game);
