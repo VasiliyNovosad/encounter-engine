@@ -4,7 +4,7 @@
 </h3>
 
 <fieldset>
-  <%= level.text.html_safe %>
+  <%= level.text.html_safe unless level.text.nil?%>
   <p>
     Завдання:
     <%= render 'tasks', tasks: level.tasks %>
