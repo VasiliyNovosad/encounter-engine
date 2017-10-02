@@ -73,7 +73,7 @@ class GamesController < ApplicationController
 
   def start_test
     game = find_game
-    game.is_draft = 'f'
+    # game.is_draft = 'f'
     game.is_testing = 't'
     game.test_date = game.starts_at
     game.starts_at = Time.zone.now + 0.1.second
@@ -87,7 +87,7 @@ class GamesController < ApplicationController
 
   def finish_test
     game = find_game
-    game.is_draft = 't'
+    # game.is_draft = 't'
     game.is_testing = 'f'
     game.starts_at = game.test_date
     game.test_date = Time.zone.now
