@@ -5,8 +5,8 @@ body {
 }
 
 * {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   text-decoration: none;
 }
 
@@ -37,7 +37,7 @@ html {
   height: 15px;
 }
 hr {
-  border: 0px;
+  border: 0;
   color: #ccc;
   background-color: #cdcdcd;
   height: 1px;

@@ -15,26 +15,26 @@
       prefix: "Лишилось: ",
       finish : function() {
         <% if user_signed_in? and current_user.author_of?(@game) %>
-          return
+          return;
         <% end %>
         <% unless @game.finished_teams %>
-          return
+          return;
         <% end %>
         <% unless @game.levels && @game.levels.count > 0 %>
-          return
+          return;
         <% end %>
         <% if @game.draft? %>
-          return
+          return;
         <% end %>
         <% unless @team.nil? %>
           <% unless @game.game_passings.of_team(@team).first.nil? %>
             <% if @game.game_passings.of_team(@team).first.finished? %>
-              return
+              return;
             <% end %>
           <% end %>
         <% end %>
         <% if @game.author_finished? %>
-          return
+          return;
         <% end %>
         <% unless @team.nil? || @game.nil? %>
           <% @game_entry = GameEntry.of(@team, @game) %>
