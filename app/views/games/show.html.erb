@@ -107,7 +107,7 @@
 //    console.log(seconds_to_game);
 //    var date = new Date(Date.now() + 1000 * seconds_to_game);
 //    console.log(date);
-    var date = new Date(Date.now() + <%= 1000 * (@game.starts_at - Time.parse(Time.now.strftime("%Y-%m-%d %H:%M"))) %>);
+    var date = new Date(<%= (@game.starts_at + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
   <% end %>
 
   $("#countdown-example").countdown(date, {
