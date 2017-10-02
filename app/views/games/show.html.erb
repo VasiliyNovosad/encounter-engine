@@ -105,9 +105,20 @@
   <% unless @game.starts_at.nil? %>
     var seconds_to_game = <%= (@game.starts_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time) %>;
     console.log(seconds_to_game);
-    var date = new Date();
-    date.setMilliseconds(date.getTime() + 1000 * seconds_to_game);
+//    var date = new Date();
+//    date.setMilliseconds(date.getTime() + 1000 * seconds_to_game);
+
+    var dateObj = Date.now();
+
+    // Add 3 days to the current date & time
+    //   I'd suggest using the calculated static value instead of doing inline math
+    //   I did it this way to simply show where the number came from
+    dateObj += 1000 * seconds_to_game;
+
+    // create a new Date object, using the adjusted time
+    var date = new Date(dateObj);
     console.log(date);
+
 //    var date = new Date(<%= (@game.starts_at + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
   <% end %>
 
