@@ -111,7 +111,7 @@
   });
 </script>
 
-<% if @game.draft? && !@game.started? && @game.levels && @game.levels.count > 0 %>
+<% if user_signed_in? && current_user.author_of?(@game) && !@game.started? && @game.levels && @game.levels.count > 0 %>
 
     <% if game_with_personal? || @game.game_type == 'selected' %>
         <%= form_tag "/games/start_test/#{@game.id}", method: 'get' do %>
@@ -125,7 +125,7 @@
 
 <% end %>
 
-<% if @game.is_testing? %>
+<% if user_signed_in? && current_user.author_of?(@game) && @game.is_testing? %>
    <%= link_to "Старт", url_for("/play/#{@game.id}") %>
    <br>
    <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}") %>
