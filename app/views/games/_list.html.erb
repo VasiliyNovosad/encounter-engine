@@ -1,6 +1,6 @@
 <% games.each do |game| %>
   <p>
-    <strong><%= link_to game.name, game_path(game) %></strong>
+    <strong><%= link_to "#{game.name} (#{game.starts_at.strftime('%Y-%m-%d %H:%M')})", game_path(game) %></strong>
     <% if user_signed_in? && current_user.author_of?(game) %>
         <em><%= link_to "(редагувати)", edit_game_path(game) %></em>
         <em><%= link_to "(статистика)", url_for("/logs/short/#{game.id}") if game.started? %></em>
