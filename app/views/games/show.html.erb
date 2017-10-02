@@ -103,10 +103,10 @@
 
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
-    var date = new Date(<%= (@game.starts_at + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
+    var date = new Date(Date.now() + <%= 1000 * (@game.starts_at - Time.parse(Time.now.strftime("%Y-%m-%d %H:%M"))) %>);
   <% end %>
 
-  $("#countdown-example").countdown(date,{
+  $("#countdown-example").countdown(date, {
     prefix:'До початку лишилось: '
   });
 </script>
