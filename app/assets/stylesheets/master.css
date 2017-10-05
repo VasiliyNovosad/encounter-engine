@@ -67,14 +67,6 @@ h3 {
   margin-top: 5px;
 }
 
-#left-container {
-  float: left;
-  width: 150px;
-  background-color: #FFFFFF;
-  color: black;
-  margin-left: 10px;
-}
-
 #left-container h3 {
   color: #c55;
 }
@@ -218,4 +210,38 @@ textarea {
 
 .bonus_answered {
     color: #4d9b12;
+}
+
+@media (max-width: 767px) {
+    #left-container {
+        background-color: #FFFFFF;
+        color: black;
+        margin-left: 10px;
+    }
+
+    #main-container {
+        margin: 5px 5px 5px 5px;
+        padding: 0;
+        border-left: 1px solid silver;
+        min-height: 400px;
+        /*width: 400px;*/
+    }
+}
+
+@media (min-width: 768px) {
+    #left-container {
+        float: left;
+        width: 150px;
+        background-color: #FFFFFF;
+        color: black;
+        margin-left: 10px;
+    }
+
+    #main-container {
+        margin: 5px 5px 5px 170px;
+        padding: 0;
+        border-left: 1px solid silver;
+        min-height: 400px;
+        /*width: 400px;*/
+    }
 }
