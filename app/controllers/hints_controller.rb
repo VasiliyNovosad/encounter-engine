@@ -13,7 +13,7 @@ class HintsController < ApplicationController
   end
 
   def create
-    @hint = Hint.create(hint_params)
+    @hint = Hint.new(hint_params)
     @hint.level = @level
     if @hint.save
       redirect_to game_level_path(@game, @level)

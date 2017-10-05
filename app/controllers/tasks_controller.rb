@@ -13,7 +13,7 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.create(task_params)
+    @task = Task.new(task_params)
     @task.level = @level
     if @task.save
       redirect_to game_level_path(@game, @level)

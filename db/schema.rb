@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905090645) do
+ActiveRecord::Schema.define(version: 20171005120138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,14 @@ ActiveRecord::Schema.define(version: 20170905090645) do
     t.integer  "duration"
     t.integer  "tested_team_id"
   end
+
+  create_table "games_authors", id: false, force: :cascade do |t|
+    t.integer "game_id"
+    t.integer "author_id"
+  end
+
+  add_index "games_authors", ["author_id"], name: "index_games_authors_on_author_id", using: :btree
+  add_index "games_authors", ["game_id"], name: "index_games_authors_on_game_id", using: :btree
 
   create_table "hints", force: :cascade do |t|
     t.integer  "level_id"

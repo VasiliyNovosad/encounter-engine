@@ -8,7 +8,7 @@
 
 
 <p>
-  <em>Автор</em> - <strong><%= @game.author.nickname %></strong>
+  <em>Автори</em> - <strong><%= @game.authors.map(&:nickname).join(', ') %></strong>
 </p>
 
 <% if user_signed_in? && (current_user.author_of?(@game) || @game.author_finished?) %>

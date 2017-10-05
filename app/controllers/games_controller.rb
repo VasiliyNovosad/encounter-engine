@@ -25,8 +25,10 @@ class GamesController < ApplicationController
   end
 
   def create
-    @game = Game.create(game_params)
+    @game = Game.new(game_params)
     @game.author = current_user
+    @authors = User.where(:id => params[:organizing_team])
+    @game.authors << @authors
     if @game.save
       redirect_to game_path(@game)
     else
@@ -46,6 +48,9 @@ class GamesController < ApplicationController
   end
 
   def update
+    @authors = User.where(:id => params[:organizing_team])
+    @game.authors.destroy_all
+    @game.authors << @authors
     if @game.update_attributes(game_params)
       redirect_to game_path(@game)
     else

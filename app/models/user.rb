@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   belongs_to :team
 
   has_many :created_games, class_name: 'Game', foreign_key: 'author_id'
+  has_and_belongs_to_many :games, join_table: 'games_authors', foreign_key: 'author_id', association_foreign_key: 'game_id'
   has_many :logs
 
   before_save { self.email = email.downcase }
@@ -28,6 +29,6 @@ class User < ActiveRecord::Base
   end
 
   def author_of?(game)
-    game.author.id == id
+    game.author.id == id || game.authors.map(&:id).include?(id)
   end
 end

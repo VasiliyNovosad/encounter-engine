@@ -6,21 +6,22 @@ gem 'dotenv-rails', require: 'dotenv/rails-now'
 
 gem 'rails', '4.2.4'
 
+gem 'pg'
+
 group :production do
-  gem 'pg'
   gem 'rails_12factor'
-  gem 'sendgrid-rails'
+  # gem 'sendgrid-rails'
 end
 
 gem 'puma'
 # Use sqlite3 as the database for Active Record
-group :development do
-  gem 'sqlite3', '~> 1.3', '>=1.3.10'
-  gem 'capistrano', require: false
-  gem 'capistrano-bundler', require: false
-  gem 'capistrano-rails', require: false
-  gem 'capistrano-rvm', require: false
-end
+# group :development do
+#   gem 'sqlite3', '~> 1.3', '>=1.3.10'
+#   gem 'capistrano', require: false
+#   gem 'capistrano-bundler', require: false
+#   gem 'capistrano-rails', require: false
+#   gem 'capistrano-rvm', require: false
+# end
 
 group :test do
   gem 'cucumber-rails', require: false

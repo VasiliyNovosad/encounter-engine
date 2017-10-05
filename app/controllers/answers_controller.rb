@@ -18,7 +18,7 @@ class AnswersController < ApplicationController
   end
 
   def create
-    @answer = Answer.create(answer_params)
+    @answer = Answer.new(answer_params)
     @answer.level = @level
     @answer.question = @question
     if @answer.save
@@ -33,6 +33,7 @@ class AnswersController < ApplicationController
   end
 
   def update
+    @answer.level = @level if @answer.level.nil?
     if @answer.update_attributes(answer_params)
       redirect_to game_level_path(@level.game, @level)
     else

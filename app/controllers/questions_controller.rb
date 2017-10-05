@@ -11,10 +11,11 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @question = Question.create(question_params)
+    @question = Question.new(question_params)
     @question.level = @level
     if @question.save
       @answer = @question.answers.first
+      @answer.level = @level
       if @answer.save
         redirect_to game_level_path(@level.game, @level)
       else

@@ -14,7 +14,7 @@ class InvitationsController < ApplicationController
   end
 
   def create
-    @invitation = Invitation.create(invitation_params)
+    @invitation = Invitation.new(invitation_params)
     @invitation.to_team = current_user.team
     if @invitation.save
       redirect_to new_invitation_path, message: "Користувачу #{@invitation.recepient_nickname} надіслано запрошення"
