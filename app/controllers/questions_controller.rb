@@ -15,6 +15,7 @@ class QuestionsController < ApplicationController
     @question.level = @level
     if @question.save
       @answer = @question.answers.first
+      @answer.level = @level
       if @answer.save
         redirect_to game_level_path(@level.game, @level)
       else
