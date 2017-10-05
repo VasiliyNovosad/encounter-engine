@@ -11,7 +11,7 @@ class BonusesController < ApplicationController
   end
 
   def create
-    @bonus = Bonus.create(bonus_params)
+    @bonus = Bonus.new(bonus_params)
     @bonus.level = @level
     if @bonus.save
       @answer = @bonus.bonus_answers.first

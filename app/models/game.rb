@@ -1,5 +1,6 @@
 class Game < ActiveRecord::Base
   belongs_to :author, class_name: 'User'
+  has_and_belongs_to_many :authors, class_name: 'User', join_table: 'games_authors', foreign_key: 'game_id', association_foreign_key: 'author_id'
   has_many :levels, -> { order(:position) }
   has_many :level_orders
   has_many :logs, -> { order(:time) }
