@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.1'
+ruby '2.3.3'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
@@ -60,8 +60,8 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'PerfectlyNormal/tinymce-rails-imageupload'
-gem 'paperclip'
-gem 'carrierwave'
+# gem 'paperclip'
+# gem 'carrierwave'
 gem 'cloudinary'
 gem 'jquery-ui-rails'
 gem 'rails-jquery-autocomplete'
@@ -78,4 +78,4 @@ end
 # gem 'debugger', group: [:development, :test]
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin]
+gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
