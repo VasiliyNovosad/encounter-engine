@@ -15,7 +15,6 @@ class BonusesController < ApplicationController
     @bonus.level = @level
     if @bonus.save
       @answer = @bonus.bonus_answers.first
-      @answer.level = @level
       if @answer.save
         redirect_to game_level_path(@level.game, @level)
       else
