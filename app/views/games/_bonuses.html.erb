@@ -8,7 +8,9 @@
     <% end %>
   </p>
   <p><%= bonus.task.html_safe %></p>
-  <p><%= "Підказка: #{bonus.task.html_safe}" unless bonus.task.empty? %></p>
+  <% unless bonus.help.empty? %>
+    <p>Підказка: <%= bonus.help.html_safe %></p>
+  <% end %>
   <p>
     <% bonus.bonus_answers.each do |answer| %>
         <%= answer.value %>
