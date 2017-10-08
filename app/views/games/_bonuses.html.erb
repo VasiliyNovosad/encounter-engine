@@ -7,6 +7,8 @@
         <em> (для <%= bonus.team.name %>)</em>
     <% end %>
   </p>
+  <p><%= bonus.task.html_safe %></p>
+  <p><%= "Підказка: #{bonus.task.html_safe}" unless bonus.task.empty? %></p>
   <p>
     <% bonus.bonus_answers.each do |answer| %>
         <%= answer.value %>
