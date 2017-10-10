@@ -103,7 +103,7 @@
 
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
-    var seconds_to_game = <%= (@game.starts_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time + 1) %>;
+    var seconds_to_game = <%= ((@game.is_testing? ? @game.test_date : @game.starts_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time + 1) %>;
     console.log(seconds_to_game);
 //    var date = new Date();
 //    date.setMilliseconds(date.getTime() + 1000 * seconds_to_game);
@@ -119,7 +119,7 @@
     var date = new Date(dateObj);
     console.log(date);
 
-//    var date = new Date(<%= (@game.starts_at + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
+//    var date = new Date(<%= ((@game.is_testing? ? @game.test_date : @game.starts_at) + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
   <% end %>
 
   $("#countdown-example").countdown(date, {
