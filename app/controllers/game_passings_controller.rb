@@ -136,7 +136,7 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_game_is_started
-    unless (@game.is_testing? ? @game.test_date : @game.starts_at) >= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time ||
+    unless (@game.is_testing? ? @game.test_date : @game.starts_at) < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time ||
         @game.is_testing? && current_user.author_of?(@game)
       redirect_to game_path(@game), alert: 'Заборонено грати в гру до її початку'
     end
