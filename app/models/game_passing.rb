@@ -59,6 +59,7 @@ class GamePassing < ActiveRecord::Base
     if game.game_type == 'linear' && last_level? ||
        game.game_type == 'panic' && !closed?(level) && closed_levels.count == game.levels.count - 1 ||
        game.game_type == 'selected' && last_level_selected?(team_id)
+      closed_levels << level.id unless closed? level
       set_finish_time
     else
       update_current_level_entered_at
@@ -136,9 +137,11 @@ class GamePassing < ActiveRecord::Base
     lock!
     if game.game_type == 'linear' && last_level? ||
        game.game_type == 'selected' && last_level_selected?(team_id)
+      closed_levels << level.id unless closed? level
       set_finish_time
     else
       update_current_level_entered_at
+      closed_levels << level.id unless closed? level
       reset_answered_questions
       if game.game_type == 'linear'
         self.current_level = self.current_level.next
