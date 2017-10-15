@@ -20,10 +20,10 @@ class GamePassingsController < ApplicationController
   def show_current_level
     if @game_passing.finished_at.nil?
       @level = if @game.game_type == 'panic'
-               params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
-              else
-                @game_passing.current_level
-              end
+                 params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
+               else
+                 @game_passing.current_level
+               end
       get_uniq_level_codes(@level)
       get_answered_bonuses(@level) unless @game.game_type == 'panic'
       get_answered_questions(@level) unless @game.game_type == 'panic'
@@ -51,7 +51,7 @@ class GamePassingsController < ApplicationController
   def post_answer
     if @game_passing.finished? ||
        @game.game_type == 'panic' &&
-       @game.starts_at + 60 * @game.duration < Time.zone.now
+       @game.starts_at + 60 * @game.duration < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
       render 'show_results'
     else
       @answer = params[:answer].strip
@@ -74,7 +74,7 @@ class GamePassingsController < ApplicationController
     Log.create! game_id: @game.id,
                 level: level.name,
                 team: @team.name,
-                time: Time.zone.now,
+                time: Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time,
                 answer: @answer ? @answer : 'timeout',
                 user: current_user
   end
