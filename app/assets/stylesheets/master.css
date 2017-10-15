@@ -245,3 +245,7 @@ textarea {
         /*width: 400px;*/
     }
 }
+
+span.team_name {
+    text-align: center;
+}
