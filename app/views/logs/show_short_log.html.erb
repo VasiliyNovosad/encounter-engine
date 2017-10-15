@@ -13,13 +13,13 @@
           <% team_logs = @logs.of_team(team).of_level(level) %>
           <% team_log = team_logs.count > 0 ? team_logs.last : nil %>
           <% { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time } %>
-        <% end.sort { |a, b| a[:time] <=> b[:time]} %>
+        <% end.sort_by(&:time) %>
 
         <% level_logs.each do |level_log| %>
             <td>
               <%= level_log[:team].name %>
               <ul>
-               <li><%= "#{level_log[:team_log].time.strftime('%Y-%m-%d %H:%M:%S')} (#{level_log[:team_log].user.nickname})" unless level_log[:team_log].nil? %></li>
+               <li><%= "#{level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S')} (#{level_log[:log].user.nickname})" unless level_log[:log].nil? %></li>
               </ul>
             </td>
         <% end %>
