@@ -39,7 +39,7 @@ class LogsController < ApplicationController
     @levels.each do |level|
       @level_logs << @teams.map do |team|
         team_logs = logs.of_team(team).of_level(level)
-        team_log = (team_logs.count > 0) ? team_logs.last : nil # && GamePassing.of_game(@game).of_team(team).first && GamePassing.of_game(@game).of_team(team).first.closed_levels.include?(level.id)
+        team_log = (team_logs.count > 0) ? team_logs.last : nil # && GamePassing.of(team, @game) && GamePassing.of(team, @game).closed_levels.include?(level.id)
         { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time }
       end.sort_by { |a| a[:time] }
     end
