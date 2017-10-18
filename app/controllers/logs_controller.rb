@@ -27,19 +27,19 @@ class LogsController < ApplicationController
   def show_full_log
     @logs = Log.of_game(@game)
     @levels = Level.of_game(@game)
-    @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
+    @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     render
   end
 
   def show_short_log
     logs = Log.of_game(@game)
     @levels = Level.of_game(@game)
-    @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
+    @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     @level_logs = []
     @levels.each do |level|
       @level_logs << @teams.map do |team|
         team_logs = logs.of_team(team).of_level(level)
-        team_log = (team_logs.count > 0 && JSON::parse(team[:closed_levels]).include?(level.id)) ? team_logs.last : nil # && GamePassing.of(team, @game).closed_levels.include?(level.id)
+        team_log = (team_logs.count > 0 && GamePassing.of(team, @game).closed_levels.include?(level.id)) ? team_logs.last : nil # && GamePassing.of(team, @game).closed_levels.include?(level.id)
         { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time }
       end.sort_by { |a| a[:time] }
     end
