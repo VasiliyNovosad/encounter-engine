@@ -1,27 +1,21 @@
-<h1>Статистика гри</h1>
+<h1>Статистика гри "<%= link_to @game.name, game_path(@game) %>"</h1>
 
 <table id="stats" border="1">
   <tbody>
   <% @levels.each do |level| %>
       <tr align="center">
         <td colspan="<%=@teams.count%>">
-          <h2><%= level.name %></h2>
+          <h2><%= "#{level.position}. #{level.name}" %></h2>
         </td>
       </tr>
       <tr valign="top">
-        <% level_logs = @teams.map do |team| %>
-          <% team_logs = @logs.of_team(team).of_level(level) %>
-          <% team_log = team_logs.count > 0 ? team_logs.last : nil %>
-          <% { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time } %>
-        <% end.sort { |a, b| a[:time] <=> b[:time] } %>
-
-        <% level_logs.each do |level_log| %>
-            <td>
-              <span class="team_name"><%= level_log[:team].name %></span>
-              <ul>
-               <li><%= "#{level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S')} (#{level_log[:log].user.nickname})" unless level_log[:log].nil? %></li>
-              </ul>
-            </td>
+        <% @level_logs[level.position - 1].each do |level_log| %>
+          <td>
+            <span class="team_name"><%= level_log[:team].name %></span>
+            <ul>
+              <li><%= "#{level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S')} (#{level_log[:log].user.nickname})" unless level_log[:log].nil? %></li>
+            </ul>
+          </td>
         <% end %>
       </tr>
   <% end %>

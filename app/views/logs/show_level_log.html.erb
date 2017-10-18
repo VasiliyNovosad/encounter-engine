@@ -1,4 +1,4 @@
-<h1>Лог відповідей команди "<%= @team.name %>" по рівню "<%= @level.name %>" гри "<%= @game.name %>"</h1>
+<h1>Лог відповідей команди "<%= @team.name %>" по рівню "<%= @level.name %>" гри "<%= link_to @game.name, game_path(@game) %>"</h1>
 
 <strong>Вірний код:</strong>&nbsp;<%= @level.questions.first.correct_answer %>
 <ul>

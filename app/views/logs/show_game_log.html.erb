@@ -1,4 +1,4 @@
-<h1>Лог відповідей команди "<%= @team.name %>" по грі "<%= @game.name %>"</h1>
+<h1>Лог відповідей команди "<%= @team.name %>" по грі "<%= link_to @game.name, game_path(@game) %>"</h1>
 
 <% @game.levels.each do |level| %>
   <h2><%= level.name %></h2>
