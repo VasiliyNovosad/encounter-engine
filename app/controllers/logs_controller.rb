@@ -25,14 +25,14 @@ class LogsController < ApplicationController
   end
 
   def show_full_log
-    logs = Log.of_game(@game)
+    @logs = Log.of_game(@game)
     @levels = Level.of_game(@game)
     @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     render
   end
 
   def show_short_log
-    @logs = Log.of_game(@game)
+    logs = Log.of_game(@game)
     @levels = Level.of_game(@game)
     @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     @level_logs = []
