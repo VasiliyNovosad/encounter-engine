@@ -25,13 +25,13 @@ class LogsController < ApplicationController
   end
 
   def show_full_log
-    @logs = Log.of_game(@game)
+    logs = Log.of_game(@game)
     @levels = Level.of_game(@game)
     @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     @level_logs = []
     @levels.each do |level|
       @level_logs << @teams.map do |team|
-        team_logs = @logs.of_team(team).of_level(level)
+        team_logs = logs.of_team(team).of_level(level)
         team_log = team_logs.count > 0 && GamePassing.of_game(@game).of_team(team).first && GamePassing.of_game(@game).of_team(team).first.closed_levels.include?(level.id) ? team_logs.last : nil
         { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time }
       end.sort_by { |a| a[:time] }
