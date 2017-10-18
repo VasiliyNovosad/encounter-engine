@@ -28,6 +28,13 @@ class LogsController < ApplicationController
     logs = Log.of_game(@game)
     @levels = Level.of_game(@game)
     @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
+    render
+  end
+
+  def show_short_log
+    @logs = Log.of_game(@game)
+    @levels = Level.of_game(@game)
+    @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     @level_logs = []
     @levels.each do |level|
       @level_logs << @teams.map do |team|
@@ -36,13 +43,6 @@ class LogsController < ApplicationController
         { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time }
       end.sort_by { |a| a[:time] }
     end
-    render
-  end
-
-  def show_short_log
-    @logs = Log.of_game(@game)
-    @levels = Level.of_game(@game)
-    @teams = Team.find_by_sql("select * from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
     render
   end
 
