@@ -217,3 +217,11 @@ textarea {
     background-color: red;
     display: table;
 }
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    white-space: nowrap;
+}
