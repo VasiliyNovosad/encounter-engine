@@ -43,6 +43,32 @@ class LogsController < ApplicationController
         { team: team, log: team_log, time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time : team_log.time }
       end.sort_by { |a| a[:time] }
     end
+
+    results = GamePassing.where(game_id: @game.id).to_a
+    results = results.sort do |a, b|
+      b.closed_levels.count <=> a.closed_levels.count &&
+          (a.finished_at || a.current_level_entered_at) <=> (b.finished_at || b.current_level_entered_at)
+    end
+    results = results.map do |result|
+      {
+        team: result.team,
+        levels: result.closed_levels.count,
+        bonuses: result.sum_bonuses,
+        time: result.finished_at || result.current_level_entered_at
+      }
+    end
+    @level_logs << results
+    results = results.map do |result|
+      {
+        team: result[:team],
+        levels: result[:levels],
+        time: (result[:time] - result[:bonuses])
+      }
+    end
+    results = results.sort do |a, b|
+      b[:levels] <=> a[:levels] || a[:time] <=> b[:time]
+    end
+    @level_logs << results
     render
   end
 
