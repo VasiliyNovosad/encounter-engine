@@ -11,10 +11,14 @@
       <tr valign="top">
         <% @level_logs[level.position - 1].each do |level_log| %>
           <td>
-            <span class="team_name"><%= level_log[:team].name %></span>
-            <ul>
-              <li><%= "#{level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S')} (#{level_log[:log].user.nickname})" unless level_log[:log].nil? %></li>
-            </ul>
+            <% unless level_log[:log].nil? %>
+              <span class="team_name"><%= level_log[:team].name %></span>
+              <p><%= level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S') %></p>
+              <p><%= level_log[:log].user.nickname %></p>
+              <% if level_log[:log].answer == 'timeout' %>
+                <p><font color=\"236400\">timeout</font></p>
+              <% end %>
+            <% end %>
           </td>
         <% end %>
       </tr>
