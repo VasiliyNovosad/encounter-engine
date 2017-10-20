@@ -13,8 +13,9 @@
           <td align="center">
             <% unless level_log[:log].nil? %>
               <p class="team-name"><%= level_log[:team].name %></p>
-              <p><%= level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S') %></p>
-              <p><%= level_log[:log].user.nickname %></p>
+                <p>(<%= level_log[:log].user.nickname %>)</p>
+                <p><%= level_log[:log].time.strftime('%d.%m.%Y') %></p>
+                <p><%= level_log[:log].time.strftime('%H:%M:%S') %></p>
               <% if level_log[:log].answer == 'timeout' %>
                 <p class="timeout-stat">timeout</p>
               <% end %>
