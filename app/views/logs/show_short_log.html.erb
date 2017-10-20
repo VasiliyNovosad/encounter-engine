@@ -10,13 +10,13 @@
       </tr>
       <tr valign="top">
         <% @level_logs[level.position - 1].each do |level_log| %>
-          <td>
+          <td align="center">
             <% unless level_log[:log].nil? %>
-              <span class="team_name"><%= level_log[:team].name %></span>
+              <p class="team-name"><%= level_log[:team].name %></p>
               <p><%= level_log[:log].time.strftime('%Y-%m-%d %H:%M:%S') %></p>
               <p><%= level_log[:log].user.nickname %></p>
               <% if level_log[:log].answer == 'timeout' %>
-                <p><font color=\"236400\">timeout</font></p>
+                <p class="timeout-stat">timeout</p>
               <% end %>
             <% end %>
           </td>
