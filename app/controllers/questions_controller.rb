@@ -6,7 +6,7 @@ class QuestionsController < ApplicationController
   before_action :find_teams, only: [:new, :edit]
 
   def new
-    @question = Question.new
+    @question = Question.new(name: "Сектор #{@level.questions.count + 1}")
     @question.level = @level
   end
 
@@ -67,7 +67,7 @@ class QuestionsController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map { |game_entry| game_entry.team }
   end
 
 end
