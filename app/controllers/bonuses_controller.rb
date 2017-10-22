@@ -3,7 +3,7 @@ class BonusesController < ApplicationController
   before_action :ensure_author
   before_action :find_level
   before_action :find_bonus, only: [:edit, :update, :move_up, :move_down, :destroy]
-  before_action :find_teams, only: [:new, :edit]
+  before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def new
     @bonus = Bonus.new

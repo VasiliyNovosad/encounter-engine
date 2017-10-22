@@ -2,7 +2,7 @@ class HintsController < ApplicationController
   before_action :find_level
   before_action :find_game
   before_action :find_hint, only: [:edit, :update, :destroy]
-  before_action :find_teams, only: [:new, :edit]
+  before_action :find_teams, only: [:new, :edit, :create, :update]
 
   before_action :ensure_author
   before_action :ensure_game_was_not_started, only: [:new, :create, :edit, :update]

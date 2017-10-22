@@ -5,7 +5,7 @@ class AnswersController < ApplicationController
   before_action :find_question
   before_action :find_answers
   before_action :find_answer, only: [:edit, :update, :destroy]
-  before_action :find_teams, only: [:new, :edit]
+  before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def index
     render

@@ -5,7 +5,7 @@ class BonusAnswersController < ApplicationController
   before_action :find_bonus
   before_action :find_bonus_answers
   before_action :find_bonus_answer, only: [:edit, :update, :destroy]
-  before_action :find_teams, only: [:new, :edit]
+  before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def index
     render
