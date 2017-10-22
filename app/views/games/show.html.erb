@@ -19,7 +19,7 @@
 
 <p>
   <% unless @game.starts_at.nil? %>
-    <em>Початок гри</em>: <%= @game.starts_at.strftime("%Y-%m-%d %H:%M") %>
+    <em>Початок гри</em>: <%= (@game.is_testing? ? @game.test_date : @game.starts_at).strftime("%Y-%m-%d %H:%M") %>
   <% else %>
     Дата початку гри ще не призначена
   <% end %>
@@ -149,6 +149,12 @@
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
   <br>
+  <br>
+  <br>
+  <br>
+  <%= link_to "ЗАВЕРШИТИ ГРУ", url_for("/games/end_game/#{@game.id}"), data: { confirm: 'Ви впевнені?' } if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
+  <br>
+  <%= "Ви завершили гру" if (@game.started? && !@game.is_testing? && @game.author_finished?) %>
   <br>
   <br>
   <br>
