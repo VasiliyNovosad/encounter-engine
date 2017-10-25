@@ -45,7 +45,7 @@ class TeamsController < ApplicationController
     if current_user.captain? && current_user.team == who.team && !who.captain?
       who.team = nil
       who.save!
-      redirect_to 'teams/edit'
+      redirect_to edit_team_path(current_user.team)
     else
       redirect_to dashboard_path
     end
@@ -58,7 +58,7 @@ class TeamsController < ApplicationController
       who_team.captain = who
       who_team.save!
       who.save!
-      redirect_to('teams')
+      redirect_to(team_path(current_user.team))
     else
       redirect_to(dashboard_path)
     end
