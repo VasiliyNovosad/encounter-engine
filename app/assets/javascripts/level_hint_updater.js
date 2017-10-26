@@ -3,13 +3,14 @@ var LevelHintUpdater = function() {
     countdownValue = 0
     ,gameId = 0
     ,teamId = 0
+    ,hintId = 0
     ,intervalId = null;
 
     var
-    $hintsContainer
-    ,$countdownContainer
-    ,$countdownTimerText
-    ,$loadingIndicator;
+    hintsContainer
+    ,countdownContainer
+    ,countdownTimerText
+    ,loadingIndicator;
 
     var
     start = function(initialCountdownValue) {
@@ -39,28 +40,28 @@ var LevelHintUpdater = function() {
             seconds = countdownValue % 60;
         }
 
-        $countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
         countdownValue--;
     }
 
     ,showCountdownContainer = function() {
-        $countdownContainer.show();
+        countdownContainer.show();
     }
 
     ,hideCountdownContainer = function() {
-        $countdownContainer.hide();
+        countdownContainer.hide();
     }
 
     ,showLoadIndicator = function() {
-        $loadingIndicator.show();
+        loadingIndicator.show();
     }
 
     ,hideLoadIndicator = function() {
-        $loadingIndicator.hide();
+        loadingIndicator.hide();
     }
 
     ,appendHint = function(hintNum, hintText, hintCount) {
-        $hintsContainer.append('<fieldset><legend>Підказка ' + hintNum + ' із ' + hintCount + '</legend>' + hintText + '</br></fieldset>');
+        hintsContainer.append('<fieldset><legend>Підказка ' + hintNum + ' із ' + hintCount + '</legend>' + hintText + '</br></fieldset>');
     }
 
     ,loadHint = function() {
@@ -76,7 +77,7 @@ var LevelHintUpdater = function() {
                 appendHint(data.hint_num, data.hint_text, data.hint_count);
 
                 if ( !data.next_available_in ) {
-                    $countdownContainer.text('Підказок більше не буде');
+                    countdownContainer.text('Підказок більше не буде');
                 } else {
                     start(data.next_available_in);
                 }
@@ -87,13 +88,14 @@ var LevelHintUpdater = function() {
     return {
         setup: function(config) {
             $(document).ready(function() {
-                $hintsContainer = $('#LevelHintsContainer');
-                $countdownContainer = $('#LevelHintCountdownContainer');
-                $countdownTimerText = $('#LevelHintCountdownTimerText');
-                $loadingIndicator = $('#LevelHintCountdownLoadIndicator');
-
                 gameId = config.gameId;
                 teamId = config.teamId;
+                hintId = config.hintId;
+                hintsContainer = $('#LevelHintsContainer');
+                countdownContainer = $('#LevelHintCountdownContainer' + hintId);
+                countdownTimerText = $('#LevelHintCountdownTimerText' + hintId);
+                loadingIndicator = $('#LevelHintCountdownLoadIndicator' + hintId);
+
                 start(config.initialCountdownValue);
             });
         }
