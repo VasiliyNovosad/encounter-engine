@@ -160,7 +160,7 @@ textarea {
     color: gray;
 }
 
-#LevelCompleteCountdownContainer, #LevelHintCountdownContainer {
+#LevelCompleteCountdownContainer, .hint-timer {
     color: #ff570a;
 }
 
