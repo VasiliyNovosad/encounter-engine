@@ -128,6 +128,7 @@ a:hover {
 }
 #main {
     margin-left: 10px;
+    color: white;
 }
 
 fieldset {
@@ -153,6 +154,13 @@ label {
 
 input, textarea {  
     margin-bottom: 5px;
+    background-color: #232323;
+    color: #CCC;
+}
+
+select {
+    background-color: #232323;
+    color: #CCC;
 }
 
 textarea {
