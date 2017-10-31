@@ -18,11 +18,13 @@ html {
 
 #header-container {
     width: 100%;
+    color: #CCC;
 }
 
 #header-container span {
     float: right;
     padding-right: 10px;
+    color: #CCC;
 }
 
 #header-container h1, #header-container h2 {
@@ -171,7 +173,7 @@ textarea {
     color: gray;
 }
 
-#LevelCompleteCountdownContainer, .hint-timer {
+#LevelCompleteCountdownContainer, .hint-timer, #countdown-example {
     color: #ff570a;
 }
 
@@ -241,4 +243,9 @@ table {
 
 td {
     white-space: nowrap;
+    color: white;
+}
+
+#stats thead {
+    color: white;
 }
