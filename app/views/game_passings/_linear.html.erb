@@ -64,20 +64,34 @@
     <% end %>
   </div>
 
+  <!--
   <% unless @game_passing.upcoming_hints(@team_id).empty?  %>
-    <div id="LevelHintCountdownContainer">До наступної підказки <span id="LevelHintCountdownTimerText">3 хвилини</span></div>
-    <div id="LevelHintCountdownLoadIndicator" style="display: none;">Завантаження...</div>
+      <div id="<%= "LevelHintCountdownContainer#{@game_passing.upcoming_hints(@team_id).first.id}" %>">До наступної підказки <span id="<%= "LevelHintCountdownTimerText#{@game_passing.upcoming_hints(@team_id).first.id}" %>">3 хвилини</span></div>
+      <div id="<%= "LevelHintCountdownLoadIndicator#{@game_passing.upcoming_hints(@team_id).first.id}" %>" style="display: none;">Завантаження...</div>
 
-    <script>
-      LevelHintUpdater.setup({
-        initialCountdownValue: <%= @game_passing.upcoming_hints(@team_id).first.available_in(@game_passing.current_level_entered_at) %>
-        ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>
-      })
-    </script>
+      <script>
+          LevelHintUpdater().setup({
+              initialCountdownValue: <%= @game_passing.upcoming_hints(@team_id).first.available_in(@game_passing.current_level_entered_at) %>
+              ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, hintId: <%= @game_passing.upcoming_hints(@team_id).first.id %>
+          })
+      </script>
   <% else %>
-    <div>
-    Підказок більше не буде
-    </div>
+      <div>
+        Підказок більше не буде
+      </div>
+  <% end %>
+  -->
+
+  <% @game_passing.upcoming_hints(@team_id).each_with_index do |hint, index|  %>
+      <div id="<%= "LevelHintCountdownContainer#{hint.id}" %>" class="hint-timer">До підказки <%= @game_passing.hints_to_show(@team_id).count + index + 1 %> лишилось <span id="<%= "LevelHintCountdownTimerText#{hint.id}" %>">3 хвилини</span></div>
+      <div id="<%= "LevelHintCountdownLoadIndicator#{hint.id}" %>" style="display: none;">Завантаження...</div>
+      <br>
+      <script>
+          LevelHintUpdater.setup({
+              initialCountdownValue: <%= hint.available_in(@game_passing.current_level_entered_at) %>
+              ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, hintId: <%= hint.id %>, hintNum: <%= index %>
+          })
+      </script>
   <% end %>
 
   <br>
