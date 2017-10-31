@@ -261,3 +261,11 @@ td {
 #stats thead {
     color: white;
 }
+
+#stats td {
+    background-color: #333132;
+}
+
+#stats th {
+    background-color: #272727;
+}

@@ -3,15 +3,15 @@
 <table id="stats" border="1">
   <thead>
     <tr align="center">
-      <td></td>
+      <th></th>
       <% @levels.each do |level| %>
-        <td>
+        <th>
           <%= "#{level.position}: #{level.name}" %>
-        </td>
+        </th>
       <% end %>
-      <td>Фінішний час</td>
-      <td>Результат</td>
-      <td></td>
+      <th>Фінішний час</th>
+      <th>Результат</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
