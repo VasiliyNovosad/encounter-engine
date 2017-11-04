@@ -24,7 +24,8 @@ var LevelHintUpdater = function() {
         clearInterval(timerData[hintNum].intervalId);
         timerData[hintNum].countdownValue = 0;
 
-        loadHint(hintNum);
+        // loadHint(hintNum);
+        window.location = '/play/' + timerData[hintNum].gameId;
     }
 
     ,updateCountdown = function(hintNum) {
