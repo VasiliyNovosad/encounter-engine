@@ -146,14 +146,14 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def autocomplete_level!(level, team_id, time)
+  def autocomplete_level!(level, team_id)
     lock!
     if game.game_type == 'linear' && last_level? ||
        game.game_type == 'selected' && last_level_selected?(team_id)
       closed_levels << level.id unless closed? level
-      set_finish_time(time)
+      set_finish_time(current_level_entered_at + level.complete_later)
     else
-      update_current_level_entered_at(time)
+      update_current_level_entered_at(current_level_entered_at + level.complete_later)
       closed_levels << level.id unless closed? level
       reset_answered_questions
       if game.game_type == 'linear'

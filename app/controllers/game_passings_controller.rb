@@ -91,13 +91,12 @@ class GamePassingsController < ApplicationController
   end
 
   def autocomplete_level
-    time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     level_id = params[:level]
     unless @game_passing.finished?
       level = Level.find(level_id)
       if level == @game_passing.current_level
-        @game_passing.autocomplete_level!(level, @team_id, time)
-        save_log(level, time)
+        save_log(level, (level.position == 1 ? @game.starts_at : @game_passing.current_level_entered_at) + level.complete_later)
+        @game_passing.autocomplete_level!(level, @team_id)
       end
     end
     render json: { result: true }.to_json

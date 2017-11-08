@@ -4,12 +4,16 @@ var LevelCompleter = function() {
     var $countdownContainer, $countdownTimerText;
 
     var start = function(initialCountdownValue) {
-        countdownValue = initialCountdownValue;
+        console.log(initialCountdownValue);
+        if (initialCountdownValue < 0) {
+            autocompleteLevel();
+        } else {
+            countdownValue = initialCountdownValue;
+            updateCountdown();
+            intervalId = setInterval(updateCountdown, 1000);
 
-        updateCountdown();
-        intervalId = setInterval(updateCountdown, 1000);
-
-        setTimeout(stop, countdownValue * 1000 + 1000);
+            setTimeout(stop, countdownValue * 1000 + 1000);
+        }
     };
 
     var stop = function() {
