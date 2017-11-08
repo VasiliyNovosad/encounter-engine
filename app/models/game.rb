@@ -43,7 +43,7 @@ class Game < ActiveRecord::Base
   end
 
   def started?
-    self.starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time > self.starts_at
+    self.starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time > self.starts_at
   end
 
   def created_by?(user)
@@ -95,7 +95,7 @@ class Game < ActiveRecord::Base
   end
 
   def finish_game!
-    self.author_finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+    self.author_finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     self.save!
   end
 
@@ -110,7 +110,7 @@ class Game < ActiveRecord::Base
   protected
 
   def game_starts_in_the_future
-    if self.author_finished_at.nil? && self.starts_at && self.starts_at < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+    if self.author_finished_at.nil? && self.starts_at && self.starts_at < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       errors.add(:starts_at, 'Вибрано дату із минулого.')
     end
   end
@@ -125,7 +125,7 @@ class Game < ActiveRecord::Base
 
   def deadline_is_in_future
     if self.author_finished_at.nil? && self.registration_deadline &&
-        self.registration_deadline < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+        self.registration_deadline < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       errors.add(:registration_deadline, 'Вказано кінцевий термін реєстрації із минулого')
     end
   end

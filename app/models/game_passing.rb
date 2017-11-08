@@ -23,7 +23,7 @@ class GamePassing < ActiveRecord::Base
     of_team(team).of_game(game).first
   end
 
-  def check_answer!(answer, level, team_id)
+  def check_answer!(answer, level, team_id, time)
     answer.strip!
     is_correct_answer = false
     is_correct_bonus_answer = false
@@ -36,34 +36,45 @@ class GamePassing < ActiveRecord::Base
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id)
       pass_question!(answered_question)
-      pass_level!(level, team_id) if all_questions_answered?(level, team_id)
+      pass_level!(level, team_id, time) if all_questions_answered?(level, team_id)
       is_correct_answer = true
     end
     is_correct_bonus_answer || is_correct_answer
   end
 
   def pass_question!(questions)
-    questions.each { |question| answered_questions << question }
-    save!
+    changed = false
+    questions.each do |question|
+      unless answered_questions.include? question
+        answered_questions << question
+        changed = true
+      end
+    end
+    save! if changed
   end
 
   def pass_bonus!(bonuses)
+    changed = false
     bonuses.each do |bonus|
-      answered_bonuses << bonus
-      self.sum_bonuses = self.sum_bonuses + bonus.award_time
+      unless answered_bonuses.include? bonus
+        answered_bonuses << bonus
+        self.sum_bonuses = self.sum_bonuses + bonus.award_time
+        changed = true
+      end
     end
-    save!
+    save! if changed
   end
 
-  def pass_level!(level, team_id)
+  def pass_level!(level, team_id, time)
     if game.game_type == 'linear' && last_level? ||
-       game.game_type == 'panic' && !closed?(level) && closed_levels.count == game.levels.count - 1 ||
+       game.game_type == 'panic' && !closed?(level) &&
+       closed_levels.count == game.levels.count - 1 ||
        game.game_type == 'selected' && last_level_selected?(team_id)
-      closed_levels << level.id unless closed? level
-      set_finish_time
+      closed_levels << level.id unless closed?(level)
+      set_finish_time(time)
     else
-      update_current_level_entered_at
-      closed_levels << level.id unless closed? level
+      update_current_level_entered_at(time)
+      closed_levels << level.id unless closed?(level)
       reset_answered_questions
       if game.game_type == 'linear'
         self.current_level = self.current_level.next
@@ -91,15 +102,17 @@ class GamePassing < ActiveRecord::Base
   end
 
   def correct_answer?(answer, level, team_id)
-    unanswered_questions(level, team_id).any? { |question| question.matches_any_answer(answer, team_id) }
+    # unanswered_questions(level, team_id).any? { |question| question.matches_any_answer(answer, team_id) }
+    level.team_questions(team_id).any? { |question| question.matches_any_answer(answer, team_id) }
   end
 
   def correct_bonus_answer?(answer, level, team_id)
-    unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
+    # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
+    level.team_bonuses(team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
   end
 
   def time_at_level
-    difference = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time - current_level_entered_at
+    difference = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time - current_level_entered_at
     hours, minutes, seconds = seconds_fraction_to_time(difference)
     '%02d:%02d:%02d' % [hours, minutes, seconds]
   end
@@ -117,7 +130,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def exit!
-    self.finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+    self.finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     self.status = 'exited'
     self.save!
   end
@@ -133,14 +146,14 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def autocomplete_level!(level, team_id)
+  def autocomplete_level!(level, team_id, time)
     lock!
     if game.game_type == 'linear' && last_level? ||
        game.game_type == 'selected' && last_level_selected?(team_id)
       closed_levels << level.id unless closed? level
-      set_finish_time
+      set_finish_time(time)
     else
-      update_current_level_entered_at
+      update_current_level_entered_at(time)
       closed_levels << level.id unless closed? level
       reset_answered_questions
       if game.game_type == 'linear'
@@ -172,12 +185,12 @@ class GamePassing < ActiveRecord::Base
     Level.find_by_id(LevelOrder.of(game, Team.find_by_id(team_id)).where(position: level_position + 1).first.level_id)
   end
 
-  def update_current_level_entered_at
-    self.current_level_entered_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+  def update_current_level_entered_at(time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    self.current_level_entered_at = time
   end
 
-  def set_finish_time
-    self.finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+  def set_finish_time(time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    self.finished_at = time
   end
 
   def reset_answered_questions

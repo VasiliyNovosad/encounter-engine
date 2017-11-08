@@ -22,7 +22,7 @@
     %>
     <% logs_sorted_by_date.each do |log| %>
       <tr>
-        <td><%= log.time.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        <td><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %></td>
         <td><%= log.team %></td>
         <td><%= log.level %></td>
         <td><%= log.answer %></td>

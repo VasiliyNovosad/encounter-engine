@@ -4,6 +4,7 @@ class GamePassingsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show_results]
   before_action :find_game, except: [:exit_game]
   before_action :find_game_by_id, only: [:exit_game]
+  before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level]
   before_action :find_team, except: [:show_results, :index]
   before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level]
   before_action :ensure_game_is_started
@@ -51,13 +52,14 @@ class GamePassingsController < ApplicationController
   def post_answer
     if @game_passing.finished? ||
        @game.game_type == 'panic' &&
-       @game.starts_at + 60 * @game.duration < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time
+       @game.starts_at + 60 * @game.duration < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       render 'show_results'
     else
+      time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       @answer = params[:answer].strip
       @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-      save_log(@level) if @game_passing.current_level.id || @game.game_type == 'panic'
-      @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id)
+      save_log(@level, time) if @game_passing.current_level.id || @game.game_type == 'panic'
+      @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time)
       @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       if @game_passing.finished?
         render 'show_results'
@@ -70,12 +72,12 @@ class GamePassingsController < ApplicationController
     end
   end
 
-  def save_log(level = @game_passing.current_level)
+  def save_log(level = @game_passing.current_level, time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
     Log.create! game_id: @game.id,
                 level: level.name,
                 team: @team.name,
-                time: Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time,
-                answer: @answer ? @answer : 'timeout',
+                time: time,
+                answer: @answer || 'timeout',
                 user: current_user
   end
 
@@ -89,12 +91,13 @@ class GamePassingsController < ApplicationController
   end
 
   def autocomplete_level
+    time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     level_id = params[:level]
     unless @game_passing.finished?
       level = Level.find(level_id)
       if level == @game_passing.current_level
-        @game_passing.autocomplete_level!(level, @team_id)
-        save_log(level)
+        @game_passing.autocomplete_level!(level, @team_id, time)
+        save_log(level, time)
       end
     end
     render json: { result: true }.to_json
@@ -136,9 +139,15 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_game_is_started
-    unless (@game.is_testing? ? @game.test_date : @game.starts_at) < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S").to_time ||
+    unless (@game.is_testing? ? @game.test_date : @game.starts_at) < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time ||
         @game.is_testing? && current_user.author_of?(@game)
       redirect_to game_path(@game), alert: 'Заборонено грати в гру до її початку'
+    end
+  end
+
+  def ensure_user_has_team
+    if current_user.team.nil?
+      redirect_to game_path(@game), alert: 'Необхідно створити команду або зайти в уже створену'
     end
   end
 

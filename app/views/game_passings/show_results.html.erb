@@ -21,13 +21,13 @@
           <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
           <td>
             <% if game_passing.exited? %>
-              <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
+              <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S.%L') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
             <% else %>
-              <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
+              <%= game_passing.finished_at.strftime('%H:%M:%S.%L') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
             <% end %>
           </td>
           <td><%= Time.at(game_passing.sum_bonuses).utc.strftime("%H:%M:%S") %></td>
-          <td><%= Time.at(game_passing.finished_at - @game.starts_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S") %> </td>
+          <td><%= Time.at(game_passing.finished_at - @game.starts_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S.%L") %> </td>
         </tr>
       <% end %>
       <% (game_passings.ended_by_author - game_passings.finished).each do |game_passing| %>
@@ -62,9 +62,9 @@
           <td><%= game_passing.team.name %></td>
           <td>
             <% if game_passing.exited? %>
-              <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
+              <b>Зійшли з дистанції</b>(<%= game_passing.finished_at.strftime('%H:%M:%S.%L') %><%= ' ' + game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>)
             <% else %>
-              <%= game_passing.finished_at.strftime('%H:%M:%S') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
+              <%= game_passing.finished_at.strftime('%H:%M:%S.%L') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
             <% end %>
           </td>
           <td><%= game_passing.closed_levels.count %></td>
@@ -75,7 +75,7 @@
             <td><%= @game.place_of(game_passing.team) %></td>
             <td><%= game_passing.team.name %></td>
             <td>
-              <%= game_passing.current_level_entered_at.strftime('%H:%M:%S') %> <%= game_passing.current_level_entered_at.strftime('(%d.%m)') if game_passing.current_level_entered_at.day != @game.starts_at.day %>
+              <%= game_passing.current_level_entered_at.strftime('%H:%M:%S.%L') %> <%= game_passing.current_level_entered_at.strftime('(%d.%m)') if game_passing.current_level_entered_at.day != @game.starts_at.day %>
             </td>
             <td><%= game_passing.closed_levels.count %></td>
           </tr>
