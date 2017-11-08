@@ -19,14 +19,17 @@
       <tr valign="top">
         <td align="center" valign="middle"><%= pos + 1 %></td>
         <% @levels.each do |level| %>
-          <% log = @level_logs[level.position - 1][pos][:log] %>
+          <% log = @level_logs[level.position - 1][pos] %>
           <td align="center">
-            <% unless log.nil? %>
-                <p class="team-name"><%= log.team %></p>
-                <p>(<%= log.user.nickname %>)</p>
-                <p><%= log.time.strftime('%d.%m.%Y') %></p>
-                <p><%= log.time.strftime('%H:%M:%S.%L') %></p>
-                <% if log.answer == 'timeout' %>
+            <% unless log[:log].nil? %>
+                <p class="team-name"><%= log[:log].team %></p>
+                <p>(<%= log[:log].user.nickname %>)</p>
+                <p><%= log[:log].time.strftime('%d.%m.%Y') %></p>
+                <p><%= log[:log].time.strftime('%H:%M:%S.%L') %></p>
+                <% unless log[:result].nil? %>
+                  <p>(<%= log[:result].strftime('%H:%M:%S.%L') %>)</p>
+                <% end %>
+                <% if log[:log].answer == 'timeout' %>
                     <p class="timeout-stat">таймаут</p>
                 <% end %>
             <% end %>
@@ -39,7 +42,7 @@
           <p><%= log[:time].strftime('%d.%m.%Y') %></p>
           <p><%= log[:time].strftime('%H:%M:%S.%L') %></p>
           <% if log[:bonuses] > 0 %>
-              <p><%= "Бонус: #{log[:bonuses]} секунд" %></p>
+              <p><%= "Бонус: #{Time.at(log[:bonuses]).utc.strftime("%H:%M:%S")}" %></p>
           <% end %>
         </td>
         <% log1 = @level_logs[@levels.count + 1][pos] %>
