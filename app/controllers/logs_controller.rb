@@ -59,8 +59,8 @@ class LogsController < ApplicationController
         time: result.finished_at || result.current_level_entered_at
       }
     end
-    results = results.sort do |a, b|
-      b[:levels] <=> a[:levels] || a[:time] <=> b[:time]
+    results = results.sort_by do |a|
+      [-a[:levels], a[:time]]
     end
     @level_logs << results
     results = results.map do |result|
@@ -70,8 +70,8 @@ class LogsController < ApplicationController
         time: (result[:time] - result[:bonuses])
       }
     end
-    results = results.sort do |a, b|
-      b[:levels] <=> a[:levels] || a[:time] <=> b[:time]
+    results = results.sort_by do |a|
+      [-a[:levels], a[:time]]
     end
     @level_logs << results
     render
