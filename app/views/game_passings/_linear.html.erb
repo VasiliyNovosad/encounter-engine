@@ -1,4 +1,5 @@
-<%= link_to "Оновити", url_for("/play/#{@game.id}") %>
+<div id="updateButton"><%= link_to "Оновити", url_for("/play/#{@game.id}") %></div>
+<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}")%></div>
 <br>
 <br>
 

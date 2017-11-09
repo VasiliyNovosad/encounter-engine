@@ -269,3 +269,11 @@ td {
 #stats th {
     background-color: #272727;
 }
+
+#updateButton, #statButton {
+    padding: 10px 20px;
+    border: solid 1px #ccc;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 0 10px;
+}
