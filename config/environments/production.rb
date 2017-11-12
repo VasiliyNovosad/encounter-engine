@@ -62,8 +62,8 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: '95.46.98.220' }
   # config.action_mailer.register_interceptor(SendGrid::MailInterceptor)
   config.action_mailer.smtp_settings = {
-    user_name: ENV['GMAIL_USERNAME'],
-    password: ENV['GMAIL_PASSWORD'],
+    user_name: Rails.application.secrets.GMAIL_USERNAME,
+    password: Rails.application.secrets.GMAIL_PASSWORD,
     domain: '95.46.98.220',
     address: 'smtp.gmail.com',
     port: 587,
