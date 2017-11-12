@@ -15,13 +15,13 @@ end
 
 gem 'puma'
 # Use sqlite3 as the database for Active Record
-# group :development do
-#   gem 'sqlite3', '~> 1.3', '>=1.3.10'
-#   gem 'capistrano', require: false
-#   gem 'capistrano-bundler', require: false
-#   gem 'capistrano-rails', require: false
-#   gem 'capistrano-rvm', require: false
-# end
+group :development do
+  # gem 'sqlite3', '~> 1.3', '>=1.3.10'
+  gem 'capistrano', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-rvm', require: false
+end
 
 group :test do
   gem 'cucumber-rails', require: false

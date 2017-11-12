@@ -3,7 +3,7 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server '37.221.141.195', user: 'deployer', roles: %w{app db web}, primary: true
+server '95.46.98.220', user: 'deploy', roles: %w{app db web}, primary: true
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
@@ -17,9 +17,9 @@ set :rails_env, :production
 # property set. Specify the username and a domain or IP for the server.
 # Don't use `:all`, it's a meta role.
 
- role :app, %w{deployer@37.221.141.195}
- role :web, %w{deployer@37.221.141.195}
- role :db,  %w{deployer@37.221.141.195}
+ role :app, %w{deploy@95.46.98.220}
+ role :web, %w{deploy@95.46.98.220}
+ role :db,  %w{deploy@95.46.98.220}
 
 
 
@@ -42,10 +42,10 @@ set :rails_env, :production
 # Global options
 # --------------
   set :ssh_options, {
-    keys: %w(/c/users/vnovosad/.ssh/id_rsa),
+    keys: %w(/c/users/Fr1end/.ssh/id_rsa),
     forward_agent: true,
     auth_methods: %w(publickkey password),
-    port: 4321
+    port: 22
   }
 #
 # The server-based syntax can be used to override options:
