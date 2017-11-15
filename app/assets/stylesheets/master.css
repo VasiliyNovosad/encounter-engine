@@ -277,3 +277,7 @@ td {
     display: inline-block;
     margin: 0 10px;
 }
+
+.level-move {
+    margin: 0 5px;
+}
