@@ -10,6 +10,12 @@
     <%= render 'tasks', tasks: level.tasks %>
   </p>
   <br>
+  <% if level.complete_later > 0 %>
+      <p>
+         <span class="hint-timer">Автозавершення через <%= level.complete_later / 60 %> хв</span>
+      </p>
+      <br>
+  <% end %>
   <% if level.hints.count > 0 %>
     Підказки:
     <p>

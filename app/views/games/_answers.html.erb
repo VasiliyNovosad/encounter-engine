@@ -9,7 +9,7 @@
   </p>
   <p>
     <% question.answers.each do |answer| %>
-        <%= answer.value %>
+        <span class="bonus_answered"><%= answer.value %></span>
         <% if answer.team.nil? %>
             <em> (для всіх)</em>
         <% else %>
