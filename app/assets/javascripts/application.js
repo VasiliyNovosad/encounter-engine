@@ -16,4 +16,5 @@
 //= require jquery-ui
 //= require autocomplete-rails
 //= require datetimepicker
+//= require forem
 //= require_tree .

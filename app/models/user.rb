@@ -31,4 +31,8 @@ class User < ActiveRecord::Base
   def author_of?(game)
     game.author.id == id || game.authors.map(&:id).include?(id)
   end
+
+  def forem_name
+    nickname
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171005120138) do
+ActiveRecord::Schema.define(version: 20171119195173) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20171005120138) do
   create_table "answers", force: :cascade do |t|
     t.integer  "question_id"
     t.integer  "level_id"
-    t.string   "value"
+    t.string   "value",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "team_id"
@@ -45,10 +45,107 @@ ActiveRecord::Schema.define(version: 20171005120138) do
     t.datetime "updated_at"
   end
 
+  create_table "forem_categories", force: :cascade do |t|
+    t.string   "name",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "slug"
+    t.integer  "position",   default: 0
+  end
+
+  add_index "forem_categories", ["slug"], name: "index_forem_categories_on_slug", unique: true, using: :btree
+
+  create_table "forem_forums", force: :cascade do |t|
+    t.string  "name"
+    t.text    "description"
+    t.integer "category_id"
+    t.integer "views_count", default: 0
+    t.string  "slug"
+    t.integer "position",    default: 0
+  end
+
+  add_index "forem_forums", ["slug"], name: "index_forem_forums_on_slug", unique: true, using: :btree
+
+  create_table "forem_groups", force: :cascade do |t|
+    t.string "name"
+  end
+
+  add_index "forem_groups", ["name"], name: "index_forem_groups_on_name", using: :btree
+
+  create_table "forem_memberships", force: :cascade do |t|
+    t.integer "group_id"
+    t.integer "member_id"
+  end
+
+  add_index "forem_memberships", ["group_id"], name: "index_forem_memberships_on_group_id", using: :btree
+
+  create_table "forem_moderator_groups", force: :cascade do |t|
+    t.integer "forum_id"
+    t.integer "group_id"
+  end
+
+  add_index "forem_moderator_groups", ["forum_id"], name: "index_forem_moderator_groups_on_forum_id", using: :btree
+
+  create_table "forem_posts", force: :cascade do |t|
+    t.integer  "topic_id"
+    t.text     "text"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "reply_to_id"
+    t.string   "state",       default: "pending_review"
+    t.boolean  "notified",    default: false
+  end
+
+  add_index "forem_posts", ["reply_to_id"], name: "index_forem_posts_on_reply_to_id", using: :btree
+  add_index "forem_posts", ["state"], name: "index_forem_posts_on_state", using: :btree
+  add_index "forem_posts", ["topic_id"], name: "index_forem_posts_on_topic_id", using: :btree
+  add_index "forem_posts", ["user_id"], name: "index_forem_posts_on_user_id", using: :btree
+
+  create_table "forem_subscriptions", force: :cascade do |t|
+    t.integer "subscriber_id"
+    t.integer "topic_id"
+  end
+
+  create_table "forem_topics", force: :cascade do |t|
+    t.integer  "forum_id"
+    t.integer  "user_id"
+    t.string   "subject"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "locked",       default: false,            null: false
+    t.boolean  "pinned",       default: false
+    t.boolean  "hidden",       default: false
+    t.datetime "last_post_at"
+    t.string   "state",        default: "pending_review"
+    t.integer  "views_count",  default: 0
+    t.string   "slug"
+  end
+
+  add_index "forem_topics", ["forum_id"], name: "index_forem_topics_on_forum_id", using: :btree
+  add_index "forem_topics", ["slug"], name: "index_forem_topics_on_slug", unique: true, using: :btree
+  add_index "forem_topics", ["state"], name: "index_forem_topics_on_state", using: :btree
+  add_index "forem_topics", ["user_id"], name: "index_forem_topics_on_user_id", using: :btree
+
+  create_table "forem_views", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "viewable_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "count",             default: 0
+    t.string   "viewable_type"
+    t.datetime "current_viewed_at"
+    t.datetime "past_viewed_at"
+  end
+
+  add_index "forem_views", ["updated_at"], name: "index_forem_views_on_updated_at", using: :btree
+  add_index "forem_views", ["user_id"], name: "index_forem_views_on_user_id", using: :btree
+  add_index "forem_views", ["viewable_id"], name: "index_forem_views_on_viewable_id", using: :btree
+
   create_table "game_entries", force: :cascade do |t|
     t.integer "game_id"
     t.integer "team_id"
-    t.string  "status"
+    t.string  "status",  limit: 255
   end
 
   create_table "game_passings", force: :cascade do |t|
@@ -58,29 +155,29 @@ ActiveRecord::Schema.define(version: 20171005120138) do
     t.datetime "finished_at"
     t.datetime "current_level_entered_at"
     t.text     "answered_questions"
-    t.string   "status"
+    t.string   "status",                   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "closed_levels"
     t.text     "answered_bonuses"
-    t.integer  "sum_bonuses",              default: 0
+    t.integer  "sum_bonuses",                          default: 0
   end
 
   create_table "games", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",                   limit: 255
     t.text     "description"
     t.integer  "author_id"
     t.datetime "starts_at"
-    t.boolean  "is_draft",               default: false,    null: false
+    t.boolean  "is_draft",                           default: false,    null: false
     t.integer  "max_team_number"
-    t.integer  "requested_teams_number", default: 0
+    t.integer  "requested_teams_number",             default: 0
     t.datetime "registration_deadline"
     t.datetime "author_finished_at"
-    t.boolean  "is_testing",             default: false,    null: false
+    t.boolean  "is_testing",                         default: false,    null: false
     t.datetime "test_date"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "game_type",              default: "linear"
+    t.string   "game_type",                          default: "linear"
     t.integer  "duration"
     t.integer  "tested_team_id"
   end
@@ -134,24 +231,24 @@ ActiveRecord::Schema.define(version: 20171005120138) do
     t.text     "text"
     t.integer  "game_id"
     t.integer  "position"
-    t.string   "name"
+    t.string   "name",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "olymp",          default: false
+    t.boolean  "olymp",                      default: false
     t.integer  "complete_later"
   end
 
   create_table "logs", force: :cascade do |t|
     t.integer  "game_id"
-    t.string   "team"
-    t.string   "level"
-    t.string   "answer"
+    t.string   "team",    limit: 255
+    t.string   "level",   limit: 255
+    t.string   "answer",  limit: 255
     t.datetime "time"
     t.integer  "user_id"
   end
 
   create_table "questions", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",       limit: 255
     t.integer  "level_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -168,20 +265,20 @@ ActiveRecord::Schema.define(version: 20171005120138) do
   end
 
   create_table "teams", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",       limit: 255
     t.integer  "captain_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "nickname"
+    t.string   "nickname",               limit: 255
     t.integer  "team_id"
-    t.string   "phone_number"
+    t.string   "phone_number",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                              default: "",               null: false
+    t.string   "encrypted_password",                 default: "",               null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -189,6 +286,9 @@ ActiveRecord::Schema.define(version: 20171005120138) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
+    t.boolean  "forem_admin",                        default: false
+    t.string   "forem_state",                        default: "pending_review"
+    t.boolean  "forem_auto_subscribe",               default: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
