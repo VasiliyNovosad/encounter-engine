@@ -60,10 +60,10 @@ class GamePassingsController < ApplicationController
       @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       save_log(@level, time) if @game_passing.current_level.id || @game.game_type == 'panic'
       @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time)
-      @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
       if @game_passing.finished?
         render 'show_results'
       else
+        @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
         get_uniq_level_codes(@level)
         get_answered_bonuses(@level) unless @game.game_type == 'panic'
         get_answered_questions(@level) unless @game.game_type == 'panic'

@@ -54,9 +54,10 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '3.1.2'
 # gem 'bcrypt'
-gem 'devise'
-gem 'acts_as_list', git: 'https://github.com/swanandp/acts_as_list.git', require: 'acts_as_list'
+
+gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'default_value_for', '~> 3.0.0'
+gem 'devise'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'PerfectlyNormal/tinymce-rails-imageupload'
@@ -80,3 +81,6 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
+
+gem 'forem', github: 'radar/forem', branch: 'rails4'
+gem 'kaminari', '0.15.1'

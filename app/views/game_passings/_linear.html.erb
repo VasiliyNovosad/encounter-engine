@@ -12,28 +12,28 @@
     <br>Код:
     <%= text_field_tag(:answer, nil, autofocus: true) %>
     <%= submit_tag " надіслати " %>
-    <hr>
+    <br>
   <% end %>
   <br>
 
-  <% if (@entered_all_answers.count > 0) && answer_posted? %>
+  <% unless @answer.nil? || @answer == '' %>
     <% if answer_was_correct? %>
-      <div>
-        Код <font color="236400"><b><%= @answer %></b></font> вірний.<br><hr>
-      </div>
+        <div>
+          Код <font color="236400"><b><%= @answer %></b></font> вірний.<br><hr>
+        </div>
     <% else %>
-      <p>
-        Код <font color="ae0011"><b><%= @answer %></b></font> невірний.<br><hr>
-      </p>
+        <p>
+          Код <font color="ae0011"><b><%= @answer %></b></font> невірний.<br><hr>
+        </p>
     <% end %>
-
+  <% end %>
+  <% if (@entered_all_answers.count > 0) %>
     <p id="entered_codes">
         <br>Введено коди:
-      <%= @entered_all_answers.join ', '  %><hr>
+      <%= @entered_all_answers.join ', '  %>
     </p>
-
   <% end %>
-
+  <hr><br>
   <%= @game_passing.current_level.team_task(@team_id).html_safe %>
 
   <% if @game_passing.current_level.questions.count > 1 %>
