@@ -6,7 +6,28 @@
   <%= render 'shared/error_messages', object: f.object %>  
   <p><%= f.label :name, "Назва" %><%= f.text_field :name %></p>
   <p><%= f.label "Олімпійка?" %><%= f.check_box :olymp %></p>
+  <p id="olymp_base_block"><%= f.label :olymp_base %><%= f.text_field :olymp_base %></p>
   <p><%= f.label "Автозавершення через " %><%= f.text_field :complete_later_minutes %> хвилин</p>
   <%= f.submit "Додати рівень" %>
   <em><%= link_to "(відмінити)", game_path(@level.game) %></em>
 <% end %>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        if ($('#level_olymp').checked) {
+            document.getElementById('olymp_base_block').style.visibility = 'hidden'
+        }
+    });
+
+    $('#level_olymp').on("click", function(){ toggle($('#level_olymp').get(0)); });
+
+    function toggle(elem) {
+        if (elem.checked) {
+            document.getElementById('olymp_base_block').style.visibility = 'visible';
+            document.getElementById('level_olymp_base').focus();
+        }
+        else {
+            document.getElementById('olymp_base_block').style.visibility = 'hidden';
+        }
+    }
+</script>

@@ -1,21 +1,22 @@
-<% @levels = Math.log2(@sectors.count + 1) %>
+<% olymp_base = @game_passing.current_level.olymp_base || 2 %>
+<% levels = Math.log(@sectors.count, olymp_base).to_i + 1 %>
 <table class="olymp" border="1">
   <tbody>
-    <% (1..(@sectors.count + 1) / 2).each do |i| %>
+    <% (1..(olymp_base**(levels - 1))).each do |i| %>
       <tr>
         <td>
           <%= @sectors[i-1][:value].html_safe %>
         </td>
         
-        <% sum = 2**(@levels - 1) %>
+        <% sum = olymp_base**(levels - 1) %>
         
-        <% (1..(@levels - 1)).each do |j| %>
-          <% if (i % 2**j == 1) %>
-            <td rowspan="<%= 2**j %>">
-              <%= @sectors[sum + i / 2**j][:value].html_safe %>
+        <% (1..(levels - 1)).each do |j| %>
+          <% if (i % olymp_base**j == 1) %>
+            <td rowspan="<%= olymp_base**j %>">
+              <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
             </td>
           <% end %>
-          <% sum += 2**(@levels - j - 1) %>
+          <% sum += olymp_base**(levels - j - 1) %>
         <% end %>
       </tr>
     <% end %>

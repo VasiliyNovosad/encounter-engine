@@ -21,6 +21,7 @@ uk:
         name: "Назва"
         text: "Текст завдання"
         olymp: "Олімпійка"
+        olymp_base: "База олімпійки"
         correct_answer: "Код"
       hint:
         text: "Текст"
