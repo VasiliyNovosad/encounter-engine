@@ -4,7 +4,7 @@ ruby '2.3.3'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.8'
 
 gem 'pg'
 
@@ -29,7 +29,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
 end
 
 # Use SCSS for stylesheets
@@ -61,7 +61,7 @@ gem 'devise'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'PerfectlyNormal/tinymce-rails-imageupload'
-# gem 'paperclip'
+gem 'paperclip'
 # gem 'carrierwave'
 gem 'cloudinary'
 gem 'jquery-ui-rails'

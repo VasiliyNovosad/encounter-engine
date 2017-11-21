@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :invitation do
     to_team
     recepient_nickname 'user'
