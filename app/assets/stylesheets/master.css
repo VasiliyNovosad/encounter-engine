@@ -173,7 +173,7 @@ textarea {
     margin-top: 5px;
 }
 
-.openedlevel {
+.wrong_code, .openedlevel {
     color: red;
 }
 
@@ -183,14 +183,17 @@ textarea {
 
 #LevelCompleteCountdownContainer, .hint-timer, #countdown-example {
     color: #ff570a;
+    font-weight: bold
 }
 
 .bonus {
     color: #33ccff;
+    font-weight: bold
 }
 
-.bonus_answered, .timeout-stat {
-    color: #4d9b12;
+.right_code, .bonus_answered, .timeout-stat {
+    color: #8F0;
+    font-weight: bold
 }
 
 @media (max-width: 767px) {
@@ -279,9 +282,13 @@ td {
 }
 
 .level-move {
-    margin: 0 5px;
+    margin: 0 10px;
 }
 
 .finished-game {
     text-decoration: line-through;
+}
+
+.olymp td {
+    padding: 2px 10px;
 }

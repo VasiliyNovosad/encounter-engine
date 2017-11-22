@@ -21,7 +21,7 @@
 
 <script type="text/javascript">
     $( document ).ready(function() {
-        if ($('#level_olymp').checked) {
+        if (!$('#level_olymp').get(0).checked) {
             document.getElementById('olymp_base_block').style.visibility = 'hidden'
         }
     });

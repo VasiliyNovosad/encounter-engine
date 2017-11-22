@@ -25,17 +25,17 @@
     <% if answer_posted? && @answer %>
       <% if answer_was_correct? %>
         <div>
-          Код <font color="236400"><b><%= @answer %></b></font> вірний.<br><hr>
+          Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
         </div>
       <% else %>
         <p>
-          Код <font color="ae0011"><b><%= @answer %></b></font> невірний.<br><hr>
+          Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
         </p>
       <% end %>
     <% else %>
       <% if @game_passing.closed?(@level) %>
         <div>
-          Код <font color="236400"><b><%= @level.team_questions(@team_id).first.team_answers(@team_id).first.value %></b></font> вірний.<br><hr>
+          Код <span class="right_code"><%= @level.team_questions(@team_id).first.team_answers(@team_id).first.value %></span> вірний.<br><hr>
         </div>
       <% end %>
     <% end %>

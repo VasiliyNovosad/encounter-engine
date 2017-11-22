@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.7.2'
+lock '3.10.0'
 
 set :application, 'encounter-engine'
 set :repo_url, 'git@github.com:VasiliyNovosad/encounter-engine.git'

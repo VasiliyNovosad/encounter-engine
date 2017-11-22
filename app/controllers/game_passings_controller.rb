@@ -193,7 +193,7 @@ class GamePassingsController < ApplicationController
       value = level.olymp? ? question.name : '-'
       @sectors << { position: question.position,
                     name: question.name,
-                    value: answered_questions.include?(question) ? "<b><font color=\"236400\">#{question.team_correct_answer(@team_id)}</font></b>" : value }
+                    value: answered_questions.include?(question) ? "<span class=\"right_code\">#{question.team_correct_answer(@team_id)}</span>" : value }
     end
   end
 
@@ -206,7 +206,7 @@ class GamePassingsController < ApplicationController
         position: bonus.position,
         name: bonus.name,
         answered: answered_bonuses.include?(bonus),
-        value: answered_bonuses.include?(bonus) ? "<b><font color=\"236400\">#{bonus.team_correct_answer(@team_id)}</font></b>" : nil,
+        value: answered_bonuses.include?(bonus) ? "<span class=\"right_code\">#{bonus.team_correct_answer(@team_id)}</span>" : nil,
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
         award: answered_bonuses.include?(bonus) ? bonus.award_time : nil
