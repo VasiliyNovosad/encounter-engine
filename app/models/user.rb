@@ -12,7 +12,8 @@ class User < ActiveRecord::Base
 
   before_save { self.email = email.downcase }
 
-  validates :nickname, presence: true, uniqueness: true
+  validates :nickname, presence: true
+  validates_uniqueness_of :nickname, case_sensitive: false
 
   validates :phone_number, format: { with: /\A(\d+\b.*)?\Z/i, message: 'Невірний номер телефону. Використовуйте лише цифри'}, on: :update
 
