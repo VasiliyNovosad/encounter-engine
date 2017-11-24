@@ -93,7 +93,7 @@ class LogsController < ApplicationController
   end
 
   def ensure_game_finished
-    if @game.author_finished_at.nil?
+    if @game.author_finished_at.nil? && !current_user.author_of?(@game)
       redirect_to root_path, alert: 'Заборонено до закриття гри!'
     end
   end
