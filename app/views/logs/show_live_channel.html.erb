@@ -18,7 +18,7 @@
         <td><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %></td>
         <td><%= log.team %></td>
         <td><%= log.level %></td>
-        <td><% if correct_answer?(log.answer, log.level_id, log.team_id) %>
+        <td><% if correct_answer_by_level_id?(log.answer, log.level_id, log.team_id) %>
               <span class="right_code"><%= log.answer %></span>
           <% else %>
               <span class="wrong_code"><%= log.answer %></span>

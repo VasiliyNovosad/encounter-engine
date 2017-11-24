@@ -3,16 +3,18 @@
 <table id="stats" border="1">
   <tbody>
     <% @levels.each do |level| %>
+      <% correct_answers = [] %>
+      <% level.questions.each do |question| %>
+          <% question.answers.each { |answer| correct_answers << answer.value unless correct_answers.include? answer.value} %>
+      <% end %>
       <tr align="center">
         <td colspan="<%=@teams.count%>">
           <h2><%= level.name %></h2>
-          <% if level.questions.count == 1 %>
-            <strong>Вірний код:</strong><%= level.questions.first.correct_answer %>
+
+          <% if correct_answers.count == 1 %>
+            <strong>Вірний код: </strong><%= correct_answers.first %>
           <% else %>
-            <strong>Вірні коди:</strong>
-            <% level.questions.each do |question| %>
-              <%= question.correct_answer %><% if question != level.questions.last %>,<% end %>
-            <% end %>
+            <strong>Вірні коди: </strong><%= correct_answers.join(', ') %>
           <% end %>
         </td>
       </tr>
@@ -20,12 +22,17 @@
         <% @teams.each do |team| %>
         <td>
           <%= team.name %>
-          <% team_logs = @logs.of_team(team).of_level(level) %>
+          <% team_logs = @logs.select { |log| log.team_id == team.id && log.level_id == level.id } %>
           <ul>
           <% team_logs.each do |team_log| %>
             <li>
               <%= team_log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>
-              <%= team_log.answer %>
+              <% if correct_answers.include?(team_log.answer) %>
+                  <span class="right_code"><%= team_log.answer %></span>
+              <% else %>
+                  <span class="wrong_code"><%= team_log.answer %></span>
+              <% end %>
+
               <%=  " (#{team_log.user.nickname})" %>
             </li>
           <% end %>
