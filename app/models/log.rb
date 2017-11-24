@@ -1,5 +1,5 @@
 class Log < ActiveRecord::Base
-  paginates_per 100
+  paginates_per 50
 
   belongs_to :game
   belongs_to :user

@@ -11,7 +11,7 @@ class LogsController < ApplicationController
   end
 
   def show_live_channel
-    @logs = Log.of_game(@game).page(params[:page] || 1)
+    @logs = Log.of_game(@game).order(time: :desc).page(params[:page] || 1)
     render
   end
 
