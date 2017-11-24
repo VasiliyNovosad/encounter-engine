@@ -16,7 +16,7 @@ class LogsController < ApplicationController
   end
 
   def show_level_log
-    @logs = Log.of_game(@game).of_team(@team).of_level(@level)
+    @logs = Log.of_game(@game).of_team(@team).of_level(@level).order_by_time
     render
   end
 

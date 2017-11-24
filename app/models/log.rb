@@ -5,6 +5,7 @@ class Log < ActiveRecord::Base
   belongs_to :user
 
   scope :of_game, ->(game) { where(game_id: game.id) }
-  scope :of_team, ->(team) { where(team: team.name) }
-  scope :of_level, ->(level) { where(level: level.name).order(:time) }
+  scope :of_team, ->(team) { where(team_id: team.id) }
+  scope :of_level, ->(level) { where(level_id: level.id) }
+  scope :order_by_time, -> { order(:time) }
 end
