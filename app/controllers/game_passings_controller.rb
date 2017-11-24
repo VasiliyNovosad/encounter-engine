@@ -75,7 +75,9 @@ class GamePassingsController < ApplicationController
   def save_log(level = @game_passing.current_level, time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
     Log.create! game_id: @game.id,
                 level: level.name,
+                level_id: level.id,
                 team: @team.name,
+                team_id: @team.id,
                 time: time,
                 answer: @answer || 'timeout',
                 user: current_user

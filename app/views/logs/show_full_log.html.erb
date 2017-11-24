@@ -23,7 +23,15 @@
           <% team_logs = @logs.of_team(team).of_level(level) %>
           <ul>
           <% team_logs.each do |team_log| %>
-            <li><%= team_log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>&nbsp;<%= "#{team_log.answer} (#{team_log.user.nickname})" %></li>
+            <li>
+              <%= team_log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>
+              <% if correct_answer?(team_log.answer, team_log.level_id, team_log.team_id) %>
+                <span class="right_code"><%= team_log.answer %></span>
+              <% else %>
+                <span class="wrong_code"><%= team_log.answer %></span>
+              <% end %>
+              <%=  " (#{team_log.user.nickname})" %>
+            </li>
           <% end %>
           </ul>
         </td>
