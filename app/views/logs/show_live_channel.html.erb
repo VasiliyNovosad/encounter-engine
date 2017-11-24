@@ -13,16 +13,7 @@
     </tr>
   </thead>
   <tbody>
-    <%
-      logs_sorted_by_date = @logs.sort do |left, right|
-        if left.time <= right.time
-          1
-        else
-          -1
-        end
-      end
-    %>
-    <% logs_sorted_by_date.each do |log| %>
+    <% @logs.each do |log| %>
       <tr>
         <td><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %></td>
         <td><%= log.team %></td>
