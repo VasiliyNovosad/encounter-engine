@@ -25,11 +25,12 @@
           <% team_logs.each do |team_log| %>
             <li>
               <%= team_log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>
-              <% if correct_answer?(team_log.answer, team_log.level_id, team_log.team_id) %>
+              <%= team_log.answer %>
+              <!--<% if correct_answer?(team_log.answer, team_log.level_id, team_log.team_id) %>
                 <span class="right_code"><%= team_log.answer %></span>
               <% else %>
                 <span class="wrong_code"><%= team_log.answer %></span>
-              <% end %>
+              <% end %>-->
               <%=  " (#{team_log.user.nickname})" %>
             </li>
           <% end %>
