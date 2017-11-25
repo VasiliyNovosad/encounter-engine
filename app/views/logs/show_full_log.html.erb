@@ -5,7 +5,7 @@
     <% @levels.each do |level| %>
       <% correct_answers = [] %>
       <% level.questions.each do |question| %>
-          <% question.answers.each { |answer| correct_answers << answer.value unless correct_answers.include? answer.value} %>
+          <% question.answers.each { |answer| correct_answers << answer.value.downcase unless correct_answers.include? answer.value.downcase} %>
       <% end %>
       <tr align="center">
         <td colspan="<%=@teams.count%>">
@@ -27,7 +27,7 @@
           <% team_logs.each do |team_log| %>
             <li>
               <%= team_log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>
-              <% if correct_answers.include?(team_log.answer) %>
+              <% if correct_answers.include?(team_log.answer.downcase) %>
                   <span class="right_code"><%= team_log.answer %></span>
               <% else %>
                   <span class="wrong_code"><%= team_log.answer %></span>
