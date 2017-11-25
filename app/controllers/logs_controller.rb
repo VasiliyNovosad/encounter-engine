@@ -26,6 +26,7 @@ class LogsController < ApplicationController
   end
 
   def show_full_log
+    require 'ee_strings.rb'
     @logs = Log.of_game(@game).order_by_time.preload(:user)
     @levels = Level.of_game(@game).includes(questions: :answers)
     @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
