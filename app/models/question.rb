@@ -23,7 +23,7 @@ class Question < ActiveRecord::Base
 
   def matches_any_answer(answer_value, team_id)
     require 'ee_strings.rb'
-    team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    team_answers(team_id).any? { |answer| answer.value.to_s.downcase_utf8_cyr == answer_value.to_s.downcase_utf8_cyr }
   end
 
   def set_name

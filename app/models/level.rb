@@ -45,15 +45,27 @@ class Level < ActiveRecord::Base
 
   def find_questions_by_answer(answer_value, team_id)
     require 'ee_strings.rb'
-    team_questions(team_id).select do |question|
-      question.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    # team_questions(team_id).select do |question|
+    #   question.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    # end
+    team_questions(team_id).includes(:answers).select do |question|
+      # bonus.matches_any_answer(answer, team_id)
+      question.answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
+        ans.value.to_s.downcase_utf8_cyr == answer_value.to_s.downcase_utf8_cyr
+      end
     end
   end
 
   def find_bonuses_by_answer(answer_value, team_id)
     require 'ee_strings.rb'
-    team_bonuses(team_id).select do |bonus|
-      bonus.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    # team_bonuses(team_id).select do |bonus|
+    #   bonus.team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    # end
+    team_bonuses(team_id).includes(:bonus_answers).select do |bonus|
+      # bonus.matches_any_answer(answer, team_id)
+      bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
+        ans.value.to_s.downcase_utf8_cyr == answer_value.to_s.downcase_utf8_cyr
+      end
     end
   end
 

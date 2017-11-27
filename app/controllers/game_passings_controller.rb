@@ -179,13 +179,13 @@ class GamePassingsController < ApplicationController
     log_of_level = Log.of_game(@game).of_level(level).of_team(Team.find(@team_id))
     entered_answers = log_of_level.map(&:answer).uniq
     @entered_all_answers = entered_answers
-    level.team_questions(@team_id).each do |question|
-      question.team_answers(@team_id).each do |answer|
+    level.team_questions(@team_id).includes(:answers).each do |question|
+      question.answers.select{ |answer| answer.team_id.nil? || answer.team_id == @team_id }.each do |answer|
         correct_answers << answer.value
       end
     end
-    level.team_bonuses(@team_id).each do |bonus|
-      bonus.team_answers(@team_id).each do |answer|
+    level.team_bonuses(@team_id).includes(:bonus_answers).each do |bonus|
+      bonus.bonus_answers.select{ |answer| answer.team_id.nil? || answer.team_id == @team_id }.each do |answer|
         correct_answers << answer.value
       end
     end
@@ -196,11 +196,12 @@ class GamePassingsController < ApplicationController
     @sectors = []
     return unless level.multi_question?(@team_id)
     answered_questions = @game_passing.answered_questions
-    @game_passing.current_level.team_questions(@team_id).each do |question|
+    @game_passing.current_level.team_questions(@team_id).includes(:answers).each do |question|
+      correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }
       value = level.olymp? ? question.name : '-'
       @sectors << { position: question.position,
                     name: question.name,
-                    value: answered_questions.include?(question) ? "<span class=\"right_code\">#{question.team_correct_answer(@team_id)}</span>" : value }
+                    value: answered_questions.include?(question) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" : value }
     end
   end
 
@@ -208,12 +209,13 @@ class GamePassingsController < ApplicationController
     @bonuses = []
     return unless level.has_bonuses?(@team_id)
     answered_bonuses = @game_passing.answered_bonuses
-    @bonuses = @game_passing.current_level.team_bonuses(@team_id).map do |bonus|
+    @bonuses = @game_passing.current_level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
+      correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }
       {
         position: bonus.position,
         name: bonus.name,
         answered: answered_bonuses.include?(bonus),
-        value: answered_bonuses.include?(bonus) ? "<span class=\"right_code\">#{bonus.team_correct_answer(@team_id)}</span>" : nil,
+        value: answered_bonuses.include?(bonus) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" : nil,
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
         award: answered_bonuses.include?(bonus) ? bonus.award_time : nil

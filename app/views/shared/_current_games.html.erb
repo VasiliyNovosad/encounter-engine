@@ -9,6 +9,10 @@
         <div id="game-<%= game.id %>">
           <% unless game.is_testing? %>
           Розпочалась гра "<%= link_to game.name, game_path(game) %>" |
+              <% if current_user.captain? %>
+                  <% @game_entry = GameEntry.of(@team,game)%>
+                  <%= render 'shared/game_entry_controls', game_entry: @game_entry,  game: game, team: @team %>
+              <% end %>
               <% if current_user.team.finished?(game) || game.created_by?(current_user) %>
                 <%= link_to "Переглянути результати", url_for("/game_passings/show_results?game_id=#{game.id}") %>
               <% else %>

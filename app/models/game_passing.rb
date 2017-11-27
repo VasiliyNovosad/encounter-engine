@@ -1,4 +1,6 @@
 class GamePassing < ActiveRecord::Base
+  require 'ee_strings.rb'
+
   serialize :answered_questions
   default_value_for :answered_questions, []
   serialize :answered_bonuses
@@ -105,12 +107,23 @@ class GamePassing < ActiveRecord::Base
 
   def correct_answer?(answer, level, team_id)
     # unanswered_questions(level, team_id).any? { |question| question.matches_any_answer(answer, team_id) }
-    level.team_questions(team_id).any? { |question| question.matches_any_answer(answer, team_id) }
+    # level.team_questions(team_id).any? { |question| question.matches_any_answer(answer, team_id) }
+    level.team_questions(team_id).includes(:answers).any? do |question|
+      # bonus.matches_any_answer(answer, team_id)
+      question.answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
+        ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
+      end
+    end
   end
 
   def correct_bonus_answer?(answer, level, team_id)
     # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
-    level.team_bonuses(team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
+    level.team_bonuses(team_id).includes(:bonus_answers).any? do |bonus|
+      # bonus.matches_any_answer(answer, team_id)
+      bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
+        ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
+      end
+    end
   end
 
   def time_at_level
