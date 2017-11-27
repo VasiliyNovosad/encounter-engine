@@ -1,6 +1,6 @@
 <% unless bonuses.empty? %>
     <% bonuses.each do |bonus| %>
-        <div id="bonus-<%=  bonus.id %>">
+        <div id="bonus-<%= bonus.id %>">
           <fieldset>
             <legend>
               <% if bonus.team.nil? %>
@@ -23,7 +23,7 @@
               <strong>Підказка: </strong><%= bonus.help.html_safe %>
             </p>
             <p>
-              <strong>Винагорода: </strong><%= bonus.award_time %> секунд
+              <strong>Винагорода: </strong><%= seconds_to_string(bonus.award_time) %>
             </p>
             <% bonus.bonus_answers.each do |answer| %>
               <p>

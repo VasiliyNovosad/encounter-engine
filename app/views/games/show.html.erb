@@ -42,6 +42,12 @@
   </p>
 <% end %>
 
+<% if current_user && current_user.captain? %>
+    <p><% game_entry = GameEntry.of(current_user.team, @game)%>
+      <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: current_user.team %></p>
+<% end %>
+<br>
+
 <p>
   <em>Опис:</em>
 </p>

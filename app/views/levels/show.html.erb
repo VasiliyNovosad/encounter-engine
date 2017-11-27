@@ -18,13 +18,12 @@
   <legend>
     Завдання:
   </legend>
-
-  <p>
-    <%= render 'tasks/list', tasks: @level.tasks %>
-  </p>
-
   <p>
     <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
+  </p>
+  <br>
+  <p>
+    <%= render 'tasks/list', tasks: @level.tasks %>
   </p>
 </fieldset>
 <br>
@@ -32,13 +31,12 @@
   <legend>
     Пiдказки:
   </legend>
-
-  <p>
-    <%= render 'hints/list', hints: @level.hints %>
-  </p>
-
   <p>
     <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) %>
+  </p>
+  <br>
+  <p>
+    <%= render 'hints/list', hints: @level.hints %>
   </p>
 </fieldset>
 <br>
@@ -46,13 +44,12 @@
   <legend>
     Відповіді:
   </legend>
-
-  <p>
-    <%= render 'questions/list', questions: @level.questions %>
-  </p>
-
   <p>
     <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
+  </p>
+  <br>
+  <p>
+    <%= render 'questions/list', questions: @level.questions %>
   </p>
 </fieldset>
 <br>
@@ -60,13 +57,12 @@
   <legend>
     Бонуси:
   </legend>
-
-  <p>
-    <%= render 'bonuses/list', bonuses: @level.bonuses %>
-  </p>
-
   <p>
     <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
+  </p>
+  <br>
+  <p>
+    <%= render 'bonuses/list', bonuses: @level.bonuses %>
   </p>
 </fieldset>
 <br>

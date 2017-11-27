@@ -11,6 +11,13 @@
   <% unless bonus.help.empty? %>
     <p>Підказка: <%= bonus.help.html_safe %></p>
   <% end %>
+
+  <% if (bonus.award_time || 0) > 0 %>
+    <p>
+      <strong>Винагорода: </strong><%= seconds_to_string(bonus.award_time || 0) %>
+    </p>
+  <% end %>
+
   <p>
     <% bonus.bonus_answers.each do |answer| %>
         <span class="bonus"><%= answer.value %></span>
@@ -21,4 +28,5 @@
         <% end %>
     <% end %>
   </p>
+  <br>
 <% end %>
