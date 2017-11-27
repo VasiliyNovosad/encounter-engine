@@ -14,9 +14,9 @@
     </thead>
     <tbody>
       <% game_passings = GamePassing.of_game(@game) %>
-      <% game_passings.finished.each do |game_passing| %>
+      <% game_passings.finished.each_with_index do |game_passing, index| %>
         <tr>
-          <td><%= @game.place_of(game_passing.team) %></td>
+          <td><%= index + 1 %></td>
           <td><%= game_passing.team.name %></td>
           <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
           <td>
