@@ -133,15 +133,15 @@ class GamePassing < ActiveRecord::Base
   end
 
   def unanswered_questions(level, team_id)
-    level.team_questions(team_id) - question.where(id: answered_questions)
+    level.team_questions(team_id) - Question.where(id: answered_questions)
   end
 
   def all_questions_answered?(level, team_id)
-    (level.team_questions(team_id) - question.where(id: answered_questions)).empty?
+    (level.team_questions(team_id) - Question.where(id: answered_questions)).empty?
   end
 
   def unanswered_bonuses(level, team_id)
-    level.team_bonuses(team_id) - bonuses.where(id: answered_bonuses)
+    level.team_bonuses(team_id) - Bonus.where(id: answered_bonuses)
   end
 
   def exit!

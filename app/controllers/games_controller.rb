@@ -27,7 +27,7 @@ class GamesController < ApplicationController
   def create
     @game = Game.new(game_params)
     @game.author = current_user
-    @authors = User.where(:id => params[:organizing_team])
+    @authors = User.where(id: params[:organizing_team])
     @game.authors << @authors
     if @game.save
       redirect_to game_path(@game)
@@ -48,7 +48,7 @@ class GamesController < ApplicationController
   end
 
   def update
-    @authors = User.where(:id => params[:organizing_team])
+    @authors = User.where(id: params[:organizing_team])
     @game.authors.destroy_all
     @game.authors << @authors
     if @game.update_attributes(game_params)
@@ -64,7 +64,7 @@ class GamesController < ApplicationController
   end
 
   def destroy
-    @game.levels.each { |level| level.destroy }
+    @game.levels.each(&:destroy)
     @game.destroy
     redirect_to dashboard_path
   end
@@ -147,7 +147,11 @@ class GamesController < ApplicationController
   protected
 
   def game_params
-    params.require(:game).permit(:name, :description, :game_type, :duration, :starts_at, :registration_deadline, :max_team_number, :is_draft, :is_testing, :author, :test_date, :tested_team_id)
+    params.require(:game).permit(
+      :name, :description, :game_type, :duration, :starts_at,
+      :registration_deadline, :max_team_number, :is_draft,
+      :is_testing, :author, :test_date, :tested_team_id
+    )
   end
 
   def find_game
@@ -159,11 +163,7 @@ class GamesController < ApplicationController
   end
 
   def find_team
-    if current_user
-      @team = current_user.team
-    else
-      @team = nil
-    end
+    @team = current_user ? current_user.team : nil
   end
 
   def find_teams

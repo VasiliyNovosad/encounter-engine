@@ -195,7 +195,7 @@ class GamePassingsController < ApplicationController
   def get_answered_questions(level)
     @sectors = []
     return unless level.multi_question?(@team_id)
-    answered_questions = @game_passing.answered_questions
+    answered_questions = @game_passing.current_level.questions.where(id: @game_passing.answered_questions)
     @game_passing.current_level.team_questions(@team_id).includes(:answers).each do |question|
       correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }
       value = level.olymp? ? question.name : '-'
@@ -208,7 +208,7 @@ class GamePassingsController < ApplicationController
   def get_answered_bonuses(level)
     @bonuses = []
     return unless level.has_bonuses?(@team_id)
-    answered_bonuses = @game_passing.answered_bonuses
+    answered_bonuses = @game_passing.current_level.bonuses.where(id: @game_passing.answered_bonuses)
     @bonuses = @game_passing.current_level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }
       {
