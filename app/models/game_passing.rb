@@ -47,8 +47,8 @@ class GamePassing < ActiveRecord::Base
   def pass_question!(questions)
     changed = false
     questions.each do |question|
-      unless answered_questions.include? question
-        answered_questions << question
+      unless answered_questions.include? question.id
+        answered_questions << question.id
         changed = true
       end
     end
@@ -58,8 +58,8 @@ class GamePassing < ActiveRecord::Base
   def pass_bonus!(bonuses)
     changed = false
     bonuses.each do |bonus|
-      unless answered_bonuses.include? bonus
-        answered_bonuses << bonus
+      unless answered_bonuses.include? bonus.id
+        answered_bonuses << bonus.id
         self.sum_bonuses = self.sum_bonuses + bonus.award_time
         changed = true
       end
@@ -133,15 +133,15 @@ class GamePassing < ActiveRecord::Base
   end
 
   def unanswered_questions(level, team_id)
-    level.team_questions(team_id) - answered_questions
+    level.team_questions(team_id) - question.where(id: answered_questions)
   end
 
   def all_questions_answered?(level, team_id)
-    (level.team_questions(team_id) - answered_questions).empty?
+    (level.team_questions(team_id) - question.where(id: answered_questions)).empty?
   end
 
   def unanswered_bonuses(level, team_id)
-    level.team_bonuses(team_id) - answered_bonuses
+    level.team_bonuses(team_id) - bonuses.where(id: answered_bonuses)
   end
 
   def exit!
