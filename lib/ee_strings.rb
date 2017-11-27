@@ -56,7 +56,7 @@ class String
         when "В" then "в"
         when "Г" then "г"
         when "Д" then "д"
-        when "Е" then "у"
+        when "Е" then "е"
         when "Ё" then "ё"
         when "Ж" then "ж"
         when "З" then "з"
