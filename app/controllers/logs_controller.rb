@@ -34,9 +34,9 @@ class LogsController < ApplicationController
   end
 
   def show_short_log
-    logs = Log.of_game(@game).preload(:user)
-    @levels = Level.of_game(@game)
-    game_passings = GamePassing.of_game(@game).preload(:team)
+    logs = Log.of_game(@game).order_by_time.preload(:user).to_a
+    @levels = Level.of_game(@game).to_a
+    game_passings = GamePassing.of_game(@game).preload(:team).to_a
     @teams = game_passings.map(&:team)
     @level_logs = []
     @levels.each do |level|
