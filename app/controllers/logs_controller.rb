@@ -34,15 +34,16 @@ class LogsController < ApplicationController
   end
 
   def show_short_log
-    logs = Log.of_game(@game)
+    logs = Log.of_game(@game).preload(:user)
     @levels = Level.of_game(@game)
-    @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
+    game_passings = GamePassing.of_game(@game).preload(:team)
+    @teams = game_passings.map(&:team)
     @level_logs = []
     @levels.each do |level|
       @level_logs << @teams.map do |team|
-        team_logs = logs.of_team(team).of_level(level)
+        team_logs = logs.select { |log| log.team_id == team.id && log.level_id == level.id }
         previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
-        team_log = (team_logs.count > 0 && GamePassing.of(team, @game).closed_levels.include?(level.id)) ? team_logs.last : nil # && GamePassing.of(team, @game).closed_levels.include?(level.id)
+        team_log = (team_logs.count > 0 && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
         {
             team: team,
             log: team_log,
@@ -52,8 +53,7 @@ class LogsController < ApplicationController
       end.sort_by { |a| a[:time] }
     end
 
-    results = GamePassing.where(game_id: @game.id).to_a
-    results = results.map do |result|
+    results = game_passings.map do |result|
       {
         team: result.team,
         levels: result.closed_levels.count,

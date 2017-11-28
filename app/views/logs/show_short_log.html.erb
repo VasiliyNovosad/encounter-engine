@@ -1,3 +1,4 @@
+<% levels_count = @levels.count %>
 <h1>Статистика гри "<%= link_to @game.name, game_path(@game) %>"</h1>
 
 <table id="stats" border="1">
@@ -35,7 +36,7 @@
             <% end %>
           </td>
         <% end %>
-        <% log = @level_logs[@levels.count][pos] %>
+        <% log = @level_logs[levels_count][pos] %>
         <!--{ team: result.team, levels: result.closed_levels.count, bonuses: result.sum_bonuses, time: result.finished_at || result.current_level_entered_at }-->
         <td align="center">
           <p class="team-name"><%= log[:team].name %>(<%= log[:levels] %>)</p>
@@ -45,7 +46,7 @@
               <p><%= "Бонус: #{seconds_to_string(log[:bonuses])}" %></p>
           <% end %>
         </td>
-        <% log1 = @level_logs[@levels.count + 1][pos] %>
+        <% log1 = @level_logs[levels_count + 1][pos] %>
         <td align="center">
           <p class="team-name"><%= log1[:team].name %>(<%= log1[:levels] %>)</p>
           <p><%= log1[:time].strftime('%d.%m.%Y') %></p>
