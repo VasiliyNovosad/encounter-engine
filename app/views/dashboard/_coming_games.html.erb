@@ -3,7 +3,7 @@
     Майбутні ігри (<%= Game.notstarted.count  %>)
   </legend>
   <% Game.notstarted.each do |game | %>
-    Відбудеться гра <%= link_to game.name, game_path(game), class: "coming-game" %>
+    <%= link_to game.name, game_path(game), class: "coming-game" %>
       <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %>
     <% if current_user %>
       <% if game.created_by?(current_user) %>

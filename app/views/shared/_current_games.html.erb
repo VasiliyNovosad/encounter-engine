@@ -9,7 +9,7 @@
       <% current_games.each do |game| %>
         <div id="game-<%= game.id %>">
           <% unless game.is_testing? %>
-            Розпочалась гра "<%= link_to game.name, game_path(game) %>"
+            <b><%= link_to game.name, game_path(game) %></b>
             <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %>
             | <em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em>
             <% if current_user %>
