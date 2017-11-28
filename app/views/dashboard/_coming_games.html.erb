@@ -3,16 +3,18 @@
     Майбутні ігри (<%= Game.notstarted.count  %>)
   </legend>
   <% Game.notstarted.each do |game | %>
-    Відбудеться гра <b><%= link_to game.name, game_path(game) %></b> |
-    <% if game.created_by?(current_user) %>
+    Відбудеться гра <%= link_to game.name, game_path(game), class: "coming-game" %>
+      <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %>|
+    <% if current_user && game.created_by?(current_user) %>
       <b>Ви автор гри</b>
     <% else %>
-      <% if current_user.captain? %>
-        <% @game_entry = GameEntry.of(@team,game)%>
-        <%= render 'shared/game_entry_controls', game_entry: @game_entry,  game: game, team: @team %>
+      <% if current_user && current_user.captain? %>
+        <% game_entry = GameEntry.of(current_user.team, game)%>
+        <%= render 'shared/game_entry_controls', game_entry: game_entry,  game: game, team: current_user.team %>
       <% end %>
       <%= link_to "Увійти!", game_path(game) %>
     <% end %>
+    <br>
     <br>
   <% end %>
 </fieldset>
