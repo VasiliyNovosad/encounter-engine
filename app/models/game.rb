@@ -29,13 +29,12 @@ class Game < ActiveRecord::Base
   validate :deadline_is_in_future
   validate :deadline_is_before_game_start
 
-  scope :by, ->(author) { where(author_id: author.id) }
+  scope :by, -> (author) { where(author_id: author.id) }
   scope :non_drafts, -> { where(is_draft: false) }
   scope :finished, -> { where('author_finished_at IS NOT NULL') }
-  default_scope { order(starts_at: :desc) }
 
   def self.started
-    Game.all.select(&:started?)
+    Game.order(starts_at: :desc).all.select(&:started?)
   end
 
   def draft?

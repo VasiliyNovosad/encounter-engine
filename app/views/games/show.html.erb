@@ -19,14 +19,14 @@
 
 <p>
   <% unless @game.starts_at.nil? %>
-    <em>Початок гри</em>: <%= (@game.is_testing? ? @game.test_date : @game.starts_at).strftime("%Y-%m-%d %H:%M") %>
+    <em>Початок гри</em>: <%= (@game.is_testing? ? @game.test_date : @game.starts_at).strftime('%H:%M %d.%m.%Y') %>
   <% else %>
     Дата початку гри ще не призначена
   <% end %>
 </p>
 <p>
   <% unless @game.registration_deadline.nil? %>
-    <em>Кінцевий термін реєстрації</em>: <%= @game.registration_deadline.strftime("%Y-%m-%d %H:%M") %>
+    <em>Кінцевий термін реєстрації</em>: <%= @game.registration_deadline.strftime('%H:%M %d.%m.%Y') %>
   <% else %>
     Кінцевий термін реєстрації ще не призначено
   <% end %>

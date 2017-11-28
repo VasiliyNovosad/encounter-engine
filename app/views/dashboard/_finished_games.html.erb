@@ -2,7 +2,7 @@
   <legend>
     Завершені ігри
   </legend>
-  <% Game.finished.each do |game | %>
+  <% Game.finished.order(starts_at: :desc).each do |game | %>
     <%= link_to game.name, game_path(game), class: "finished-game" %>
       <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %> |
       <em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em>

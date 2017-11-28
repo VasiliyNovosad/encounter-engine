@@ -22,10 +22,3 @@
     <%= link_to "Редагувати команду", edit_team_path(@team) if (@team.members.include? current_user) && current_user.captain? %>
   </p>
 </fieldset>
-
-<br>
-<%= render 'shared/current_games' if (@team.members.include? current_user) %>
-<br>
-<%= render 'dashboard/coming_games' if (@team.members.include? current_user) %>
-<br>
-<%= render 'dashboard/finished_games' if (@team.members.include? current_user) %>

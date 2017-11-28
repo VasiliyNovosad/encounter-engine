@@ -1,0 +1,64 @@
+<h2>
+  <%= link_to game.name, game_path(game), class: "coming-game" %>
+</h2>
+
+<p>
+  <em>Автори</em> - <strong><%= game.authors.map(&:nickname).join(', ') %></strong>
+</p>
+
+<p>
+  <% unless game.starts_at.nil? %>
+      <em>Початок гри</em>: <%= (game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y') %>
+  <% else %>
+      Дата початку гри ще не призначена
+  <% end %>
+</p>
+<p>
+  <% unless game.registration_deadline.nil? %>
+      <em>Кінцевий термін реєстрації</em>: <%= game.registration_deadline.strftime('%H:%M %d.%m.%Y') %>
+  <% else %>
+      Кінцевий термін реєстрації ще не призначено
+  <% end %>
+</p>
+
+<p>
+  <em>Послiдовнiсть проходження:</em> <%= game.game_type == 'linear' ? ' Лiнiйна' : game.game_type == 'panic' ? ' Панiка' : 'Лінійна (вказана)' %>
+</p>
+
+<% if game.game_type == 'panic' %>
+    <p>
+      <em>Тривалiсть гри:</em> <%= " #{game.duration} хвилин" %>
+    </p>
+<% end %>
+
+<% if current_user && current_user.captain? %>
+    <p><% game_entry = GameEntry.of(current_user.team, game)%>
+      <%= render 'shared/game_entry_controls', game_entry: game_entry, game: game, team: current_user.team %></p>
+<% end %>
+<br>
+
+<p>
+  <em>Опис:</em>
+</p>
+<p>
+  <%= game.description.html_safe %>
+</p>
+
+<p>
+  <em>Максимальна кількість команд:</em>
+</p>
+<p>
+  <% if game.max_team_number.equal?(10000) || game.max_team_number.equal?(0) || game.max_team_number.nil? %>
+      Необмежено
+      <% game.max_team_number = 10000 %>
+  <% else %>
+      <%= game.max_team_number %>
+  <% end %>
+</p>
+
+<br>
+
+<%= render 'game_entries', game_entries: GameEntry.of_game(game).with_status('new')  %>
+<br>
+<%= render 'teams', accepted_game_entries: GameEntry.of_game(game).with_status('accepted') %>
+<br>
