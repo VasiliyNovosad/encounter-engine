@@ -58,7 +58,7 @@
 .white { color: #FFFFFF; }
 .silver { color: #DDDDDD; }
 .gray { color: #AAAAAA; }
-.black, .stat-5, .stat-6 { color: #111111; }
+.black, .stat-5, .stat-6, .stat-1 { color: #111111; }
 /* Border colors
 
    Use with another border utility that sets border-width and style
