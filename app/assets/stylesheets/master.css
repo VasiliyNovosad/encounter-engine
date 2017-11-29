@@ -3,6 +3,7 @@ body {
     font-size: 12px;
     /*background-color: #fff;*/
     background-color: #171717;
+    color: #CCC;
 }
 
 * {
@@ -73,7 +74,7 @@ h3 {
 p {
     /*color: #000;*/
     /*background-color: #fff;*/
-    color: #CCC;
+    /*color: #CCC;*/
     line-height: 20px;
 }
 
