@@ -23,6 +23,7 @@
           <% log = @level_logs[level.position - 1][pos] %>
           <td align="center">
             <% unless log[:log].nil? %>
+              <div class="team-stat" data-id=<%= log[:log].team_id %> onclick="toggle(<%= log[:log].team_id %>)">
                 <p class="team-name"><%= log[:log].team %></p>
                 <p>(<%= log[:log].user.nickname %>)</p>
                 <p><%= log[:log].time.strftime('%d.%m.%Y') %></p>
@@ -33,27 +34,55 @@
                 <% if log[:log].answer == 'timeout' %>
                     <p class="timeout-stat">таймаут</p>
                 <% end %>
+              </div>
             <% end %>
           </td>
         <% end %>
         <% log = @level_logs[levels_count][pos] %>
         <!--{ team: result.team, levels: result.closed_levels.count, bonuses: result.sum_bonuses, time: result.finished_at || result.current_level_entered_at }-->
         <td align="center">
-          <p class="team-name"><%= log[:team].name %>(<%= log[:levels] %>)</p>
-          <p><%= log[:time].strftime('%d.%m.%Y') %></p>
-          <p><%= log[:time].strftime('%H:%M:%S.%L') %></p>
-          <% if log[:bonuses] > 0 %>
-              <p><%= "Бонус: #{seconds_to_string(log[:bonuses])}" %></p>
-          <% end %>
+          <div class="team-stat" data-id=<%= log[:team].id %> onclick="toggle(<%= log[:team].id %>)">
+            <p class="team-name"><%= log[:team].name %>(<%= log[:levels] %>)</p>
+            <p><%= log[:time].strftime('%d.%m.%Y') %></p>
+            <p><%= log[:time].strftime('%H:%M:%S.%L') %></p>
+            <% if log[:bonuses] > 0 %>
+                <p><%= "Бонус: #{seconds_to_string(log[:bonuses])}" %></p>
+            <% end %>
+          </div>
         </td>
         <% log1 = @level_logs[levels_count + 1][pos] %>
         <td align="center">
-          <p class="team-name"><%= log1[:team].name %>(<%= log1[:levels] %>)</p>
-          <p><%= log1[:time].strftime('%d.%m.%Y') %></p>
-          <p><%= log1[:time].strftime('%H:%M:%S.%L') %></p>
+          <div class="team-stat" data-id=<%= log[:team].id %> onclick="toggle(<%= log[:team].id %>)">
+            <p class="team-name"><%= log1[:team].name %>(<%= log1[:levels] %>)</p>
+            <p><%= log1[:time].strftime('%d.%m.%Y') %></p>
+            <p><%= log1[:time].strftime('%H:%M:%S.%L') %></p>
+          </div>
         </td>
         <td align="center" valign="middle"><%= pos + 1 %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<script type="text/javascript">
+  var color_index = 0;
+
+  function toggle(team) {
+      var team_cells = $('.team-stat[data-id="' + team + '"]');
+      if (team_cells.hasClass('colored')) {
+          team_cells.removeClass().addClass("team-stat");
+      } else {
+          team_cells.addClass("colored stat-" + color_index);
+          color_index += 1;
+          if (color_index == 14) color_index =0;
+      }
+      console.log(team_cells);
+      // if (elem.checked) {
+      //     document.getElementById('olymp_base_block').style.visibility = 'visible';
+      //     document.getElementById('level_olymp_base').focus();
+      // }
+      // else {
+      //     document.getElementById('olymp_base_block').style.visibility = 'hidden';
+      // }
+  }
+</script>
