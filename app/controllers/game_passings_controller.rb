@@ -178,7 +178,7 @@ class GamePassingsController < ApplicationController
   def get_uniq_level_codes(level)
     correct_answers = []
     log_of_level = Log.of_game(@game).of_level(level).of_team(Team.find(@team_id))
-    entered_answers = log_of_level.map(&:answer).uniq
+    entered_answers = log_of_level.map(&:answer).uniq || []
     @entered_all_answers = entered_answers
     level.team_questions(@team_id).includes(:answers).each do |question|
       question.answers.select{ |answer| answer.team_id.nil? || answer.team_id == @team_id }.each do |answer|
