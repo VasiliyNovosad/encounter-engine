@@ -5,6 +5,7 @@
 body {
   color: #CCC;
   background-color: #232323;
+  margin: 0 10% 2% 10%;
 }
 
 .table-striped>tbody>tr:nth-of-type(odd) {
@@ -18,7 +19,32 @@ body {
   background: #101010;
 }
 
+#header-container {
+  width: 100%;
+  color: #CCC;
+}
+
 #header-container span {
   float: right;
+  padding-right: 10px;
   color: #CCC;
+}
+
+#header-container h1, #header-container h2 {
+  margin-left: 6px;
+  margin-bottom: 6px;
+}
+
+#header {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  font-family:  Verdana,Arial,Helvetica,sans-serif;
+}
+
+.home-link {
+  font-size: 18px;
+  font-style:  normal;
+  /*color: navy;*/
+  color: white;
+  text-decoration: underline;
 }
