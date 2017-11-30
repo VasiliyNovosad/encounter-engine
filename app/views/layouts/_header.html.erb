@@ -1,7 +1,7 @@
 <% if user_signed_in? %>
-  <%= link_to "Особистий кабінет", dashboard_path, class: "home-link" %>
+  <%= link_to "Особистий кабінет", "/dashboard", class: "home-link" %>
 <% else %>
-  <%= link_to "Головна", root_path, class: "home-link" %>
+  <%= link_to "Головна", "/", class: "home-link" %>
 <% end %>
 <%= Time.zone.now.strftime("%Y-%m-%d %H:%M")%>
 <span>Орг проекту: Новосад Василь (Fr1end) 050-378-48-31, tg: @Fr1end_w0lf</span>

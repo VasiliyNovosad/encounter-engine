@@ -1,3 +1,24 @@
 /*
 *= require forem-bootstrap
 */
+
+body {
+  color: #CCC;
+  background-color: #232323;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: #333333;
+}
+
+.forum #description {
+  display: block;
+  margin: 10px 0;
+  padding: 5px;
+  background: #101010;
+}
+
+#header-container span {
+  float: right;
+  color: #CCC;
+}
