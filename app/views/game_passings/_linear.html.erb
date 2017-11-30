@@ -46,7 +46,10 @@
       </script>
   <% end %>
   <br>
-  <%= @game_passing.current_level.team_task(@team_id).html_safe %>
+  <% @game_passing.current_level.team_tasks(@team_id).each do |task| %>
+    <%= task.text.html_safe %>
+    <br>
+  <% end %>
 
   <% if @game_passing.current_level.questions.count > 1 %>
     <div>
