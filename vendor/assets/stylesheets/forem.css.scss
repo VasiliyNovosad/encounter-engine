@@ -48,3 +48,13 @@ body {
   color: white;
   text-decoration: underline;
 }
+
+#topic .moderation {
+  background: #545454;
+}
+
+.new_post textarea {
+  width: 50%;
+  min-height: 250px;
+  background-color: #454545;
+}
