@@ -26,7 +26,7 @@
           <ul>
           <% team_logs.each do |team_log| %>
             <li>
-              <%= team_log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>
+              <%= team_log.time.strftime("%d.%m.%Y %H:%M:%S.%L") %>
               <% if correct_answers.include?(team_log.answer.strip.downcase_utf8_cyr) || team_log.answer == 'timeout' %>
                   <span class="right_code"><%= team_log.answer %></span>
               <% else %>
