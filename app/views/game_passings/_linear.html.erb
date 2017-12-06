@@ -27,7 +27,7 @@
         </p>
     <% end %>
   <% end %>
-  <% if (@entered_all_answers.count > 0) %>
+  <% if ((@entered_all_answers || []).count > 0) %>
     <p id="entered_codes">
         <br>Введено коди:
       <%= @entered_all_answers.join ', '  %>

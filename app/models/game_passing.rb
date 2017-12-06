@@ -70,9 +70,9 @@ class GamePassing < ActiveRecord::Base
   def pass_level!(level, team_id, time)
     unless closed?(level)
       if game.game_type == 'linear' && last_level? ||
-       game.game_type == 'panic' && !closed?(level) &&
-       closed_levels.count == game.levels.count - 1 ||
-       game.game_type == 'selected' && last_level_selected?(team_id)
+        game.game_type == 'panic' && !closed?(level) &&
+        closed_levels.count == game.levels.count - 1 ||
+        game.game_type == 'selected' && last_level_selected?(team_id)
         closed_levels << level.id
         set_finish_time(time)
       else
