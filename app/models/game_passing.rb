@@ -60,7 +60,7 @@ class GamePassing < ActiveRecord::Base
     bonuses.each do |bonus|
       unless answered_bonuses.include? bonus.id
         answered_bonuses << bonus.id
-        self.sum_bonuses = self.sum_bonuses + bonus.award_time
+        self.sum_bonuses = self.sum_bonuses + (bonus.award_time || 0)
         changed = true
       end
     end

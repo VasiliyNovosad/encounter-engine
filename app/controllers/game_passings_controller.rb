@@ -219,7 +219,7 @@ class GamePassingsController < ApplicationController
         value: answered_bonuses.include?(bonus) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" : nil,
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
-        award: answered_bonuses.include?(bonus) ? bonus.award_time : nil
+        award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil
       }
     end
     @bonuses
