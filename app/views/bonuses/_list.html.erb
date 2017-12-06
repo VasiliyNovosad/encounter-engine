@@ -23,7 +23,7 @@
               <strong>Підказка: </strong><%= bonus.help.html_safe %>
             </p>
             <p>
-              <strong>Винагорода: </strong><%= seconds_to_string(bonus.award_time) %>
+              <strong>Винагорода: </strong><%= seconds_to_string(bonus.award_time || 0) %>
             </p>
             <% bonus.bonus_answers.each do |answer| %>
               <p>
