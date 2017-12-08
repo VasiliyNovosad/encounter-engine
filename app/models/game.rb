@@ -42,7 +42,7 @@ class Game < ActiveRecord::Base
   end
 
   def started?
-    self.starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time > self.starts_at
+    self.starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time > (self.is_testing? ? self.test_date : self.starts_at)
   end
 
   def created_by?(user)
