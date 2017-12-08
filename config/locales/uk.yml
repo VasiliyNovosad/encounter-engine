@@ -48,6 +48,9 @@ uk:
       invitation: "Запрошення"
       game_passing: "Сесія гри"
       game_entry: "Заявка на гру"
+    errors:
+      messages:
+        record_invalid: "Виникли помилки: %{errors}"
   errors:
     format: "%{attribute} %{message}"
     messages:
