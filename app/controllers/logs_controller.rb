@@ -7,22 +7,22 @@ class LogsController < ApplicationController
   before_action :find_level, only: [:show_level_log, :show_game_log]
 
   def index
-    render
+    # render
   end
 
   def show_live_channel
     @logs = Log.of_game(@game).order(time: :desc).page(params[:page] || 1)
-    render
+    # render
   end
 
   def show_level_log
     @logs = Log.of_game(@game).of_team(@team).of_level(@level).order_by_time
-    render
+    # render
   end
 
   def show_game_log
     @logs = Log.of_game(@game).of_team(@team)
-    render
+    # render
   end
 
   def show_full_log
@@ -30,7 +30,7 @@ class LogsController < ApplicationController
     @logs = Log.of_game(@game).order_by_time.preload(:user)
     @levels = Level.of_game(@game).includes(questions: :answers)
     @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
-    render
+    # render
   end
 
   def show_short_log
@@ -76,7 +76,7 @@ class LogsController < ApplicationController
       [-a[:levels], a[:time]]
     end
     @level_logs << results
-    render
+    # render
   end
 
   protected

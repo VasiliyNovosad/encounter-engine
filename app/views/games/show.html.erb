@@ -89,7 +89,7 @@
 
 <%= render 'game_entries', game_entries: @game_entries  %>
 <br>
-<%= render 'teams', accepted_game_entries: @accepted_game_entries %>
+<%= render 'teams', accepted_game_entries: @accepted_game_entries, game: @game %>
 <br>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>

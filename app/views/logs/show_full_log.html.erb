@@ -4,17 +4,27 @@
   <tbody>
     <% @levels.each do |level| %>
       <% correct_answers = [] %>
+      <% correct_bonus_answers = [] %>
       <% level.questions.each do |question| %>
           <% question.answers.each { |answer| correct_answers << answer.value.strip.downcase_utf8_cyr unless correct_answers.include? answer.value.downcase_utf8_cyr.strip} %>
       <% end %>
+      <% level.bonuses.each do |bonus| %>
+        <% bonus.bonus_answers.each { |answer| correct_bonus_answers << answer.value.strip.downcase_utf8_cyr unless correct_bonus_answers.include? answer.value.downcase_utf8_cyr.strip} %>
+      <% end %>
+
       <tr align="center">
         <td colspan="<%=@teams.count%>">
           <h2><%= level.name %></h2>
 
           <% if correct_answers.count == 1 %>
-            <strong>Вірний код: </strong><%= correct_answers.first %>
-          <% else %>
-            <strong>Вірні коди: </strong><%= correct_answers.join(', ') %>
+            <p><strong>Вірний код: </strong><%= correct_answers.first %></p>
+          <% elsif correct_answers.count >= 1%>
+            <p><strong>Вірні коди: </strong><%= correct_answers.join(', ') %></p>
+          <% end %>
+          <% if correct_bonus_answers.count == 1 %>
+            <p><strong>Вірний бонусний код: </strong><%= correct_bonus_answers.first %></p>
+          <% elsif correct_bonus_answers.count >= 1%>
+            <p><strong>Вірні бонусні коди: </strong><%= correct_bonus_answers.join(', ') %></p>
           <% end %>
         </td>
       </tr>
@@ -27,7 +37,7 @@
           <% team_logs.each do |team_log| %>
             <li>
               <%= team_log.time.strftime("%d.%m.%Y %H:%M:%S.%L") %>
-              <% if correct_answers.include?(team_log.answer.strip.downcase_utf8_cyr) || team_log.answer == 'timeout' %>
+              <% if correct_answers.include?(team_log.answer.strip.downcase_utf8_cyr) || correct_bonus_answers.include?(team_log.answer.strip.downcase_utf8_cyr) || team_log.answer == 'timeout' %>
                   <span class="right_code"><%= team_log.answer %></span>
               <% else %>
                   <span class="wrong_code"><%= team_log.answer %></span>

@@ -60,5 +60,5 @@
 
 <%= render 'games/game_entries', game_entries: GameEntry.of_game(game).with_status('new')  %>
 <br>
-<%= render 'games/teams', accepted_game_entries: GameEntry.of_game(game).with_status('accepted') %>
+<%= render 'games/teams', accepted_game_entries: GameEntry.of_game(game).with_status('accepted'), game: game %>
 <br>

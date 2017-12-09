@@ -10,7 +10,7 @@
         <%= entry.team.name unless user_signed_in? %>
       </strong>
       <em>
-        <%= link_to "(відмінити)", url_for("/game_entries/reaccept/#{entry.id}") if user_signed_in? && current_user.author_of?(@game) %>
+        <%= link_to "(відмінити)", url_for("/game_entries/reaccept/#{entry.id}") if user_signed_in? && current_user.author_of?(game) %>
       </em>
     </p>
   <% end %>
