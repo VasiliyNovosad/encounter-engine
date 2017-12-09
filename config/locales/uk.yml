@@ -48,6 +48,12 @@ uk:
       invitation: "Запрошення"
       game_passing: "Сесія гри"
       game_entry: "Заявка на гру"
+    errors:
+      messages:
+        record_invalid: "Виникли помилки: %{errors}"
+        restrict_dependent_destroy:
+          has_one: 'Неможливо видалити запис, так як існує залежність: %{record}'
+          has_many: 'Неможливо видалити запис, так як існують залежності: %{record}'
   errors:
     format: "%{attribute} %{message}"
     messages:
