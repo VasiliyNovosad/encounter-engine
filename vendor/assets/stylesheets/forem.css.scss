@@ -72,3 +72,17 @@ body {
   padding-bottom: 0;
   min-height: inherit;
 }
+
+pre {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.428571429;
+  word-break: normal;
+  word-wrap: break-word;
+  color: #CCC;
+  background-color: #232323;
+  border: none;
+  white-space: pre-wrap;
+}
