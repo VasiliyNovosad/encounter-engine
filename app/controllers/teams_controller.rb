@@ -64,6 +64,17 @@ class TeamsController < ApplicationController
     end
   end
 
+  def leave_team
+    user = current_user
+    unless user.captain?
+      user.team = nil
+      user.save!
+      redirect_to dashboard_path
+    end
+  end
+
+
+
   protected
 
   def team_params
