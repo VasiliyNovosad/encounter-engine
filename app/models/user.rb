@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :games, join_table: 'games_authors', foreign_key: 'author_id', association_foreign_key: 'game_id'
   has_many :logs
 
+  scope :by_nickname, ->(nickname) { where('lower(nickname) = ?', nickname) }
+
   before_save { self.email = email.downcase }
 
   validates :nickname, presence: true
