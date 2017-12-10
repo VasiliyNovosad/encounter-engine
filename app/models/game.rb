@@ -29,6 +29,15 @@ class Game < ActiveRecord::Base
   validate :deadline_is_in_future
   validate :deadline_is_before_game_start
 
+  before_save do
+    if !draft? && topic_id.nil?
+      topic_name = "#{name} (#{starts_at.strftime('%H:%M %d.%m.%Y')})"
+      topic = Forem::Forum.find(1).topics.build(subject: topic_name, user: author, posts_attributes: [text: topic_name])
+      topic.save!
+      self.topic_id = topic.id
+    end
+  end
+
   scope :by, -> (author) { where(author_id: author.id) }
   scope :non_drafts, -> { where(is_draft: false) }
   scope :finished, -> { where('author_finished_at IS NOT NULL') }

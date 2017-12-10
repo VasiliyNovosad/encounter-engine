@@ -42,6 +42,12 @@
   </p>
 <% end %>
 
+<% unless @topic.nil? %>
+  <p>
+    <em>Обговорення:</em> <%= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>
+  </p>
+<% end %>
+
 <% if current_user && current_user.captain? %>
     <p><% game_entry = GameEntry.of(current_user.team, @game)%>
       <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: current_user.team %></p>
