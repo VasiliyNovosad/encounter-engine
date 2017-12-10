@@ -21,4 +21,8 @@
   <p>
     <%= link_to "Редагувати команду", edit_team_path(@team) if (@team.members.include? current_user) && current_user.captain? %>
   </p>
+  <% if (@team.members.include? current_user) && !current_user.captain? %>
+    <br>
+    <p><%= link_to "Вийти з команди", url_for("/teams/edit/leave_team") %></p>
+  <% end %>
 </fieldset>
