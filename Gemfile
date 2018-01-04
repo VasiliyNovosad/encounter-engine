@@ -86,3 +86,5 @@ gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
 gem 'forem', github: 'radar/forem', branch: 'rails4'
 gem 'forem-bootstrap', github: 'VasiliyNovosad/forem-bootstrap'
 gem 'kaminari'
+gem 'private_pub'
+gem 'thin'

@@ -86,6 +86,7 @@ class GamePassing < ActiveRecord::Base
         end
       end
       save!
+      PrivatePub.publish_to "/game_passings/#{self.id}", url: "/play/#{self.game_id}"
     end
   end
 
