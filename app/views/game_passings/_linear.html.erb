@@ -96,4 +96,12 @@
 
 </fieldset>
 
+<%= subscribe_to "/game_passings/#{@game_passing.id}" %>
 
+<script>
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>", function(data, channel) {
+        console.log(data);
+
+        window.location.href = data.url;
+    });
+</script>

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.3'
 
-gem 'dotenv-rails', require: 'dotenv/rails-now'
+# gem 'dotenv-rails', require: 'dotenv/rails-now'
 
 gem 'rails', '4.2.10'
 
@@ -86,3 +86,5 @@ gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
 gem 'forem', github: 'radar/forem', branch: 'rails4'
 gem 'forem-bootstrap', github: 'VasiliyNovosad/forem-bootstrap'
 gem 'kaminari'
+gem 'private_pub'
+gem 'thin'

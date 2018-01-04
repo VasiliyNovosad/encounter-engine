@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require tinymce-jquery
 //= require jquery-ui
+//= require private_pub
 //= require autocomplete-rails
 //= require datetimepicker
 //= require_tree .

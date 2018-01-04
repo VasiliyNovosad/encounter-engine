@@ -13,6 +13,8 @@
 /db/*.sqlite3-journal
 
 /config/database.yml
+/config/cloudinary.yml
+/config/private_pub.yml
 
 /public/tmp
 /public/uploads

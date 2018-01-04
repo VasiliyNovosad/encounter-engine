@@ -68,6 +68,7 @@ class GamePassingsController < ApplicationController
         save_log(@level, time) if @game_passing.current_level.id || @game.game_type == 'panic'
         @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time)
         if @game_passing.finished?
+          PrivatePub.publish_to "/game_passings/#{@game_passings.id}", url: '/game_passings/show_results'
           render 'show_results'
         else
           @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
