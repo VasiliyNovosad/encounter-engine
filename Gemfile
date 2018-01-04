@@ -4,19 +4,19 @@ ruby '2.3.3'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 
-gem 'rails', '4.2.8'
+gem 'rails', '4.2.10'
 
 gem 'pg'
 
-group :production do
-  gem 'rails_12factor'
-  # gem 'sendgrid-rails'
-end
+# group :production do
+#   gem 'rails_12factor'
+#   # gem 'sendgrid-rails'
+# end
 
-gem 'puma'
 # Use sqlite3 as the database for Active Record
 group :development do
   # gem 'sqlite3', '~> 1.3', '>=1.3.10'
+  gem 'puma'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
@@ -57,8 +57,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'default_value_for', '~> 3.0.0'
-gem 'devise'
-gem 'devise_security_extension'
+gem 'devise', '4.3.0'
+gem 'devise_security_extension', '0.9.2'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'PerfectlyNormal/tinymce-rails-imageupload'
@@ -85,4 +85,4 @@ gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
 
 gem 'forem', github: 'radar/forem', branch: 'rails4'
 gem 'forem-bootstrap', github: 'VasiliyNovosad/forem-bootstrap'
-gem 'kaminari', '0.15.1'
+gem 'kaminari'
