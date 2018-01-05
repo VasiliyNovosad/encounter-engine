@@ -14,7 +14,8 @@
 
 /config/database.yml
 /config/cloudinary.yml
-/config/private_pub.yml
+/config/private_pub*.yml
+/config/nginx
 
 /public/tmp
 /public/uploads

@@ -90,18 +90,21 @@
   <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
   <hr>
   <br>
-  <%= render 'bonuses' %>
+  <%= render 'bonuses' if @bonuses.count > 0 %>
 
   <br>
 
 </fieldset>
 
 <%= subscribe_to "/game_passings/#{@game_passing.id}" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/hints" %>
 
 <script>
     PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>", function(data, channel) {
-        console.log(data);
-
         window.location.href = data.url;
+    });
+
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/hints", function(data, channel) {
+        console.log(data);
     });
 </script>

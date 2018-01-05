@@ -1,5 +1,16 @@
 <ul>
   <% @sectors.each do |sector| %>
-      <li><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></li>
+      <li id="sector-<%= sector[:position] %>"><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></li>
   <% end %>
 </ul>
+
+<%= subscribe_to "/game_passings/#{@game_passing.id}/sectors" %>
+
+<script>
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/sectors", function(data, channel) {
+        var sector = $('#sector-' + data.sector.position).get(0);
+        if (sector !== undefined) {
+            sector.innerHTML = data.sector.name + ': ' + data.sector.value;
+        }
+    });
+</script>
