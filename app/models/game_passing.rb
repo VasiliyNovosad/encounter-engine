@@ -50,6 +50,10 @@ class GamePassing < ActiveRecord::Base
       unless answered_questions.include? question.id
         answered_questions << question.id
         changed = true
+        correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == self.team_id }
+        PrivatePub.publish_to "/game_passings/#{self.id}/sectors", sector: { position: question.position,
+                                                                             name: question.name,
+                                                                             value: "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" }
       end
     end
     save! if changed
@@ -62,6 +66,7 @@ class GamePassing < ActiveRecord::Base
         answered_bonuses << bonus.id
         self.sum_bonuses = self.sum_bonuses + (bonus.award_time || 0)
         changed = true
+        PrivatePub.publish_to "/game_passings/#{self.id}/bonuses", bonus: { position: bonus.position, award_time: seconds_to_string(bonus.award_time), help: bonus.help, name: bonus.name }
       end
     end
     save! if changed
@@ -230,5 +235,24 @@ class GamePassing < ActiveRecord::Base
       end
     end
     [hours, minutes, seconds]
+  end
+
+  def seconds_to_string(s)
+
+    # d = days, h = hours, m = minutes, s = seconds
+    m = (s / 60).floor
+    s = s % 60
+    h = (m / 60).floor
+    m = m % 60
+    d = (h / 24).floor
+    h = h % 24
+
+    output = ''
+    output << "#{d} дн " if (d > 0)
+    output << "#{h} г " if (h > 0)
+    output << "#{m} хв " if (m > 0)
+    output << "#{s} с" if (s > 0)
+
+    output
   end
 end

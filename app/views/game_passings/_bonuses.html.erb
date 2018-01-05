@@ -1,13 +1,25 @@
 <ul>
   <% @bonuses.each do |bonus| %>
-      <li>
-      <% if bonus[:answered] %>
-        <p class="bonus_answered"><b><%= "#{(bonus[:award] || 0) > 0 ? "#{bonus[:name]}: нагорода #{seconds_to_string(bonus[:award])}" : "#{bonus[:name]}: виконано"}" %></b></p>
-        <%= bonus[:help].html_safe %>
-      <% else %>
-        <p class="bonus"><b><%= bonus[:name] %></b></p>
-        <%= bonus[:task].html_safe %>
-      <% end %></li>
+      <li id="bonus-<%= bonus[:position] %>">
+        <% if bonus[:answered] %>
+          <p class="bonus_answered"><b><%= "#{(bonus[:award] || 0) > 0 ? "#{bonus[:name]}: нагорода #{seconds_to_string(bonus[:award])}" : "#{bonus[:name]}: виконано"}" %></b></p>
+          <%= bonus[:help].html_safe %>
+        <% else %>
+          <p class="bonus"><b><%= bonus[:name] %></b></p>
+          <%= bonus[:task].html_safe %>
+        <% end %>
+      </li>
       <br>
   <% end %>
 </ul>
+
+<%= subscribe_to "/game_passings/#{@game_passing.id}/bonuses" %>
+
+<script>
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/bonuses", function(data, channel) {
+        var bonus = $('#bonus-' + data.bonus.position + ' p.bonus').get(0);
+        if (bonus !== undefined) {
+            bonus.innerHTML = '<p class="bonus_answered"><b>' + data.bonus.name + ': нагорода ' + data.bonus.award_time + '</b></p>' + data.bonus.help;
+        }
+    });
+</script>
