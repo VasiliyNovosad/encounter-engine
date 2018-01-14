@@ -18,7 +18,7 @@ class InvitationsController < ApplicationController
     @invitation.to_team = current_user.team
     if @invitation.save
       redirect_to new_invitation_path, message: "Користувачу #{@invitation.recepient_nickname} надіслано запрошення"
-      InvitationsMailer.invitation_create(@invitation).deliver
+      InvitationsMailer.invitation_create(@invitation).deliver_now
     else
       @all_users = User.all
       render 'new'
@@ -30,13 +30,13 @@ class InvitationsController < ApplicationController
     @invitation.delete
     # reject_rest_of_invitations
     redirect_to dashboard_path
-    InvitationsMailer.invitation_accept(@invitation).deliver
+    InvitationsMailer.invitation_accept(@invitation).deliver_now
   end
 
   def reject
     @invitation.delete
     redirect_to dashboard_path
-    InvitationsMailer.invitation_reject(@invitation).deliver
+    InvitationsMailer.invitation_reject(@invitation).deliver_now
   end
 
   protected
@@ -49,7 +49,7 @@ class InvitationsController < ApplicationController
   def reject_rest_of_invitations
     Invitation.for(current_user).each do |invitation|
       invitation.delete
-      InvitationsMailer.invitation_reject(invitation).deliver
+      InvitationsMailer.invitation_reject(invitation).deliver_now
     end
   end
 
