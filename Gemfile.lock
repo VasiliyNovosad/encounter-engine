@@ -7,9 +7,9 @@ GIT
 
 GIT
   remote: git://github.com/VasiliyNovosad/tinymce-rails-imageupload.git
-  revision: 6ad271b9f7f73eed12e8e2d6c2ba6d3fb7f8f90e
+  revision: 86f1071d2544fce2fe9da0a343e54ae28c7de9cd
   specs:
-    tinymce-rails-imageupload (4.0.18.beta.2)
+    tinymce-rails-imageupload (4.0.18.beta.3)
       railties (>= 3.2, < 6)
       tinymce-rails (~> 4.0)
 
