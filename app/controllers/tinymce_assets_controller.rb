@@ -12,7 +12,11 @@ class TinymceAssetsController < ApplicationController
     #     width:  geometry.width.to_i
     #   }
     # }, layout: false, content_type: 'text/html'
-    upload = Cloudinary::Uploader.upload(params['file'])
-    render json: { image: { url: upload['url'] } }, content_type: 'text/html'
+    if params['file'].content_type == 'video/mp4' || params['file'].content_type == 'video/avi'
+      upload = Cloudinary::Uploader.upload(params['file'], resource_type: :video)
+    else
+      upload = Cloudinary::Uploader.upload(params['file'])
+    end
+    render json: { file: { url: upload['secure_url'] }, content_type: params['file'].content_type }, content_type: 'text/html'
   end
 end
