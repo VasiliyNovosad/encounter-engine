@@ -309,3 +309,16 @@ a.coming-game, .coming-game {
     width: 100%;
     height: 100%;
 }
+
+.olymp-cell label {
+    width: 75px;
+}
+
+.olymp-cell .code-field {
+    width: 100px;
+}
+
+.olymp-cell .bonus-field {
+    width: 50px;
+}
+

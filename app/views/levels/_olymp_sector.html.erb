@@ -1,0 +1,4 @@
+<div class="olymp-cell" id="olymp-<%= sector %>">
+  <p><%= label_tag("correct-answer-#{sector}".to_sym, "Код:") %><%= text_field_tag("correct-answer-#{sector}".to_sym, (question.nil? ? '' : question.answers.map(&:value).join(', ')), class: "code-field") %></p>
+  <p><%= label_tag("award-time-#{sector}".to_sym, "Бонус:") %><%= text_field_tag("award-time-#{sector}".to_sym, (bonus.nil? ? '' : bonus.award_time), class: "bonus-field") %> секунд</p>
+</div>

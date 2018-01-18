@@ -1,0 +1,24 @@
+<% bonuses = level.bonuses.count %>
+<% questions = level.questions.count %>
+<table class="olymp" border="1">
+  <tbody>
+  <% (1..(olymp_base**(levels - 1))).each do |i| %>
+    <tr>
+      <td id="sector-<%= level.questions[i-1][:position] %>">
+        <%= render 'olymp_sector', sector: level.questions[i-1][:position], question: (i <= questions ? level.questions[i-1] : nil), bonus: (i <= bonuses ? level.bonuses[i-1] : nil) %>
+      </td>
+
+      <% sum = olymp_base**(levels - 1) %>
+
+      <% (1..(levels - 1)).each do |j| %>
+        <% if (i % olymp_base**j == 1) %>
+          <td rowspan="<%= olymp_base**j %>" id="sector-<%= level.questions[sum + i / olymp_base**j][:position] %>">
+            <%= render 'olymp_sector', sector: level.questions[sum + i / olymp_base**j][:position], question: (sum + i / olymp_base**j < questions ? level.questions[sum + i / olymp_base**j] : nil), bonus: (sum + i / olymp_base**j < bonuses ? level.bonuses[sum + i / olymp_base**j] : nil) %>
+          </td>
+        <% end %>
+        <% sum += olymp_base**(levels - j - 1) %>
+      <% end %>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

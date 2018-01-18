@@ -27,7 +27,7 @@
             </p>
             <% bonus.bonus_answers.each do |answer| %>
               <p>
-                <%= answer.value %>
+                <span class="bonus"><%= answer.value %></span>
                 <% if answer.team.nil? %>
                     <em> (для всіх)</em>
                 <% else %>
