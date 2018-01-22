@@ -6,7 +6,7 @@ class BonusesController < ApplicationController
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def new
-    @bonus = Bonus.new
+    @bonus = Bonus.new(name: "Бонус #{@level.bonuses.count + 1}")
     @bonus.level = @level
   end
 

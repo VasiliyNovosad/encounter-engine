@@ -1,5 +1,5 @@
 <h2>
-  Рівень "<strong><%= @level.name %></strong>"
+  <strong><%= "Рівень №#{@level.position} \"#{@level.name}\"" %></strong>
 </h2>
 
 <p>
@@ -8,8 +8,24 @@
 
 <br>
 
+<% if @level.complete_later > 0 %>
+  <p>
+    <span class="hint-timer">Автозавершення через <%= @level.complete_later / 60 %> хв</span>
+  </p>
+<% else %>
+  <p>
+    <span class="hint-timer">Автозавершення: немає</span>
+  </p>
+<% end %>
+<% if @level.olymp? %>
+  <br>
+  <p>
+    Олімпійка з базою <%= @level.olymp_base || 2 %>
+  </p>
+<% end %>
+<br>
 <p>
-  <%= link_to "Редагувати назву рівня", edit_game_level_path(@game, @level) %>
+  <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level) %>
 </p>
 
 <br>
