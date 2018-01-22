@@ -13,17 +13,13 @@ class QuestionsController < ApplicationController
   def create
     @question = Question.new(question_params)
     @question.level = @level
+    @question.answers.each do |answer|
+      answer.level = @level
+    end
     if @question.save
-      @answer = @question.answers.first
-      @answer.level = @level
-      if @answer.save
-        redirect_to game_level_path(@level.game, @level)
-      else
-        @question.destroy
-        render 'new'
-      end
+      redirect_to game_level_path(@level.game, @level)
     else
-      render 'new'
+      render :new
     end
   end
 
@@ -38,12 +34,11 @@ class QuestionsController < ApplicationController
     if @question.update_attributes(question_params)
       redirect_to game_level_question_path(@question.level.game, @question.level, @question)
     else
-      render 'edit'
+      render :edit
     end
   end
 
   def destroy
-    @question.answers.each { |answer| answer.destroy }
     @question.destroy
     redirect_to game_level_path(@level.game, @level)
   end
@@ -51,7 +46,7 @@ class QuestionsController < ApplicationController
   protected
 
   def question_params
-    params.require(:question).permit(:name, :correct_answer, :team_id)
+    params.require(:question).permit(:name, :team_id, answers_attributes: [:id, :value, :team_id, :_destroy])
   end
 
   def find_game

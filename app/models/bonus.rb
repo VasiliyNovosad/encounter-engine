@@ -4,8 +4,9 @@ class Bonus < ActiveRecord::Base
   has_many :bonus_answers, dependent: :destroy
   acts_as_list scope: [:level_id, :team_id]
 
+  accepts_nested_attributes_for :bonus_answers, reject_if: :all_blank, allow_destroy: true
+
   validates :name, presence: { message: 'Не введено назву бонуса' }
-  validates :name, uniqueness: { scope: [:level, :team], message: 'Бонус з такою назвою уже є на даному рівні' }
 
   before_validation :set_name
 

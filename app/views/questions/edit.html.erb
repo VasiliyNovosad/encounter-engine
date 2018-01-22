@@ -10,8 +10,7 @@
 
 <%= form_for @question, url: game_level_question_path(@game, @level, @question) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
-    <p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
-    <p><%= f.label "Назва" %><%= f.text_field :name %></p>
+    <%= render 'form', f: f %>
     <%= f.submit "Змінити" %>
     <em><%= link_to "(відмінити)", game_level_question_path(@game, @level, @question) %></em>
 <% end %>

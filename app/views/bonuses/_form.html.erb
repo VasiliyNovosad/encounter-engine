@@ -6,4 +6,11 @@
 <p><b>Підказка</b></p>
 <p><%= f.text_area :help, class: "tinymce" %></p>
 <p><%= f.label "Винагорода" %><%= f.text_field :award_time %> секунд</p>
-<p><%= f.label "Код" %><%= f.text_field :correct_answer %></p>
+<div class="answers">
+  <%= f.fields_for :bonus_answers do |answer| %>
+    <%= render 'bonus_answer_fields', f: answer %>
+  <% end %>
+</div>
+<br>
+<p><%= link_to_add_association 'Додати відповідь', f, :bonus_answers, class: 'btn btn-primary', data: { association_insertion_node: '.answers', association_insertion_method: :append } %></p>
+<br>

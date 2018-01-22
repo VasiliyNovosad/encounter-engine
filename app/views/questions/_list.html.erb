@@ -24,12 +24,8 @@
                 <% else %>
                     <em> (для </em> <strong><%= link_to answer.team.name, team_path(answer.team) %></strong>)
                 <% end %>
-                <%= link_to "(редагувати)", edit_game_level_question_answer_path(@game, @level, question, answer) %>
-                <%= link_to "(видалити)", game_level_question_answer_path(@game, @level, question, answer), method: :delete, data: { confirm: 'Ви впевнені?' } %>
               </p>
             <% end %>
-            <br>
-            <%= link_to "Додати відповідь", new_game_level_question_answer_path(@game, @level, question) %>
           </fieldset>
         </div>
         <br>

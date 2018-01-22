@@ -3,20 +3,13 @@ source 'https://rubygems.org'
 ruby '2.3.3'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-
 gem 'rails', '4.2.10'
-
 gem 'pg'
-
-# group :production do
-#   gem 'rails_12factor'
-#   # gem 'sendgrid-rails'
-# end
 
 # Use sqlite3 as the database for Active Record
 group :development do
   # gem 'sqlite3', '~> 1.3', '>=1.3.10'
-  gem 'puma'
+  # gem 'puma'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
@@ -88,3 +81,4 @@ gem 'forem-bootstrap', github: 'VasiliyNovosad/forem-bootstrap'
 gem 'kaminari', '0.15.1'
 gem 'private_pub'
 gem 'thin'
+gem 'cocoon'
