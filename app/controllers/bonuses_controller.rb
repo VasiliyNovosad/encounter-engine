@@ -14,15 +14,9 @@ class BonusesController < ApplicationController
     @bonus = Bonus.new(bonus_params)
     @bonus.level = @level
     if @bonus.save
-      @answer = @bonus.bonus_answers.first
-      if @answer.save
-        redirect_to game_level_path(@level.game, @level)
-      else
-        @bonus.destroy
-        render 'new'
-      end
+      redirect_to game_level_path(@level.game, @level)
     else
-      render 'new'
+      render :new
     end
   end
 
@@ -37,7 +31,7 @@ class BonusesController < ApplicationController
     if @bonus.update_attributes(bonus_params)
       redirect_to game_level_bonus_path(@bonus.level.game, @bonus.level, @bonus)
     else
-      render 'edit'
+      render :edit
     end
   end
 
@@ -57,7 +51,9 @@ class BonusesController < ApplicationController
   # t.integer :award_time
   # t.integer :position
   def bonus_params
-    params.require(:bonus).permit(:name, :task, :help, :award_time, :correct_answer, :team_id)
+    params.require(:bonus).permit(
+        :name, :task, :help, :award_time, :correct_answer, :team_id,
+        bonus_answers_attributes: [:id, :value, :team_id, :_destroy])
   end
 
   def find_game

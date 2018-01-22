@@ -17,4 +17,5 @@
 //= require private_pub
 //= require autocomplete-rails
 //= require datetimepicker
+//= require cocoon
 //= require_tree .

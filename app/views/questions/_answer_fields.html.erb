@@ -1,0 +1,8 @@
+<br>
+<div class="nested-fields">
+  <p>
+    <%= link_to_remove_association 'Видалити відповідь', f, class: 'btn btn-primary btn-xs' %>
+  </p>
+  <p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
+  <p><%= f.label "Відповідь" %><%= f.text_field :value %></p>
+</div>

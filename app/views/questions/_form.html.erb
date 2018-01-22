@@ -1,0 +1,10 @@
+<p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
+<p><%= f.label "Назва" %><%= f.text_field :name %></p>
+<div class="answers">
+  <%= f.fields_for :answers do |answer| %>
+    <%= render 'answer_fields', f: answer %>
+  <% end %>
+</div>
+<br>
+<p><%= link_to_add_association 'Додати відповідь', f, :answers, class: 'btn btn-primary', data: { association_insertion_node: '.answers', association_insertion_method: :append } %></p>
+<br>

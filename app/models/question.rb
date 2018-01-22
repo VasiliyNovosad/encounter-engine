@@ -4,6 +4,8 @@ class Question < ActiveRecord::Base
   has_many :answers, dependent: :destroy
   acts_as_list scope: [:level_id, :team_id]
 
+  accepts_nested_attributes_for :answers, reject_if: :all_blank, allow_destroy: true
+
   validates :name, presence: { message: 'Не введено назву сектора' }
   validates :name, uniqueness: { scope: [:level, :team], message: 'Сектор з такою назвою уже є на даному рівні' }
 
