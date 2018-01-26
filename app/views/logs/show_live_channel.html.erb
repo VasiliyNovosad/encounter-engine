@@ -23,7 +23,7 @@
           <% else %>
               <span class="wrong_code"><%= log.answer %></span>
           <% end %></td>
-        <td><%= log.user.nickname %></td>
+        <td><%= log.user.nil? ? '' : log.user.nickname %></td>
         </tr>
     <% end %>
   </tbody>
