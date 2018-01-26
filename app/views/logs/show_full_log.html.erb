@@ -43,7 +43,7 @@
                   <span class="wrong_code"><%= team_log.answer %></span>
               <% end %>
 
-              <%=  " (#{team_log.user.nickname})" %>
+              <%=  " (#{team_log.user.nil? ? '' : team_log.user.nickname})" %>
             </li>
           <% end %>
           </ul>

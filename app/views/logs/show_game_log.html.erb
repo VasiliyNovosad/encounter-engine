@@ -6,7 +6,7 @@
   <ul>
     <% logs = @logs.of_level(level).of_team(@team) %>
     <% logs.each do |log| %>
-      <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>&nbsp;<%= "#{log.answer} (#{log.user.nickname})" %></li>
+      <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>&nbsp;<%= "#{log.answer} (#{log.user.nil? ? '' : log.user.nickname})" %></li>
     <% end %>
   </ul>
 <% end %>
