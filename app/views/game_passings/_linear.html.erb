@@ -40,7 +40,7 @@
 
       <script>
           LevelCompleter.setup({
-              initialCountdownValue: <%= (@game_passing.current_level_entered_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @game_passing.current_level.complete_later %>
+              initialCountdownValue: <%= ((@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @game_passing.current_level.complete_later %>
               ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>
           })
       </script>
@@ -79,7 +79,7 @@
       <br>
       <script>
           LevelHintUpdater.setup({
-              initialCountdownValue: <%= hint.available_in(@game_passing.current_level_entered_at) %>
+              initialCountdownValue: <%= hint.available_in(@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) %>
               ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, hintId: <%= hint.id %>, hintNum: <%= index %>
           })
       </script>

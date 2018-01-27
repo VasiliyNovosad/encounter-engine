@@ -50,12 +50,12 @@ class GamePassingsController < ApplicationController
   end
 
   def post_answer
+    time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     if @game_passing.finished? ||
        @game.game_type == 'panic' &&
-       @game.starts_at + 60 * @game.duration < Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
+       @game.starts_at + 60 * @game.duration < time
       render 'show_results'
     else
-      time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       @answer = params[:answer].strip
       if @answer == ''
         @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
