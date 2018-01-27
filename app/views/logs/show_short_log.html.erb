@@ -45,8 +45,8 @@
             <p class="team-name"><%= log[:team].name %>(<%= log[:levels] %>)</p>
             <p><%= log[:time].strftime('%d.%m.%Y') %></p>
             <p><%= log[:time].strftime('%H:%M:%S.%L') %></p>
-            <% if log[:bonuses] > 0 %>
-                <p><%= "Бонус: #{seconds_to_string(log[:bonuses])}" %></p>
+            <% if (log[:bonuses] || 0) > 0 %>
+                <p><%= "Бонус: #{seconds_to_string(log[:bonuses] || 0)}" %></p>
             <% end %>
           </div>
         </td>
