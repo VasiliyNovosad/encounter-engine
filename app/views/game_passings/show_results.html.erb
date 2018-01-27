@@ -26,7 +26,7 @@
               <%= game_passing.finished_at.strftime('%H:%M:%S.%L') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
             <% end %>
           </td>
-          <td><%= seconds_to_string(game_passing.sum_bonuses) %></td>
+          <td><%= seconds_to_string(game_passing.sum_bonuses || 0) %></td>
           <td><%= Time.at(game_passing.finished_at - @game.starts_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S.%L") %> </td>
         </tr>
       <% end %>
@@ -38,7 +38,7 @@
             <td>
               Не фінішували
             </td>
-            <td><%= seconds_to_string(game_passing.sum_bonuses) %></td>
+            <td><%= seconds_to_string(game_passing.sum_bonuses || 0) %></td>
             <td>-</td>
           </tr>
         <% end %>
