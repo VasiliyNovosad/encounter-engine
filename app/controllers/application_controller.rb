@@ -9,16 +9,17 @@ class ApplicationController < ActionController::Base
   end
 
   def seconds_to_string(s)
+    sign = s < 0 ? '-' : ''
 
     # d = days, h = hours, m = minutes, s = seconds
-    m = (s / 60).floor
-    s = s % 60
+    m = (s.abs / 60).floor
+    s = s.abs % 60
     h = (m / 60).floor
     m = m % 60
     d = (h / 24).floor
     h = h % 24
 
-    output = ''
+    output = sign
     output << "#{d} дн " if (d > 0)
     output << "#{h} г " if (h > 0)
     output << "#{m} хв " if (m > 0)
