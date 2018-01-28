@@ -22,7 +22,13 @@ class GamePassing < ActiveRecord::Base
   before_create :update_current_level_entered_at
 
   def self.of(team, game)
-    of_team(team).of_game(game).first
+    game_passings = of_team(team).of_game(game)
+    if game_passings.count == 1
+      game_passings.first
+    elsif game_passings.count > 1
+      game_passings.last.delete
+      game_passings.first
+    end
   end
 
   def check_answer!(answer, level, team_id, time)
@@ -50,10 +56,10 @@ class GamePassing < ActiveRecord::Base
       unless answered_questions.include? question.id
         answered_questions << question.id
         changed = true
-        correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == self.team_id }
+        correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == self.team_id }.map { |answer| answer.value.downcase_utf8_cyr }
         PrivatePub.publish_to "/game_passings/#{self.id}/sectors", sector: { position: question.position,
                                                                              name: question.name,
-                                                                             value: "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" }
+                                                                             value: "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : get_team_answer(question.level, Team.find(team_id), correct_answers)}</span>" }
       end
     end
     save! if changed
@@ -198,6 +204,10 @@ class GamePassing < ActiveRecord::Base
 
   def current_level_position(team_id)
     LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: current_level.id).first.position
+  end
+
+  def get_team_answer(level, team, correct_answers)
+    Log.of_game(game).of_level(level).of_team(team).where('lower(answer) IN (?)', correct_answers).first.answer
   end
 
   protected

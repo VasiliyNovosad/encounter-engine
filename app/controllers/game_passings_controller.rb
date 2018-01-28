@@ -1,3 +1,5 @@
+require 'ee_strings.rb'
+
 class GamePassingsController < ApplicationController
   include GamePassingsHelper
 
@@ -206,11 +208,11 @@ class GamePassingsController < ApplicationController
     return unless level.multi_question?(@team_id)
     answered_questions = @game_passing.current_level.questions.where(id: @game_passing.answered_questions)
     @game_passing.current_level.team_questions(@team_id).includes(:answers).each do |question|
-      correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }
+      correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       value = level.olymp? ? question.name : '-'
       @sectors << { position: question.position,
                     name: question.name,
-                    value: answered_questions.include?(question) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" : value }
+                    value: answered_questions.include?(question) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value }
     end
   end
 
@@ -219,12 +221,12 @@ class GamePassingsController < ApplicationController
     return unless level.has_bonuses?(@team_id)
     answered_bonuses = @game_passing.current_level.bonuses.where(id: @game_passing.answered_bonuses)
     @bonuses = @game_passing.current_level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
-      correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }
+      correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       {
         position: bonus.position,
         name: bonus.name,
         answered: answered_bonuses.include?(bonus),
-        value: answered_bonuses.include?(bonus) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : correct_answers[0].value}</span>" : nil,
+        value: answered_bonuses.include?(bonus) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : nil,
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
         award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil
