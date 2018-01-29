@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :find_team, only: [:update, :index, :show]
-  before_action :ensure_team_member, except: [:new, :create]
+  before_action :ensure_team_member, except: [:new, :create, :show]
   before_action :ensure_team_captain, only: [:edit]
 
   def index
