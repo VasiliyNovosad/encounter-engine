@@ -56,28 +56,45 @@ class GamePassingsController < ApplicationController
     if @game_passing.finished? ||
        @game.game_type == 'panic' &&
        @game.starts_at + 60 * @game.duration < time
-      render 'show_results'
+      respond_to do |format|
+        format.html { render 'show_results' }
+        format.js
+      end
     else
       @answer = params[:answer].strip
       if @answer == ''
-        @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-        get_uniq_level_codes(@level)
-        get_answered_bonuses(@level) unless @game.game_type == 'panic'
-        get_answered_questions(@level) unless @game.game_type == 'panic'
-        render 'show_current_level', layout: 'in_game'
+        # @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
+        # get_uniq_level_codes(@level)
+        # get_answered_bonuses(@level) unless @game.game_type == 'panic'
+        # get_answered_questions(@level) unless @game.game_type == 'panic'
+        # render 'show_current_level', layout: 'in_game'
+        respond_to do |format|
+          format.html { render 'show_current_level', layout: 'in_game' }
+          format.js
+        end
       else
         @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
         save_log(@level, time) if @game_passing.current_level.id || @game.game_type == 'panic'
         @answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time)
         if @game_passing.finished?
           PrivatePub.publish_to "/game_passings/#{@game_passing.id}", url: '/game_passings/show_results'
-          render 'show_results'
+          # render 'show_results'
+          # head :ok, content_type: "text/html"
+          respond_to do |format|
+            format.html { render 'show_results' }
+            format.js
+          end
         else
-          @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-          get_uniq_level_codes(@level)
-          get_answered_bonuses(@level) unless @game.game_type == 'panic'
-          get_answered_questions(@level) unless @game.game_type == 'panic'
-          render 'show_current_level', layout: 'in_game'
+          # @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
+          # get_uniq_level_codes(@level)
+          # get_answered_bonuses(@level) unless @game.game_type == 'panic'
+          # get_answered_questions(@level) unless @game.game_type == 'panic'
+          # render 'show_current_level', layout: 'in_game'
+          # head :ok, content_type: "text/html"
+          respond_to do |format|
+            format.html { render 'show_current_level', layout: 'in_game' }
+            format.js
+          end
         end
       end
     end

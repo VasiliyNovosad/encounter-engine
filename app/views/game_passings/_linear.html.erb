@@ -8,31 +8,29 @@
     <%= @game_passing.current_level.name %>
   </legend>
 
-  <%= form_tag("/play/#{@game.id}", method: "post") do %>
+  <%= form_tag("/play/#{@game.id}", method: "post", remote: true, format: :js) do %>
     <br>Код:
-    <%= text_field_tag(:answer, nil, autofocus: true) %>
+    <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: false) %>
     <%= submit_tag " надіслати " %>
     <br>
   <% end %>
   <br>
 
-  <% unless @answer.nil? || @answer == '' %>
-    <% if answer_was_correct? %>
-        <div>
-          Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
-        </div>
-    <% else %>
-        <p>
-          Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
-        </p>
+  <div id="entered-code">
+    <% unless @answer.nil? || @answer == '' %>
+      <% if answer_was_correct? %>
+        Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
+      <% else %>
+        Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
+      <% end %>
     <% end %>
-  <% end %>
-  <% if ((@entered_all_answers || []).count > 0) %>
-    <p id="entered_codes">
-        <br>Введено коди:
-      <%= @entered_all_answers.join ', '  %>
-    </p>
-  <% end %>
+  </div>
+  <div id="entered-codes">
+    <% if ((@entered_all_answers || []).count > 0) %>
+      <p>Введено коди:</p>
+      <%= text_area_tag 'entered_codes', @entered_all_answers.join("\n"), rows: 10, disabled: true %>
+    <% end %>
+  </div>
   <hr>
   <br>
   <% if (@game_passing.current_level.complete_later || 0) > 0 %>
