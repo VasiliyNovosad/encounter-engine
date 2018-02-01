@@ -11,7 +11,7 @@
         <% sum = olymp_base**(levels - 1) %>
         
         <% (1..(levels - 1)).each do |j| %>
-          <% if (i % olymp_base**j == 1) %>
+          <% if i % olymp_base ** j == 1 %>
             <td rowspan="<%= olymp_base**j %>" id="sector-<%= @sectors[sum + i / olymp_base**j][:position] %>">
               <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
             </td>
@@ -22,14 +22,3 @@
     <% end %>
   </tbody>
 </table>
-
-<%= subscribe_to "/game_passings/#{@game_passing.id}/sectors" %>
-
-<script>
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/sectors", function(data, channel) {
-        var sector = $('#sector-' + data.sector.position).get(0);
-        if (sector !== undefined) {
-            sector.innerHTML = data.sector.value;
-        }
-    });
-</script>

@@ -11,7 +11,7 @@
       <% sum = olymp_base**(levels - 1) %>
 
       <% (1..(levels - 1)).each do |j| %>
-        <% if (i % olymp_base**j == 1) %>
+        <% if i % olymp_base ** j == 1 %>
           <td rowspan="<%= olymp_base**j %>" id="sector-<%= level.questions[sum + i / olymp_base**j][:position] %>">
             <%= render 'olymp_sector', sector: level.questions[sum + i / olymp_base**j][:position], question: (sum + i / olymp_base**j < questions ? level.questions[sum + i / olymp_base**j] : nil), bonus: (sum + i / olymp_base**j < bonuses ? level.bonuses[sum + i / olymp_base**j] : nil) %>
           </td>

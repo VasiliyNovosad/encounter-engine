@@ -14,27 +14,28 @@
     <% end %>
   <% end %>
 
-  <% unless current_user.member_of_any_team? %>
+  <% if current_user.member_of_any_team? %>
+
+    <p>
+      <%=  current_user.captain? ? "Ви - капітан команди" : "Ви входите в склад команди"  %>
+      <strong><%= current_user.team.name %></strong>
+    </p>
+
+    <p>
+      <%=  link_to "Перейти в кімнату команди", team_path(current_user.team)  %>
+    </p>
+
+  <% else %>
 
     <p>
       Ви не входите в склад жодної із команд
     </p>
 
     <p>
-      <%= link_to "Створити команду", new_team_path %>
+      <%=  link_to "Створити команду", new_team_path  %>
     </p>
-    
+
     <br>
-
-  <% else %>
-
-    <p>
-      <%= current_user.captain? ? "Ви - капітан команди" : "Ви входите в склад команди" %> <strong><%= current_user.team.name %></strong>
-    </p>
-    
-    <p>
-      <%= link_to "Перейти в кімнату команди", team_path(current_user.team) %>
-    </p>
 
   <% end %>
 </fieldset>

@@ -7,5 +7,5 @@ tinyMCE.addI18n('uk', {
   "Didn't get a response from the server": "Сервер не відповідає",
   'Insert': "Вставити",
   'Cancel': "Відміна",
-  'Image description': "Опис зображення",
+  'Image description': "Опис зображення"
 });

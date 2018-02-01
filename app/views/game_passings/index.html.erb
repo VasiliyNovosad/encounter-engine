@@ -39,11 +39,11 @@
         <td>
           <em>
             <%=
-               unless game_passing.finished?
-                 link_to "(лог по рівню)", "/logs/level/#{game_passing.game_id}/#{game_passing.team_id}"
-               else
-                 "(лог по рівню)"
-               end
+              if game_passing.finished?
+                "(лог по рівню)"
+              else
+                link_to "(лог по рівню)", "/logs/level/#{game_passing.game_id}/#{game_passing.team_id}"
+              end
             %>
           </em>
         </td>

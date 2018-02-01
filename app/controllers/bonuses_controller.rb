@@ -36,8 +36,17 @@ class BonusesController < ApplicationController
   end
 
   def destroy
-    @bonus.bonus_answers.each { |answer| answer.destroy }
     @bonus.destroy
+    redirect_to game_level_path(@level.game, @level)
+  end
+
+  def move_up
+    @bonus.move_higher
+    redirect_to game_level_path(@level.game, @level)
+  end
+
+  def move_down
+    @bonus.move_lower
     redirect_to game_level_path(@level.game, @level)
   end
 

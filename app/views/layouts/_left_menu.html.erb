@@ -1,54 +1,55 @@
 <fieldset>
-<% if user_signed_in? %>
-  <legend>
-    <%= link_to current_user.nickname, dashboard_path %>
-    <% if current_user.member_of_any_team? %>
-      (<%= link_to current_user.team.name, team_path(current_user.team) %>)
-    <% end %>
-  </legend>
+  <% if user_signed_in? %>
+    <legend>
+      <%= link_to current_user.nickname, dashboard_path %>
+      <% if current_user.member_of_any_team? %>
+        (<%= link_to current_user.team.name, team_path(current_user.team) %>)
+      <% end %>
+    </legend>
 
-  <p>
-    <%= link_to "Особистий кабінет", dashboard_path %>
-  </p>
+    <p>
+      <%= link_to "Особистий кабінет", dashboard_path %>
+    </p>
 
-  <p>
-    <%= link_to "Профіль", edit_user_registration_path %>
-  </p>
+    <p>
+      <%= link_to "Профіль", edit_user_registration_path %>
+    </p>
 
-  <p>
-    <% if current_user.member_of_any_team? %>
-      <%= link_to "Кімната команди", team_path(current_user.team) %>
-    <% else %>
-      <%= link_to "Створити команду", new_team_path %>
-    <% end %>
-  </p>
+    <p>
+      <% if current_user.member_of_any_team? %>
+        <%= link_to "Кімната команди", team_path(current_user.team) %>
+      <% else %>
+        <%= link_to "Створити команду", new_team_path %>
+      <% end %>
+    </p>
 
-  <p>
-    <%= link_to "Всі ігри домена", games_path %>
-  </p>
+    <p>
+      <%= link_to "Всі ігри домена", games_path %>
+    </p>
 
-  <p>
-    <%= link_to "Форуми", "/forums" %>
-  </p>
+    <p>
+      <%= link_to "Форуми", "/forums" %>
+    </p>
 
-  <p>
-    <%= link_to "Вийти", destroy_user_session_path, method: :delete %>
-  </p>
-<% else %>
-  <legend>
-    &nbsp;Вхід&nbsp;
-  </legend>
+    <p>
+      <%= link_to "Вийти", destroy_user_session_path, method: :delete %>
+    </p>
+  <% else %>
+    <legend>
+      &nbsp;Вхід&nbsp;
+    </legend>
 
-  <p>
-    <%= link_to "Увійти", new_user_session_path %>
-  </p>
+    <p>
+      <%= link_to "Увійти", new_user_session_path %>
+    </p>
 
-  <p>
-    <%= link_to "Зареєструватися", new_user_registration_path %> <br>
-  </p>
+    <p>
+      <%= link_to "Зареєструватися", new_user_registration_path %> <br>
+    </p>
 
-  <p>
-    <%= link_to "Форуми", "/forums" %>
-  </p>
+    <p>
+      <%= link_to "Форуми", "/forums" %>
+    </p>
 
-<% end %>
+  <% end %>
+</fieldset>

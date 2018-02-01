@@ -21,16 +21,16 @@
     <hr>
   <% end %>
   <br>
-  <% if (@entered_all_answers.count > 0) %>
+  <% if @entered_all_answers.count > 0 %>
     <% if answer_posted? && @answer %>
       <% if answer_was_correct? %>
         <div>
           Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
         </div>
       <% else %>
-        <p>
+        <div>
           Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
-        </p>
+        </div>
       <% end %>
     <% else %>
       <% if @game_passing.closed?(@level) %>

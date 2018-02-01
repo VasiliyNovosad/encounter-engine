@@ -1,0 +1,11 @@
+<% if answer_was_correct? %>
+  $('#entered-code').html('Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>');
+  $('#answer').val('');
+  $('#answer' ).blur();
+  $('#answer' ).focus();
+<% else %>
+  $('#entered-code').html('Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>');
+  $('#answer' ).blur();
+  $('#answer' ).focus();
+  $('#answer').select();
+<% end %>

@@ -4,7 +4,7 @@
     Заявку подано
     <%= link_to "Відізвати", "/game_entries/recall/#{game_entry.id}" %>
   <% when "accepted"%> Ви зареєстровані
-    <%= link_to "Відмовитись", "/game_entries/cancel/#{game_entry.id}" %>
+    <%= link_to "Відмовитись", "/game_entries/cancel/#{game_entry.id}" unless game.started? %>
   <% when "recalled", "rejected", "canceled", nil %>
     <% if game.max_team_number && game.max_team_number > 0 && game.requested_teams_number >= game.max_team_number %>
       Ви не можете зареєструватися, оскільки перевищено кількість учасників

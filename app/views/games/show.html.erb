@@ -18,18 +18,18 @@
 <% end %>
 
 <p>
-  <% unless @game.starts_at.nil? %>
-    <em>Початок гри</em>: <%= (@game.is_testing? ? @game.test_date : @game.starts_at).strftime('%H:%M %d.%m.%Y') %>
-  <% else %>
+  <% if @game.starts_at.nil? %>
     Дата початку гри ще не призначена
-  <% end %>
+  <%  else  %>
+    <em>Початок гри</em>: <%=  (@game.is_testing? ? @game.test_date : @game.starts_at).strftime('%H:%M %d.%m.%Y')  %>
+  <%  end %>
 </p>
 <p>
-  <% unless @game.registration_deadline.nil? %>
-    <em>Кінцевий термін реєстрації</em>: <%= @game.registration_deadline.strftime('%H:%M %d.%m.%Y') %>
-  <% else %>
+  <% if @game.registration_deadline.nil? %>
     Кінцевий термін реєстрації ще не призначено
-  <% end %>
+  <%  else  %>
+    <em>Кінцевий термін реєстрації</em>: <%=  @game.registration_deadline.strftime('%H:%M %d.%m.%Y')  %>
+  <%  end %>
 </p>
 
 <p>
@@ -48,7 +48,7 @@
   </p>
 <% end %>
 
-<% if current_user && current_user.captain? %>
+<% if current_user&.captain? %>
     <p><% game_entry = GameEntry.of(current_user.team, @game)%>
       <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: current_user.team %></p>
 <% end %>
@@ -109,29 +109,25 @@
   <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order") %></p>
 <% end %>
 <br>
+<% if user_signed_in? %>
+  <% if (@game.is_testing? ? @game.test_date : @game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !@game.author_finished? %>
+    <div id="playButton"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+  <% else %>
+    <div id="playButton" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+  <% end %>
+<% end %>
+<em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em>
 <br>
 <%= render 'shared/countdown' %>
 <div id="countdown-example"></div>
+<br>
 
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
     var seconds_to_game = <%= ((@game.is_testing? ? @game.test_date : @game.starts_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time + 1) %>;
-    console.log(seconds_to_game);
-//    var date = new Date();
-//    date.setMilliseconds(date.getTime() + 1000 * seconds_to_game);
-
     var dateObj = Date.now();
-
-    // Add 3 days to the current date & time
-    //   I'd suggest using the calculated static value instead of doing inline math
-    //   I did it this way to simply show where the number came from
     dateObj += 1000 * seconds_to_game;
-
-    // create a new Date object, using the adjusted time
     var date = new Date(dateObj);
-    console.log(date);
-
-//    var date = new Date(<%= ((@game.is_testing? ? @game.test_date : @game.starts_at) + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
   <% end %>
 
   $("#countdown-example").countdown(date, {
