@@ -43,6 +43,16 @@ class QuestionsController < ApplicationController
     redirect_to game_level_path(@level.game, @level)
   end
 
+  def move_up
+    @question.move_higher
+    redirect_to game_level_path(@level.game, @level)
+  end
+
+  def move_down
+    @question.move_lower
+    redirect_to game_level_path(@level.game, @level)
+  end
+
   protected
 
   def question_params

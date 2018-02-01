@@ -9,11 +9,11 @@
       <% current_games.each do |game| %>
         <div id="game-<%= game.id %>">
           <% unless game.is_testing? %>
-            <b><%= link_to game.name, game_path(game) %></b>
+            <h2><b><%= link_to game.name, game_path(game), class: "coming-game" %></b></h2>
             <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %>
             | <em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em>
             <% if current_user %>
-              <% if (current_user.team.nil? || current_user.team.finished?(game) || game.created_by?(current_user)) %>
+              <% if current_user.team.nil? || current_user.team.finished?(game) || game.created_by?(current_user) %>
                  <em><%= link_to "(результати)", url_for("/game_passings/show_results?game_id=#{game.id}") %></em>
               <% else %>
                 <% if game.levels && game.levels.count > 0 %>

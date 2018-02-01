@@ -213,6 +213,29 @@ textarea {
         min-height: 400px;
         /*width: 400px;*/
     }
+
+    #left-game-container {
+        /*background-color: #FFFFFF;*/
+        /*color: black;*/
+        background-color: #171717;
+        color: #CCC;
+        margin-left: 10px;
+    }
+
+    #main-game-container {
+        margin: 5px 5px 5px 5px;
+        padding: 0;
+        /*border-left: 1px solid silver;*/
+        min-height: 400px;
+        /*width: 400px;*/
+    }
+
+    #entered-codes {
+        width: 300px;
+        max-height: 700px;
+        overflow-y: scroll;
+        display: none;
+    }
 }
 
 @media (min-width: 768px) {
@@ -232,6 +255,30 @@ textarea {
         border-left: 1px solid silver;
         min-height: 400px;
         /*width: 400px;*/
+    }
+
+    #left-game-container {
+        float: left;
+        width: 300px;
+        /*background-color: #FFFFFF;*/
+        /*color: black;*/
+        background-color: #171717;
+        color: #CCC;
+        margin-left: 10px;
+    }
+
+    #main-game-container {
+        margin: 5px 5px 5px 320px;
+        padding: 0;
+        border-left: 1px solid silver;
+        min-height: 400px;
+        /*width: 400px;*/
+    }
+
+    #entered-codes {
+        width: 300px;
+        max-height: 700px;
+        overflow-y: scroll;
     }
 }
 
@@ -276,7 +323,7 @@ td {
     background-color: #272727;
 }
 
-#updateButton, #statButton {
+#updateButton, #statButton, #playButton {
     padding: 10px 20px;
     border: solid 1px #ccc;
     border-radius: 8px;
@@ -320,5 +367,19 @@ a.coming-game, .coming-game {
 
 .olymp-cell .bonus-field {
     width: 50px;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(30,30,30,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(100,100,100,0.5);
 }
 

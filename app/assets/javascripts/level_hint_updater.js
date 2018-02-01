@@ -24,15 +24,15 @@ var LevelHintUpdater = function() {
         clearInterval(timerData[hintNum].intervalId);
         timerData[hintNum].countdownValue = 0;
 
-        // loadHint(hintNum);
-        window.location = '/play/' + timerData[hintNum].gameId;
+        loadHint(hintNum);
+        // window.location = '/play/' + timerData[hintNum].gameId;
     }
 
     ,updateCountdown = function(hintNum) {
         var minutes = timerData[hintNum].countdownValue / 60
         ,seconds = 0;
 
-        if ( minutes > 0 && Math.floor(minutes) != minutes ) {
+        if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
             minutes = Math.floor(minutes);
             seconds = timerData[hintNum].countdownValue % 60;
         } else {
@@ -68,7 +68,7 @@ var LevelHintUpdater = function() {
         showLoadIndicator(hintNum);
 
         $.ajax({
-            url: '/play/' + timerData[hintNum].gameId + '/tip?team_id=' + timerData[hintNum].teamId, method: 'GET', dataType: 'json',
+            url: '/play/' + timerData[hintNum].gameId + '/tip?team_id=' + timerData[hintNum].teamId + '&level_id=' + timerData[hintNum].levelId + '&hint=' + hintNum, method: 'GET', dataType: 'json',
             success: function(data) {
                 hideLoadIndicator(hintNum);
                 //showCountdownContainer(hintNum);
@@ -92,6 +92,7 @@ var LevelHintUpdater = function() {
                         gameId: config.gameId,
                         teamId: config.teamId,
                         hintId: config.hintId,
+                        levelId: config.levelId,
                         countdownContainer: $('#LevelHintCountdownContainer' + config.hintId),
                         countdownTimerText: $('#LevelHintCountdownTimerText' + config.hintId),
                         loadingIndicator: $('#LevelHintCountdownLoadIndicator' + config.hintId),

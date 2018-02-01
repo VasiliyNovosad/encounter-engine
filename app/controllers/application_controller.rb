@@ -20,10 +20,10 @@ class ApplicationController < ActionController::Base
     h = h % 24
 
     output = sign
-    output << "#{d} дн " if (d > 0)
-    output << "#{h} г " if (h > 0)
-    output << "#{m} хв " if (m > 0)
-    output << "#{s} с" if (s > 0)
+    output << "#{d} дн" if (d > 0)
+    output << " #{h} г" if (h > 0)
+    output << " #{m} хв" if (m > 0)
+    output << " #{s} с" if (s > 0)
 
     output
   end

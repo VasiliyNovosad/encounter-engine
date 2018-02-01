@@ -8,9 +8,10 @@
 
 <script>
     PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/sectors", function(data, channel) {
-        var sector = $('#sector-' + data.sector.position).get(0);
-        if (sector !== undefined) {
-            sector.innerHTML = data.sector.name + ': ' + data.sector.value;
+
+        for (var i = 0; i < data.sectors.length; i++) {
+            var sector = $('#sector-' + data.sectors[i].position).get(0);
+            sector.innerHTML = data.sectors[i].name + ': ' + data.sectors[i].value;
         }
     });
 </script>

@@ -27,7 +27,7 @@ var LevelCompleter = function() {
         var minutes = countdownValue / 60
         ,seconds = 0;
 
-        if ( minutes > 0 && Math.floor(minutes) != minutes ) {
+        if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
             minutes = Math.floor(minutes);
             seconds = countdownValue % 60;
         } else {

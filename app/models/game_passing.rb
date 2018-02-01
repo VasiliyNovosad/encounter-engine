@@ -35,47 +35,71 @@ class GamePassing < ActiveRecord::Base
     answer.strip!
     is_correct_answer = false
     is_correct_bonus_answer = false
+    changed = false
 
     if correct_bonus_answer?(answer, level, team_id)
-      answered_bonus = level.find_bonuses_by_answer(answer, team_id)
-      pass_bonus!(answered_bonus)
+      answered_bonus = level.find_bonuses_by_answer(answer, team_id).map do |q|
+        {
+          id: q.id,
+          position: q.position,
+          bonus: q.award_time || 0,
+          award: seconds_to_string(q.award_time || 0),
+          help: q.help,
+          name: q.name,
+          value: answer
+        } unless answered_bonuses.include?(q.id)
+      end.compact
+      changed = pass_bonus!(answered_bonus)
       is_correct_bonus_answer = true
     end
     if correct_answer?(answer, level, team_id)
-      answered_question = level.find_questions_by_answer(answer, team_id)
-      pass_question!(answered_question)
+      answered_question = level.find_questions_by_answer(answer, team_id).map do |q|
+        {
+          id: q.id,
+          name: q.name,
+          position: q.position,
+          value: "<span class=\"right_code\">#{answer}</span>"
+        } unless answered_questions.include?(q.id)
+      end.compact
+      changed = pass_question!(answered_question)
+      if changed {
+        save!
+        changed = false
+      }
+      end
+      needed = level.team_questions(team_id).count
+      closed = answered_questions.count
       pass_level!(level, team_id, time) if all_questions_answered?(level, team_id)
       is_correct_answer = true
     end
-    is_correct_bonus_answer || is_correct_answer
+    save! if changed
+    { correct: is_correct_answer,
+      bonus: is_correct_bonus_answer,
+      sectors: answered_question,
+      bonuses: answered_bonus,
+      needed: needed,
+      closed: closed}
   end
 
   def pass_question!(questions)
     changed = false
-    questions.each do |question|
-      unless answered_questions.include? question.id
-        answered_questions << question.id
-        changed = true
-        correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == self.team_id }.map { |answer| answer.value.downcase_utf8_cyr }
-        PrivatePub.publish_to "/game_passings/#{self.id}/sectors", sector: { position: question.position,
-                                                                             name: question.name,
-                                                                             value: "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : get_team_answer(question.level, Team.find(team_id), correct_answers)}</span>" }
-      end
+    if questions.length > 0
+      changed = true
+      self.answered_questions += questions.map { |q| q[:id] }
+      # PrivatePub.publish_to "/game_passings/#{self.id}/sectors", sectors: questions
     end
-    save! if changed
+    changed
   end
 
   def pass_bonus!(bonuses)
     changed = false
-    bonuses.each do |bonus|
-      unless answered_bonuses.include? bonus.id
-        answered_bonuses << bonus.id
-        self.sum_bonuses = self.sum_bonuses + (bonus.award_time || 0)
-        changed = true
-        PrivatePub.publish_to "/game_passings/#{self.id}/bonuses", bonus: { position: bonus.position, award_time: seconds_to_string(bonus.award_time || 0), help: bonus.help, name: bonus.name }
-      end
+    if bonuses.length > 0
+      changed = true
+      self.answered_bonuses += bonuses.map { |q| q[:id] }
+      self.sum_bonuses += bonuses.inject(0){|sum,x| sum + x[:bonus] }
+      # PrivatePub.publish_to "/game_passings/#{self.id}/bonuses", bonuses: bonuses
     end
-    save! if changed
+    changed
   end
 
   def pass_level!(level, team_id, time)
