@@ -114,7 +114,7 @@ a:hover {
     margin-left: 10px;
     margin-bottom: 10px;
     font-family:  Verdana,Arial,Helvetica,sans-serif;
-    display: inline-flex;
+    display: flex;
     justify-content: space-between;
 }
 
