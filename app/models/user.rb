@@ -12,7 +12,10 @@ class User < ActiveRecord::Base
 
   scope :by_nickname, ->(nickname) { where('lower(nickname) = ?', nickname) }
 
-  before_save { self.email = email.downcase }
+  before_save do
+    self.email = email.downcase
+    self.nickname = nickname.strip
+  end
 
   validates :nickname, presence: true
   validates_uniqueness_of :nickname, case_sensitive: false
