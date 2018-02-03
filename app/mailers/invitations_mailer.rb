@@ -1,11 +1,14 @@
 class InvitationsMailer < ActionMailer::Base
+  include Rails.application.routes.url_helpers
+  include ActionView::Helpers::UrlHelper
+
   default from: "quest.racing.lutsk@gmail.com",
           template_path: 'mailers/invitations'
 
   def invitation_create(invitation)
     @invitation = invitation
     mail to: invitation.for_user.email,
-         body: "Вас запрошено вступити в команду #{invitation.to_team.name}",
+         body: "Вас запрошено вступити в команду #{link_to(invitation.to_team.name, team_url(invitation.to_team))}",
          content_type: "text/plain",
          subject: "Запрошення в команду"
   end

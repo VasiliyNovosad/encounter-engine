@@ -16,13 +16,26 @@
   <hr class="short-line" />
 
   <p>
-    <%= link_to "Запросити учасників", new_invitation_path if (@team.members.include? current_user) && current_user.captain? %>
+    <%= link_to "Запросити учасників", new_invitation_path if @team.members.include?(current_user) && current_user.captain? %>
   </p>
   <p>
-    <%= link_to "Редагувати команду", edit_team_path(@team) if (@team.members.include? current_user) && current_user.captain? %>
+    <%= link_to "Редагувати команду", edit_team_path(@team) if @team.members.include?(current_user) && current_user.captain? %>
   </p>
-  <% if (@team.members.include? current_user) && !current_user.captain? %>
+  <% if @team.members.include?(current_user) && !current_user.captain? %>
     <br>
     <p><%= link_to "Вийти з команди", url_for("/teams/edit/leave_team") %></p>
   <% end %>
+
+  <% if @team.members.include?(current_user) && current_user.captain? %>
+
+    <% @team_requests.each do |team_request| %>
+      <% if team_request.user %>
+        <p>До команди хоче приєднатись гравець <%= team_request.user.nickname %>
+          <em><%= link_to " (прийняти)", accept_team_request_path(team_request.id) %></em>
+          <em><%= link_to " (відмовитись)", reject_team_request_path(team_request.id) %></em>
+        </p>
+      <% end %>
+    <% end %>
+  <% end %>
+  <br>
 </fieldset>

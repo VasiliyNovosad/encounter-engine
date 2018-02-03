@@ -1,0 +1,10 @@
+<%= form_for @team_request, url: team_requests_path do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <p>
+    <%= f.label "Вступити до команди" %>
+    <%= f.text_field :team_name %>
+  </p>
+  <p>
+    <%= f.submit "Вступити" %>
+  </p>
+<% end %>

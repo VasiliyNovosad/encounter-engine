@@ -283,8 +283,6 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails-jquery-autocomplete (1.0.3)
-      rails (>= 3.2)
     railties (4.2.10)
       actionpack (= 4.2.10)
       activesupport (= 4.2.10)
@@ -424,7 +422,6 @@ DEPENDENCIES
   private_pub
   rails (= 4.2.10)
   rails-assets-datetimepicker!
-  rails-jquery-autocomplete
   rspec-rails
   sass-rails
   sdoc (~> 0.4.0)
