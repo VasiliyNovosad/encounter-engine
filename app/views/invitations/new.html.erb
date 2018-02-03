@@ -2,7 +2,7 @@
   <%= render 'shared/error_messages', object: f.object %>  
   <p>
     <%= f.label "Запросити нового учасника" %>
-    <%= f.autocomplete_field :recepient_nickname, autocomplete_user_nickname_invitations_path %>
+    <%= f.text_field :recepient_nickname %>
   </p>
   <p>
     <%= f.submit "Запросити" %>

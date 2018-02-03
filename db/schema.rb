@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171129194032) do
+ActiveRecord::Schema.define(version: 20180203193427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 20171129194032) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "reply_to_id"
-    t.string   "state",       default: "pending_review"
+    t.string   "state",       default: "approved", null: false
     t.boolean  "notified",    default: false
   end
 
@@ -180,6 +180,7 @@ ActiveRecord::Schema.define(version: 20171129194032) do
     t.string   "game_type",                          default: "linear"
     t.integer  "duration"
     t.integer  "tested_team_id"
+    t.integer  "topic_id"
   end
 
   create_table "games_authors", id: false, force: :cascade do |t|
@@ -265,6 +266,13 @@ ActiveRecord::Schema.define(version: 20171129194032) do
     t.integer  "team_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "team_requests", force: :cascade do |t|
+    t.integer  "team_id"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "teams", force: :cascade do |t|

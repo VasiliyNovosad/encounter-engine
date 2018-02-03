@@ -59,7 +59,7 @@ gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageuplo
 # gem 'carrierwave'
 gem 'cloudinary'
 gem 'jquery-ui-rails'
-gem 'rails-jquery-autocomplete'
+# gem 'rails-jquery-autocomplete'
 gem 'sentry-raven'
 source 'https://rails-assets.org' do
   gem 'rails-assets-datetimepicker'

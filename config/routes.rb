@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   resources :invitations do
     get 'accept', on: :member
     get 'reject', on: :member
-    get :autocomplete_user_nickname, on: :collection
+  end
+
+  resources :team_requests do
+    get 'accept', on: :member
+    get 'reject', on: :member
   end
 
   resources :users do
@@ -29,11 +33,14 @@ Rails.application.routes.draw do
       resources :hints
       resources :questions do
         resources :answers
+        get 'move_up', on: :member
+        get 'move_down', on: :member
       end
       resources :bonuses do
         resources :bonus_answers
+        get 'move_up', on: :member
+        get 'move_down', on: :member
       end
-
       get 'move_up', on: :member
       get 'move_down', on: :member
     end

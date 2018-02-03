@@ -1,6 +1,5 @@
 class InvitationsController < ApplicationController
-  autocomplete :user, :nickname
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   before_action :ensure_team_captain, only: [:new, :create]
 
@@ -17,7 +16,7 @@ class InvitationsController < ApplicationController
     @invitation = Invitation.new(invitation_params)
     @invitation.to_team = current_user.team
     if @invitation.save
-      redirect_to new_invitation_path, message: "Користувачу #{@invitation.recepient_nickname} надіслано запрошення"
+      redirect_to new_invitation_path, notice: "Користувачу #{@invitation.for_user.nickname} надіслано запрошення"
       InvitationsMailer.invitation_create(@invitation).deliver_now
     else
       @all_users = User.all
@@ -54,7 +53,7 @@ class InvitationsController < ApplicationController
   end
 
   def invitation_params
-    params.require(:invitation).permit!
+    params.require(:invitation).permit(:recepient_nickname)
   end
 
   def build_invitation
