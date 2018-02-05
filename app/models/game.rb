@@ -32,7 +32,7 @@ class Game < ActiveRecord::Base
   before_save do
     if !draft? && topic_id.nil?
       topic_name = "#{name} (#{starts_at.strftime('%H:%M %d.%m.%Y')})"
-      topic = Forem::Forum.find(1).topics.build(subject: topic_name, user: author, posts_attributes: [text: topic_name])
+      topic = Forem::Forum.where(name: "#{game_size || 'Лайт'}и").first.topics.build(subject: topic_name, user: author, posts_attributes: [text: topic_name])
       topic.save!
       self.topic_id = topic.id
     end
