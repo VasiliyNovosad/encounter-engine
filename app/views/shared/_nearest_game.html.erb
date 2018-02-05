@@ -22,6 +22,10 @@
 </p>
 
 <p>
+  <em>Тип гри:</em> <%= game.game_size || 'Лайт' %>
+</p>
+
+<p>
   <em>Послiдовнiсть проходження:</em> <%= game.game_type == 'linear' ? ' Лiнiйна' : game.game_type == 'panic' ? ' Панiка' : 'Лінійна (вказана)' %>
 </p>
 

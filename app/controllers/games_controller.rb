@@ -151,7 +151,7 @@ class GamesController < ApplicationController
     params.require(:game).permit(
       :name, :description, :game_type, :duration, :starts_at,
       :registration_deadline, :max_team_number, :is_draft,
-      :is_testing, :author, :test_date, :tested_team_id
+      :is_testing, :author, :test_date, :tested_team_id, :game_size
     )
   end
 
