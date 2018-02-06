@@ -400,3 +400,6 @@ a.coming-game, .coming-game {
     margin-left: 10px;
 }
 
+#in-game img, #main img {
+    max-width: 100%;
+}
