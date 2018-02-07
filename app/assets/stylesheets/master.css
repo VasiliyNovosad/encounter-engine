@@ -317,9 +317,13 @@ td {
 }
 
 #stats td {
-    background-color: #333132;
+    /*background-color: #333132;*/
     width: 1px;
     height: 1px;
+}
+
+#stats .stat-std {
+    background-color: #333132;
 }
 
 #stats th {
@@ -355,9 +359,11 @@ a.coming-game, .coming-game {
     padding: 0 5px;
 }
 
-.team-stat{
+div.team-stat{
     width: 100%;
     height: 100%;
+    display: inline-block;
+    background-color: inherit;
 }
 
 .olymp-cell label {

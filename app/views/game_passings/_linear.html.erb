@@ -120,11 +120,10 @@
         }
         var bonuses = data.bonuses || [];
         for (var i = 0; i < bonuses.length; i++) {
-            var bonus = $('#bonus-' + bonuses[i].position + ' p.bonus').get(0);
+            var bonus = $('#bonus-' + bonuses[i].position).get(0);
 
-            var elem = '<li id="bonus-' + bonuses[i].position + '">'
-              + ' <p class="bonus_answered"><b>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</b></p>'
-              + bonuses[i].help + '</li>';
+            var elem = '<p class="bonus_answered"><b>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</b></p>'
+              + bonuses[i].help;
             bonus.innerHTML = elem;
         }
         var needed = data.needed || 0;
