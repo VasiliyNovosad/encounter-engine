@@ -8,7 +8,7 @@
 
 <br>
 
-<% if @level.complete_later > 0 %>
+<% if (@level.complete_later || 0) > 0 %>
   <p>
     <span class="hint-timer">Автозавершення через <%= @level.complete_later / 60 %> хв</span>
   </p>
