@@ -20,7 +20,7 @@
     <%= radio_button_tag(:condition, "all", true, class: "radio") %>
     <%= label_tag(:condition_all, "Закрити всі сектори") %>
     <%= radio_button_tag(:condition, "selected", false, class: "radio") %>
-    <%= label_tag(:condition_selected, "Закрити ") %><%= text_field_tag :sectors_for_close_1 %> секторів
+    <%= label_tag(:condition_selected, "Закрити ") %><%= number_field_tag :sectors_for_close_1, nil, min: 0 %> секторів
   </p>
   <%= f.submit "Зберегти" %>
   <em><%= link_to "(відмінити)", game_level_path(@level.game, @level) %></em>
