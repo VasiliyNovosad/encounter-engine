@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180205142551) do
+ActiveRecord::Schema.define(version: 20180214195350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -233,12 +233,13 @@ ActiveRecord::Schema.define(version: 20180205142551) do
     t.text     "text"
     t.integer  "game_id"
     t.integer  "position"
-    t.string   "name",           limit: 255
+    t.string   "name",              limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "olymp",                      default: false
+    t.boolean  "olymp",                         default: false
     t.integer  "complete_later"
-    t.integer  "olymp_base",                 default: 2
+    t.integer  "olymp_base",                    default: 2
+    t.integer  "sectors_for_close",             default: 0
   end
 
   create_table "logs", force: :cascade do |t|

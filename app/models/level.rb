@@ -15,6 +15,8 @@ class Level < ActiveRecord::Base
 
   scope :of_game, ->(game) { where(game_id: game.id).order(:position) }
 
+  before_save :check_sectors_for_close
+
   def next
     lower_item
   end
@@ -100,6 +102,10 @@ class Level < ActiveRecord::Base
 
   def team_bonuses(team_id)
     bonuses.where("team_id IS NULL OR team_id = #{team_id}")
+  end
+
+  def check_sectors_for_close
+    self.sectors_for_close = questions.count if sectors_for_close > questions.count
   end
 
 end
