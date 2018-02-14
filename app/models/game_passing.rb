@@ -69,7 +69,7 @@ class GamePassing < ActiveRecord::Base
       end
       needed = level.team_questions(team_id).count
       closed = answered_questions.count
-      pass_level!(level, team_id, time) if all_questions_answered?(level, team_id)
+      pass_level!(level, team_id, time) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
       is_correct_answer = true
     end
     save! if changed

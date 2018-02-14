@@ -156,6 +156,61 @@ label {
     font-weight: bold;
 }
 
+.edit_level label, .new_level label {
+    width: 150px;
+}
+
+.edit_level .radio, .new_level .radio {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    margin: 10px 0 0 7px;
+}
+
+.edit_level .radio + label, .new_level .radio + label {
+    position: relative;
+    padding: 0 0 0 35px;
+    cursor: pointer;
+}
+
+.edit_level .radio + label:before, .new_level .radio + label:before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #CDD1DA;
+    border-radius: 50%;
+    background: #FFF;
+}
+
+.edit_level .radio:checked + label:after, .new_level .radio:checked + label:after {
+    opacity: 1;
+}
+
+.edit_level .radio + label:after, .new_level .radio + label:after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #5897fb;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.5);
+    opacity: 0;
+    transition: .2s;
+}
+
+.edit_level #sectors_for_close_1, .new_level #sectors_for_close_1 {
+    width: 40px;
+}
+
+.edit_level > p:nth-child(8) > label:nth-child(6), .new_level > p:nth-child(7) > label:nth-child(6) {
+    width: 50px;
+}
+
 input, textarea {  
     margin-bottom: 5px;
     background-color: #232323;

@@ -8,6 +8,13 @@
   <p><%= f.label "Олімпійка?" %><%= f.check_box :olymp %></p>
   <p id="olymp_base_block"><%= f.label :olymp_base %><%= f.text_field :olymp_base %></p>
   <p><%= f.label "Автозавершення через " %><%= f.text_field :complete_later_minutes %> хвилин</p>
+  <p>
+    <%= f.label "Умова для проходження" %><%= f.hidden_field :sectors_for_close %>
+    <%= radio_button_tag(:condition, "all", true, class: "radio") %>
+    <%= label_tag(:condition_all, "Закрити всі сектори") %>
+    <%= radio_button_tag(:condition, "selected", false, class: "radio") %>
+    <%= label_tag(:condition_selected, "Закрити ") %><%= text_field_tag :sectors_for_close_1 %> секторів
+  </p>
   <%= f.submit "Додати рівень" %>
   <em><%= link_to "(відмінити)", game_path(@level.game) %></em>
 <% end %>
@@ -17,9 +24,30 @@
         if (!$('#level_olymp').checked) {
             document.getElementById('olymp_base_block').style.visibility = 'hidden'
         }
+        if ($('#level_sectors_for_close').val() == 0) {
+            $( "#condition_all" ).prop( "checked", true );
+            $('#sectors_for_close_1').prop('readonly', true);
+        } else {
+            $( "#condition_selected" ).prop( "checked", true );
+            $('#sectors_for_close_1').prop('readonly', false);
+            $('#sectors_for_close_1').val($('#level_sectors_for_close').val());
+        }
     });
 
     $('#level_olymp').on("click", function(){ toggle($('#level_olymp').get(0)); });
+
+    $('.radio').on('change', function() {
+        if ($( "#condition_all" ).prop( "checked")) {
+            $('#sectors_for_close_1').prop('readonly', true);
+            $('#level_sectors_for_close').val('0');
+        } else {
+            $('#sectors_for_close_1').prop('readonly', false);
+        }
+    });
+
+    $('#sectors_for_close_1').on('change', function() {
+        $('#level_sectors_for_close').val($('#sectors_for_close_1').val());
+    });
 
     function toggle(elem) {
         if (elem.checked) {
