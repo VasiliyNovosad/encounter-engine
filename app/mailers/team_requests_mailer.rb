@@ -15,7 +15,7 @@ class TeamRequestsMailer < ActionMailer::Base
 
   def team_request_reject(team_request)
     @team_request = team_request
-    mail to: team_request.team.captain.email,
+    mail to: team_request.user.email,
          body: "Вас не прийнято до складу команди #{team_request.team.name} :#{team_url(team_request.team)}",
          content_type: "text/plain",
          subject: "Запит на приєднання до складу команди відхилено"
@@ -23,7 +23,7 @@ class TeamRequestsMailer < ActionMailer::Base
 
   def team_request_accept(team_request)
     @team_request = team_request
-    mail to: team_request.team.captain.email,
+    mail to: team_request.user.email,
          body: "Вас прийнято до складу команди #{team_request.team.name} :#{team_url(team_request.team)}",
          content_type: "text/plain",
          subject: "Запит на приєднання до складу команди прийнято"
