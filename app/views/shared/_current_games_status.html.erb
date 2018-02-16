@@ -1,7 +1,7 @@
 <% if game_entry %>
   <% case game_entry.status %>
   <% when "accepted" %>
-    <%= link_to "Грати!", url_for("/play/#{game.id}") %>
+    <div id="playButton"><%= link_to "Вхід у гру", url_for("/play/#{game.id}") %></div>
   <% else %>
     Ви не зареєстровані
   <% end %>

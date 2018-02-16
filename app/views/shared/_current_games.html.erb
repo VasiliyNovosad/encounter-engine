@@ -1,17 +1,14 @@
 <% current_games = Game.started - Game.finished %>
 <% if current_games.count > 0 %>
   <% unless Game.started.empty? %>
-    <fieldset>
-      <legend>
-        Поточні ігри домена
-      </legend>
-
-      <% current_games.each do |game| %>
+    <% current_games.each do |game| %>
+      <fieldset class="game-fieldset">
+        <legend>
+          Поточна гра
+        </legend>
         <div id="game-<%= game.id %>">
           <% unless game.is_testing? %>
-            <h2><b><%= link_to game.name, game_path(game), class: "coming-game" %></b></h2>
-            <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %>
-            | <em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em>
+            <%= render 'shared/current_game', game: game %>
             <% if current_user %>
               <% if current_user.team.nil? || current_user.team.finished?(game) || game.created_by?(current_user) %>
                  <em><%= link_to "(результати)", url_for("/game_passings/show_results?game_id=#{game.id}") %></em>
@@ -23,16 +20,13 @@
                   Гра не містить завдань
                 <% end %>
               <% end %>
-              <% if current_user.captain? && !game.created_by?(current_user)%>
-                  <% game_entry = GameEntry.of(current_user.team, game)%>
-                  <%= render 'shared/game_entry_controls', game_entry: game_entry,  game: game, team: current_user.team %>
-              <% end %>
-
+            <% end %>
+            <p><em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em></p>
         <% end %>
-           <% end %>
         </div>
-        <br>
-      <% end %>
-    </fieldset>
+      </fieldset>
+      <br>
+    <% end %>
+
   <% end %>
 <% end %>

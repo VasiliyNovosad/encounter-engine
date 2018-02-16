@@ -464,3 +464,7 @@ div.team-stat{
 #in-game img, #main img {
     max-width: 100%;
 }
+
+.game-fieldset {
+    background-color: #212121;
+}
