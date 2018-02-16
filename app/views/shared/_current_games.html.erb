@@ -21,7 +21,7 @@
                 <% end %>
               <% end %>
             <% end %>
-            <p><em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em></p>
+            <p class="stat-link"><em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em></p>
         <% end %>
         </div>
       </fieldset>

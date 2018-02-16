@@ -120,7 +120,8 @@
     <div id="playButton" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% end %>
 <% end %>
-<em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em>
+<br>
+<p class="stat-link"><em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em></p>
 <br>
 <%= render 'shared/countdown' %>
 <div id="countdown-example"></div>

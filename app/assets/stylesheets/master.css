@@ -477,3 +477,7 @@ div.team-stat{
     background-color: #212121;
     border-radius: 5px;
 }
+
+.stat-link {
+    margin-left: 16px;
+}
