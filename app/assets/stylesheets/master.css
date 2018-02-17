@@ -251,7 +251,7 @@ textarea {
     font-weight: bold
 }
 
-@media (max-width: 767px) {
+@media (max-width: 799px) {
     #left-container {
         /*background-color: #FFFFFF;*/
         /*color: black;*/
@@ -299,7 +299,7 @@ textarea {
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 800px) {
     #left-container {
         float: left;
         width: 150px;
