@@ -113,7 +113,7 @@ class GamePassing < ActiveRecord::Base
       else
         update_current_level_entered_at(time)
         closed_levels << level.id unless closed?(level)
-        reset_answered_questions
+        reset_answered_questions unless game.game_type == 'panic'
         if game.game_type == 'linear'
           self.current_level = level.next
         elsif game.game_type == 'selected'
@@ -121,7 +121,7 @@ class GamePassing < ActiveRecord::Base
         end
       end
       save!
-      PrivatePub.publish_to "/game_passings/#{self.id}", url: "/play/#{self.game_id}"
+      PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: "/play/#{self.game_id}"
     end
   end
 
@@ -215,7 +215,7 @@ class GamePassing < ActiveRecord::Base
       unless closed?(level)
         update_current_level_entered_at(time_finish)
         closed_levels << level.id
-        reset_answered_questions
+        reset_answered_questions unless game.game_type == 'panic'
         if game.game_type == 'linear'
           self.current_level = level.next
         elsif game.game_type == 'selected'

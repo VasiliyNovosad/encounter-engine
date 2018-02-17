@@ -3,15 +3,3 @@
       <li id="sector-<%= sector[:position] %>"><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></li>
   <% end %>
 </ul>
-
-<%= subscribe_to "/game_passings/#{@game_passing.id}/sectors" %>
-
-<script>
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/sectors", function(data, channel) {
-
-        for (var i = 0; i < data.sectors.length; i++) {
-            var sector = $('#sector-' + data.sectors[i].position).get(0);
-            sector.innerHTML = data.sectors[i].name + ': ' + data.sectors[i].value;
-        }
-    });
-</script>

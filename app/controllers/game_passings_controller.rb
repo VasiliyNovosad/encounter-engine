@@ -26,8 +26,8 @@ class GamePassingsController < ApplicationController
                  @game_passing.current_level
                end
       get_uniq_level_codes(@level)
-      get_answered_bonuses(@level) unless @game.game_type == 'panic'
-      get_answered_questions(@level) unless @game.game_type == 'panic'
+      get_answered_bonuses(@level) # unless @game.game_type == 'panic'
+      get_answered_questions(@level) # unless @game.game_type == 'panic'
       render layout: 'in_game'
     else
       render 'show_results'
@@ -66,8 +66,8 @@ class GamePassingsController < ApplicationController
             render 'show_current_level', layout: 'in_game'
             @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
             get_uniq_level_codes(@level)
-            get_answered_bonuses(@level) unless @game.game_type == 'panic'
-            get_answered_questions(@level) unless @game.game_type == 'panic'
+            get_answered_bonuses(@level) #unless @game.game_type == 'panic'
+            get_answered_questions(@level) #unless @game.game_type == 'panic'
           end
           format.js
         end
@@ -104,7 +104,7 @@ class GamePassingsController < ApplicationController
               }
           )
         end
-        PrivatePub.publish_to "/game_passings/#{@game_passing.id}/answers", {
+        PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers", {
             answers: answered,
             sectors: answer_was_correct[:sectors],
             bonuses: answer_was_correct[:bonuses],
@@ -112,7 +112,7 @@ class GamePassingsController < ApplicationController
             closed: answer_was_correct[:closed]
         }
         if @game_passing.finished?
-          PrivatePub.publish_to "/game_passings/#{@game_passing.id}", url: '/game_passings/show_results'
+          PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}", url: '/game_passings/show_results'
           respond_to do |format|
             format.html { render 'show_results' }
             format.js
@@ -122,8 +122,8 @@ class GamePassingsController < ApplicationController
             format.html do
               @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
               get_uniq_level_codes(@level)
-              get_answered_bonuses(@level) unless @game.game_type == 'panic'
-              get_answered_questions(@level) unless @game.game_type == 'panic'
+              get_answered_bonuses(@level) # unless @game.game_type == 'panic'
+              get_answered_questions(@level) # unless @game.game_type == 'panic'
               render 'show_current_level', layout: 'in_game'
             end
             format.js
@@ -287,8 +287,8 @@ class GamePassingsController < ApplicationController
   def get_answered_questions(level)
     @sectors = []
     return unless level.multi_question?(@team_id)
-    answered_questions = @game_passing.current_level.questions.where(id: @game_passing.answered_questions)
-    @game_passing.current_level.team_questions(@team_id).includes(:answers).each do |question|
+    answered_questions = level.questions.where(id: @game_passing.answered_questions)
+    level.team_questions(@team_id).includes(:answers).each do |question|
       correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       value = level.olymp? ? question.name : '-'
       @sectors << { position: question.position,
@@ -300,8 +300,8 @@ class GamePassingsController < ApplicationController
   def get_answered_bonuses(level)
     @bonuses = []
     return unless level.has_bonuses?(@team_id)
-    answered_bonuses = @game_passing.current_level.bonuses.where(id: @game_passing.answered_bonuses)
-    @bonuses = @game_passing.current_level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
+    answered_bonuses = level.bonuses.where(id: @game_passing.answered_bonuses)
+    @bonuses = level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       {
         position: bonus.position,

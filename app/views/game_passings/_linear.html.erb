@@ -96,15 +96,15 @@
 
 </fieldset>
 </div>
-<%= subscribe_to "/game_passings/#{@game_passing.id}" %>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/answers" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}/answers" %>
 
 <script>
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>", function(data, channel) {
         window.location.href = data.url;
     });
 
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/answers", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>/answers", function(data, channel) {
         var answers = data.answers || [];
         for (var i = 0; i < answers.length; i++) {
             $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));

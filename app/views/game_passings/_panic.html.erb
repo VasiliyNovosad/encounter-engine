@@ -1,6 +1,42 @@
-<%= link_to "Оновити", url_for("/play/#{@game.id}?level=#{@level.position}") %>
+<div id="updateButton"><%= link_to "Оновити", url_for("/play/#{@game.id}?level=#{@level.position}") %></div>
 <br>
 <br>
+<div id="left-game-container">
+  <% unless @game_passing.closed?(@level) %>
+    <%= form_tag("/play/#{@game.id}", method: "post", remote: true, format: :js) do %>
+      <br>
+      Код:
+      <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: false) %>
+      <%= submit_tag " надіслати " %>
+      <%= hidden_field_tag(:level_id, @level.id) %>
+      <%= hidden_field_tag(:closed_level, @game_passing.closed?(@level)) %>
+      <%= hidden_field_tag(:closed_levels, @game_passing.closed_levels.count) %>
+      <%= hidden_field_tag(:team_id, @team_id) %>
+      <br>
+    <% end %>
+  <% end %>
+
+  <br>
+  <div id="entered-code">
+    <% unless @answer.nil? || @answer == '' %>
+      <% if answer_was_correct? %>
+        Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
+      <% else %>
+        Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
+      <% end %>
+    <% end %>
+  </div>
+  <br>
+  <div id="entered-codes">
+    <% @entered_all_answers.each do |answer| %>
+      <p><%= "#{answer[:time].strftime("%H:%M:%S")} #{answer[:user]} #{answer[:answer]}".html_safe %></p>
+    <% end %>
+  </div>
+  <hr>
+  <br>
+</div>
+
+<div id="main-game-container">
 
 <h3>
   <%= @game.levels.map { |level| level == @level ? "#{level.position}. #{level.name}" : "<a class=\"#{(@game_passing.closed?(level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{@game.id}?level=#{level.position}\">#{level.position}. #{level.name}</a>"}.join(', ').html_safe %>
@@ -11,56 +47,30 @@
     <%= @level.name %>
   </legend>
 
-  <%= form_tag("/play/#{@game.id}", method: "post") do %>
-    <br>
-    Код: <%= text_field_tag(:answer, nil, autofocus: true) %> <%= submit_tag " надіслати " %>
-    <%= hidden_field_tag(:level_id, @level.id) %>
-    <%= hidden_field_tag(:closed_level, @game_passing.closed?(@level)) %>
-    <%= hidden_field_tag(:closed_levels, @game_passing.closed_levels.count) %>
-    <%= hidden_field_tag(:team_id, @team_id) %>
-    <hr>
+  <% if @game_passing.closed?(@level) %>
+    <p><span class="right_code">Рівень закрито</span></p>
+  <% else %>
+    <%= render 'shared/countdown' %>
+    <div id="countdown-example"></div>
   <% end %>
   <br>
-  <% if @entered_all_answers.count > 0 %>
-    <% if answer_posted? && @answer %>
-      <% if answer_was_correct? %>
-        <div>
-          Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
-        </div>
-      <% else %>
-        <div>
-          Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
-        </div>
-      <% end %>
-    <% else %>
-      <% if @game_passing.closed?(@level) %>
-        <div>
-          Код <span class="right_code"><%= @level.team_questions(@team_id).first.team_answers(@team_id).first.value %></span> вірний.<br><hr>
-        </div>
-      <% end %>
-    <% end %>
 
-    <!--
-    <p id="entered_codes">
-        <br>Введено коди:
-      <#%= @entered_all_answers.join ', '  %><hr>
-    </p>
-    -->
-
-  <% end %> 
-
-  <br>
-  <%= @level.team_task(@team_id).html_safe %>
+  <% @level.team_tasks(@team_id).each do |task| %>
+    <%= task.text.html_safe %>
+    <br>
+  <% end %>
   <br>
 
+  <br>
 
+  <%= render @level.olymp? ? 'olymp' : 'multy' %>
+  <hr>
+  <br>
+  <%= render 'bonuses' if @bonuses.count > 0 %>
+
+  <br>
 </fieldset>
-
-<br>
-
-<%= render 'shared/countdown' %>
-<div id="countdown-example"></div>
-
+</div>
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
     var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
@@ -71,3 +81,41 @@
   });
 </script>
 
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers" %>
+
+<script>
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>", function(data, channel) {
+        window.location.href = data.url;
+    });
+
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/answers", function(data, channel) {
+        var answers = data.answers || [];
+        for (var i = 0; i < answers.length; i++) {
+            $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));
+        }
+        var sectors = data.sectors || [];
+        for (var i = 0; i < sectors.length; i++) {
+            var sector = $('#sector-' + sectors[i].position).get(0);
+            <% if @level.olymp? %>
+            sector.innerHTML = sectors[i].value;
+            <% else %>
+            sector.innerHTML = sectors[i].name + ': ' + sectors[i].value;
+            <% end %>
+        }
+        var bonuses = data.bonuses || [];
+        for (var i = 0; i < bonuses.length; i++) {
+            var bonus = $('#bonus-' + bonuses[i].position).get(0);
+
+            var elem = '<p class="bonus_answered"><b>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</b></p>'
+                + bonuses[i].help;
+            bonus.innerHTML = elem;
+        }
+        var needed = data.needed || 0;
+        var closed = data.closed || 0;
+        if (needed > 0 && closed > 0) {
+            $('#codes-closed').get(0).innerHTML = 'Вірних кодів ' + closed + ' із ' + needed + ':';
+        }
+
+    });
+</script>

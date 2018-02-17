@@ -1,4 +1,4 @@
-<% olymp_base = @game_passing.current_level.olymp_base || 2 %>
+<% olymp_base = @level.olymp_base || 2 %>
 <% levels = Math.log(@sectors.count, olymp_base).to_i + 1 %>
 <table class="olymp" border="1">
   <tbody>
