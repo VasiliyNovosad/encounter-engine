@@ -37,7 +37,7 @@
 </p>
 
 <p>
-  <em>Послiдовнiсть проходження:</em> <%= @game.game_type == 'linear' ? ' Лiнiйна' : @game.game_type == 'panic' ? ' Панiка' : 'Лінійна (вказана)' %>
+  <em>Послiдовнiсть проходження:</em> <%= @game.game_type == 'linear' ? ' Лiнiйна' : @game.game_type == 'panic' ? ' Штурм' : ' Лінійна (вказана)' %>
 </p>
 
 <% if @game.game_type == 'panic' %>
