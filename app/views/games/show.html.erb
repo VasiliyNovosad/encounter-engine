@@ -124,7 +124,7 @@
 <p class="stat-link"><em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em></p>
 <br>
 <%= render 'shared/countdown' %>
-<div id="countdown-example"></div>
+<div id="start-countdown"></div>
 <br>
 
 <script type="text/javascript">
@@ -135,7 +135,7 @@
     var date = new Date(dateObj);
   <% end %>
 
-  $("#countdown-example").countdown(date, {
+  $("#start-countdown").countdown(date, {
     prefix:'До початку лишилось: '
   });
 </script>

@@ -14,45 +14,10 @@
       },
       prefix: "Лишилось: ",
       finish : function() {
-        <% if user_signed_in? and current_user.author_of?(@game) %>
-          $('#start-countdown').css('display', 'none');
-          return;
-        <% end %>
-        <% unless @game.finished_teams %>
-          $('#start-countdown').css('display', 'none');
-          return;
-        <% end %>
-        <% unless @game.levels && @game.levels.count > 0 %>
-          $('#start-countdown').css('display', 'none');
-          return;
-        <% end %>
-        <% if @game.draft? %>
-          $('#start-countdown').css('display', 'none');
-          return;
-        <% end %>
-        <% unless @team.nil? %>
-          <% unless @game.game_passings.of_team(@team).first.nil? %>
-            <% if @game.game_passings.of_team(@team).first.finished? %>
-              $('#start-countdown').css('display', 'none');
-              return;
-            <% end %>
-          <% end %>
-        <% end %>
-        <% if @game.author_finished? %>
-          $('#start-countdown').css('display', 'none');
-          return;
-        <% end %>
-        <% unless @team.nil? || @game.nil? %>
-          <% @game_entry = GameEntry.of(@team, @game) %>
-          <% if @game_entry && @game_entry.status == "accepted" %>
-            $('#start-countdown').css('display', 'none');
-            $('#playButton').css('display', 'inline-block');
-          <% else %>
-            console.log(8);
-            document.write("<h1>Ви не зареєстровані на гру</h1>");
-          <% end %>
-        <% end %>
-
+        console.log(1);
+        $('#panic-countdown').css('display', 'none');
+        var game_id = <%= @game.id %>;
+        return window.location = '/play/' + game_id + '/';
       }
     };
     countdown_settings = jQuery.extend(countdown_settings, settings);

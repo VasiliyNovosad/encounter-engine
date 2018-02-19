@@ -68,7 +68,7 @@ class GamePassing < ActiveRecord::Base
       }
       end
       needed = level.team_questions(team_id).count
-      closed = answered_questions.count
+      closed = (answered_questions.to_set & level.team_questions(team_id).map(&:id).to_set).count
       pass_level!(level, team_id, time) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
       is_correct_answer = true
     end
@@ -114,6 +114,7 @@ class GamePassing < ActiveRecord::Base
         update_current_level_entered_at(time)
         closed_levels << level.id unless closed?(level)
         reset_answered_questions unless game.game_type == 'panic'
+        reset_answered_bonuses unless game.game_type == 'panic'
         if game.game_type == 'linear'
           self.current_level = level.next
         elsif game.game_type == 'selected'
@@ -216,6 +217,7 @@ class GamePassing < ActiveRecord::Base
         update_current_level_entered_at(time_finish)
         closed_levels << level.id
         reset_answered_questions unless game.game_type == 'panic'
+        reset_answered_bonuses unless game.game_type == 'panic'
         if game.game_type == 'linear'
           self.current_level = level.next
         elsif game.game_type == 'selected'
@@ -260,6 +262,10 @@ class GamePassing < ActiveRecord::Base
 
   def reset_answered_questions
     answered_questions.clear
+  end
+
+  def reset_answered_bonuses
+    answered_bonuses.clear
   end
 
   # TODO: keep SRP, extract this to a separate helper

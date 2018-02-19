@@ -50,8 +50,17 @@
   <% if @game_passing.closed?(@level) %>
     <p><span class="right_code">Рівень закрито</span></p>
   <% else %>
-    <%= render 'shared/countdown' %>
-    <div id="countdown-example"></div>
+    <%= render 'shared/panic_countdown' %>
+    <div id="panic-countdown"></div>
+    <script type="text/javascript">
+        <% unless @game.starts_at.nil? %>
+        var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
+        <% end %>
+
+        $("#panic-countdown").countdown(date,{
+            prefix:'До завершення лишилось: '
+        });
+    </script>
   <% end %>
   <br>
 
@@ -61,6 +70,15 @@
   <% end %>
   <br>
 
+  <% team_questions = @level.team_questions(@team_id) %>
+  <% if team_questions.count > 1 %>
+    <div>
+      <br>
+      <b id="codes-closed">Вірних кодів <%= (@game_passing.answered_questions.to_set & team_questions.map(&:id).to_set).count %> із <%= team_questions.count %>:</b>
+      <hr>
+      <hr>
+    </div>
+  <% end %>
   <br>
 
   <%= render @level.olymp? ? 'olymp' : 'multy' %>
@@ -71,15 +89,7 @@
   <br>
 </fieldset>
 </div>
-<script type="text/javascript">
-  <% unless @game.starts_at.nil? %>
-    var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
-  <% end %>
 
-  $("#countdown-example").countdown(date,{
-    prefix:'До завершення лишилось: '
-  });
-</script>
 
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}" %>
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers" %>

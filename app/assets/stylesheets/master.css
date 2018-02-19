@@ -236,7 +236,7 @@ textarea {
     color: gray;
 }
 
-#LevelCompleteCountdownContainer, .hint-timer, #countdown-example {
+#LevelCompleteCountdownContainer, .hint-timer, #start-countdown, #panic-countdown {
     color: #ff570a;
     font-weight: bold
 }

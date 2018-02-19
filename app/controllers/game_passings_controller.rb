@@ -19,7 +19,7 @@ class GamePassingsController < ApplicationController
   before_action :ensure_author, only: [:index]
 
   def show_current_level
-    if @game_passing.finished_at.nil?
+    if @game_passing.finished_at.nil? && !(@game.game_type == 'panic' && (@game.starts_at + @game.duration * 60) < Time.now)
       @level = if @game.game_type == 'panic'
                  params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
                else
