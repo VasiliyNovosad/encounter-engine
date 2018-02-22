@@ -122,7 +122,7 @@ class GamePassing < ActiveRecord::Base
         end
       end
       save!
-      PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: "/play/#{self.game_id}"
+      PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{self.game_id}?level=#{level.position}" : "/play/#{self.game_id}"
     end
   end
 
