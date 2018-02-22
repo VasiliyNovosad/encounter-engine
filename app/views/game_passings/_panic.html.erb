@@ -47,20 +47,20 @@
     <%= @level.name %>
   </legend>
 
-  <% if @game_passing.closed?(@level) %>
-    <p><span class="right_code">Рівень закрито</span></p>
-  <% else %>
-    <%= render 'shared/panic_countdown' %>
-    <div id="panic-countdown"></div>
-    <script type="text/javascript">
-        <% unless @game.starts_at.nil? %>
-        var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
-        <% end %>
+  <%= render 'shared/panic_countdown' %>
+  <div id="panic-countdown"></div>
+  <script type="text/javascript">
+      <% unless @game.starts_at.nil? %>
+      var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
+      <% end %>
 
-        $("#panic-countdown").countdown(date,{
-            prefix:'До завершення лишилось: '
-        });
-    </script>
+      $("#panic-countdown").countdown(date,{
+          prefix:'До завершення лишилось: '
+      });
+  </script>
+  <% if @game_passing.closed?(@level) %>
+    <br>
+    <p><span class="right_code">Рівень закрито</span></p>
   <% end %>
   <br>
 
