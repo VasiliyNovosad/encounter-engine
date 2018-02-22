@@ -81,7 +81,7 @@
   <% end %>
   <br>
 
-  <%= render @level.olymp? ? 'olymp' : 'multy' %>
+  <%= render @level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
   <hr>
   <br>
   <%= render 'bonuses' if @bonuses.count > 0 %>

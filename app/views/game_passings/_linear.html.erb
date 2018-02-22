@@ -87,7 +87,7 @@
 
   <br>
 
-  <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' %>
+  <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
   <hr>
   <br>
   <%= render 'bonuses' if @bonuses.count > 0 %>
