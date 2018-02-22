@@ -4,17 +4,25 @@
   <tbody>
     <% (1..(olymp_base**(levels - 1))).each do |i| %>
       <tr>
-        <td id="sector-<%= @sectors[i-1][:position] %>">
-          <%= @sectors[i-1][:value].html_safe %>
-        </td>
+        <% if i <= @sectors.count %>
+          <td id="sector-<%= @sectors[i-1][:position] %>">
+            <%= @sectors[i-1][:value].html_safe %>
+          </td>
+        <% else %>
+          <td></td>
+        <% end %>
         
         <% sum = olymp_base**(levels - 1) %>
         
         <% (1..(levels - 1)).each do |j| %>
           <% if i % olymp_base ** j == 1 %>
-            <td rowspan="<%= olymp_base**j %>" id="sector-<%= @sectors[sum + i / olymp_base**j][:position] %>">
-              <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
-            </td>
+            <% if sum + i / olymp_base**j < @sectors.count %>
+              <td rowspan="<%= olymp_base**j %>" id="sector-<%= @sectors[sum + i / olymp_base**j][:position] %>">
+                <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
+              </td>
+            <% else %>
+              <td></td>
+            <% end %>
           <% end %>
           <% sum += olymp_base**(levels - j - 1) %>
         <% end %>
