@@ -21,7 +21,7 @@
                 <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
               </td>
             <% else %>
-              <td></td>
+              <td rowspan="<%= olymp_base**j %>"></td>
             <% end %>
           <% end %>
           <% sum += olymp_base**(levels - j - 1) %>
