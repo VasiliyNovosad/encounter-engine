@@ -76,7 +76,7 @@
           <td><%= Time.at(game_passing.finished_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S.%L") %> </td>
         </tr>
       <% end %>
-      <% (game_passings - game_passings.finished).sort { |a, b| (a.closed_levels.count <=> b.closed_levels.count).nonzero? || (a.current_level_entered_at <=> b.current_level_entered_at) }.each do |game_passing| %>
+      <% (game_passings - game_passings.finished).sort { |a, b| (b.closed_levels.count <=> a.closed_levels.count).nonzero? || (a.current_level_entered_at - a.sum_bonuses <=> b.current_level_entered_at - b.sum_bonuses) }.each do |game_passing| %>
           <tr>
             <td><%= place %></td>
             <%= place += 1 %>
