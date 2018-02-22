@@ -44,12 +44,9 @@
         <% end %>
         <% unless @team.nil? || @game.nil? %>
           <% @game_entry = GameEntry.of(@team, @game) %>
+          $('#start-countdown').css('display', 'none');
           <% if @game_entry && @game_entry.status == "accepted" %>
-            $('#start-countdown').css('display', 'none');
             $('#playButton').css('display', 'inline-block');
-          <% else %>
-            console.log(8);
-            document.write("<h1>Ви не зареєстровані на гру</h1>");
           <% end %>
         <% end %>
 
