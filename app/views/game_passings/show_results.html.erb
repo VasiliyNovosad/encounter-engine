@@ -66,11 +66,11 @@
             <%= place += 1 %>
             <td><%= game_passing.team.name %></td>
             <td>
-              <%= game_passing.current_level_entered_at.strftime('%H:%M:%S.%L') %> <%= game_passing.current_level_entered_at.strftime('(%d.%m)') if game_passing.current_level_entered_at.day != @game.starts_at.day %>
+              <%= (game_passing.finished_at || game_finished_at).strftime('%H:%M:%S.%L') %> <%= (game_passing.finished_at || game_finished_at).strftime('(%d.%m)') if (game_passing.finished_at || game_finished_at).day != @game.starts_at.day %>
             </td>
             <td><%= game_passing.closed_levels.count %></td>
             <td><%= seconds_to_string(game_passing.sum_bonuses || 0) %></td>
-            <td><%= Time.at(game_passing.current_level_entered_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S.%L") %> </td>
+            <td><%= Time.at((game_passing.finished_at) || game_finished_at - game_passing.sum_bonuses).utc.strftime("%H:%M:%S.%L") %> </td>
           </tr>
         <% end %>
     </tbody>
