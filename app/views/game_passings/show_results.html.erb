@@ -63,7 +63,7 @@
       <% (game_passings).sort { |a, b| ((a.finished_at || game_finished_at) - a.sum_bonuses) <=> ((b.finished_at || game_finished_at) - b.sum_bonuses) }.each do |game_passing| %>
           <tr>
             <td><%= place %></td>
-            <%= place += 1 %>
+            <% place += 1 %>
             <td><%= game_passing.team.name %></td>
             <td>
               <%= (game_passing.finished_at || game_finished_at).strftime('%H:%M:%S.%L') %> <%= (game_passing.finished_at || game_finished_at).strftime('(%d.%m)') if (game_passing.finished_at || game_finished_at).day != @game.starts_at.day %>
