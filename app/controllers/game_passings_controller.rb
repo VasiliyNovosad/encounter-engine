@@ -40,14 +40,16 @@ class GamePassingsController < ApplicationController
   end
 
   def get_current_level_tip
-    upcoming_hints = @game_passing.upcoming_hints(@team_id).to_a
+    level_id = params[:level_id]
+    level = Level.find(level_id)
+    upcoming_hints = @game_passing.upcoming_hints(@team_id, level).to_a
     next_hint = upcoming_hints.count > 0 ? upcoming_hints.first : nil
-    hints_to_show = @game_passing.hints_to_show(@team_id)
+    hints_to_show = @game_passing.hints_to_show(@team_id, level)
 
     render json: { hint_num: hints_to_show.count,
                    hint_text: (hints_to_show.count == 0 ? '' : hints_to_show.last.text.html_safe),
                    hint_count: hints_to_show.count + upcoming_hints.count,
-                   next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.current_level_entered_at) }.to_json
+                   next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.game.game_type == 'panic' || level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) }.to_json
   end
 
   def post_answer

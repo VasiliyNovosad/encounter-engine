@@ -135,7 +135,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def hints_to_show(team_id, level = self.current_level)
-    if level.position == 1
+    if level.position == 1 || game.game_type == 'panic'
       level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| hint.ready_to_show?(level.game.starts_at) }
     else
       level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| hint.ready_to_show?(current_level_entered_at) }
@@ -143,7 +143,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def upcoming_hints(team_id, level = self.current_level)
-    if level.position == 1
+    if level.position == 1 || game.game_type == 'panic'
       level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| !hint.ready_to_show?(level.game.starts_at) }
     else
       level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| !hint.ready_to_show?(current_level_entered_at) }

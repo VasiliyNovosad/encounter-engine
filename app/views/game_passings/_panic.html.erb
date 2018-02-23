@@ -78,8 +78,37 @@
       <hr>
       <hr>
     </div>
+    <br>
   <% end %>
   <br>
+
+  <% unless @game_passing.closed?(@level) %>
+    <div id="LevelHintsContainer">
+      <% hints_count = @game_passing.hints_to_show(@team_id, @level).count + @game_passing.upcoming_hints(@team_id, @level).count %>
+      <% @game_passing.hints_to_show(@team_id, @level).each_with_index do |hint, index| %>
+        <fieldset>
+          <legend>
+            Підказка <%= index + 1 %> із <%= hints_count %>
+          </legend>
+          <%= hint.text.html_safe %>
+        </fieldset>
+        <br>
+      <% end %>
+
+      <% @game_passing.upcoming_hints(@team_id, @level).each_with_index do |hint, index|  %>
+        <div id="<%= "LevelHintCountdownContainer#{hint.id}" %>" class="hint-timer">До підказки <%= @game_passing.hints_to_show(@team_id, @level).count + index + 1 %> лишилось <span id="<%= "LevelHintCountdownTimerText#{hint.id}" %>">3 хвилини</span></div>
+        <div id="<%= "LevelHintCountdownLoadIndicator#{hint.id}" %>" style="display: none;">Завантаження...</div>
+        <br>
+        <script>
+            LevelHintUpdater.setup({
+                initialCountdownValue: <%= hint.available_in(@game_passing.game.starts_at) %>
+                ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, hintId: <%= hint.id %>, hintNum: <%= index %>, levelId: <%= @level.id %>
+            })
+        </script>
+      <% end %>
+    </div>
+    <br>
+  <% end %>
 
   <%= render @level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
   <hr>
