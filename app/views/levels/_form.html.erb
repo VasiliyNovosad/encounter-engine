@@ -1,0 +1,93 @@
+<%= tinymce language: 'uk' %>
+
+<div class="form-group row">
+  <%= f.label :name, class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-10">
+    <%= f.text_field :name, class: 'form-control form-control-sm' %>
+  </div>
+</div>
+<div class="form-group row">
+  <%= f.label 'Олімпійка?', class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-2 col-3">
+    <div class="form-check">
+      <%= f.check_box :olymp, class: 'form-check-input' %>
+    </div>
+  </div>
+  <div id="olymp_base_block" class="col-sm-8 col-9">
+    <%= f.label :olymp_base, class: 'col-sm-3 col-form-label col-6' %>
+    <div class="col-sm-3 col-6">
+      <%= f.number_field :olymp_base, class: 'form-control form-control-sm' %>
+    </div>
+  </div>
+</div>
+<div class="form-group row" id="duration-block">
+  <%= f.label 'Автозавершення через ', class: 'col-sm-2 col-form-label col-12' %>
+  <div class="col-sm-2 col-8">
+    <%= f.number_field :complete_later_minutes, class: 'form-control form-control-sm' %>
+  </div>
+  <div class="col-sm-8 col-4">
+    <label class="col-form-label">хв</label>
+  </div>
+</div>
+<div class="form-group row">
+  <%= f.label 'Умова для проходження', class: 'col-sm-2 col-form-label' %>
+  <%= f.hidden_field :sectors_for_close %>
+  <div class="col-sm-10">
+    <div class="custom-control custom-radio custom-control-inline">
+      <%= radio_button_tag(:condition, "all", true, class: "custom-control-input") %>
+      <%= label_tag(:condition_all, "Закрити всі сектори", class: "custom-control-label") %>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline">
+      <%= radio_button_tag(:condition, "selected", true, class: "custom-control-input") %>
+      <%= label_tag(:condition_selected, "Закрити", class: "custom-control-label") %>
+      <div class="col-sm-3">
+        <%= number_field_tag :sectors_for_close_1, nil, min: 0, class: 'form-control form-control-sm' %>
+      </div>
+      <div class="col-sm-6">
+        <label class="col-form-label">секторів</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    $( document ).ready(function() {
+        if (!$('#level_olymp').checked) {
+            $('#olymp_base_block').css('display', 'none');
+        }
+        if ($('#level_sectors_for_close').val() == 0) {
+            $( "#condition_all" ).prop( "checked", true );
+            $('#sectors_for_close_1').prop('readonly', true);
+        } else {
+            $("#condition_selected").prop( "checked", true );
+            $('#sectors_for_close_1').prop('readonly', false);
+            $('#sectors_for_close_1').val($('#level_sectors_for_close').val());
+        }
+    });
+
+    $('#level_olymp').on("click", function(){ toggle($('#level_olymp').get(0)); });
+
+    $('input[type="radio"]').on('change', function() {
+        if ($("#condition_all").prop("checked")) {
+            $('#sectors_for_close_1').prop('readonly', true);
+            $('#level_sectors_for_close').val('0');
+        } else {
+            $('#sectors_for_close_1').prop('readonly', false);
+            $('#sectors_for_close_1').select();
+        }
+    });
+
+    $('#sectors_for_close_1').on('change', function() {
+        $('#level_sectors_for_close').val($('#sectors_for_close_1').val());
+    });
+
+    function toggle(elem) {
+        if (elem.checked) {
+            $('#olymp_base_block').css('display', 'flex');
+            $('#level_olymp_base').focus();
+        }
+        else {
+            $('#olymp_base_block').css('display', 'none');
+        }
+    }
+</script>

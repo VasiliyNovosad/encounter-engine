@@ -3,32 +3,38 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
 
-  <div class="field">
-    <%= f.label :nickname %><br/>
-    <%= f.text_field :nickname, autofocus: true %>
+  <div class="form-group row">
+    <%= f.label :nickname, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :nickname, autofocus: true, class: "form-control form-control-sm" %>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :email %><br/>
-    <%= f.email_field :email %>
+  <div class="form-group row">
+    <%= f.label :email, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.email_field :email, class: "form-control form-control-sm" %>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password %><br/>
-    <%= f.password_field :password, autocomplete: "off" %>
-    <br/>
+  <div class="form-group row">
+    <%= f.label :password, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.password_field :password, autocomplete: "off", class: "form-control form-control-sm" %>
+    </div>
     <% if @minimum_password_length %>
-      <em>(<%= "#{@minimum_password_length} #{t('.character_minimum')}"%> )</em>
+      <small id="passwordHelp" class="form-text text-muted offset-sm-3">
+        (<%= "#{@minimum_password_length} #{t('.character_minimum')}"%> )
+      </small>
     <% end %>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br/>
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+  <div class="form-group row">
+    <%= f.label :password_confirmation, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control form-control-sm" %>
+    </div>
   </div>
 
   <div class="actions">
-    <%= f.submit t('.signup') %>
+    <%= f.submit t('.signup'), class: 'btn btn-light' %>
   </div>
 <% end %>
 

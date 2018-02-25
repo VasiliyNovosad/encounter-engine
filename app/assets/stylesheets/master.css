@@ -72,15 +72,11 @@ h3 {
 }
 
 p {
-    /*color: #000;*/
-    /*background-color: #fff;*/
-    /*color: #CCC;*/
     line-height: 20px;
+    margin-bottom: 0;
 }
 
 a {
-    /*background-color: #fff;*/
-    /*text-decoration: none;*/
     color: white;
     text-decoration: underline;
 }
@@ -140,6 +136,9 @@ fieldset {
 fieldset legend {  
     font-weight: bold;
     color: #CCC;
+    font-size: 0.75rem;
+    width: auto;
+    margin-bottom: 0;
 }
 
 hr#short-line {
@@ -200,7 +199,7 @@ label {
 }
 
 .edit_level #sectors_for_close_1, .new_level #sectors_for_close_1 {
-    width: 40px;
+    /*width: 40px;*/
 }
 
 .edit_level > p:nth-child(8) > label:nth-child(6), .new_level > p:nth-child(7) > label:nth-child(6) {
@@ -253,8 +252,6 @@ textarea {
 
 @media (max-width: 800px) {
     #left-container {
-        /*background-color: #FFFFFF;*/
-        /*color: black;*/
         background-color: #171717;
         color: #CCC;
         margin-left: 5px;
@@ -264,9 +261,7 @@ textarea {
     #main-container {
         margin: 5px 5px 5px 0;
         padding: 0;
-        /*border-left: 1px solid silver;*/
         min-height: 400px;
-        /*width: 400px;*/
     }
 
     #main {
@@ -276,8 +271,6 @@ textarea {
 
 
     #left-game-container {
-        /*background-color: #FFFFFF;*/
-        /*color: black;*/
         background-color: #171717;
         color: #CCC;
         margin-left: 10px;
@@ -286,9 +279,7 @@ textarea {
     #main-game-container {
         margin: 5px 5px 5px 5px;
         padding: 0;
-        /*border-left: 1px solid silver;*/
         min-height: 400px;
-        /*width: 400px;*/
     }
 
     #entered-codes {
@@ -303,8 +294,6 @@ textarea {
     #left-container {
         float: left;
         width: 150px;
-        /*background-color: #FFFFFF;*/
-        /*color: black;*/
         background-color: #171717;
         color: #CCC;
         margin-left: 10px;
@@ -320,14 +309,11 @@ textarea {
         padding: 0;
         border-left: 1px solid silver;
         min-height: 400px;
-        /*width: 400px;*/
     }
 
     #left-game-container {
         float: left;
         width: 300px;
-        /*background-color: #FFFFFF;*/
-        /*color: black;*/
         background-color: #171717;
         color: #CCC;
         margin-left: 10px;
@@ -336,9 +322,7 @@ textarea {
     #main-game-container {
         margin: 5px 5px 5px 320px;
         padding: 0;
-        border-left: 1px solid silver;
         min-height: 400px;
-        /*width: 400px;*/
     }
 
     #entered-codes {
@@ -354,6 +338,8 @@ textarea {
 
 .alert {
     color: red;
+    padding: 0;
+    margin: 0;
 }
 
 .field_with_errors {
@@ -380,7 +366,6 @@ td {
 }
 
 #stats td {
-    /*background-color: #333132;*/
     width: 1px;
     height: 1px;
 }
@@ -480,4 +465,19 @@ div.team-stat{
 
 .stat-link {
     margin-left: 16px;
+}
+
+.form-control {
+    background-color: #232323;
+    color: #ccc;
+}
+
+.form-control:focus {
+    background-color: #313131;
+    color: #ccc;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #373737;
+    opacity: 1;
 }

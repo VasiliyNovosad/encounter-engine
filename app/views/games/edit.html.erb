@@ -1,42 +1,6 @@
-<%= tinymce language: 'uk' %>
-
 <%= form_for @game,  url: game_path(@game) do |f| %>
-  <%= render 'shared/error_messages', object: f.object %>  
-  <p><%= f.label :name %><%= f.text_field :name %></p>
-  <p><%#= f.label "Опис" %><%= f.text_area :description, class: "tinymce" %></p>
-  <p><%= f.label :starts_at %><%= f.text_field :starts_at, value: @game.starts_at.nil? ? '' : @game.starts_at.strftime("%d.%m.%Y %H:%M") %></p>
-  <p><%= f.label :authors %><%= select_tag :organizing_team, options_from_collection_for_select(User.all, 'id', 'nickname', @game.authors.map{ |j| j.id }), multiple: true, size: 5 %></p>
-  <p><%= f.label :registration_deadline %><%= f.text_field :registration_deadline, value: @game.registration_deadline.nil? ? '' : @game.registration_deadline.strftime("%d.%m.%Y %H:%M") %></p>
-  <br><p><input id="max_team_checkbox" type="checkbox" onclick=toggle(this) /></p>
-  <p><label for="max_team_checkbox">Обмежити</label>
-  <p><%= f.label :max_team_number %><%= f.text_field :max_team_number %></p>
-  <p><%= f.label :is_draft %><%= f.check_box :is_draft %></p>
-  <p><%= f.label :game_size %><%= f.select(:game_size, [['Лайт', 'Лайт'], ['Драйв', 'Драйв'], ['Онлайн', 'Онлайн']]) %></p>
-  <p><%= f.label :game_type %><%= f.select(:game_type, [['Лінійна', 'linear'], ['Штурм', 'panic'], ['Лінійна (вказана)', 'selected']]) %></p>
-  <p><%= f.label :duration %><%= f.number_field :duration %> хв</p>
-  <%= f.submit "Змінити гру" %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= render 'form', f: f %>
+  <%= f.submit "Змінити гру", class: 'btn btn-light' %>
   <em><%= link_to "(відмінити)", game_path(@game) %></em>
 <% end %>
-
-<script type="text/javascript">
-  $('#game_starts_at').datetimepicker({
-                        format:'d.m.Y H:i',
-                        lang:'uk' });
-  $('#game_registration_deadline').datetimepicker({
-                        format:'d.m.Y H:i',
-                        lang:'uk' });
-
-   function onload(){
-        document.getElementById('game_max_team_number').style.visibility = 'hidden'
-    }
-
-    function toggle(sourceCheckbox) {
-        if (sourceCheckbox.checked) {
-            document.getElementById('game_max_team_number').style.visibility = 'visible'
-            document.getElementById('game_max_team_number').focus()
-        }
-        else {
-            document.getElementById('game_max_team_number').style.visibility = 'hidden'
-        }
-    }
-</script>

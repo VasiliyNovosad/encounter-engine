@@ -11,6 +11,6 @@
 <%= form_for @question, url: game_level_question_path(@game, @level, @question) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <%= render 'form', f: f %>
-    <%= f.submit "Змінити" %>
+    <%= f.submit "Змінити", class: 'btn btn-light' %>
     <em><%= link_to "(відмінити)", game_level_question_path(@game, @level, @question) %></em>
 <% end %>

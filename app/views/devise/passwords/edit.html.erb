@@ -4,21 +4,26 @@
   <%= devise_error_messages! %>
   <%= f.hidden_field :reset_password_token %>
 
-  <div class="field">
-    <%= f.label :password, t('.new_password') %><br />
+  <div class="form-group row">
+    <%= f.label :password, t('.new_password'), class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.password_field :password, autofocus: true, autocomplete: "off", class: "form-control" %>
+    </div>
     <% if @minimum_password_length %>
-      <em>(<%= "#{@minimum_password_length} #{t('.minimum_password')}" %> characters minimum)</em><br />
+      <small id="passwordHelp" class="form-text text-muted offset-sm-3">
+        (<%= "#{@minimum_password_length} #{t('.character_minimum')}"%> )
+      </small>
     <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "off" %>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation, t('.confirm_new_password') %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "off" %>
+  <div class="form-group row">
+    <%= f.label :password_confirmation, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control form-control-sm" %>
+    </div>
   </div>
 
   <div class="actions">
-    <%= f.submit t('.change_password') %>
+    <%= f.submit t('.change_password'), class: 'btn btn-light' %>
   </div>
 <% end %>
 

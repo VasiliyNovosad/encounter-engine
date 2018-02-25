@@ -1,3 +1,13 @@
 <%= tinymce language: 'uk' %>
-<p><%#= f.label "Текст" %><%= f.text_area :text, class: "tinymce" %></p>
-<p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
+<div class="form-group row">
+  <%= f.label "Команда", class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-10">
+    <%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }, {}, { class: 'form-control form-control-sm' }) %>
+  </div>
+</div>
+<div class="form-group row">
+  <%= f.label :text, class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-10">
+    <%= f.text_area :text, class: 'tinymce' %>
+  </div>
+</div>

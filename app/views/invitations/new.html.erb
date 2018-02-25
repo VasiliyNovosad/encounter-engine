@@ -1,10 +1,12 @@
 <%= form_for @invitation, url: invitations_path do |f| %>
   <%= render 'shared/error_messages', object: f.object %>  
+  <div class="form-group row">
+    <%= f.label 'Запросити нового учасника', class: 'col-sm-3 col-form-label' %>
+    <div class="col-sm-9">
+      <%= f.text_field :recepient_nickname, class: 'form-control form-control-sm' %>
+    </div>
+  </div>
   <p>
-    <%= f.label "Запросити нового учасника" %>
-    <%= f.text_field :recepient_nickname %>
-  </p>
-  <p>
-    <%= f.submit "Запросити" %>
+    <%= f.submit 'Запросити', class: 'btn btn-light' %>
   </p>
 <% end %>

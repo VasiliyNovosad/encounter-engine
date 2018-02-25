@@ -1,8 +1,18 @@
 <br>
 <div class="nested-fields">
-  <p>
-    <%= link_to_remove_association 'Видалити відповідь', f, class: 'btn btn-primary btn-xs' %>
-  </p>
-  <p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
-  <p><%= f.label "Відповідь" %><%= f.text_field :value %></p>
+  <div>
+    <%= link_to_remove_association 'Видалити відповідь', f, class: 'btn btn-outline-danger btn-sm' %>
+  </div>
+  <div class="form-group row">
+    <%= f.label "Команда", class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10">
+      <%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }, {}, { class: 'form-control form-control-sm' }) %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label "Відповідь", class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10">
+      <%= f.text_field :value, class: 'form-control form-control-sm' %>
+    </div>
+  </div>
 </div>
