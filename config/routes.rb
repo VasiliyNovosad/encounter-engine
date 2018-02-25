@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :levels do
       resources :tasks
       resources :hints
+      resources :penalty_hints
       resources :questions do
         resources :answers
         get 'move_up', on: :member
@@ -61,6 +62,7 @@ Rails.application.routes.draw do
   match '/play/:game_id',  to: 'game_passings#show_current_level', via: 'get'
   match '/play/:game_id',  to: 'game_passings#post_answer', via: 'post'
   match '/play/:game_id/autocomplete_level',  to: 'game_passings#autocomplete_level', via: 'get'
+  match '/play/:game_id/penalty_hint',  to: 'game_passings#penalty_hint', via: 'post'
 
   match '/stats/:action/:game_id', to: 'game_passings#index', via: 'get'
   match '/logs/livechannel/:game_id', to: 'logs#show_live_channel', via: 'get'

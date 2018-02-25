@@ -6,9 +6,9 @@ class GamePassingsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show_results]
   before_action :find_game, except: [:exit_game]
   before_action :find_game_by_id, only: [:exit_game]
-  before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level]
+  before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :penalty_hint]
   before_action :find_team, except: [:show_results, :index]
-  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level]
+  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :penalty_hint]
   before_action :ensure_game_is_started
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :find_or_create_game_passing, except: [:show_results, :index]
@@ -28,6 +28,7 @@ class GamePassingsController < ApplicationController
       get_uniq_level_codes(@level)
       get_answered_bonuses(@level) # unless @game.game_type == 'panic'
       get_answered_questions(@level) # unless @game.game_type == 'panic'
+      get_penalty_hints(@level)
       render layout: 'in_game'
     else
       render 'show_results'
@@ -66,11 +67,12 @@ class GamePassingsController < ApplicationController
       if @answer == ''
         respond_to do |format|
           format.html do
-            render 'show_current_level', layout: 'in_game'
             @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
             get_uniq_level_codes(@level)
             get_answered_bonuses(@level) #unless @game.game_type == 'panic'
             get_answered_questions(@level) #unless @game.game_type == 'panic'
+            get_penalty_hints(@level)
+            render 'show_current_level', layout: 'in_game'
           end
           format.js
         end
@@ -127,6 +129,7 @@ class GamePassingsController < ApplicationController
               get_uniq_level_codes(@level)
               get_answered_bonuses(@level) # unless @game.game_type == 'panic'
               get_answered_questions(@level) # unless @game.game_type == 'panic'
+              get_penalty_hints(@level)
               render 'show_current_level', layout: 'in_game'
             end
             format.js
@@ -172,6 +175,15 @@ class GamePassingsController < ApplicationController
       end
     end
     render json: { result: true }.to_json
+  end
+
+  def penalty_hint
+    level_id = params[:level_id]
+    penalty_hint_id = params[:hint_id]
+    @game_passing.use_penalty_hint!(level_id, penalty_hint_id)
+    respond_to do |format|
+      format.js
+    end
   end
 
   protected
@@ -298,6 +310,15 @@ class GamePassingsController < ApplicationController
                     name: question.name,
                     value: answered_questions.include?(question) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value }
     end
+  end
+
+  def get_penalty_hints(level)
+    @penalty_hints = []
+    level.team_penalty_hints(@team_id).each do |hint|
+      is_get_hint = @game_passing.penalty_hints.include?(hint.id)
+      @penalty_hints << { id: hint.id, name: hint.name, text: is_get_hint ? hint.text : '', used: is_get_hint, penalty: hint.penalty}
+    end
+    @penalty_hints
   end
 
   def get_answered_bonuses(level)

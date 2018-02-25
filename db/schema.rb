@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180214195350) do
+ActiveRecord::Schema.define(version: 20180225211529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 20180214195350) do
     t.text     "closed_levels"
     t.text     "answered_bonuses"
     t.integer  "sum_bonuses",                          default: 0
+    t.text     "penalty_hints"
   end
 
   create_table "games", force: :cascade do |t|
@@ -251,6 +252,16 @@ ActiveRecord::Schema.define(version: 20180214195350) do
     t.integer  "user_id"
     t.integer  "team_id"
     t.integer  "level_id"
+  end
+
+  create_table "penalty_hints", force: :cascade do |t|
+    t.integer  "level_id"
+    t.string   "name"
+    t.text     "text"
+    t.integer  "penalty"
+    t.integer  "team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "questions", force: :cascade do |t|

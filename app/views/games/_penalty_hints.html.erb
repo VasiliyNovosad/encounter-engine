@@ -1,0 +1,16 @@
+<% penalty_hints.each do |hint| %>
+  <p>
+    <%= "Для #{ hint.team.nil? ? 'всіх' : hint.team.name}:" %>
+  </p>
+  <p>
+    <%= "Назва: #{hint.name}" %>
+  </p>
+  <p>Підказка:</p>
+  <p>
+    <%= hint.text.html_safe %>
+  </p>
+  <p>
+    <%= "Штраф: #{hint.penalty} хв" %>
+  </p>
+  <br>
+<% end %>

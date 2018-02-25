@@ -23,6 +23,13 @@
     </p>
     <br>
   <% end %>
+  <% if level.penalty_hints.count > 0 %>
+    Штрафні підказки:
+    <p>
+      <%= render 'penalty_hints', penalty_hints: level.penalty_hints %>
+    </p>
+    <br>
+  <% end %>
   <% if level.bonuses.count > 0 %>
     Бонуси:
     <p>
