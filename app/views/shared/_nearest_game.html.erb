@@ -50,13 +50,10 @@
 
 <p>
   <em>Максимальна кількість команд:</em>
-</p>
-<p>
   <% if game.max_team_number.equal?(10000) || game.max_team_number.equal?(0) || game.max_team_number.nil? %>
-      Необмежено
-      <% game.max_team_number = 10000 %>
+    <%= " Необмежено" %>
   <% else %>
-      <%= game.max_team_number %>
+      <%= " #{game.max_team_number}" %>
   <% end %>
 </p>
 

@@ -3,11 +3,12 @@
     Завершені ігри
   </legend>
   <% Game.finished.order(starts_at: :desc).each do |game | %>
-    <%= link_to game.name, game_path(game), class: "finished-game" %>
+    <p>
+      <%= link_to game.name, game_path(game), class: "finished-game" %>
       <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %> |
       <em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em>
       <em><%= link_to "(результати)", url_for("/game_passings/show_results?game_id=#{game.id}") if game.author_finished? %></em>
-    <br>
+    </p>
     <br>
   <% end %>
 </fieldset>
