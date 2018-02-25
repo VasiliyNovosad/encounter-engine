@@ -110,6 +110,29 @@
     <br>
   <% end %>
 
+  <div id="LevelPenaltyHintsContainer">
+    <% @penalty_hints.each_with_index do |hint, index| %>
+      <fieldset>
+        <legend>
+          Штрафна підказка <%= index + 1 %>: <%= hint[:name] %> (штраф <%= hint[:penalty] %> хв)
+        </legend>
+        <div id="penalty-hint-<%= hint[:id] %>">
+          <% if hint[:used] %>
+            <%= hint[:text].html_safe %>
+          <% else %>
+            <%= form_tag("/play/#{@game.id}/penalty_hint", method: "post", remote: true, format: :js) do %>
+              <%= submit_tag "Взяти штрафну підказку", class: "btn btn-outline-danger btn-sm", data: { confirm: 'Ви впевнені?' } %>
+              <%= hidden_field_tag(:level_id, @level.id) %>
+              <%= hidden_field_tag(:hint_id, hint[:id]) %>
+              <%= hidden_field_tag(:team_id, @team_id) %>
+            <% end %>
+          <% end %>
+        </div>
+      </fieldset>
+      <br>
+    <% end %>
+  </div>
+
   <%= render @level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
   <hr>
   <br>
@@ -122,6 +145,7 @@
 
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}" %>
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}/penalty_hints" %>
 
 <script>
     PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>", function(data, channel) {
@@ -156,5 +180,11 @@
             $('#codes-closed').get(0).innerHTML = 'Вірних кодів ' + closed + ' із ' + needed + ':';
         }
 
+    });
+
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>/penalty_hints", function(data, channel) {
+        var hint = data.hint || {};
+        var hint_block = $('#penalty-hint-' + hint.id).get(0);
+        hint_block.innerHTML = hint.text;
     });
 </script>

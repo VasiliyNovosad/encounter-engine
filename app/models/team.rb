@@ -4,6 +4,7 @@ class Team < ActiveRecord::Base
   belongs_to :captain, class_name: 'User'
   has_many :tasks
   has_many :hints
+  has_many :penalty_hints
   has_many :questions
   has_many :answers
   has_many :level_orders

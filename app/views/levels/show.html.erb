@@ -36,6 +36,7 @@
 
 <p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
 <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
+<a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
 <a href="#sectors-block"><span class="right_code">відповіді</span></a>,
 <a href="#bonuses-block"><span class="bonus">бонуси</span></a></p>
 
@@ -75,6 +76,19 @@
   </p>
 </fieldset>
 <br>
+<fieldset id="penalty-hints-block">
+  <legend class="yellow">
+    Штрафні пiдказки:
+  </legend>
+  <p>
+    <%= link_to "Додати штрафну підказку", new_game_level_penalty_hint_path(@game, @level) %>
+  </p>
+  <br>
+  <p>
+    <%= render 'penalty_hints/list', penalty_hints: @level.penalty_hints %>
+  </p>
+</fieldset>
+<br>
 <fieldset id="sectors-block">
   <legend class="right_code">
     Відповіді:
@@ -103,6 +117,7 @@
 <br>
 <p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
   <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
+  <a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
   <a href="#sectors-block"><span class="right_code">відповіді</span></a>,
   <a href="#bonuses-block"><span class="bonus">бонуси</span></a></p>
 <br>

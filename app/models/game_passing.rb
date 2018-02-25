@@ -7,6 +7,8 @@ class GamePassing < ActiveRecord::Base
   default_value_for :answered_bonuses, []
   serialize :closed_levels
   default_value_for :closed_levels, []
+  serialize :penalty_hints
+  default_value_for :penalty_hints, []
 
   belongs_to :team
   belongs_to :game
@@ -226,6 +228,26 @@ class GamePassing < ActiveRecord::Base
       end
     end
     save!
+  end
+
+  def use_penalty_hint!(level_id, penalty_hint_id)
+    level = Level.find(level_id)
+    penalty_hint = level.penalty_hints.find(penalty_hint_id)
+    unless self.penalty_hints.include?(penalty_hint.id)
+      unless penalty_hint.nil?
+        self.sum_bonuses -= penalty_hint.penalty * 60
+        penalty_hints << penalty_hint.id
+        save!
+        PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}/penalty_hints", hint: {
+            id: penalty_hint.id,
+            name: penalty_hint.name,
+            text: penalty_hint.text,
+            used: true,
+            penalty: penalty_hint.penalty
+        }
+      end
+    end
+
   end
 
   def current_level_position(team_id)

@@ -5,6 +5,7 @@ class Level < ActiveRecord::Base
   has_many :questions, -> { order(:position) }, dependent: :destroy
   has_many :answers, dependent: :destroy
   has_many :hints, -> { order(:delay) }, dependent: :destroy
+  has_many :penalty_hints, dependent: :destroy
   has_many :tasks, dependent: :destroy
   has_many :bonuses, -> { order(:position) }, dependent: :destroy
 
@@ -85,6 +86,10 @@ class Level < ActiveRecord::Base
 
   def team_questions(team_id)
     questions.where("team_id IS NULL OR team_id = #{team_id}")
+  end
+
+  def team_penalty_hints(team_id)
+    penalty_hints.where("team_id IS NULL OR team_id = #{team_id}")
   end
 
   def team_tasks(team_id)
