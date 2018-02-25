@@ -11,6 +11,6 @@
 <%= form_for @question, url: game_level_questions_path(@game, @level) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <%= render 'form', f: f %>
-    <%= f.submit 'Додати сектор' %>
+    <%= f.submit 'Додати сектор', class: 'btn btn-light' %>
     <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
 <% end %>

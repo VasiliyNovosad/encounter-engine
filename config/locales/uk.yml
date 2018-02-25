@@ -32,6 +32,14 @@ uk:
       question:
         name: "Назва"
         correct_answer: "Код"
+      bonus_answer:
+        value: "Код"
+      bonus:
+        name: "Назва"
+        task: "Завдання"
+        help: "Підказка"
+        award_time: "Винагорода"
+        correct_answer: "Код"
       team:
         name: "Назва"
       invitation:
@@ -45,6 +53,8 @@ uk:
       hint: "Підказка"
       answer: "Відповідь"
       question: "Сектор"
+      bonus: "Бонус"
+      bonus_answer: "Відповідь для бонуса"
       team: "Команда"
       invitation: "Запрошення"
       game_passing: "Сесія гри"

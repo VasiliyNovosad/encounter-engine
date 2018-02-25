@@ -9,6 +9,6 @@
 
     <%= render 'form', f: f %>
 
-    <%= f.submit "Редагувати", style: "width:150px" %>
+    <%= f.submit "Редагувати", class: 'btn btn-light' %>
     <em><%= link_to "(відмінити)", game_level_path(@level.game, @level) %></em>
 <% end %>

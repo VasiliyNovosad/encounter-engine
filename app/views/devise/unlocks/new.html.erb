@@ -3,13 +3,15 @@
 <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
   <%= devise_error_messages! %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
+  <div class="form-group row">
+    <%= f.label :email, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.email_field :email, autofocus: true, class: "form-control" %>
+    </div>
   </div>
 
   <div class="actions">
-    <%= f.submit "Resend unlock instructions" %>
+    <%= f.submit "Resend unlock instructions", class: 'btn btn-light' %>
   </div>
 <% end %>
 

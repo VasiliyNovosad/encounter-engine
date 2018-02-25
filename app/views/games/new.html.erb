@@ -1,10 +1,5 @@
-<%= tinymce language: 'uk' %>
-
 <%= form_for @game, url: games_path do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <%= render 'form', f: f %>
   <%= f.submit "Створити гру", class: 'btn btn-light' %>
 <% end %>
-
-<br>
-

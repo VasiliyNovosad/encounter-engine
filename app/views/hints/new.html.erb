@@ -9,7 +9,7 @@
   
   <%= render 'form', f: f %>
 
-  <%= f.submit "Додати підказку", style: "width:170px" %>
+  <%= f.submit "Додати підказку", class: 'btn btn-light' %>
   <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
 <% end %>
 
