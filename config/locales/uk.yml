@@ -42,6 +42,8 @@ uk:
         correct_answer: "Код"
       team:
         name: "Назва"
+      task:
+        text: "Текст"
       invitation:
         recepient_nickname: "Гравець"
       game_passing:
