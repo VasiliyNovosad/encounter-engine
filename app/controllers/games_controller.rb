@@ -157,6 +157,9 @@ class GamesController < ApplicationController
 
   def find_game
     @game = Game.friendly.find(params[:id])
+    if request.path != game_path(@game)
+      return redirect_to @game, :status => :moved_permanently
+    end
   end
 
   def game_is_draft?
