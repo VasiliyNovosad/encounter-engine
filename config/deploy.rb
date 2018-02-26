@@ -62,17 +62,4 @@ namespace :private_pub do
   end
 end
 
-namespace :friendly_id do
-  desc 'Set games slug'
-  task :update_games_slug do
-    on roles(:app) do
-      within current_path do
-        with rails_env: fetch(:rails_env) do
-          Game.find_each(&:save)
-        end
-      end
-    end
-  end
-end
-
 after 'deploy:restart', 'private_pub:restart'
