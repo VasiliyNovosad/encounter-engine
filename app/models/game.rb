@@ -1,4 +1,7 @@
 class Game < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :slug_candidates, use: :slugged
+
   belongs_to :author, class_name: 'User'
   has_and_belongs_to_many :authors, class_name: 'User', join_table: 'games_authors', foreign_key: 'game_id', association_foreign_key: 'author_id'
   has_many :levels, -> { order(:position) }
@@ -26,8 +29,8 @@ class Game < ActiveRecord::Base
   #validate :game_starts_in_the_future
   validate :valid_max_num
 
-  validate :deadline_is_in_future
-  validate :deadline_is_before_game_start
+  # validate :deadline_is_in_future
+  # validate :deadline_is_before_game_start
 
   before_save do
     if !draft? && topic_id.nil?
@@ -41,6 +44,17 @@ class Game < ActiveRecord::Base
   scope :by, -> (author) { where(author_id: author.id) }
   scope :non_drafts, -> { where(is_draft: false) }
   scope :finished, -> { where('author_finished_at IS NOT NULL') }
+
+  def slug_candidates
+    [
+      [:transliterated_name, :id]
+    ]
+  end
+
+  def transliterated_name
+    require 'ee_strings.rb'
+    I18n.transliterate(self.name.downcase_utf8_cyr)
+  end
 
   def self.started
     Game.order(starts_at: :desc).all.select(&:started?)

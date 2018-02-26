@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180225211529) do
+ActiveRecord::Schema.define(version: 20180226081822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,6 +142,19 @@ ActiveRecord::Schema.define(version: 20180225211529) do
   add_index "forem_views", ["user_id"], name: "index_forem_views_on_user_id", using: :btree
   add_index "forem_views", ["viewable_id"], name: "index_forem_views_on_viewable_id", using: :btree
 
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string   "slug",                      null: false
+    t.integer  "sluggable_id",              null: false
+    t.string   "sluggable_type", limit: 50
+    t.string   "scope"
+    t.datetime "created_at"
+  end
+
+  add_index "friendly_id_slugs", ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true, using: :btree
+  add_index "friendly_id_slugs", ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type", using: :btree
+  add_index "friendly_id_slugs", ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id", using: :btree
+  add_index "friendly_id_slugs", ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type", using: :btree
+
   create_table "game_entries", force: :cascade do |t|
     t.integer "game_id"
     t.integer "team_id"
@@ -183,7 +196,10 @@ ActiveRecord::Schema.define(version: 20180225211529) do
     t.integer  "tested_team_id"
     t.integer  "topic_id"
     t.string   "game_size"
+    t.string   "slug"
   end
+
+  add_index "games", ["slug"], name: "index_games_on_slug", using: :btree
 
   create_table "games_authors", id: false, force: :cascade do |t|
     t.integer "game_id"

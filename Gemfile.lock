@@ -399,6 +399,7 @@ DEPENDENCIES
   factory_bot_rails
   forem!
   forem-bootstrap!
+  friendly_id
   jbuilder (~> 2.0)
   jquery-rails
   jquery-ui-rails
