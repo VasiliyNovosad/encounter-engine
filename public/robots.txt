@@ -4,7 +4,10 @@
 # User-agent: *
 # Disallow: /
 User-agent: *
-Disallow: /forums
+Disallow: /logs
 Disallow: /users
+Disallow: /forums
+Disallow: /game_passings
 
 Host: https://quest.wtf
+

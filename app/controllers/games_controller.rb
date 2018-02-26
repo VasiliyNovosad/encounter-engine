@@ -11,6 +11,7 @@ class GamesController < ApplicationController
   before_action :find_teams, only: [:show, :new_level_order]
 
   def index
+    @page_content = "index,follow"
     if params[:user_id].blank?
       @games = Game.non_drafts
     else
@@ -37,6 +38,9 @@ class GamesController < ApplicationController
   end
 
   def show
+    @page_title = "#{@game.name} ᐈ【 Квести Луцьк 】"
+    @page_description = "❰❰❰ #{@game.name} ❱❱❱ це: ➔ цікаві логічні завдання від кращих авторів Луцька, ➔ захоплюючі пошуки, ➔ драйв та адреналін, ➔ неймовірні пригоди та яскраві емоції, ➔ новий формат інтелектуально-активного відпочинку! ➤ Якщо ти рухаєш мізками та дупою швидше ніж твоя бабуся, ПРИЄДНУЙСЯ ➤【 Квест 🔍 Луцьк 】 />"
+    @page_content = "index,follow"
     @teams_for_test = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
     @game_entries = GameEntry.of_game(@game).with_status('new')
     @levels = @game.levels
