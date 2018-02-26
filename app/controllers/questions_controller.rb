@@ -60,7 +60,7 @@ class QuestionsController < ApplicationController
   end
 
   def find_game
-    @game = Game.find(params[:game_id])
+    @game = Game.friendly.find(params[:game_id])
   end
 
   def find_level
