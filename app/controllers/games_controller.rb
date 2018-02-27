@@ -38,6 +38,9 @@ class GamesController < ApplicationController
   end
 
   def show
+    if request.path != game_path(@game)
+      return redirect_to @game, :status => :moved_permanently
+    end
     @page_title = "#{@game.name} ᐈ【 Квести Луцьк 】"
     @page_description = "❰❰❰ #{@game.name} ❱❱❱ це: ➔ цікаві логічні завдання від кращих авторів Луцька, ➔ захоплюючі пошуки, ➔ драйв та адреналін, ➔ неймовірні пригоди та яскраві емоції, ➔ новий формат інтелектуально-активного відпочинку! ➤ Якщо ти рухаєш мізками та дупою швидше ніж твоя бабуся, ПРИЄДНУЙСЯ ➤【 Квест 🔍 Луцьк 】 />"
     @page_content = "index,follow"
@@ -162,9 +165,6 @@ class GamesController < ApplicationController
 
   def find_game
     @game = Game.friendly.find(params[:id])
-    if request.path != game_path(@game)
-      return redirect_to @game, :status => :moved_permanently
-    end
   end
 
   def game_is_draft?
