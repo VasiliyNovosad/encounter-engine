@@ -21,10 +21,10 @@
   "endDate":"2018",
   "location":{
     "@type":"Place",
-    "name":"<%= game.place || 'Центр, біля Бім-Бома' %>",
+    "name":"<%= game.place && game.place != '' ? game.place : 'Центр, біля Бім-Бома' %>",
     "address":{
       "@type":"PostalAddress",
-      "addressLocality":"<%= game.city || 'Луцьк' %>"
+      "addressLocality":"<%= game.city && game.city != '' ? game.city : 'Луцьк' %>"
       }
     },
   "offers": {
