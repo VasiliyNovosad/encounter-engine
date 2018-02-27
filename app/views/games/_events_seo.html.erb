@@ -1,0 +1,42 @@
+<% coming_games = Game.order(:starts_at).notstarted %>
+
+<script type="application/ld+json">
+[
+<% coming_games.each_with_index do |game, index| %>
+  <% images = get_images(game.description) %>
+  {
+  "@context":"http://schema.org",
+  "@type":"Event",
+  "name":"<%= game.name %>",
+  "description":"<%= game.small_description || game.name %>",
+  <% if !game.image.nil? || (images.length > 0) %>
+      "image": "<%= game.image || images[0] %>",
+  <% end %>
+  "performer": {
+    "@type":"Person",
+    "name":"<%= game.author.nickname %>",
+    "sameAs":"https://t.me/<%= game.author.telegram || 'questwtf' %>"
+    },
+  "startDate":"<%= game.starts_at %>",
+  "endDate":"2018",
+  "location":{
+    "@type":"Place",
+    "name":"<%= game.place || 'Центр, біля Бім-Бома' %>",
+    "address":{
+      "@type":"PostalAddress",
+      "addressLocality":"<%= game.city || 'Луцьк' %>"
+      }
+    },
+  "offers": {
+    "@type":"Offer",
+    "url":"<%= game_url(game) %>",
+    "price":"<%= game.price || 100 %>",
+    "priceCurrency":"UAH",
+    "availability":"http://schema.org/InStock",
+    "validFrom":"2018"
+    }
+  }
+  <%= index == (coming_games.length - 1) ? '' : ',' %>
+<% end %>
+]
+</script>

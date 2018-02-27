@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     # devise_parameter_sanitizer.for(:account_update) << :nickname
     # devise_parameter_sanitizer.for(:account_update) << :phone_number
     devise_parameter_sanitizer.permit(:sign_up, keys: [:nickname])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:nickname, :phone_number])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:nickname, :phone_number, :telegram])
   end
 
   def ensure_team_member

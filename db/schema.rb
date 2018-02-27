@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180226081822) do
+ActiveRecord::Schema.define(version: 20180227155031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -197,6 +197,11 @@ ActiveRecord::Schema.define(version: 20180226081822) do
     t.integer  "topic_id"
     t.string   "game_size"
     t.string   "slug"
+    t.text     "small_description"
+    t.string   "city"
+    t.string   "place"
+    t.integer  "price"
+    t.string   "image"
   end
 
   add_index "games", ["slug"], name: "index_games_on_slug", using: :btree
@@ -330,6 +335,7 @@ ActiveRecord::Schema.define(version: 20180226081822) do
     t.string   "forem_state",                        default: "pending_review"
     t.boolean  "forem_auto_subscribe",               default: false
     t.string   "unique_session_id",      limit: 20
+    t.string   "telegram"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

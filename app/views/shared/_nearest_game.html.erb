@@ -35,6 +35,16 @@
     </p>
 <% end %>
 
+<p>
+  <em>Внесок за участь:</em> <%= " #{game.price} грн" %>
+</p>
+<p>
+  <em>Місто проведення:</em> <%= " #{game.city}" %>
+</p>
+<p>
+  <em>Місце старту:</em> <%= " #{game.place}" %>
+</p>
+
 <% if current_user&.captain? %>
     <p><% game_entry = GameEntry.of(current_user.team, game)%>
       <%= render 'shared/game_entry_controls', game_entry: game_entry, game: game, team: current_user.team %></p>

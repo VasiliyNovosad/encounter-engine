@@ -25,4 +25,10 @@ module GamesHelper
     end
     tasks + hints + questions + answers > 0
   end
+
+  def get_images(game_description)
+    require 'nokogiri'
+    doc = Nokogiri::HTML(game_description)
+    doc.xpath("//img").map { |img| img['src'] }
+  end
 end

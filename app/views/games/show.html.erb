@@ -46,6 +46,16 @@
   </p>
 <% end %>
 
+<p>
+  <em>Внесок за участь:</em> <%= " #{@game.price} грн" %>
+</p>
+<p>
+  <em>Місто проведення:</em> <%= " #{@game.city}" %>
+</p>
+<p>
+  <em>Місце старту:</em> <%= " #{@game.place}" %>
+</p>
+
 <% unless @topic.nil? %>
   <p>
     <em>Обговорення:</em> <%= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>
@@ -175,3 +185,65 @@
     <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } %>
   </p>
 <% end %>
+
+<script type="application/ld+json">
+  {
+  "@context":"http://schema.org",
+  "@type":"BreadcrumbList",
+  "itemListElement":[
+    {
+      "@type":"ListItem",
+      "position":1,
+      "name":"Quest.wtf"
+      },
+    {
+      "@type":"ListItem",
+      "position":2,
+      "name":"QL 🔍 "
+      },
+    {
+      "@type":"ListItem",
+      "position":3,
+      "item":{
+        "@id":"<%= game_url(@game) %>",
+        "name":"<%= @game.name %>"
+        }
+      }
+    ]
+  }
+</script>
+<script type="application/ld+json">
+  <% images = get_images(@game.description) %>
+  {
+  "@context":"http://schema.org",
+  "@type":"Event",
+  "name":"<%= @game.name %>",
+  "description":"<%= @game.small_description || @game.name %>",
+  <% if !@game.image.nil? || (images.length > 0) %>
+      "image": "<%= @game.image || images[0] %>",
+  <% end %>
+  "performer": {
+    "@type":"Person",
+    "name":"<%= @game.author.nickname %>",
+    "sameAs":"https://t.me/<%= @game.author.telegram || 'questwtf' %>"
+    },
+  "startDate":"<%= @game.starts_at %>",
+  "endDate":"2018",
+  "location":{
+    "@type":"Place",
+    "name":"<%= @game.place || 'Центр, біля Бім-Бома' %>",
+    "address":{
+      "@type":"PostalAddress",
+      "addressLocality":"<%= @game.city || 'Луцьк' %>"
+      }
+    },
+  "offers": {
+    "@type":"Offer",
+    "url":"<%= game_url(@game) %>",
+    "price":"<%= @game.price || 100 %>",
+    "priceCurrency":"UAH",
+    "availability":"http://schema.org/InStock",
+    "validFrom":"2018"
+    }
+  }
+</script>
