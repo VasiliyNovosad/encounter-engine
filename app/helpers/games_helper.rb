@@ -31,4 +31,12 @@ module GamesHelper
     doc = Nokogiri::HTML(game_description)
     doc.xpath("//img").map { |img| img['src'] }
   end
+
+  def telegram_user(telegram)
+    if telegram.nil? || telegram == ''
+      nil
+    else
+      telegram[0] == '@' ? telegram[1..-1] : telegram
+    end
+  end
 end

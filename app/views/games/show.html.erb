@@ -225,7 +225,7 @@
   "performer": {
     "@type":"Person",
     "name":"<%= @game.author.nickname %>",
-    "sameAs":"https://t.me/<%= @game.author.telegram || 'questwtf' %>"
+    "sameAs":"https://t.me/<%= telegram_user(@game.author.telegram) || 'questwtf' %>"
     },
   "startDate":"<%= @game.starts_at %>",
   "endDate":"2018",
