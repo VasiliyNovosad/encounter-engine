@@ -1,5 +1,5 @@
 <a name='post-<%= post.id %>'></a>
-<div class="row">
+<div class="container-fluid">
   <div id='post_<%= post_counter + 1 %>' class='post <%= cycle('odd', 'even') -%> col-md-12'>
     <% if post.pending_review? %>
       <div class='moderation alert'>
@@ -16,9 +16,9 @@
       </div>
     <% end %>
 
-    <div class='contents'>
-      <div class='contents col-md-12'>
-        <div class='username col-md-2 col-xs-6'>
+    <div class='container-fluid'>
+      <div class='row'>
+        <div class='username col-md-2 col-6'>
           <% if post.user.is_a?(Forem::NilUser) %>
             <%= t(:deleted) %>
           <% else %>
@@ -26,14 +26,14 @@
           <% end %>
         </div>
 
-        <div class="col-md-3 col-xs-6">
+        <div class="col-md-3 col-6">
           <a href='#post-<%= post.id %>'>
             <%= post.created_at.strftime("%d.%m.%Y %H:%M:%S") %>
           </a>
         </div>
 
         <% if forem_user %>
-          <div class='btn-group col-md-5 col-md-offset-2 col-xs-12'>
+          <div class='btn-group col-md-5 offset-md-2 col-12'>
             <% if can?(:reply, post.topic) %>
               <% if post.topic.can_be_replied_to? %>
                 <%= link_to t('reply', :scope => 'forem.topic'), forem.new_forum_topic_post_path(post.forum, post.topic, :reply_to_id => post.id), :class => "btn btn-primary btn-xs" %>

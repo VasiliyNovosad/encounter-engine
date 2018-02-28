@@ -58,7 +58,7 @@ gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageuplo
 # gem 'paperclip'
 # gem 'carrierwave'
 gem 'cloudinary'
-gem 'jquery-ui-rails'
+# gem 'jquery-ui-rails'
 # gem 'rails-jquery-autocomplete'
 gem 'sentry-raven'
 source 'https://rails-assets.org' do
