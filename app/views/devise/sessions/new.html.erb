@@ -1,33 +1,23 @@
 <h2><%= t('.login_caption') %></h2>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form-signin'}) do |f| %>
-  <div class="form-group row">
-    <%= f.label :email, class: "col-sm-1 col-4 col-form-label" %>
-    <div class="col-sm-4 col-8">
-      <%= f.email_field :email, class: "form-control form-control-sm" %>
-    </div>
+  <div class="form-label-group">
+    <%= f.email_field :email, class: "form-control", placeholder: 'Email', required: true, autofocus: true %>
+    <%= f.label :email %>
   </div>
-  <div class="form-group row">
-    <%= f.label :password, class: "col-sm-1 col-4 col-form-label" %>
-    <div class="col-sm-4 col-8">
-      <%= f.password_field :password, class: "form-control form-control-sm" %>
-    </div>
+  <div class="form-label-group">
+    <%= f.password_field :password, class: "form-control", placeholder: 'Password', required: true %>
+    <%= f.label :password %>
   </div>
   <% if devise_mapping.rememberable? -%>
-    <div class="form-group row">
-      <div class="col-sm-4 offset-sm-1 col-8 offset-4">
-        <div class="form-check">
-          <%= f.check_box :remember_me, class: "form-check-input" %>
-          <%= f.label :remember_me, class: "form-check-label" %>
-        </div>
-      </div>
+    <div class="checkbox mb-3">
+      <label>
+        <%= f.check_box :remember_me %>
+        Запам'ятати мене
+      </label>
     </div>
   <% end %>
-  <div class="form-group row">
-    <div class="col-sm-5">
-      <%= f.submit t('.login'), class: 'btn btn-light btn-block' %>
-    </div>
-  </div>
+  <%= f.submit t('.login'), class: 'btn btn-sm btn-light btn-block' %>
 <% end %>
 
 <%= render "devise/shared/links" %>
