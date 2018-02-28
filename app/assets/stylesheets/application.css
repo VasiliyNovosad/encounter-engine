@@ -11,7 +11,9 @@
  * file per style scope.
  *
  *= require datetimepicker
- *= require 'forem/base'
- *= require_tree .
+ *= require bootstrap
+ *= require master
+ *= require colors
+ *= require floating-labels
  *= require_self
  */
