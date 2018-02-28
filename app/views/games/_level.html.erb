@@ -4,18 +4,18 @@
 </h3>
 
 <fieldset>
+  <% if (level.complete_later || 0) > 0 %>
+    <p>
+      <span class="hint-timer">Автозавершення через <%= level.complete_later / 60 %> хв</span>
+    </p>
+    <br>
+  <% end %>
   <%= level.text.html_safe unless level.text.nil?%>
   <p>
     Завдання:
     <%= render 'tasks', tasks: level.tasks %>
   </p>
   <br>
-  <% if (level.complete_later || 0) > 0 %>
-      <p>
-         <span class="hint-timer">Автозавершення через <%= level.complete_later / 60 %> хв</span>
-      </p>
-      <br>
-  <% end %>
   <% if level.hints.count > 0 %>
     Підказки:
     <p>
