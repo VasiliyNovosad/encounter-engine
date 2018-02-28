@@ -55,13 +55,15 @@
         if (!$('#level_olymp').checked) {
             $('#olymp_base_block').css('display', 'none');
         }
-        if ($('#level_sectors_for_close').val() == 0) {
+        var sectors_for_close = $('#level_sectors_for_close').val();
+        var sectors_for_close_1 = $('#sectors_for_close_1');
+        if (sectors_for_close == 0) {
             $( "#condition_all" ).prop( "checked", true );
-            $('#sectors_for_close_1').prop('readonly', true);
+            sectors_for_close_1.prop('readonly', true);
         } else {
             $("#condition_selected").prop( "checked", true );
-            $('#sectors_for_close_1').prop('readonly', false);
-            $('#sectors_for_close_1').val($('#level_sectors_for_close').val());
+            sectors_for_close_1.prop('readonly', false);
+            sectors_for_close_1.val(sectors_for_close);
         }
     });
 
@@ -72,8 +74,9 @@
             $('#sectors_for_close_1').prop('readonly', true);
             $('#level_sectors_for_close').val('0');
         } else {
-            $('#sectors_for_close_1').prop('readonly', false);
-            $('#sectors_for_close_1').select();
+            var sectors_for_close_1 = $('#sectors_for_close_1');
+            sectors_for_close_1.prop('readonly', false);
+            sectors_for_close_1.select();
         }
     });
 

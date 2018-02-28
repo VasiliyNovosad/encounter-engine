@@ -14,37 +14,38 @@
       },
       prefix: "Лишилось: ",
       finish : function() {
+        var countdown_element = $('#start-countdown');
         <% if user_signed_in? and current_user.author_of?(@game) %>
-          $('#start-countdown').css('display', 'none');
+          countdown_element.css('display', 'none');
           return;
         <% end %>
         <% unless @game.finished_teams %>
-          $('#start-countdown').css('display', 'none');
+          countdown_element.css('display', 'none');
           return;
         <% end %>
         <% unless @game.levels && @game.levels.count > 0 %>
-          $('#start-countdown').css('display', 'none');
+          countdown_element.css('display', 'none');
           return;
         <% end %>
         <% if @game.draft? %>
-          $('#start-countdown').css('display', 'none');
+          countdown_element.css('display', 'none');
           return;
         <% end %>
         <% unless @team.nil? %>
           <% unless @game.game_passings.of_team(@team).first.nil? %>
             <% if @game.game_passings.of_team(@team).first.finished? %>
-              $('#start-countdown').css('display', 'none');
+              countdown_element.css('display', 'none');
               return;
             <% end %>
           <% end %>
         <% end %>
         <% if @game.author_finished? %>
-          $('#start-countdown').css('display', 'none');
+          countdown_element.css('display', 'none');
           return;
         <% end %>
         <% unless @team.nil? || @game.nil? %>
           <% @game_entry = GameEntry.of(@team, @game) %>
-          $('#start-countdown').css('display', 'none');
+          countdown_element.css('display', 'none');
           <% if @game_entry && @game_entry.status == "accepted" %>
             $('#playButton').css('display', 'inline-block');
           <% end %>
@@ -96,7 +97,6 @@
       return result.join(' ');
     };
     var elem = $(this);
-    console.log(elem);
     var timeUpdate = function () {
       var s = timeDifference(new Date(), date);
       if (s.length) {

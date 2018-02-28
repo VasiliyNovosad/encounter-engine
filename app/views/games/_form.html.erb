@@ -109,13 +109,14 @@
         lang:'uk' });
 
     function toggle(sourceCheckbox) {
+        var game_max_team_number = $('#game_max_team_number');
         if (sourceCheckbox.checked) {
-            $('#game_max_team_number').css('display', 'block');
-            $('#game_max_team_number').focus();
+            game_max_team_number.css('display', 'block');
+            game_max_team_number.focus();
         }
         else {
-            $('#game_max_team_number').css('display', 'none');
-            $('#game_max_team_number').val(0);
+            game_max_team_number.css('display', 'none');
+            game_max_team_number.val(0);
         }
     }
 
@@ -132,12 +133,13 @@
         if ($('#game_game_type').val() != 'panic') {
             $('#duration-block').css('display', 'none');
         }
-        if ($('#game_max_team_number').val() == 0 || $('#game_max_team_number').val == 10000) {
+        var game_max_team_number = $('#game_max_team_number');
+        if (game_max_team_number.val() == 0 || game_max_team_number.val() == 10000) {
             $('#max_team_checkbox').prop('checked', false);
-            $('#game_max_team_number').css('display', 'none');
+            game_max_team_number.css('display', 'none');
         } else {
             $('#max_team_checkbox').prop('checked', true);
-            $('#game_max_team_number').css('display', 'block');
+            game_max_team_number.css('display', 'block');
         }
     });
 </script>

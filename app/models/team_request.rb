@@ -33,7 +33,7 @@ class TeamRequest < ActiveRecord::Base
   end
 
   def recepient_is_not_captain_of_any_team
-    errors.add(:base, 'Користувач уже є членом даної команди') if user && user.captain?
+    errors.add(:base, 'Користувач є капітаном певної команди') if user&.captain?
   end
 
   def recepient_is_not_member_of_team
