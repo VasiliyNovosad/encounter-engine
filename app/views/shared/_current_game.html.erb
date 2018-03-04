@@ -52,7 +52,16 @@
     <%= game.max_team_number %>
   <% end %>
 </p>
-
+<br>
+<% if user_signed_in? && current_user.author_of?(game) %>
+  <p><%= link_to "Статистика", url_for("/logs/short/#{game.id}") if game.started? && !game.is_testing? %></p>
+  <p><%= link_to "Моніторинг", url_for("/logs/livechannel/#{game.id}") if game.started? && !game.is_testing? %></p>
+  <p><%= link_to "Лог відповідей", url_for("/logs/full/#{game.id}") if game.started? && !game.is_testing? %></p>
+  <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{game.id}") if game.author_finished? %></p>
+<% else %>
+  <p><%= link_to "Статистика", url_for("/logs/short/#{game.id}") if game.started? && !game.is_testing? || game.author_finished? %></p>
+  <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{game.id}") if game.author_finished? %></p>
+<% end %>
 <br>
 
 <%= render 'games/game_entries', game_entries: GameEntry.of_game(game).with_status('new')  %>

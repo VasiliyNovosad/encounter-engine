@@ -68,6 +68,31 @@
 <% end %>
 <br>
 
+<br>
+<% if user_signed_in? %>
+  <% if (@game.is_testing? ? @game.test_date : @game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !@game.author_finished? %>
+    <div id="playButton"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+  <% else %>
+    <div id="playButton" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+  <% end %>
+<% end %>
+<br>
+<p class="stat-link"><em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em></p>
+<br>
+<%= render 'shared/countdown' %>
+<div id="start-countdown"></div>
+<br>
+
+<% if @game.started? && !@game.is_testing? %>
+  <% if user_signed_in? && current_user.author_of?(@game) %>
+    <p><%= link_to "Моніторинг", url_for("/logs/livechannel/#{@game.id}")%></p>
+    <p><%= link_to "Лог відповідей", url_for("/logs/full/#{@game.id}")%></p>
+    <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}") %></p>
+  <% else %>
+    <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}") %></p>
+  <% end %>
+<% end %>
+
 <p>
   <em>Опис:</em>
 </p>
@@ -122,21 +147,6 @@
 <% if @game.game_type == 'selected' && @teams_for_test.count > 0 %>
   <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order") %></p>
 <% end %>
-<br>
-<% if user_signed_in? %>
-  <% if (@game.is_testing? ? @game.test_date : @game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !@game.author_finished? %>
-    <div id="playButton"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
-  <% else %>
-    <div id="playButton" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
-  <% end %>
-<% end %>
-<br>
-<p class="stat-link"><em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em></p>
-<br>
-<%= render 'shared/countdown' %>
-<div id="start-countdown"></div>
-<br>
-
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
     var seconds_to_game = <%= ((@game.is_testing? ? @game.test_date : @game.starts_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time + 1) %>;

@@ -122,6 +122,13 @@ uk:
       create: "Створити %{model}"
       submit: "Зберегти %{model}"
       update: "Змінити %{model}"
+  views:
+    pagination:
+      first: "&laquo;"
+      last: "&raquo;"
+      previous: "&lsaquo;"
+      next: "&rsaquo;"
+      truncate: "&hellip;"
   time_ago_in_words: "%{time} тому"
   ago: " тому"
   ago_by: " тому"

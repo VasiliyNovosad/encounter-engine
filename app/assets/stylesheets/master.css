@@ -481,3 +481,23 @@ div.team-stat{
     background-color: #373737;
     opacity: 1;
 }
+
+.page-link {
+    color: white;
+    background-color: #232323;
+    border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+    color: white;
+    text-decoration: none;
+    background-color: #414141;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: white;
+    background-color: #414141;
+    border-color: #ccc;
+}

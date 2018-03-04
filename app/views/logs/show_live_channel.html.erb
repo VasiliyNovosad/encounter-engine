@@ -1,6 +1,27 @@
-Прямий ефір гри "<%= @game.name %>"
-
-<%= paginate @logs %>
+<h2>Моніторинг гри "<%= link_to @game.name, game_path(@game) %>"</h2>
+<%= form_tag("/logs/livechannel/#{@game.id}", method: "get") do %>
+  <div class="form-group row">
+    <%= label_tag :level_id, "Рівень:", class: 'col-sm-2 col-4 col-form-label' %>
+    <div class="col-sm-4 col-8">
+      <%= select_tag(:level_id, options_for_select([['Всі', 0]] + @log_levels.map{ |level| ["#{level.position}. #{level.name}", level.id] }, @level_id), { class: 'form-control form-control-sm' }) %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= label_tag :team_id, "Команда:", class: 'col-sm-2 col-4 col-form-label' %>
+    <div class="col-sm-4 col-8">
+      <%= select_tag(:team_id, options_for_select([['Всі', 0]] + @log_teams, @team_id), { class: 'form-control form-control-sm' }) %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= label_tag :user_id, "Гравець:", class: 'col-sm-2 col-4 col-form-label' %>
+    <div class="col-sm-4 col-8">
+      <%= select_tag(:user_id, options_for_select([['Всі', 0]] + @log_users, @user_id), { class: 'form-control form-control-sm' }) %>
+    </div>
+  </div>
+  <%= submit_tag "вибрати", class: 'btn btn-light btn-sm' %>
+  <% end %>
+<br>
+<%= paginate @logs, window: 2 %>
 
 <table id="livechannel">
   <thead>
@@ -13,18 +34,24 @@
     </tr>
   </thead>
   <tbody>
-    <% @logs.each do |log| %>
+    <% @all_logs.each do |log| %>
       <tr>
-        <td><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %></td>
-        <td><%= log.team %></td>
-        <td><%= log.level %></td>
-        <td><% if correct_answer_by_level_id?(log.answer, log.level_id, log.team_id) %>
-              <span class="right_code"><%= log.answer %></span>
+        <td><%= log[:time].strftime("%Y-%m-%d %H:%M:%S.%L") %></td>
+        <td><%= log[:team] %></td>
+        <td><%= log[:level] %></td>
+        <td>
+          <% if log[:correct_answer] || log[:answer] == 'timeout' %>
+              <span class="right_code"><%= log[:answer] %></span>
+          <% elsif log[:correct_bonus_answer] %>
+            <span class="bonus"><%= log[:answer] %></span>
           <% else %>
-              <span class="wrong_code"><%= log.answer %></span>
-          <% end %></td>
-        <td><%= log.user.nil? ? '' : log.user.nickname %></td>
+              <span class="wrong_code"><%= log[:answer] %></span>
+          <% end %>
+        </td>
+        <td><%= log[:user] %></td>
         </tr>
     <% end %>
   </tbody>
 </table>
+<br>
+<%= paginate @logs, window: 2 %>
