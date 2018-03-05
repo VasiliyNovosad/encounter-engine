@@ -21,8 +21,10 @@ class LogsController < ApplicationController
     @log_teams = Team.where(id: logs.map(&:team_id).uniq).order(:name).map{ |team| [team.name, team.id] }
     @team_id = params[:team_id].to_i
     @log_users = User.where(id: logs.map(&:user_id).uniq).order(:nickname).map{ |user| [user.nickname, user.id] }
-    users = []
+    users = {}
     @log_users.each { |user| users[user[1]] = user[0] }
+    levels = {}
+    @log_levels.each { |level| levels[level.id] = "#{level.position}. #{level.name}" }
     @user_id = params[:user_id].to_i
     @logs = Log.of_game(@game).where(filter).order(time: :desc).page(params[:page] || 1)
     logs_levels = Level.where(id: @logs.map(&:level_id).uniq).includes(questions: :answers, bonuses: :bonus_answers)
@@ -45,7 +47,7 @@ class LogsController < ApplicationController
         @all_logs << {
           time: log.time,
           team: log.team,
-          level: log.level,
+          level: levels[log.level_id],
           answer: log.answer,
           correct_answer: true,
           correct_bonus_answer: false,
@@ -54,7 +56,7 @@ class LogsController < ApplicationController
         @all_logs << {
             time: log.time,
             team: log.team,
-            level: log.level,
+            level: levels[log.level_id],
             answer: log.answer,
             correct_answer: false,
             correct_bonus_answer: true,
@@ -64,7 +66,7 @@ class LogsController < ApplicationController
         @all_logs << {
             time: log.time,
             team: log.team,
-            level: log.level,
+            level: levels[log.level_id],
             answer: log.answer,
             correct_answer: true,
             correct_bonus_answer: false,
@@ -74,7 +76,7 @@ class LogsController < ApplicationController
         @all_logs << {
             time: log.time,
             team: log.team,
-            level: log.level,
+            level: levels[log.level_id],
             answer: log.answer,
             correct_answer: false,
             correct_bonus_answer: true,
@@ -84,7 +86,7 @@ class LogsController < ApplicationController
         @all_logs << {
             time: log.time,
             team: log.team,
-            level: log.level,
+            level: levels[log.level_id],
             answer: log.answer,
             correct_answer: false,
             correct_bonus_answer: false,
