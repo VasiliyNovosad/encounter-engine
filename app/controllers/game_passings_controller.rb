@@ -79,7 +79,7 @@ class GamePassingsController < ApplicationController
       else
         @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
         save_log(@level, time) if @game_passing.current_level.id || @game.game_type == 'panic'
-        answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time)
+        answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time, current_user.nickname)
         @answer_was_correct = answer_was_correct[:correct] || answer_was_correct[:bonus]
         answered = []
         if @answer_was_correct

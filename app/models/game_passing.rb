@@ -33,7 +33,7 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def check_answer!(answer, level, team_id, time)
+  def check_answer!(answer, level, team_id, time, user)
     answer.strip!
     is_correct_answer = false
     is_correct_bonus_answer = false
@@ -48,7 +48,7 @@ class GamePassing < ActiveRecord::Base
           award: seconds_to_string(q.award_time || 0),
           help: q.help,
           name: q.name,
-          value: answer
+          value: "#{answer} (#{user})"
         } unless answered_bonuses.include?(q.id)
       end.compact
       changed = pass_bonus!(answered_bonus)
@@ -60,7 +60,7 @@ class GamePassing < ActiveRecord::Base
           id: q.id,
           name: q.name,
           position: q.position,
-          value: "<span class=\"right_code\">#{answer}</span>"
+          value: "<span class=\"right_code\">#{answer} (#{user})</span>"
         } unless answered_questions.include?(q.id)
       end.compact
       changed = pass_question!(answered_question)
@@ -255,7 +255,8 @@ class GamePassing < ActiveRecord::Base
   end
 
   def get_team_answer(level, team, correct_answers)
-    Log.of_game(game).of_level(level).of_team(team).where('lower(answer) IN (?)', correct_answers).first.answer
+    log = Log.of_game(game).of_level(level).of_team(team).where('lower(answer) IN (?)', correct_answers).first
+    "#{log.answer} (#{log.user.nickname})"
   end
 
   protected
