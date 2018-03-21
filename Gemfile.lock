@@ -6,16 +6,8 @@ GIT
       bootstrap-sass (~> 3.1)
 
 GIT
-  remote: git://github.com/VasiliyNovosad/tinymce-rails-imageupload.git
-  revision: fbcac3fd5410ccc40598a940b1375518bb61e39b
-  specs:
-    tinymce-rails-imageupload (4.0.18.beta.3)
-      railties (>= 3.2, < 6)
-      tinymce-rails (~> 4.0)
-
-GIT
-  remote: git://github.com/radar/forem.git
-  revision: fb37858a51cfc8fe2ccd113e61af42546091fd27
+  remote: git://github.com/VasiliyNovosad/forem.git
+  revision: 8b01e6eb5ff48301702112398c2d94f797ac839b
   branch: rails4
   specs:
     forem (1.0.0.beta1)
@@ -24,10 +16,18 @@ GIT
       friendly_id (~> 5.0.0)
       gemoji (= 2.1.0)
       rails (~> 4.0, != 4.2.3, != 4.2.2, != 4.2.1, != 4.2.0)
-      sanitize (= 2.0.6)
+      sanitize (~> 4.6.3)
       select2-rails (~> 3.5.4)
       simple_form (~> 3.0)
       workflow (= 1.0.0)
+
+GIT
+  remote: git://github.com/VasiliyNovosad/tinymce-rails-imageupload.git
+  revision: fbcac3fd5410ccc40598a940b1375518bb61e39b
+  specs:
+    tinymce-rails-imageupload (4.0.18.beta.3)
+      railties (>= 3.2, < 6)
+      tinymce-rails (~> 4.0)
 
 GIT
   remote: git://github.com/swanandp/acts_as_list.git
@@ -242,6 +242,8 @@ GEM
     netrc (0.11.0)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
+    nokogumbo (1.5.0)
+      nokogiri
     orm_adapter (0.5.0)
     pg (0.21.0)
     private_pub (1.0.3)
@@ -312,8 +314,10 @@ GEM
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
-    sanitize (2.0.6)
+    sanitize (4.6.4)
+      crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
+      nokogumbo (~> 1.4)
     sass (3.5.5)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
