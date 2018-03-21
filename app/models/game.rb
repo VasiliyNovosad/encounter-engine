@@ -13,6 +13,9 @@ class Game < ActiveRecord::Base
   validates_presence_of :name,
                         message: 'Не введено назву гри'
 
+  validates_presence_of :starts_at,
+                        message: 'Не введено дату старту гри'
+
   validates_uniqueness_of :name,
                           message: 'Гра з такою назвою уже існує'
 
