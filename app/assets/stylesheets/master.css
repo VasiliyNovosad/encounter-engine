@@ -298,9 +298,13 @@ textarea {
     }
 
     .partner-logo {
-        width: 153px;
+        width: 145px;
         float: left;
         margin: 0 20px;
+    }
+
+    .partner-logo img {
+        width: 120px;
     }
 }
 
@@ -344,6 +348,16 @@ textarea {
         max-height: 700px;
         overflow-y: scroll;
     }
+
+    .partner-logo {
+        width: 153px;
+        float: left;
+    }
+
+    .partner-logo img {
+        width: 140px;
+    }
+
 }
 
 .notice {
@@ -461,15 +475,6 @@ div.team-stat{
 
 .logo img {
     width: 64px;
-}
-
-.partner-logo {
-    width: 153px;
-    float: left;
-}
-
-.partner-logo img {
-    width: 140px;
 }
 
 .partner-block p {
