@@ -290,7 +290,17 @@ textarea {
     }
 
     .partner-block {
-        display: none;
+        display: block;
+    }
+
+    .partner-block > div {
+        display: inline-block;
+    }
+
+    .partner-logo {
+        width: 153px;
+        float: left;
+        margin: 0 20px;
     }
 }
 
