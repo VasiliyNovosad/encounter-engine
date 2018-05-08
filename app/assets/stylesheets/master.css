@@ -288,6 +288,10 @@ textarea {
         overflow-y: scroll;
         display: none;
     }
+
+    .partner-block {
+        display: none;
+    }
 }
 
 @media (min-width: 801px) {
@@ -447,6 +451,19 @@ div.team-stat{
 
 .logo img {
     width: 64px;
+}
+
+.partner-logo {
+    width: 153px;
+    float: left;
+}
+
+.partner-logo img {
+    width: 140px;
+}
+
+.partner-block p {
+    text-align: center;
 }
 
 .contacts {
