@@ -2,12 +2,12 @@
 <% if current_games.count > 0 %>
   <% unless Game.started.empty? %>
     <% current_games.each do |game| %>
-      <fieldset class="game-fieldset">
-        <legend>
-          Поточна гра
-        </legend>
-        <div id="game-<%= game.id %>">
-          <% unless game.is_testing? %>
+      <% unless game.is_testing? || game.draft? %>
+        <fieldset class="game-fieldset">
+          <legend>
+            Поточна гра
+          </legend>
+          <div id="game-<%= game.id %>">
             <%= render 'shared/current_game', game: game %>
             <% if current_user %>
               <% if current_user.team.nil? || current_user.team.finished?(game) || game.created_by?(current_user) %>
@@ -22,10 +22,10 @@
               <% end %>
             <% end %>
             <p class="stat-link"><em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") if game.started? || game.author_finished? %></em></p>
-        <% end %>
-        </div>
-      </fieldset>
-      <br>
+          </div>
+        </fieldset>
+        <br>
+      <% end %>
     <% end %>
 
   <% end %>

@@ -1,4 +1,4 @@
-<% @my_games = Game.by(current_user) %>
+<% @my_games = Game.all.select { |game| game.created_by?(current_user) } %>
 <fieldset id="mygames">
   <legend>
     Мої ігри (<%= @my_games.count %>)
