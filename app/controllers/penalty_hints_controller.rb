@@ -27,7 +27,7 @@ class PenaltyHintsController < ApplicationController
   end
 
   def update
-    if @penalty_hint.update_attributes(hint_params)
+    if @penalty_hint.update_attributes(penalty_hint_params)
       redirect_to game_level_path(@level.game, @level)
     else
       render 'edit'
