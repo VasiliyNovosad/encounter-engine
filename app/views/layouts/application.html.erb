@@ -12,6 +12,7 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
     <%= tinymce_assets %>
+    <%= (@seo_block || '').html_safe %>
   </head>
   <body>
     <br>
