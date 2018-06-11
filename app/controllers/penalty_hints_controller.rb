@@ -8,13 +8,11 @@ class PenaltyHintsController < ApplicationController
   before_action :ensure_game_was_not_started, only: [:new, :create, :edit, :update]
 
   def new
-    @penalty_hint = PenaltyHint.new
-    @penalty_hint.level = @level
+    @penalty_hint = @level.penalty_hints.build
   end
 
   def create
-    @penalty_hint = PenaltyHint.new(penalty_hint_params)
-    @penalty_hint.level = @level
+    @penalty_hint = @level.penalty_hints.build(penalty_hint_params)
     if @penalty_hint.save
       redirect_to game_level_path(@game, @level)
     else

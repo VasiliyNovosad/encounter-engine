@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       get 'move_up', on: :member
       get 'move_down', on: :member
     end
+    resources :game_bonuses
     get 'show_scenario', on: :member
     get 'new_level_order', on: :member
     post 'create_level_order', on: :member

@@ -8,13 +8,11 @@ class HintsController < ApplicationController
   before_action :ensure_game_was_not_started, only: [:new, :create, :edit, :update]
 
   def new
-    @hint = Hint.new
-    @hint.level = @level
+    @hint = @level.hints.build
   end
 
   def create
-    @hint = Hint.new(hint_params)
-    @hint.level = @level
+    @hint = @level.hints.build(hint_params)
     if @hint.save
       redirect_to game_level_path(@game, @level)
     else

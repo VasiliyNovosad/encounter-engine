@@ -1,0 +1,11 @@
+<p>
+  Змінити бонус/штраф до гри "<%= link_to @game.name, game_path(@game) %>"
+</p>
+
+<br>
+
+<%= form_for @game_bonus, url: game_game_bonus_path(@game, @game_bonus) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= render 'form', f: f %>
+  <%= f.submit "Редагувати", class: 'btn btn-light' %>
+<% end %>

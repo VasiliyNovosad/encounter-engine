@@ -6,13 +6,11 @@ class QuestionsController < ApplicationController
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def new
-    @question = Question.new(name: "Сектор #{@level.questions.count + 1}")
-    @question.level = @level
+    @question = @level.questions.build(name: "Сектор #{@level.questions.count + 1}")
   end
 
   def create
-    @question = Question.new(question_params)
-    @question.level = @level
+    @question = @level.questions.build(question_params)
     @question.answers.each do |answer|
       answer.level = @level
     end

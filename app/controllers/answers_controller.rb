@@ -12,15 +12,13 @@ class AnswersController < ApplicationController
   end
 
   def new
-    @answer = Answer.new
+    @answer = @question.answers.build
     @answer.level = @level
-    @answer.question = @question
   end
 
   def create
-    @answer = Answer.new(answer_params)
+    @answer = @question.answers.build(answer_params)
     @answer.level = @level
-    @answer.question = @question
     if @answer.save
       redirect_to game_level_path(@game, @level)
     else

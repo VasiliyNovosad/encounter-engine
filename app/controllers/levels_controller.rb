@@ -4,15 +4,13 @@ class LevelsController < ApplicationController
   before_action :find_level, except: [:new, :index, :create]
 
   def new
-    @level = Level.new
-    @level.game = @game
+    @level = @game.levels.build
     # @level.questions.build
     # @level.questions.first.answers.build
   end
 
   def create
-    @level = Level.new(level_params)
-    @level.game = @game
+    @level = @game.levels.build(level_params)
     if @level.save
       redirect_to game_level_path(@game, @level)
     else
