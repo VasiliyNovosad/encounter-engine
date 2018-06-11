@@ -160,6 +160,7 @@ class GamePassingsController < ApplicationController
       @game_passings = @game_passings.map do |game_passing|
         team_bonus = @game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
         {
+            team_id: game_passing.team.id,
             team_name: game_passing.team.name,
             finished_at: game_passing.finished_at || @game_finished_at,
             closed_levels: game_passing.closed_levels.count,

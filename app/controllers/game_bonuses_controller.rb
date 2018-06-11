@@ -22,7 +22,7 @@ class GameBonusesController < ApplicationController
     @game_bonus = @game.game_bonuses.build(game_bonus_params)
     @game_bonus.user = current_user
     if @game_bonus.save
-      redirect_to game_path(@game)
+      redirect_to game_game_bonuses_path(@game)
     else
       render 'new'
     end
@@ -33,7 +33,7 @@ class GameBonusesController < ApplicationController
 
   def update
     if @game_bonus.update_attributes(game_bonus_params)
-      redirect_to game_path(@game)
+      redirect_to game_game_bonuses_path(@game)
     else
       render 'edit'
     end
@@ -41,7 +41,7 @@ class GameBonusesController < ApplicationController
 
   def destroy
     @game_bonus.destroy
-    redirect_to game_path(@game)
+    redirect_to game_game_bonuses_path(@game)
   end
 
   protected

@@ -1,4 +1,8 @@
 Гра "<%= link_to @game.name, game_path(@game) %>"
+<% if user_signed_in? && current_user.author_of?(@game) %>
+  <br><br>
+  <%= link_to 'Додати бонус/штраф', new_game_game_bonus_url(@game) %>
+<% end %>
 
 <% if @game.game_type == 'linear' || @game.game_type == 'selected' %>
   <table id="results" border="1">
@@ -26,20 +30,21 @@
               <%= game_passing.finished_at.strftime('%H:%M:%S.%L') %> <%= game_passing.finished_at.strftime('(%d.%m)') if game_passing.finished_at.day != @game.starts_at.day %>
             <% end %>
           </td>
-          <td><%= seconds_to_string((game_passing.sum_bonuses + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)) || 0) %></td>
+          <td><%= link_to seconds_to_string((game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)), game_game_bonuses_path(@game, team_id: game_passing.team.id) %></td>
           <td><%= Time.at(game_passing.finished_at - @game.starts_at - (game_passing.sum_bonuses + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses))).utc.strftime("%H:%M:%S.%L") %> </td>
         </tr>
       <% end %>
       <% (@game_passings.ended_by_author - @game_passings.finished).each do |game_passing| %>
-          <tr>
-            <td>#</td>
-            <td><%= game_passing.team.name %></td>
-            <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
-            <td>
-              Не фінішували
-            </td>
-            <td><%= seconds_to_string((game_passing.sum_bonuses + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)) || 0) %></td>
-            <td>-</td>
+        <% team_bonus = @game_bonuses.select{ |bonus| bonus.team_id == game_passing.team.id} %>
+        <tr>
+          <td>#</td>
+          <td><%= game_passing.team.name %></td>
+          <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
+          <td>
+            Не фінішували
+          </td>
+          <td><%= link_to seconds_to_string((game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)), game_game_bonuses_path(@game, team_id: game_passing.team.id) %></td>
+          <td>-</td>
           </tr>
         <% end %>
     </tbody>
@@ -65,7 +70,7 @@
               <%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %> <%= game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>
             </td>
             <td><%= game_passing[:closed_levels] %></td>
-            <td><%= seconds_to_string(game_passing[:sum_bonuses]) %></td>
+            <td><%= link_to seconds_to_string(game_passing[:sum_bonuses]), game_game_bonuses_path(@game, team_id: game_passing[:team_id]) %></td>
             <td><%= Time.at(game_passing[:finished_at] - game_passing[:sum_bonuses]).utc.strftime("%H:%M:%S.%L") %> </td>
           </tr>
         <% end %>

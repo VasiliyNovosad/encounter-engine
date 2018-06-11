@@ -101,7 +101,7 @@ class GamePassing < ActiveRecord::Base
       changed = true
       self.answered_bonuses += bonuses.map { |q| q[:id] }
       bonuses.each do |bonus|
-        GameBonus.create(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус')
+        GameBonus.create(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус', description: '')
       end
       # self.sum_bonuses += bonuses.inject(0){|sum,x| sum + x[:bonus] }
       # PrivatePub.publish_to "/game_passings/#{self.id}/bonuses", bonuses: bonuses
@@ -240,7 +240,7 @@ class GamePassing < ActiveRecord::Base
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
     unless self.penalty_hints.include?(penalty_hint.id)
       unless penalty_hint.nil?
-        GameBonus.create(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty * 60, user_id: user_id, reason: 'за штрафну підказку')
+        GameBonus.create(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty * 60, user_id: user_id, reason: 'за штрафну підказку', description: '')
         # self.sum_bonuses -= penalty_hint.penalty * 60
         penalty_hints << penalty_hint.id
         save!
