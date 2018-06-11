@@ -12,13 +12,11 @@ class BonusAnswersController < ApplicationController
   end
 
   def new
-    @bonus_answer = BonusAnswer.new
-    @bonus_answer.bonus = @bonus
+    @bonus_answer = @bonus.bonus_answers.create
   end
 
   def create
-    @bonus_answer = BonusAnswer.new(bonus_answer_params)
-    @bonus_answer.bonus = @bonus
+    @bonus_answer = @bonus.bonus_answers.create(bonus_answer_params)
     if @bonus_answer.save
       redirect_to game_level_path(@game, @level)
     else

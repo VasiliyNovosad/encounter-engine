@@ -8,13 +8,11 @@ class TasksController < ApplicationController
   before_action :ensure_game_was_not_started, only: [:new, :create, :edit, :update]
 
   def new
-    @task = Task.new
-    @task.level = @level
+    @task = @level.tasks.build
   end
 
   def create
-    @task = Task.new(task_params)
-    @task.level = @level
+    @task = @level.tasks.build(task_params)
     if @task.save
       redirect_to game_level_path(@game, @level)
     else

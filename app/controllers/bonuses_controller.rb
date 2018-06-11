@@ -6,13 +6,11 @@ class BonusesController < ApplicationController
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def new
-    @bonus = Bonus.new(name: "Бонус #{@level.bonuses.count + 1}")
-    @bonus.level = @level
+    @bonus = @level.bonuses.build(name: "Бонус #{@level.bonuses.count + 1}")
   end
 
   def create
-    @bonus = Bonus.new(bonus_params)
-    @bonus.level = @level
+    @bonus = @level.bonuses.build(bonus_params)
     if @bonus.save
       redirect_to game_level_path(@level.game, @level)
     else

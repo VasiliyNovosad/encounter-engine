@@ -32,7 +32,7 @@ class GamePassingsController < ApplicationController
       get_penalty_hints(@level)
       render layout: 'in_game'
     else
-      render 'show_results'
+      redirect_to  game_passings_show_results_url(game_id: @game.id)
     end
   end
 
@@ -60,7 +60,7 @@ class GamePassingsController < ApplicationController
        @game.game_type == 'panic' &&
        @game.starts_at + 60 * @game.duration < time
       respond_to do |format|
-        format.html { render 'show_results' }
+        format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
         format.js
       end
     else
@@ -80,7 +80,7 @@ class GamePassingsController < ApplicationController
       else
         @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
         save_log(@level, time) if @game_passing.current_level.id || @game.game_type == 'panic'
-        answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time, current_user.nickname)
+        answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time, current_user)
         @answer_was_correct = answer_was_correct[:correct] || answer_was_correct[:bonus]
         answered = []
         if @answer_was_correct
@@ -120,7 +120,7 @@ class GamePassingsController < ApplicationController
         if @game_passing.finished?
           PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}", url: '/game_passings/show_results'
           respond_to do |format|
-            format.html { render 'show_results' }
+            format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
             format.js
           end
         else
@@ -152,12 +152,29 @@ class GamePassingsController < ApplicationController
   end
 
   def show_results
-    render
+    @game_bonuses = GameBonus.of_game(@game).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
+    @game_passings = GamePassing.of_game(@game)
+
+    unless @game.game_type == 'linear' || @game.game_type == 'selected'
+      @game_finished_at = @game.starts_at + @game.duration * 60
+      @game_passings = @game_passings.map do |game_passing|
+        team_bonus = @game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+        {
+            team_id: game_passing.team.id,
+            team_name: game_passing.team.name,
+            finished_at: game_passing.finished_at || @game_finished_at,
+            closed_levels: game_passing.closed_levels.count,
+            sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
+        }
+      end.sort do |a, b|
+        (a[:finished_at] - a[:sum_bonuses]) <=> (b[:finished_at] - b[:sum_bonuses])
+      end
+    end
   end
 
   def exit_game
     @game_passing.exit!
-    render 'show_results'
+    redirect_to game_passings_show_results_url(game_id: @game.id)
   end
 
   def autocomplete_level
@@ -181,7 +198,7 @@ class GamePassingsController < ApplicationController
   def penalty_hint
     level_id = params[:level_id]
     penalty_hint_id = params[:hint_id]
-    @game_passing.use_penalty_hint!(level_id, penalty_hint_id)
+    @game_passing.use_penalty_hint!(level_id, penalty_hint_id, current_user.id)
     respond_to do |format|
       format.js
     end

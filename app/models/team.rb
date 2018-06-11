@@ -8,6 +8,7 @@ class Team < ActiveRecord::Base
   has_many :questions
   has_many :answers
   has_many :level_orders
+  has_many :game_bonuses, class_name: 'GameBonus'
 
   scope :by_name, ->(name) { where('lower(name) = ?', name) }
 

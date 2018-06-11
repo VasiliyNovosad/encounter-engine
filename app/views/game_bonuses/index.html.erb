@@ -1,0 +1,40 @@
+<h2>Бонуси/штрафи гри "<%= link_to @game.name, game_path(@game) %>"</h2>
+
+<% if user_signed_in? && current_user.author_of?(@game) %>
+  <br><br>
+  <%= link_to 'Додати бонус/штраф', new_game_game_bonus_url(@game) %>
+<% end %>
+
+<table id="results" border="1">
+  <thead>
+  <tr>
+    <th>Дата</th>
+    <th>Команда</th>
+    <th>Рівень</th>
+    <th>Причина</th>
+    <th>Бонус/Штраф</th>
+    <th>Коментар</th>
+    <th>-</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @game_bonuses.each do |bonus| %>
+    <tr>
+      <td><%= bonus.created_at.strftime('%d.%m.%Y %H:%M:%S') %></td>
+      <td><%= bonus.team.name %></td>
+      <td><%= "#{bonus.level.position}. #{bonus.level.name}" %></td>
+      <td><%= bonus.reason %></td>
+      <td><%= "#{bonus.award > 0 ? 'бонус' : 'штраф'} #{seconds_to_string((bonus.award || 0).abs)}" %></td>
+      <td><%= bonus.description %> </td>
+      <td>
+        <% if user_signed_in? && current_user.author_of?(@game) && bonus.reason == 'додано автором' %>
+          <div class="btn-group" role="group" aria-label="...">
+            <%= link_to "змінити", edit_game_game_bonus_path(@game, bonus), class: "btn btn-sm btn-info"%>
+            <%= link_to "видалити", game_game_bonus_path(@game, bonus), class: "btn btn-sm btn-danger", data: {:confirm => 'Ви впевнені?'}, :method => :delete%>
+          </div>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
