@@ -9,6 +9,7 @@ class GamePassingsController < ApplicationController
   before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :penalty_hint]
   before_action :find_team, except: [:show_results, :index]
   before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :penalty_hint]
+  before_action :ensure_team_is_accepted, except: [:show_results, :index]
   before_action :ensure_game_is_started
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :find_or_create_game_passing, except: [:show_results, :index]
@@ -243,6 +244,10 @@ class GamePassingsController < ApplicationController
 
   def ensure_captain_exited
     redirect_to game_path(@game), alert: 'Команда зійшла з дистанції' if @game_passing.exited?
+  end
+
+  def ensure_team_is_accepted
+    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game).of_team(current_user.team).first.nil? || GameEntry.of_game(@game).of_team(current_user.team).first.status != 'accepted') && !@game.is_testing?
   end
 
   def ensure_not_finished
