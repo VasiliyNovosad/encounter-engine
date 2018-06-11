@@ -10,7 +10,7 @@ class BonusesController < ApplicationController
   end
 
   def create
-    @bonus = @level.questions.build(bonus_params)
+    @bonus = @level.bonuses.build(bonus_params)
     if @bonus.save
       redirect_to game_level_path(@level.game, @level)
     else

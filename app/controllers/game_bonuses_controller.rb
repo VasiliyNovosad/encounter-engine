@@ -9,8 +9,8 @@ class GameBonusesController < ApplicationController
     @game_bonuses = GameBonus.of_game(@game)
     @game_bonuses = @game_bonuses.where(team_id: params[:team_id]) unless params[:team_id].nil?
     @game_bonuses = @game_bonuses.where(level_id: params[:level_id]) unless params[:level_id].nil?
-    @game_bonuses = @game_bonuses.where('award > 0') unless params[:bonus].nil?
-    @game_bonuses = @game_bonuses.where('award < 0') unless params[:penalty].nil?
+    @game_bonuses = @game_bonuses.where('award > 0') unless params[:type].nil? || params[:type] != 'bonus'
+    @game_bonuses = @game_bonuses.where('award < 0') unless params[:type].nil? || params[:type] != 'penalty'
     @game_bonuses = @game_bonuses.order(:created_at)
   end
 

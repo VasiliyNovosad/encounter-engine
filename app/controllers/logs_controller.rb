@@ -116,10 +116,12 @@ class LogsController < ApplicationController
     logs = Log.of_game(@game).order_by_time.preload(:user).to_a
     @levels = Level.of_game(@game).to_a
     game_passings = GamePassing.of_game(@game).preload(:team).to_a
+    game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id)
     @teams = game_passings.map(&:team)
     @level_logs = []
     @levels.each do |level|
       @level_logs << @teams.map do |team|
+        game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
         team_logs = logs.select { |log| log.team_id == team.id && log.level_id == level.id }
         previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
         team_log = (team_logs.count > 0 && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
@@ -127,16 +129,18 @@ class LogsController < ApplicationController
             team: team,
             log: team_log,
             time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time : team_log.time,
-            result: team_log.nil? ? nil : Time.at(team_log.time - previous_time).utc
+            result: team_log.nil? ? nil : Time.at(team_log.time - previous_time).utc,
+            bonus: game_bonus.empty? ? 0 : game_bonus[0].award
         }
       end.sort_by { |a| a[:time] }
     end
 
     results = game_passings.map do |result|
+      game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }
       {
         team: result.team,
         levels: result.closed_levels.count,
-        bonuses: result.sum_bonuses,
+        bonuses: result.sum_bonuses + (game_bonus.empty? ? 0 : game_bonus[0].award),
         time: result.finished_at || result.current_level_entered_at
       }
     end
