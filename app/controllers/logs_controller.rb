@@ -136,11 +136,11 @@ class LogsController < ApplicationController
     end
 
     results = game_passings.map do |result|
-      game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }
+      game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
       {
         team: result.team,
         levels: result.closed_levels.count,
-        bonuses: result.sum_bonuses + (game_bonus.empty? ? 0 : game_bonus[0].award),
+        bonuses: (result.sum_bonuses || 0) + game_bonus,
         time: result.finished_at || result.current_level_entered_at
       }
     end
