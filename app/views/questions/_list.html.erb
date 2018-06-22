@@ -1,6 +1,6 @@
 <% unless questions.empty? %>
     <% questions.each do |question| %>
-        <div id="question-<%=  question.id %>">
+        <div id="question-<%= question.id %>">
           <fieldset>
             <legend>
               <% if question.team.nil? %>

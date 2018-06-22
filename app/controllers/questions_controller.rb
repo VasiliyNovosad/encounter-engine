@@ -15,7 +15,7 @@ class QuestionsController < ApplicationController
       answer.level = @level
     end
     if @question.save
-      redirect_to game_level_path(@level.game, @level)
+      redirect_to game_level_path(@level.game, @level, anchor: "question-#{@question.id}")
     else
       render :new
     end
@@ -30,7 +30,7 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update_attributes(question_params)
-      redirect_to game_level_question_path(@question.level.game, @question.level, @question)
+      redirect_to game_level_path(@question.level.game, @question.level, anchor: "question-#{@question.id}")
     else
       render :edit
     end
@@ -38,17 +38,17 @@ class QuestionsController < ApplicationController
 
   def destroy
     @question.destroy
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "sectors-block")
   end
 
   def move_up
     @question.move_higher
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "question-#{@question.id}")
   end
 
   def move_down
     @question.move_lower
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "question-#{@question.id}")
   end
 
   protected

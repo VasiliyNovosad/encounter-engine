@@ -14,7 +14,7 @@ class PenaltyHintsController < ApplicationController
   def create
     @penalty_hint = @level.penalty_hints.build(penalty_hint_params)
     if @penalty_hint.save
-      redirect_to game_level_path(@game, @level)
+      redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
     else
       render 'new'
     end
@@ -26,7 +26,7 @@ class PenaltyHintsController < ApplicationController
 
   def update
     if @penalty_hint.update_attributes(penalty_hint_params)
-      redirect_to game_level_path(@level.game, @level)
+      redirect_to game_level_path(@level.game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
     else
       render 'edit'
     end
@@ -34,7 +34,7 @@ class PenaltyHintsController < ApplicationController
 
   def destroy
     @penalty_hint.destroy
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "penalty-hints-block")
   end
 
   protected

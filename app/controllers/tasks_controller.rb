@@ -14,7 +14,7 @@ class TasksController < ApplicationController
   def create
     @task = @level.tasks.build(task_params)
     if @task.save
-      redirect_to game_level_path(@game, @level)
+      redirect_to game_level_path(@game, @level, anchor: "task-#{@task.id}")
     else
       render 'new'
     end
@@ -26,7 +26,7 @@ class TasksController < ApplicationController
 
   def update
     if @task.update_attributes(task_params)
-      redirect_to game_level_path(@level.game, @level)
+      redirect_to game_level_path(@level.game, @level, anchor: "task-#{@task.id}")
     else
       render 'edit'
     end
@@ -34,7 +34,7 @@ class TasksController < ApplicationController
 
   def destroy
     @task.destroy
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "tasks-block")
   end
 
   protected

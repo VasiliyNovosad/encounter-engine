@@ -1,8 +1,8 @@
 <% levels.each do |level| %>
-  <p>
+  <p id="level-<%= level.position %>">
     <%= level.position %>. <%= link_to level.name, game_level_path(level.game, level) %>
-    <span class="level-move"><%= link_to "↑", move_up_game_level_path(level.game, level) unless level.first? %></span>
-    <span class="level-move"><%= link_to "↓", move_down_game_level_path(level.game, level) unless level.last? %></span>
+    <span class="level-move"><%= link_to "↑", move_up_game_level_path(level.game, level), method: :post unless level.first? %></span>
+    <span class="level-move"><%= link_to "↓", move_down_game_level_path(level.game, level), method: :post unless level.last? %></span>
   </p>
   <br>
 <% end %>

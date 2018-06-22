@@ -12,7 +12,7 @@ class BonusesController < ApplicationController
   def create
     @bonus = @level.bonuses.build(bonus_params)
     if @bonus.save
-      redirect_to game_level_path(@level.game, @level)
+      redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@bonus.id}")
     else
       render :new
     end
@@ -27,7 +27,7 @@ class BonusesController < ApplicationController
 
   def update
     if @bonus.update_attributes(bonus_params)
-      redirect_to game_level_bonus_path(@bonus.level.game, @bonus.level, @bonus)
+      redirect_to game_level_path(@bonus.level.game, @bonus.level, anchor: "bonus-#{@bonus.id}")
     else
       render :edit
     end
@@ -35,17 +35,17 @@ class BonusesController < ApplicationController
 
   def destroy
     @bonus.destroy
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "bonuses-block")
   end
 
   def move_up
     @bonus.move_higher
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@bonus.id}")
   end
 
   def move_down
     @bonus.move_lower
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@bonus.id}")
   end
 
   protected

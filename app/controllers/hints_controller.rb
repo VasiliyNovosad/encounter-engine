@@ -14,7 +14,7 @@ class HintsController < ApplicationController
   def create
     @hint = @level.hints.build(hint_params)
     if @hint.save
-      redirect_to game_level_path(@game, @level)
+      redirect_to game_level_path(@game, @level, anchor: "hint-#{@hint.id}")
     else
       render 'new'
     end
@@ -26,7 +26,7 @@ class HintsController < ApplicationController
 
   def update
     if @hint.update_attributes(hint_params)
-      redirect_to game_level_path(@level.game, @level)
+      redirect_to game_level_path(@level.game, @level, anchor: "hint-#{@hint.id}")
     else
       render 'edit'
     end
@@ -34,7 +34,7 @@ class HintsController < ApplicationController
 
   def destroy
     @hint.destroy
-    redirect_to game_level_path(@level.game, @level)
+    redirect_to game_level_path(@level.game, @level, anchor: "hints-block")
   end
 
   protected

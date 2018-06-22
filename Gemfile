@@ -50,8 +50,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'default_value_for', '~> 3.0.0'
-gem 'devise', '4.3.0'
-gem 'devise_security_extension', '0.9.2'
+gem 'devise'
+gem 'devise-security'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageupload'

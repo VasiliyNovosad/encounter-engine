@@ -2,7 +2,7 @@
     <em>Завдань немає</em>
 <% else %>
     <% tasks.each do |task| %>
-        <fieldset>
+        <fieldset id="task-<%= task.id %>">
           <legend>
             <% if task.team.nil? %>
                 <em>Для всіх</em>:

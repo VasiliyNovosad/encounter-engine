@@ -10,5 +10,5 @@
     <%= render 'form', f: f %>
 
     <%= f.submit "Додати завдання", class: 'btn btn-light' %>
-    <em><%= link_to "(відмінити)", game_level_path(@task.level.game, @task.level) %></em>
+    <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "tasks-block") %></em>
 <% end %>

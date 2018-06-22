@@ -41,12 +41,17 @@ class LevelsController < ApplicationController
 
   def move_up
     @level.move_higher
-    redirect_to game_path(@game)
+    redirect_to game_path(@game, anchor: "level-#{@level.position}")
   end
 
   def move_down
     @level.move_lower
-    redirect_to game_path(@game)
+    redirect_to game_path(@game, anchor: "level-#{@level.position}")
+  end
+
+  def change_position
+    @level.insert_at(params[:position])
+    redirect_to game_path(@game, anchor: "level-#{@level.position}")
   end
 
   protected
