@@ -8,5 +8,5 @@
   <%= render 'shared/error_messages', object: f.object %>  
   <%= render 'form', f: f %>
   <%= f.submit "Редагувати", class: 'btn btn-light' %>
-  <em><%= link_to "(відмінити)", game_level_path(@level.game, @level) %></em>
+  <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "hint-#{@hint.id}") %></em>
 <% end %>

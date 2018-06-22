@@ -10,6 +10,6 @@
   <%= render 'form', f: f %>
 
   <%= f.submit "Додати штрафну підказку", class: 'btn btn-light' %>
-  <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
+  <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "penalty-hints-block") %></em>
 <% end %>
 

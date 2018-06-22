@@ -14,13 +14,13 @@ Rails.application.routes.draw do
   resources :teams
 
   resources :invitations do
-    get 'accept', on: :member
-    get 'reject', on: :member
+    post 'accept', on: :member
+    post 'reject', on: :member
   end
 
   resources :team_requests do
-    get 'accept', on: :member
-    get 'reject', on: :member
+    post 'accept', on: :member
+    post 'reject', on: :member
   end
 
   resources :users do
@@ -34,16 +34,17 @@ Rails.application.routes.draw do
       resources :penalty_hints
       resources :questions do
         resources :answers
-        get 'move_up', on: :member
-        get 'move_down', on: :member
+        post 'move_up', on: :member
+        post 'move_down', on: :member
       end
       resources :bonuses do
         resources :bonus_answers
-        get 'move_up', on: :member
-        get 'move_down', on: :member
+        post 'move_up', on: :member
+        post 'move_down', on: :member
       end
-      get 'move_up', on: :member
-      get 'move_down', on: :member
+      post 'move_up', on: :member
+      post 'move_down', on: :member
+      post 'change_position', on: :member
     end
     resources :game_bonuses
     get 'show_scenario', on: :member
@@ -51,12 +52,12 @@ Rails.application.routes.draw do
     post 'create_level_order', on: :member
   end
 
-  get 'game_entries/recall/:id' => 'game_entries#recall'
-  get 'game_entries/reopen/:id' => 'game_entries#reopen'
-  get 'game_entries/cancel/:id' => 'game_entries#cancel'
-  get 'game_entries/accept/:id' => 'game_entries#accept'
-  get 'game_entries/reject/:id' => 'game_entries#reject'
-  get 'game_entries/reaccept/:id' => 'game_entries#reaccept'
+  post 'game_entries/recall/:id' => 'game_entries#recall'
+  post 'game_entries/reopen/:id' => 'game_entries#reopen'
+  post 'game_entries/cancel/:id' => 'game_entries#cancel'
+  post 'game_entries/accept/:id' => 'game_entries#accept'
+  post 'game_entries/reject/:id' => 'game_entries#reject'
+  post 'game_entries/reaccept/:id' => 'game_entries#reaccept'
 
   match '/game_passings/show_results', to: 'game_passings#show_results', via: 'get'
   match '/play/:game_id/tip',  to: 'game_passings#get_current_level_tip', via: 'get'
@@ -80,12 +81,12 @@ Rails.application.routes.draw do
   match '/dashboard', to: 'dashboard#index',         via: 'get'
   match '/team-room', to: 'team_room#index',         via: 'get'
 
-  match '/games/end_game/:id', to: 'games#end_game', via: 'get'
-  match '/games/start_test/:id', to: 'games#start_test', via: 'get'
-  match '/games/finish_test/:id', to: 'games#finish_test', via: 'get'
+  match '/games/end_game/:id', to: 'games#end_game', via: 'post'
+  match '/games/start_test/:id', to: 'games#start_test', via: 'post'
+  match '/games/finish_test/:id', to: 'games#finish_test', via: 'post'
 
-  match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'get'
-  match '/teams/edit/captain', to: 'teams#make_member_captain', via: 'get'
-  match '/teams/edit/leave_team', to: 'teams#leave_team', via: 'get'
+  match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'post'
+  match '/teams/edit/captain', to: 'teams#make_member_captain', via: 'post'
+  match '/teams/edit/leave_team', to: 'teams#leave_team', via: 'post'
   post '/tinymce_assets' => 'tinymce_assets#create'
 end

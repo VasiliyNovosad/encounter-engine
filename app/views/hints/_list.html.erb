@@ -1,6 +1,6 @@
 <% unless hints.empty? %>
     <% hints.each do |hint| %>
-        <fieldset>
+        <fieldset id="hint-<%= hint.id %>">
           <legend>
             <% if hint.team.nil? %>
                 <em>Для всіх</em>:
