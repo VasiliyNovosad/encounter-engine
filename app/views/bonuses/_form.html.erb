@@ -32,6 +32,49 @@
     <label class="col-form-label">секунд</label>
   </div>
 </div>
+<div class="form-group row">
+  <%= f.label :is_absolute_limited, class: 'col-sm-2 col-2 col-form-label' %>
+  <div class="col-sm-1 col-1">
+    <div class="form-check">
+      <%= f.check_box :is_absolute_limited %>
+    </div>
+  </div>
+  <div class="col-sm-9 col-9 form-inline">
+    <%= f.label 'з', class: 'col-sm-1 col-form-label' %>
+    <%= f.text_field :valid_from, value: @bonus.valid_from.nil? ? '' : @bonus.valid_from.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm col-sm-2' %>
+    <%= f.label 'по', class: 'col-sm-1 col-form-label' %>
+    <%= f.text_field :valid_to, value: @bonus.valid_to.nil? ? '' : @bonus.valid_to.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm col-sm-2' %>
+    <%# :is_absolute_limited, :valid_from, :valid_to, :is_delayed, :delay, :is_relative_limited, :valid %>
+  </div>
+</div>
+<div class="form-group row">
+  <%= f.label :is_relative_limited, class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-1 col-2">
+    <div class="form-check">
+      <%= f.check_box :is_relative_limited %>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <%= f.number_field :valid_for, class: 'form-control form-control-sm' %>
+  </div>
+  <div class="col-sm-6">
+    <label class="col-form-label">секунд</label>
+  </div>
+</div>
+<div class="form-group row">
+  <%= f.label :is_delayed, class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-1 col-2">
+    <div class="form-check">
+      <%= f.check_box :is_delayed %>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <%= f.number_field :delay_for, class: 'form-control form-control-sm' %>
+  </div>
+  <div class="col-sm-6">
+    <label class="col-form-label">секунд</label>
+  </div>
+</div>
 <div class="answers">
   <%= f.fields_for :bonus_answers do |answer| %>
     <%= render 'bonus_answer_fields', f: answer %>
@@ -40,3 +83,12 @@
 <br>
 <p><%= link_to_add_association 'Додати відповідь', f, :bonus_answers, class: 'btn btn-primary', data: { association_insertion_node: '.answers', association_insertion_method: :append } %></p>
 <br>
+
+<script type="text/javascript">
+    $('#bonus_valid_from').datetimepicker({
+        format:'d.m.Y H:i',
+        lang:'uk' });
+    $('#bonus_valid_to').datetimepicker({
+        format:'d.m.Y H:i',
+        lang:'uk' });
+</script>

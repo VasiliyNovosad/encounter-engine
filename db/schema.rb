@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180611081944) do
+ActiveRecord::Schema.define(version: 20180628063856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,13 @@ ActiveRecord::Schema.define(version: 20180611081944) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_absolute_limited", default: false
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.boolean  "is_delayed",          default: false
+    t.integer  "delay_for"
+    t.boolean  "is_relative_limited", default: false
+    t.integer  "valid_for"
   end
 
   create_table "forem_categories", force: :cascade do |t|
@@ -187,6 +194,7 @@ ActiveRecord::Schema.define(version: 20180611081944) do
     t.text     "answered_bonuses"
     t.integer  "sum_bonuses",                          default: 0
     t.text     "penalty_hints"
+    t.text     "missed_bonuses"
   end
 
   create_table "games", force: :cascade do |t|
