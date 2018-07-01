@@ -54,6 +54,19 @@ class GamePassingsController < ApplicationController
                    next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.game.game_type == 'panic' || level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) }.to_json
   end
 
+  def get_current_level_bonus
+
+    render json: {}
+  end
+
+  def miss_current_level_bonus
+    level_id = params[:level_id]
+    bonus_id = params[:bonus_id]
+    @game_passing.miss_bonus!(level_id, bonus_id)
+
+    render json: {}
+  end
+
   def post_answer
     time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     if @game_passing.finished? ||
@@ -351,12 +364,18 @@ class GamePassingsController < ApplicationController
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       {
         position: bonus.position,
+        id: bonus.id,
         name: bonus.name,
         answered: answered_bonuses.include?(bonus),
         value: answered_bonuses.include?(bonus) ? @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers) : '',
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
-        award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil
+        award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil,
+        delayed: false,
+        delay_for: 0,
+        limited: false,
+        valid_for: 0,
+        missing: false
       }
     end
     @bonuses

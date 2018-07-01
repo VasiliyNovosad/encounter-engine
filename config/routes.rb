@@ -52,19 +52,21 @@ Rails.application.routes.draw do
     post 'create_level_order', on: :member
   end
 
-  post 'game_entries/recall/:id' => 'game_entries#recall'
-  post 'game_entries/reopen/:id' => 'game_entries#reopen'
-  post 'game_entries/cancel/:id' => 'game_entries#cancel'
-  post 'game_entries/accept/:id' => 'game_entries#accept'
-  post 'game_entries/reject/:id' => 'game_entries#reject'
-  post 'game_entries/reaccept/:id' => 'game_entries#reaccept'
+  match 'game_entries/recall/:id', to: 'game_entries#recall', via: 'post'
+  match 'game_entries/reopen/:id', to: 'game_entries#reopen', via: 'post'
+  match 'game_entries/cancel/:id', to: 'game_entries#cancel', via: 'post'
+  match 'game_entries/accept/:id', to: 'game_entries#accept', via: 'post'
+  match 'game_entries/reject/:id', to: 'game_entries#reject', via: 'post'
+  match 'game_entries/reaccept/:id', to: 'game_entries#reaccept', via: 'post'
 
   match '/game_passings/show_results', to: 'game_passings#show_results', via: 'get'
-  match '/play/:game_id/tip',  to: 'game_passings#get_current_level_tip', via: 'get'
-  match '/play/:game_id',  to: 'game_passings#show_current_level', via: 'get'
-  match '/play/:game_id',  to: 'game_passings#post_answer', via: 'post'
-  match '/play/:game_id/autocomplete_level',  to: 'game_passings#autocomplete_level', via: 'get'
-  match '/play/:game_id/penalty_hint',  to: 'game_passings#penalty_hint', via: 'post'
+  match '/play/:game_id/tip', to: 'game_passings#get_current_level_tip', via: 'get'
+  match '/play/:game_id', to: 'game_passings#show_current_level', via: 'get'
+  match '/play/:game_id', to: 'game_passings#post_answer', via: 'post'
+  match '/play/:game_id/autocomplete_level', to: 'game_passings#autocomplete_level', via: 'get'
+  match '/play/:game_id/penalty_hint', to: 'game_passings#penalty_hint', via: 'post'
+  match '/play/:game_id/bonus', to: 'game_passings#get_current_level_bonus', via: 'get'
+  match '/play/:game_id/miss_bonus', to: 'game_passings#miss_current_level_bonus', via: 'post'
 
   match '/stats/:action/:game_id', to: 'game_passings#index', via: 'get'
   match '/logs/livechannel/:game_id', to: 'logs#show_live_channel', via: 'get'
@@ -88,5 +90,5 @@ Rails.application.routes.draw do
   match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'post'
   match '/teams/edit/captain', to: 'teams#make_member_captain', via: 'post'
   match '/teams/edit/leave_team', to: 'teams#leave_team', via: 'post'
-  post '/tinymce_assets' => 'tinymce_assets#create'
+  match '/tinymce_assets', to: 'tinymce_assets#create', via: 'post'
 end

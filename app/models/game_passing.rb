@@ -9,6 +9,8 @@ class GamePassing < ActiveRecord::Base
   default_value_for :closed_levels, []
   serialize :penalty_hints
   default_value_for :penalty_hints, []
+  serialize :missed_bonuses
+  default_value_for :missed_bonuses, []
 
   belongs_to :team
   belongs_to :game
@@ -254,6 +256,17 @@ class GamePassing < ActiveRecord::Base
       end
     end
 
+  end
+
+  def miss_bonus!(level_id, bonus_id)
+    level = Level.find(level_id)
+    bonus = level.bonuses.find(bonus_id)
+    unless self.missed_bonuses.include?(bonus_id)
+      unless bonus.nil?
+        missed_bonuses << bonus_id
+        save!
+      end
+    end
   end
 
   def current_level_position(team_id)
