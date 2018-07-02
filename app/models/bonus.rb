@@ -40,14 +40,9 @@ class Bonus < ActiveRecord::Base
   end
 
   def ready_to_show?(current_level_entered_at)
-    is_relative_limited? && Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time - current_level_entered_at >= delay ||
+    is_relative_limited? && Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time - current_level_entered_at >= delay_for ||
         is_absolute_limited? && (valid_from.nil? || Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time >= valid_from) &&
             (valid_to.nil? || Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time <= valid_to)
-  end
-
-  def available_in(current_level_entered_at)
-    # ToDo: to check if is_absolute_limit or is_relative_limit
-    (current_level_entered_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + delay
   end
 
 end

@@ -174,9 +174,10 @@ class GamePassing < ActiveRecord::Base
     # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
     level.team_bonuses(team_id).includes(:bonus_answers).any? do |bonus|
       # bonus.matches_any_answer(answer, team_id)
-      bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
-        ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
-      end
+      !missed_bonuses.include?(bonus.id) && bonus.ready_to_show?(level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
+        bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
+          ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
+        end
     end
   end
 

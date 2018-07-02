@@ -37,7 +37,7 @@ var LevelBonusLimitUpdater = function() {
         timerData[bonusNum].loadingIndicator.hide();
     }
         ,appendBonus = function(bonus_num, bonus_name) {
-        $('bonus-' + bonus_num).html('<p class="bonus"><b>' + bonus_name + ' не виконано</b></p>');
+        $('#bonus-' + bonus_num).html('<p class="bonus"><b>' + bonus_name + ' не виконано</b></p>');
     }
         ,loadBonus = function(bonusNum) {
         hideCountdownContainer(bonusNum);
@@ -70,7 +70,7 @@ var LevelBonusLimitUpdater = function() {
                         loadingIndicator: $('#LevelBonusLimitCountdownLoadIndicator' + config.bonusId),
                         countdownValue: config.initialCountdownValue
                     };
-                start(config.bonusId);
+                start(config.bonusNum);
             });
         }
     };

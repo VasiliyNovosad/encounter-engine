@@ -37,7 +37,7 @@ var LevelBonusDelayUpdater = function() {
         timerData[bonusNum].loadingIndicator.hide();
     }
     ,appendBonus = function(bonus_num, bonus_name, bonus_task) {
-        $('bonus-' + bonus_num).html('<p class="bonus"><b>' + bonus_name + '</b></p>' + bonus_task);
+        $('#bonus-' + bonus_num).html('<p class="bonus"><b>' + bonus_name + '</b></p>' + bonus_task);
     }
     ,loadBonus = function(bonusNum) {
         hideCountdownContainer(bonusNum);
@@ -67,7 +67,8 @@ var LevelBonusDelayUpdater = function() {
                         loadingIndicator: $('#LevelBonusDelayCountdownLoadIndicator' + config.bonusId),
                         countdownValue: config.initialCountdownValue
                     };
-                start(config.bonusId);
+                console.log(timerData);
+                start(config.bonusNum);
             });
         }
     };

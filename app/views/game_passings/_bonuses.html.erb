@@ -22,8 +22,12 @@
           <br>
           <script>
               LevelBonusDelayUpdater.setup({
-                  initialCountdownValue: <%= bonus[:delay_for] %>
-                  ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, bonusId: <%= bonus[:id] %>, bonusNum: <%= bonus[:position] %>, levelId: <%= @game_passing.current_level.id %>
+                  initialCountdownValue: <%= bonus[:delay_for] %>,
+                  gameId: <%= @game_passing.game_id %>,
+                  teamId: <%= @team_id %>,
+                  bonusId: <%= bonus[:id] %>,
+                  bonusNum: <%= bonus[:position] %>,
+                  levelId: <%= @game_passing.current_level.id %>
               })
           </script>
         <% elsif bonus[:limited] %>

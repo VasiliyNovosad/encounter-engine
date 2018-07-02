@@ -55,16 +55,25 @@ class GamePassingsController < ApplicationController
   end
 
   def get_current_level_bonus
-
-    render json: {}
+    level_id = params[:level_id]
+    level = Level.find(level_id)
+    bonus_id = params[:bonus_id]
+    bonus = level.bonuses.find(bonus_id)
+    if !bonus.nil? && bonus.ready_to_show?(level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
+      render json: {bonus_num: bonus.position, bonus_name: bonus.name, bonus_task: bonus.task}
+    else
+      render json: {}
+    end
   end
 
   def miss_current_level_bonus
     level_id = params[:level_id]
+    level = Level.find(level_id)
     bonus_id = params[:bonus_id]
+    bonus = level.bonuses.find(bonus_id)
     @game_passing.miss_bonus!(level_id, bonus_id)
 
-    render json: {}
+    render json: {bonus_num: bonus.position, bonus_name: bonus.name}
   end
 
   def post_answer
@@ -371,11 +380,13 @@ class GamePassingsController < ApplicationController
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
         award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil,
-        delayed: false,
-        delay_for: 0,
+        delayed: bonus.is_absolute_limited? && !bonus.valid_from.nil? && Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time < bonus.valid_from ||
+            (!bonus.is_absolute_limited? || bonus.valid_from.nil?) && bonus.is_relative_limited? &&
+                (((level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + bonus.delay_for > 0),
+        delay_for: ((level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + bonus.delay_for,
         limited: false,
         valid_for: 0,
-        missing: false
+        missing: @game_passing.missed_bonuses.include?(bonus.id)
       }
     end
     @bonuses
