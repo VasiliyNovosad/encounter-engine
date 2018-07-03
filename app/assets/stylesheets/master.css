@@ -245,9 +245,19 @@ textarea {
     font-weight: bold
 }
 
-.right_code, .bonus_answered, .timeout-stat {
+.right_code, .bonus-answered, .timeout-stat {
     color: #8F0;
     font-weight: bold
+}
+
+.bonus-missed {
+    color: #999;
+    font-weight: normal;
+}
+
+.bonus-delay-timer {
+    color: #999;
+    font-style: italic;
 }
 
 @media (max-width: 800px) {

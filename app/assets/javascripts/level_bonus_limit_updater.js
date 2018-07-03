@@ -37,14 +37,14 @@ var LevelBonusLimitUpdater = function() {
         timerData[bonusNum].loadingIndicator.hide();
     }
         ,appendBonus = function(bonus_num, bonus_name) {
-        $('#bonus-' + bonus_num).html('<p class="bonus"><b>' + bonus_name + ' не виконано</b></p>');
+        $('#bonus-' + bonus_num).html('<p class="bonus-missed"><b>' + bonus_name + ' не виконано</b></p>');
     }
         ,loadBonus = function(bonusNum) {
         hideCountdownContainer(bonusNum);
         showLoadIndicator(bonusNum);
 
         $.ajax({
-            url: '/play/' + timerData[bonusNum].gameId + '/bonus_miss',
+            url: '/play/' + timerData[bonusNum].gameId + '/miss_bonus',
             method: 'POST',
             data: {team_id: timerData[bonusNum].teamId, level_id: timerData[bonusNum].levelId, bonus_id: timerData[bonusNum].bonusId},
             dataType: 'json',

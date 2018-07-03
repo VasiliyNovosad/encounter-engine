@@ -59,8 +59,17 @@ class GamePassingsController < ApplicationController
     level = Level.find(level_id)
     bonus_id = params[:bonus_id]
     bonus = level.bonuses.find(bonus_id)
-    if !bonus.nil? && bonus.ready_to_show?(level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
-      render json: {bonus_num: bonus.position, bonus_name: bonus.name, bonus_task: bonus.task}
+    current_level_entered_at = level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at
+    current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
+    if !bonus.nil? && !bonus.is_delayed_now?(current_level_entered_at, current_time)
+      render json: {
+        bonus_num: bonus.position,
+        bonus_name: bonus.name,
+        bonus_task: bonus.task,
+        bonus_id: bonus.id,
+        bonus_limited: bonus.is_limited_now?(current_level_entered_at, current_time),
+        bonus_valid_for: bonus.time_to_miss(current_level_entered_at, current_time)
+      }
     else
       render json: {}
     end
@@ -371,6 +380,8 @@ class GamePassingsController < ApplicationController
     answered_bonuses = level.bonuses.where(id: @game_passing.answered_bonuses)
     @bonuses = level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
+      current_level_entered_at = (level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
+      current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       {
         position: bonus.position,
         id: bonus.id,
@@ -380,13 +391,11 @@ class GamePassingsController < ApplicationController
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
         award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil,
-        delayed: bonus.is_absolute_limited? && !bonus.valid_from.nil? && Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time < bonus.valid_from ||
-            (!bonus.is_absolute_limited? || bonus.valid_from.nil?) && bonus.is_relative_limited? &&
-                (((level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + bonus.delay_for > 0),
-        delay_for: ((level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + bonus.delay_for,
-        limited: false,
-        valid_for: 0,
-        missing: @game_passing.missed_bonuses.include?(bonus.id)
+        delayed: bonus.is_delayed_now?(current_level_entered_at, current_time),
+        delay_for: bonus.time_to_delay(current_level_entered_at, current_time),
+        limited: bonus.is_limited_now?(current_level_entered_at, current_time),
+        valid_for: bonus.time_to_miss(current_level_entered_at, current_time),
+        missed: @game_passing.missed_bonuses.include?(bonus.id.to_s)
       }
     end
     @bonuses

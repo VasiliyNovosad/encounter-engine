@@ -39,13 +39,13 @@
                 <%= bonus.valid_to.nil? ? '' : " по #{bonus.valid_to.strftime("%d.%m.%Y %H:%M")}" %>
               </p>
             <% end %>
-            <% if bonus.is_relative_limited %>
+            <% if bonus.is_delayed %>
               <p>
                 <strong>Обмежити час появи: </strong>
                 <%= "на #{bonus.delay_for} секунд" %>
               </p>
             <% end %>
-            <% if bonus.is_delayed %>
+            <% if bonus.is_relative_limited %>
               <p>
                 <strong>Обмежити час виконання: </strong>
                 <%= "на #{bonus.valid_for} секунд" %>
