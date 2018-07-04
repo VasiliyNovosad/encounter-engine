@@ -26,45 +26,47 @@
 <div class="form-group row">
   <%= f.label 'Винагорода', class: 'col-sm-2 col-form-label' %>
   <div id="bonus-award-time-form" class="col-sm-10 form-inline">
+    <div class="form-check form-check-inline">
+      <%= radio_button_tag(:award_type, "bonus") %>
+      <%= label_tag(:bonus_type, "Бонус", class: 'time-form-label control-label') %>
+      <%= radio_button_tag(:award_type, "penalty") %>
+      <%= label_tag(:penalty_type, "Штраф", class: 'time-form-label control-label') %>
+    </div>
     <%= render 'shared/time_form' %>
     <%= f.number_field :award_time, class: 'form-control form-control-sm', hidden: true %>
   </div>
 </div>
 <div class="form-group row">
-  <%= f.label :is_absolute_limited, class: 'col-sm-2 col-2 col-form-label' %>
-  <div class="col-sm-1 col-1">
+  <%= f.label :is_absolute_limited, class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-9 form-inline">
     <div class="form-check">
       <%= f.check_box :is_absolute_limited %>
     </div>
-  </div>
-  <div class="col-sm-9 col-9 form-inline">
-    <%= f.label 'з', class: 'col-sm-1 col-form-label' %>
-    <%= f.text_field :valid_from, value: @bonus.valid_from.nil? ? '' : @bonus.valid_from.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm col-sm-2' %>
-    <%= f.label 'по', class: 'col-sm-1 col-form-label' %>
-    <%= f.text_field :valid_to, value: @bonus.valid_to.nil? ? '' : @bonus.valid_to.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm col-sm-2' %>
+    <%= f.label 'з', class: 'col-form-label time-form-label' %>
+    <%= f.text_field :valid_from, value: @bonus.valid_from.nil? ? '' : @bonus.valid_from.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
+    <%= f.label 'по', class: 'col-form-label time-form-label' %>
+    <%= f.text_field :valid_to, value: @bonus.valid_to.nil? ? '' : @bonus.valid_to.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
     <%# :is_absolute_limited, :valid_from, :valid_to, :is_delayed, :delay, :is_relative_limited, :valid %>
   </div>
 </div>
 <div class="form-group row">
   <%= f.label :is_delayed, class: 'col-sm-2 col-form-label' %>
-  <div class="col-sm-1 col-2">
+  <div id="bonus-delay-time-form" class="col-sm-9 col-9 form-inline">
     <div class="form-check">
       <%= f.check_box :is_delayed %>
     </div>
-  </div>
-  <div id="bonus-delay-time-form" class="col-sm-9 col-9 form-inline">
+    <%= f.label 'на', class: 'col-form-label time-form-label' %>
     <%= render 'shared/time_form' %>
     <%= f.number_field :delay_for, class: 'form-control form-control-sm', hidden: true %>
   </div>
 </div>
 <div class="form-group row">
   <%= f.label :is_relative_limited, class: 'col-sm-2 col-form-label' %>
-  <div class="col-sm-1 col-2">
+  <div id="bonus-valid-time-form" class="col-sm-9 col-9 form-inline">
     <div class="form-check">
       <%= f.check_box :is_relative_limited %>
     </div>
-  </div>
-  <div id="bonus-valid-time-form" class="col-sm-9 col-9 form-inline">
+    <%= f.label 'на', class: 'col-form-label time-form-label' %>
     <%= render 'shared/time_form' %>
     <%= f.number_field :valid_for, class: 'form-control form-control-sm', hidden: true %>
   </div>
@@ -85,4 +87,81 @@
     $('#bonus_valid_to').datetimepicker({
         format:'d.m.Y H:i',
         lang:'uk' });
+    function set_time_form(seconds_time, form_selector) {
+        if (seconds_time > 0) {
+            var minutes = Math.trunc(seconds_time / 60);
+            var seconds = seconds_time % 60;
+            var hours = Math.trunc(minutes / 60);
+            minutes = minutes % 60;
+            $(form_selector + ' .time-hours').val(hours);
+            $(form_selector + ' .time-minutes').val(minutes);
+            $(form_selector + ' .time-seconds').val(seconds);
+        }
+    }
+
+    function set_field_time(element_selector, form_selector, sign) {
+        $(element_selector).val( sign * (
+            parseInt($(form_selector + ' .time-hours').val()) * 3600 +
+            parseInt($(form_selector + ' .time-minutes').val()) * 60 +
+            parseInt($(form_selector + ' .time-seconds').val()))
+        );
+    }
+
+    $(document).ready(function() {
+        set_time_form(parseInt($('#bonus_delay_for').val()), '#bonus-delay-time-form');
+        set_time_form(parseInt($('#bonus_valid_for').val()), '#bonus-valid-time-form');
+
+        var award_time = parseInt($('#bonus_award_time').val());
+        if (award_time < 0) {
+            $("#award_type_penalty").prop("checked", true);
+        } else {
+            $("#award_type_bonus").prop("checked", true);
+        }
+        set_time_form(Math.abs(award_time), '#bonus-award-time-form');
+
+        $('#bonus-delay-time-form .time-hours').on('change', function() {
+            set_field_time('#bonus_delay_for', '#bonus-delay-time-form', 1);
+        });
+
+        $('#bonus-delay-time-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_delay_for', '#bonus-delay-time-form', 1);
+        });
+
+        $('#bonus-delay-time-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_delay_for', '#bonus-delay-time-form', 1);
+        });
+
+        $('#bonus-valid-time-form .time-hours').on('change', function() {
+            set_field_time('#bonus_valid_for', '#bonus-valid-time-form', 1);
+        });
+
+        $('#bonus-valid-time-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_valid_for', '#bonus-valid-time-form', 1);
+        });
+
+        $('#bonus-valid-time-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_valid_for', '#bonus-valid-time-form', 1);
+        });
+
+        $('#bonus-award-time-form .time-hours').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-award-time-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-award-time-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-award-time-form input[type="radio"]').on('change', function() {
+            console.log($("#award_type_award").prop("checked"));
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+
+    });
+
+
 </script>
