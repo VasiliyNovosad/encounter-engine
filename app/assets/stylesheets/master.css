@@ -543,3 +543,8 @@ div.team-stat{
     background-color: #414141;
     border-color: #ccc;
 }
+
+.time-form-label {
+    margin-left: 5px;
+    margin-right: 5px;
+}
