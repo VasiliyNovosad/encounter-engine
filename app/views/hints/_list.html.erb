@@ -10,6 +10,7 @@
             <em>
               <%= link_to "(редагувати)", edit_game_level_hint_path(hint.level.game, hint.level, hint) %>
               <%= link_to "(видалити)", game_level_hint_path(hint.level.game, hint.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+              <%= link_to "(скопіювати)", copy_game_level_hint_path(hint.level.game, hint.level, hint), method: :post %>
             </em>
           </legend>
           <p>

@@ -1,7 +1,7 @@
 class HintsController < ApplicationController
   before_action :find_level
   before_action :find_game
-  before_action :find_hint, only: [:edit, :update, :destroy]
+  before_action :find_hint, only: [:edit, :update, :destroy, :copy]
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   before_action :ensure_author
@@ -35,6 +35,15 @@ class HintsController < ApplicationController
   def destroy
     @hint.destroy
     redirect_to game_level_path(@level.game, @level, anchor: "hints-block")
+  end
+
+  def copy
+    @new_hint = @hint.dup
+    if @new_hint.save
+      redirect_to game_level_path(@game, @level, anchor: "hint-#{@new_hint.id}")
+    else
+      redirect_to game_level_path(@game, @level, anchor: "hint-#{@hint.id}")
+    end
   end
 
   protected
