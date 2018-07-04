@@ -43,13 +43,13 @@
             <% if bonus.is_delayed %>
               <p>
                 <strong>Обмежити час появи: </strong>
-                <%= "на #{bonus.delay_for} секунд" %>
+                <%= "на #{seconds_to_string(bonus.delay_for || 0)}" %>
               </p>
             <% end %>
             <% if bonus.is_relative_limited %>
               <p>
                 <strong>Обмежити час виконання: </strong>
-                <%= "на #{bonus.valid_for} секунд" %>
+                <%= "на #{seconds_to_string(bonus.valid_for || 0)}" %>
               </p>
             <% end %>
             <% bonus.bonus_answers.each do |answer| %>
