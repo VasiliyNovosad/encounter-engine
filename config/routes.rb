@@ -52,12 +52,13 @@ Rails.application.routes.draw do
     post 'create_level_order', on: :member
   end
 
-  match 'game_entries/recall/:id', to: 'game_entries#recall', via: 'post'
-  match 'game_entries/reopen/:id', to: 'game_entries#reopen', via: 'post'
-  match 'game_entries/cancel/:id', to: 'game_entries#cancel', via: 'post'
-  match 'game_entries/accept/:id', to: 'game_entries#accept', via: 'post'
-  match 'game_entries/reject/:id', to: 'game_entries#reject', via: 'post'
-  match 'game_entries/reaccept/:id', to: 'game_entries#reaccept', via: 'post'
+  match '/game_entries/recall/:id', to: 'game_entries#recall', via: 'post'
+  match '/game_entries/reopen/:id', to: 'game_entries#reopen', via: 'post'
+  match '/game_entries/cancel/:id', to: 'game_entries#cancel', via: 'post'
+  match '/game_entries/accept/:id', to: 'game_entries#accept', via: 'post'
+  match '/game_entries/reject/:id', to: 'game_entries#reject', via: 'post'
+  match '/game_entries/reaccept/:id', to: 'game_entries#reaccept', via: 'post'
+  match '/game_entries/new/:game_id/:team_id',  to: 'game_entries#new', via: 'post'
 
   match '/game_passings/show_results', to: 'game_passings#show_results', via: 'get'
   match '/play/:game_id/tip', to: 'game_passings#get_current_level_tip', via: 'get'
@@ -75,7 +76,6 @@ Rails.application.routes.draw do
   match '/logs/full/:game_id', to: 'logs#show_full_log', via: 'get'
   match '/logs/short/:game_id', to: 'logs#show_short_log', via: 'get'
 
-  match '/game_entries/new/:game_id/:team_id',  to: 'game_entries#new', via: 'get'
   match '/signup',  to: 'users#new',            via: 'get'
   match '/signin',  to: 'sessions#new',         via: 'get'
   match '/signout', to: 'sessions#destroy', via: 'delete'
