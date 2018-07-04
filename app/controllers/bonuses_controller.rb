@@ -50,16 +50,11 @@ class BonusesController < ApplicationController
 
   protected
 
-  # t.integer :level_id
-  # t.string :name
-  # t.string :task
-  # t.string :help
-  # t.integer :team_id
-  # t.integer :award_time
-  # t.integer :position
   def bonus_params
     params.require(:bonus).permit(
         :name, :task, :help, :award_time, :correct_answer, :team_id,
+        :is_absolute_limited, :valid_from, :valid_to, :is_delayed,
+        :delay_for, :is_relative_limited, :valid_for,
         bonus_answers_attributes: [:id, :value, :team_id, :_destroy])
   end
 

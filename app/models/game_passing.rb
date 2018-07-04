@@ -9,6 +9,8 @@ class GamePassing < ActiveRecord::Base
   default_value_for :closed_levels, []
   serialize :penalty_hints
   default_value_for :penalty_hints, []
+  serialize :missed_bonuses
+  default_value_for :missed_bonuses, []
 
   belongs_to :team
   belongs_to :game
@@ -62,7 +64,7 @@ class GamePassing < ActiveRecord::Base
           id: q.id,
           name: q.name,
           position: q.position,
-          value: "<span class=\"right_code\">#{answer} (#{user})</span>"
+          value: "<span class=\"right_code\">#{answer} (#{user.nickname})</span>"
         } unless answered_questions.include?(q.id)
       end.compact
       changed = pass_question!(answered_question)
@@ -172,9 +174,10 @@ class GamePassing < ActiveRecord::Base
     # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
     level.team_bonuses(team_id).includes(:bonus_answers).any? do |bonus|
       # bonus.matches_any_answer(answer, team_id)
-      bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
-        ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
-      end
+      (!missed_bonuses.include?(bonus.id) || answered_bonuses.include?(bonus.id) ) && !bonus.is_delayed_now?(level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
+        bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
+          ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
+        end
     end
   end
 
@@ -254,6 +257,17 @@ class GamePassing < ActiveRecord::Base
       end
     end
 
+  end
+
+  def miss_bonus!(level_id, bonus_id)
+    level = Level.find(level_id)
+    bonus = level.bonuses.find(bonus_id)
+    unless self.missed_bonuses.include?(bonus_id)
+      unless bonus.nil?
+        missed_bonuses << bonus_id
+        save!
+      end
+    end
   end
 
   def current_level_position(team_id)

@@ -17,7 +17,30 @@
       <strong>Винагорода: </strong><%= seconds_to_string(bonus.award_time || 0) %>
     </p>
   <% end %>
-
+  <% if (bonus.award_time || 0) < 0 %>
+    <p>
+      <strong>Штраф: </strong><%= seconds_to_string(-(bonus.award_time || 0)) %>
+    </p>
+  <% end %>
+  <% if bonus.is_absolute_limited %>
+    <p>
+      <strong>Обмежити час доступності: </strong>
+      <%= bonus.valid_from.nil? ? '' : " з #{bonus.valid_from.strftime("%d.%m.%Y %H:%M")}" %>
+      <%= bonus.valid_to.nil? ? '' : " по #{bonus.valid_to.strftime("%d.%m.%Y %H:%M")}" %>
+    </p>
+  <% end %>
+  <% if bonus.is_delayed %>
+    <p>
+      <strong>Обмежити час появи: </strong>
+      <%= "на #{bonus.delay_for} секунд" %>
+    </p>
+  <% end %>
+  <% if bonus.is_relative_limited %>
+    <p>
+      <strong>Обмежити час виконання: </strong>
+      <%= "на #{bonus.valid_for} секунд" %>
+    </p>
+  <% end %>
   <p>
     <% bonus.bonus_answers.each do |answer| %>
         <span class="bonus"><%= answer.value %></span>

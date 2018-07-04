@@ -45,6 +45,9 @@ uk:
         help: "Підказка"
         award_time: "Винагорода"
         correct_answer: "Код"
+        is_delayed: "Обмежити час появи"
+        is_absolute_limited: "Обмежити час доступності"
+        is_relative_limited: "Обмежити час виконання"
       team:
         name: "Назва"
       task:

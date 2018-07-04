@@ -38,4 +38,38 @@ class Bonus < ActiveRecord::Base
   def team_correct_answer(team_id)
     team_answers(team_id).empty? ? nil : team_answers(team_id).first.value
   end
+
+  def ready_to_show?(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    is_absolute_limited? && (valid_from.nil? || current_time >= valid_from) &&
+        (valid_to.nil? || current_time <= valid_to) ||
+          is_delayed? && current_time - current_level_entered_at >= delay_for
+
+  end
+
+  def time_to_miss(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    result = nil
+    result ||= (self.valid_to - current_time).to_i if self.is_absolute_limited? && !self.valid_to.nil?
+    result ||= (self.valid_for || 0) - (current_time - self.valid_from).to_i if self.is_absolute_limited? && self.valid_to.nil? && !self.valid_from.nil? && self.is_relative_limited?
+    result ||= (self.valid_for || 0) + (self.delay_for || 0) - (current_time - current_level_entered_at).to_i if !self.is_absolute_limited? && self.is_delayed? && self.is_relative_limited?
+    result ||= (self.valid_for || 0) - (current_time - current_level_entered_at).to_i if !self.is_absolute_limited? && !self.is_delayed? && self.is_relative_limited?
+    result
+  end
+
+  def time_to_delay(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    result = nil
+    result ||= (self.valid_from - current_time).to_i if self.is_absolute_limited? || !self.valid_from.nil?
+    result ||= (current_level_entered_at - current_time).to_i + (self.delay_for || 0) if (!self.is_absolute_limited? || self.valid_from.nil?) && self.is_delayed?
+    result
+  end
+
+  def is_delayed_now?(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    (self.is_absolute_limited? && !self.valid_from.nil? || self.is_delayed?) &&
+            time_to_delay(current_level_entered_at, current_time) > 0
+  end
+
+  def is_limited_now?(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    (self.is_absolute_limited? && !self.valid_to.nil? || self.is_relative_limited) &&
+        time_to_miss(current_level_entered_at, current_time) > 0
+  end
+
 end
