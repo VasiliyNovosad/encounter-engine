@@ -30,21 +30,28 @@ Rails.application.routes.draw do
   resources :games do
     resources :levels do
       resources :tasks
-      resources :hints
-      resources :penalty_hints
+      resources :hints do
+        post 'copy', on: :member
+      end
+      resources :penalty_hints do
+        post 'copy', on: :member
+      end
       resources :questions do
         resources :answers
         post 'move_up', on: :member
         post 'move_down', on: :member
+        post 'copy', on: :member
       end
       resources :bonuses do
         resources :bonus_answers
         post 'move_up', on: :member
         post 'move_down', on: :member
+        post 'copy', on: :member
       end
       post 'move_up', on: :member
       post 'move_down', on: :member
       post 'change_position', on: :member
+      post 'copy', on: :member
     end
     resources :game_bonuses
     get 'show_scenario', on: :member

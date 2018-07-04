@@ -7,7 +7,7 @@ class Question < ActiveRecord::Base
   accepts_nested_attributes_for :answers, reject_if: :all_blank, allow_destroy: true
 
   validates :name, presence: { message: 'Не введено назву сектора' }
-  validates :name, uniqueness: { scope: [:level, :team], message: 'Сектор з такою назвою уже є на даному рівні' }
+  # validates :name, uniqueness: { scope: [:level, :team], message: 'Сектор з такою назвою уже є на даному рівні' }
 
   before_validation :set_name
 

@@ -1,7 +1,7 @@
 class PenaltyHintsController < ApplicationController
   before_action :find_level
   before_action :find_game
-  before_action :find_penalty_hint, only: [:edit, :update, :destroy]
+  before_action :find_penalty_hint, only: [:edit, :update, :destroy, :copy]
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   before_action :ensure_author
@@ -35,6 +35,15 @@ class PenaltyHintsController < ApplicationController
   def destroy
     @penalty_hint.destroy
     redirect_to game_level_path(@level.game, @level, anchor: "penalty-hints-block")
+  end
+
+  def copy
+    @new_hint = @penalty_hint.dup
+    if @new_hint.save
+      redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@new_hint.id}")
+    else
+      redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
+    end
   end
 
   protected

@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :find_game
   before_action :ensure_author
   before_action :find_level
-  before_action :find_question, only: [:edit, :update, :move_up, :move_down, :destroy]
+  before_action :find_question, only: [:edit, :update, :move_up, :move_down, :destroy, :copy]
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def new
@@ -49,6 +49,25 @@ class QuestionsController < ApplicationController
   def move_down
     @question.move_lower
     redirect_to game_level_path(@level.game, @level, anchor: "question-#{@question.id}")
+  end
+
+
+
+  def copy
+    @new_question = @question.dup
+    @new_question.set_list_position(@level.questions.count + 1)
+    @question.answers.each do |answer|
+      new_answer = answer.dup
+      new_answer.question_id = nil
+      @new_question.answers << new_answer
+    end
+    if @new_question.save
+      redirect_to game_level_path(@level.game, @level, anchor: "question-#{@new_question.id}")
+    else
+      p @new_question.errors
+      flash[:notice] = 'ERROR: Item can\'t be cloned.'
+      redirect_to game_level_path(@level.game, @level, anchor: "question-#{@question.id}")
+    end
   end
 
   protected
