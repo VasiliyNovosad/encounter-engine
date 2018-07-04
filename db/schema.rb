@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180628063856) do
+ActiveRecord::Schema.define(version: 20180704052624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -286,13 +286,14 @@ ActiveRecord::Schema.define(version: 20180628063856) do
 
   create_table "logs", force: :cascade do |t|
     t.integer  "game_id"
-    t.string   "team",     limit: 255
-    t.string   "level",    limit: 255
-    t.string   "answer",   limit: 255
+    t.string   "team",        limit: 255
+    t.string   "level",       limit: 255
+    t.string   "answer",      limit: 255
     t.datetime "time"
     t.integer  "user_id"
     t.integer  "team_id"
     t.integer  "level_id"
+    t.integer  "answer_type",             default: 0
   end
 
   create_table "penalty_hints", force: :cascade do |t|

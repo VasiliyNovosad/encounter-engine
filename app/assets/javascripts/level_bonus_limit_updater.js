@@ -32,27 +32,30 @@ var LevelBonusLimitUpdater = function() {
     }
         ,showLoadIndicator = function(bonusNum) {
         timerData[bonusNum].loadingIndicator.show();
-    }
-        ,hideLoadIndicator = function(bonusNum) {
+    },
+    hideLoadIndicator = function(bonusNum) {
         timerData[bonusNum].loadingIndicator.hide();
-    }
-        ,appendBonus = function(bonus_num, bonus_name) {
+    },
+    appendBonus = function(bonus_num, bonus_name) {
         $('#bonus-' + bonus_num).html('<p class="bonus-missed"><b>' + bonus_name + ' не виконано</b></p>');
-    }
-        ,loadBonus = function(bonusNum) {
+    },
+    loadBonus = function(bonusNum) {
         hideCountdownContainer(bonusNum);
         showLoadIndicator(bonusNum);
 
-        $.ajax({
-            url: '/play/' + timerData[bonusNum].gameId + '/miss_bonus',
-            method: 'POST',
-            data: {team_id: timerData[bonusNum].teamId, level_id: timerData[bonusNum].levelId, bonus_id: timerData[bonusNum].bonusId},
-            dataType: 'json',
-            success: function(data) {
-                hideLoadIndicator(bonusNum);
-                appendBonus(data.bonus_num, data.bonus_name);
-            }
-        });
+        if ($('#bonus-' + bonusNum).find('.bonus-limit-timer').length > 0) {
+            $.ajax({
+                url: '/play/' + timerData[bonusNum].gameId + '/miss_bonus',
+                method: 'POST',
+                data: {team_id: timerData[bonusNum].teamId, level_id: timerData[bonusNum].levelId, bonus_id: timerData[bonusNum].bonusId},
+                dataType: 'json',
+                success: function(data) {
+                    hideLoadIndicator(bonusNum);
+                    appendBonus(data.bonus_num, data.bonus_name);
+                }
+            });
+        }
+
     };
 
     return {
