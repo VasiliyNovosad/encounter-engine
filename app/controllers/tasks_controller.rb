@@ -1,6 +1,7 @@
 class TasksController < ApplicationController
   before_action :find_level
   before_action :find_game
+  before_action :ensure_game_was_not_finished, except: [:show]
   before_action :find_teams, only: [:new, :edit, :create, :update]
   before_action :find_task, only: [:edit, :update, :destroy]
 

@@ -1,7 +1,8 @@
 class LevelsController < ApplicationController
   before_action :find_game
+  before_action :ensure_game_was_not_finished, except: [:show]
   before_action :ensure_author
-  before_action :find_level, except: [:new, :index, :create]
+  before_action :find_level, except: [:new, :create, :copy]
 
   def new
     @level = @game.levels.build

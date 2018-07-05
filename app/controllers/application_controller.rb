@@ -62,4 +62,8 @@ class ApplicationController < ActionController::Base
   def ensure_game_was_not_started
     #redirect_to root_path, alert: 'Заборонено редагувати гру після її початку' if @game.started?      
   end
+
+  def ensure_game_was_not_finished
+    redirect_to root_path, alert: 'Заборонено редагувати гру після її закриття' if @game.author_finished?
+  end
 end

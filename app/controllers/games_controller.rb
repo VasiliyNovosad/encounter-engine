@@ -1,11 +1,11 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :find_game, except: [:index, :new, :create]
+  before_action :ensure_game_was_not_finished, only: [:edit, :update, :destroy]
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
   before_action :ensure_author_if_no_start_time, only: [:show]
   before_action :ensure_author, only: [:edit, :update]
-  #before_action :ensure_game_was_not_started, only: [:edit, :update]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
   before_action :find_teams, only: [:show, :new_level_order]

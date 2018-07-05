@@ -1,5 +1,6 @@
 class BonusesController < ApplicationController
   before_action :find_game
+  before_action :ensure_game_was_not_finished, except: [:show]
   before_action :ensure_author
   before_action :find_level
   before_action :find_bonus, only: [:edit, :update, :move_up, :move_down, :destroy, :copy]
