@@ -3,6 +3,7 @@ class GameEntriesController < ApplicationController
   before_action :find_game, only: :new
   before_action :find_team, only: :new
   before_action :find_entry, except: :new
+  before_action :ensure_game_was_not_finished
   before_action :ensure_author, only: [:accept, :reject, :reaccept]
   before_action :ensure_team_captain, except: [:accept, :reject, :reaccept]
 
