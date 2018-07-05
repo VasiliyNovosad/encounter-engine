@@ -218,9 +218,10 @@ class GamePassingsController < ApplicationController
       @game_passing = GamePassing.of(@team, @game)
       if level == @game_passing.current_level
         begin
-          time_finish = (level.position == 1 ? @game.starts_at : @game_passing.current_level_entered_at) + level.complete_later
-          save_log(level, time_finish, 0)
-          @game_passing.autocomplete_level!(level, @team_id, time_finish)
+          time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
+          time_finish = time_start + level.complete_later
+          save_log(level, time_finish, 3)
+          @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
         rescue
 
         end
