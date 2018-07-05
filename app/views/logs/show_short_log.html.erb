@@ -23,21 +23,39 @@
           <% log = @level_logs[level.position - 1][pos] %>
           <td align="center" class="stat-std">
             <% unless log[:log].nil? %>
-              <div class="team-stat" data-id=<%= log[:log].team_id %> onclick="toggle(<%= log[:log].team_id %>)">
-                <p class="team-name"><%= log[:log].team %></p>
-                <p>(<%= log[:log].user.nil? ? '' : log[:log].user.nickname %>)</p>
-                <p><%= log[:log].time.strftime('%d.%m.%Y') %></p>
-                <p><%= log[:log].time.strftime('%H:%M:%S.%L') %></p>
-                <% unless log[:result].nil? %>
-                  <p>(<%= log[:result].strftime('%H:%M:%S.%L') %>)</p>
-                <% end %>
-                <% if log[:log].answer == 'timeout' %>
+              <% if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0) %>
+                <div class="team-stat" data-id=<%= log[:log].team_id %> onclick="toggle(<%= log[:log].team_id %>)">
+                  <p class="team-name"><%= log[:log].team %></p>
+                  <p>(<%= log[:log].user.nil? ? '' : log[:log].user.nickname %>)</p>
+                  <p><%= log[:log].time.strftime('%d.%m.%Y') %></p>
+                  <p><%= log[:log].time.strftime('%H:%M:%S.%L') %></p>
+                  <% unless log[:result].nil? %>
+                    <p>(<%= log[:result].strftime('%H:%M:%S.%L') %>)</p>
+                  <% end %>
+                  <% if log[:log].answer == 'timeout' %>
                     <p class="timeout-stat">таймаут</p>
-                <% end %>
-                <% if log[:bonus] != 0 %>
-                  <p><%= "#{(log[:bonus] || 0) > 0 ? 'Бонус:' : 'Штраф:'} #{seconds_to_string((log[:bonus] || 0).abs)}" %></p>
-                <% end %>
-              </div>
+                  <% end %>
+                  <% if log[:bonus] != 0 %>
+                    <p><%= "#{(log[:bonus] || 0) > 0 ? 'Бонус:' : 'Штраф:'} #{seconds_to_string((log[:bonus] || 0).abs)}" %></p>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="team-stat" data-id=<%= log[:log].team_id %> onclick="toggle(<%= log[:log].team_id %>)">
+                  <p class="team-name"><%= log[:team].name %></p>
+                  <p>(<%= log[:log].user.nil? ? '' : log[:log].user.nickname %>)</p>
+                  <p><%= log[:log].closed_at.strftime('%d.%m.%Y') %></p>
+                  <p><%= log[:log].closed_at.strftime('%H:%M:%S.%L') %></p>
+                  <% unless log[:result].nil? %>
+                    <p>(<%= log[:result].strftime('%H:%M:%S.%L') %>)</p>
+                  <% end %>
+                  <% if log[:log].timeouted %>
+                      <p class="timeout-stat">таймаут</p>
+                  <% end %>
+                  <% if log[:bonus] != 0 %>
+                    <p><%= "#{(log[:bonus] || 0) > 0 ? 'Бонус:' : 'Штраф:'} #{seconds_to_string((log[:bonus] || 0).abs)}" %></p>
+                  <% end %>
+                </div>
+              <% end %>
             <% end %>
           </td>
         <% end %>

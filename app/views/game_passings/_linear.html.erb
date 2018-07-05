@@ -5,7 +5,7 @@
 <div id="left-game-container">
 <%= form_tag("/play/#{@game.id}", method: "post", remote: true, format: :js) do %>
   <br>Код:
-  <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: false) %>
+  <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: :off) %>
   <%= submit_tag " надіслати " %>
   <br>
 <% end %>

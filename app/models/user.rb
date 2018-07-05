@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :games, join_table: 'games_authors', foreign_key: 'author_id', association_foreign_key: 'game_id'
   has_many :logs
   has_many :game_bonuses, class_name: 'GameBonus'
+  has_many :closed_levels, class_name: 'ClosedLevel'
 
   scope :by_nickname, ->(nickname) { where('lower(nickname) = ?', nickname) }
 

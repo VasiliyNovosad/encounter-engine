@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180704052624) do
+ActiveRecord::Schema.define(version: 20180705120604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,18 @@ ActiveRecord::Schema.define(version: 20180704052624) do
     t.integer  "delay_for"
     t.boolean  "is_relative_limited", default: false
     t.integer  "valid_for"
+  end
+
+  create_table "closed_levels", force: :cascade do |t|
+    t.integer  "game_id"
+    t.integer  "team_id"
+    t.integer  "level_id"
+    t.integer  "user_id"
+    t.datetime "started_at"
+    t.datetime "closed_at"
+    t.boolean  "timeouted",  default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "forem_categories", force: :cascade do |t|

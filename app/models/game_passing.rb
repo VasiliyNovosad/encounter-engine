@@ -75,7 +75,8 @@ class GamePassing < ActiveRecord::Base
       end
       needed = level.team_questions(team_id).count
       closed = (answered_questions.to_set & level.team_questions(team_id).map(&:id).to_set).count
-      pass_level!(level, team_id, time) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
+      start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
+      pass_level!(level, team_id, time, start_time, user.id) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
       is_correct_answer = true
     end
     save! if changed
@@ -111,7 +112,8 @@ class GamePassing < ActiveRecord::Base
     changed
   end
 
-  def pass_level!(level, team_id, time)
+  def pass_level!(level, team_id, time, time_start, user_id)
+    ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time)
     unless closed?(level)
       if game.game_type == 'linear' && last_level? ||
         game.game_type == 'panic' && !closed?(level) &&
@@ -216,7 +218,8 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def autocomplete_level!(level, team_id, time_finish)
+  def autocomplete_level!(level, team_id, time_start, time_finish, user_id)
+    ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
     lock!
     if game.game_type == 'linear' && last_level? ||
         game.game_type == 'selected' && last_level_selected?(team_id)

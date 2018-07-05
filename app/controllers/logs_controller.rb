@@ -128,53 +128,102 @@ class LogsController < ApplicationController
   end
 
   def show_short_log
-    logs = Log.of_game(@game).order_by_time.preload(:user).to_a
-    logs = logs.group_by { |log| [log.team_id, log.level_id]}
-    @levels = Level.of_game(@game).to_a
-    game_passings = GamePassing.of_game(@game).preload(:team).to_a
-    game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
-    @teams = game_passings.map(&:team)
-    @level_logs = []
-    @levels.each do |level|
-      @level_logs << @teams.map do |team|
-        game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
-        team_logs = logs[[team.id, level.id]]
-        previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
-        team_log = (!team_logs.nil? && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
-        {
-            team: team,
-            log: team_log,
-            time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time : team_log.time,
-            result: team_log.nil? ? nil : Time.at(team_log.time - previous_time).utc,
-            bonus: game_bonus.empty? ? 0 : game_bonus[0].award
-        }
-      end.sort_by { |a| a[:time] }
-    end
+    if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0)
+      logs = Log.of_game(@game).order_by_time.preload(:user).to_a
+      logs = logs.group_by { |log| [log.team_id, log.level_id]}
+      @levels = Level.of_game(@game).to_a
+      game_passings = GamePassing.of_game(@game).preload(:team).to_a
+      game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
+      @teams = game_passings.map(&:team)
+      @level_logs = []
+      @levels.each do |level|
+        @level_logs << @teams.map do |team|
+          game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
+          team_logs = logs[[team.id, level.id]]
+          previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
+          team_log = (!team_logs.nil? && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
+          {
+              team: team,
+              log: team_log,
+              time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time : team_log.time,
+              result: team_log.nil? ? nil : Time.at(team_log.time - previous_time).utc,
+              bonus: game_bonus.empty? ? 0 : game_bonus[0].award
+          }
+        end.sort_by { |a| a[:time] }
+      end
 
-    results = game_passings.map do |result|
-      game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
-      {
-        team: result.team,
-        levels: result.closed_levels.count,
-        bonuses: (result.sum_bonuses || 0) + game_bonus,
-        time: result.finished_at || result.current_level_entered_at
-      }
+      results = game_passings.map do |result|
+        game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
+        {
+          team: result.team,
+          levels: result.closed_levels.count,
+          bonuses: (result.sum_bonuses || 0) + game_bonus,
+          time: result.finished_at || result.current_level_entered_at
+        }
+      end
+      results = results.sort_by do |a|
+        [-a[:levels], a[:time]]
+      end
+      @level_logs << results
+      results = results.map do |result|
+        {
+          team: result[:team],
+          levels: result[:levels],
+          time: (result[:time] - result[:bonuses])
+        }
+      end
+      results = results.sort_by do |a|
+        [-a[:levels], a[:time]]
+      end
+      @level_logs << results
+    else
+      @level_logs = []
+      @levels = Level.of_game(@game).to_a
+      game_passings = GamePassing.of_game(@game).preload(:team).to_a
+      game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
+      @teams = game_passings.map(&:team)
+      all_closed_levels = ClosedLevel.of_game(@game.id).order(:closed_at).preload(:user).to_a.group_by { |level| level.level_id }
+      @levels.each do |level|
+        closed_levels_of_level = all_closed_levels[level.id]
+        closed_levels_of_level = closed_levels_of_level.group_by { |level| level.team_id} unless all_closed_levels.nil?
+        @level_logs << @teams.map do |team|
+          game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
+          closed_level_of_team = closed_levels_of_level.nil? ? nil : closed_levels_of_level[team.id]
+          team_log = closed_level_of_team.nil? ? nil : closed_level_of_team[0]
+          {
+              team: team,
+              log: team_log,
+              time: team_log.nil? ? Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time : team_log.closed_at,
+              result: team_log.nil? ? nil : Time.at(team_log.closed_at - team_log.started_at).utc,
+              bonus: game_bonus.empty? ? 0 : game_bonus[0].award
+          }
+        end.sort_by { |a| a[:time] }
+      end
+      results = game_passings.map do |result|
+        game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
+        {
+            team: result.team,
+            levels: result.closed_levels.count,
+            bonuses: (result.sum_bonuses || 0) + game_bonus,
+            time: result.finished_at || result.current_level_entered_at
+        }
+      end
+      results = results.sort_by do |a|
+        [-a[:levels], a[:time]]
+      end
+      @level_logs << results
+      results = results.map do |result|
+        {
+            team: result[:team],
+            levels: result[:levels],
+            time: (result[:time] - result[:bonuses])
+        }
+      end
+      results = results.sort_by do |a|
+        [-a[:levels], a[:time]]
+      end
+      @level_logs << results
     end
-    results = results.sort_by do |a|
-      [-a[:levels], a[:time]]
-    end
-    @level_logs << results
-    results = results.map do |result|
-      {
-        team: result[:team],
-        levels: result[:levels],
-        time: (result[:time] - result[:bonuses])
-      }
-    end
-    results = results.sort_by do |a|
-      [-a[:levels], a[:time]]
-    end
-    @level_logs << results
   end
 
   protected

@@ -112,10 +112,12 @@ class GamesController < ApplicationController
     game_passing = GamePassing.of_game(game)
     logs = Log.of_game(game)
     game_bonuses = GameBonus.of_game(game)
+    closed_levels = ClosedLevel.of_game(game.id)
 
     game_passing.delete_all
     logs.delete_all
     game_bonuses.delete_all
+    closed_levels.delete_all
 
     redirect_to game_path(@game)
   end
