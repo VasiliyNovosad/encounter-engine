@@ -101,8 +101,8 @@ class GamePassingsController < ApplicationController
           format.html do
             @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
             get_uniq_level_codes(@level)
-            get_answered_bonuses(@level) #unless @game.game_type == 'panic'
-            get_answered_questions(@level) #unless @game.game_type == 'panic'
+            get_answered_bonuses(@level)
+            get_answered_questions(@level)
             get_penalty_hints(@level)
             render 'show_current_level', layout: 'in_game'
           end
@@ -161,8 +161,8 @@ class GamePassingsController < ApplicationController
             format.html do
               @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
               get_uniq_level_codes(@level)
-              get_answered_bonuses(@level) # unless @game.game_type == 'panic'
-              get_answered_questions(@level) # unless @game.game_type == 'panic'
+              get_answered_bonuses(@level)
+              get_answered_questions(@level)
               get_penalty_hints(@level)
               render 'show_current_level', layout: 'in_game'
             end

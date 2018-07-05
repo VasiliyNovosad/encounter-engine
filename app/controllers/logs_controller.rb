@@ -128,18 +128,21 @@ class LogsController < ApplicationController
   end
 
   def show_short_log
+    p "Start: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     logs = Log.of_game(@game).order_by_time.preload(:user).to_a
+    logs = logs.group_by { |log| [log.team_id, log.level_id]}
     @levels = Level.of_game(@game).to_a
     game_passings = GamePassing.of_game(@game).preload(:team).to_a
-    game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id)
+    game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
     @teams = game_passings.map(&:team)
     @level_logs = []
+    p "1: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     @levels.each do |level|
       @level_logs << @teams.map do |team|
         game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
-        team_logs = logs.select { |log| log.team_id == team.id && log.level_id == level.id }
+        team_logs = logs[[team.id, level.id]]
         previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
-        team_log = (team_logs.count > 0 && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
+        team_log = (!team_logs.nil? && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
         {
             team: team,
             log: team_log,
@@ -150,6 +153,7 @@ class LogsController < ApplicationController
       end.sort_by { |a| a[:time] }
     end
 
+    p "2: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     results = game_passings.map do |result|
       game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
       {
@@ -159,10 +163,12 @@ class LogsController < ApplicationController
         time: result.finished_at || result.current_level_entered_at
       }
     end
+    p "3: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     results = results.sort_by do |a|
       [-a[:levels], a[:time]]
     end
     @level_logs << results
+    p "4: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     results = results.map do |result|
       {
         team: result[:team],
@@ -170,10 +176,12 @@ class LogsController < ApplicationController
         time: (result[:time] - result[:bonuses])
       }
     end
+    p "5: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     results = results.sort_by do |a|
       [-a[:levels], a[:time]]
     end
     @level_logs << results
+    p "Finish: #{Time.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
   end
 
   protected
