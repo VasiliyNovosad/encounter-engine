@@ -26,26 +26,6 @@
 </div>
 
 <script type="text/javascript">
-    function set_time_form(seconds_time, form_selector) {
-        if (seconds_time > 0) {
-            var minutes = Math.trunc(seconds_time / 60);
-            var seconds = seconds_time % 60;
-            var hours = Math.trunc(minutes / 60);
-            minutes = minutes % 60;
-            $(form_selector + ' .time-hours').val(hours);
-            $(form_selector + ' .time-minutes').val(minutes);
-            $(form_selector + ' .time-seconds').val(seconds);
-        }
-    }
-
-    function set_field_time(element_selector, form_selector, sign) {
-        $(element_selector).val( sign * (
-            parseInt($(form_selector + ' .time-hours').val()) * 3600 +
-            parseInt($(form_selector + ' .time-minutes').val()) * 60 +
-            parseInt($(form_selector + ' .time-seconds').val()))
-        );
-    }
-
     $( document ).ready(function() {
         set_time_form(parseInt($('#penalty_hint_penalty').val()), '#hint-penalty-form');
 

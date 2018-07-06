@@ -14,7 +14,6 @@
       },
       prefix: "Лишилось: ",
       finish : function() {
-        console.log(1);
         $('#panic-countdown').css('display', 'none');
         var game_id = <%= @game.id %>;
         return window.location = '/play/' + game_id + '/';

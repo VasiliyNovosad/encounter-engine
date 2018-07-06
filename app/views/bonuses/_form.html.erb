@@ -87,25 +87,6 @@
     $('#bonus_valid_to').datetimepicker({
         format:'d.m.Y H:i',
         lang:'uk' });
-    function set_time_form(seconds_time, form_selector) {
-        if (seconds_time > 0) {
-            var minutes = Math.trunc(seconds_time / 60);
-            var seconds = seconds_time % 60;
-            var hours = Math.trunc(minutes / 60);
-            minutes = minutes % 60;
-            $(form_selector + ' .time-hours').val(hours);
-            $(form_selector + ' .time-minutes').val(minutes);
-            $(form_selector + ' .time-seconds').val(seconds);
-        }
-    }
-
-    function set_field_time(element_selector, form_selector, sign) {
-        $(element_selector).val( sign * (
-            parseInt($(form_selector + ' .time-hours').val()) * 3600 +
-            parseInt($(form_selector + ' .time-minutes').val()) * 60 +
-            parseInt($(form_selector + ' .time-seconds').val()))
-        );
-    }
 
     $(document).ready(function() {
         set_time_form(parseInt($('#bonus_delay_for').val()), '#bonus-delay-time-form');
@@ -156,7 +137,6 @@
         });
 
         $('#bonus-award-time-form input[type="radio"]').on('change', function() {
-            console.log($("#award_type_award").prop("checked"));
             set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
         });
 
