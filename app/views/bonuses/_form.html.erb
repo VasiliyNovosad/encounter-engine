@@ -33,7 +33,7 @@
       <%= label_tag(:penalty_type, "Штраф", class: 'time-form-label control-label') %>
     </div>
     <%= render 'shared/time_form' %>
-    <%= f.number_field :award_time, class: 'form-control form-control-sm', hidden: true %>
+    <%= f.hidden_field :award_time %>
   </div>
 </div>
 <div class="form-group row">
