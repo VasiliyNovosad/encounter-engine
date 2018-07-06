@@ -185,7 +185,7 @@ class LogsController < ApplicationController
       all_closed_levels = ClosedLevel.of_game(@game.id).order(:closed_at).preload(:user).to_a.group_by { |level| level.level_id }
       @levels.each do |level|
         closed_levels_of_level = all_closed_levels[level.id]
-        closed_levels_of_level = closed_levels_of_level.group_by { |level| level.team_id} unless all_closed_levels.nil?
+        closed_levels_of_level = closed_levels_of_level.group_by { |level| level.team_id} unless closed_levels_of_level.nil?
         @level_logs << @teams.map do |team|
           game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
           closed_level_of_team = closed_levels_of_level.nil? ? nil : closed_levels_of_level[team.id]
