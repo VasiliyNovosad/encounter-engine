@@ -12,12 +12,21 @@
 </div>
 <div class="form-group row">
   <%= f.label 'Бонус/Штраф', class: 'col-sm-2 col-form-label' %>
-  <div class="col-sm-3">
-    <%= f.number_field :award, step: "0.001", class: 'form-control form-control-sm' %>
+  <div id="game-bonus-form" class="col-sm-10 form-inline">
+    <div class="form-check form-check-inline">
+      <%= radio_button_tag(:award_type, "bonus") %>
+      <%= label_tag(:bonus_type, "Бонус", class: 'time-form-label control-label') %>
+      <%= radio_button_tag(:award_type, "penalty") %>
+      <%= label_tag(:penalty_type, "Штраф", class: 'time-form-label control-label') %>
+    </div>
+    <input class="time-hours form-control form-control-sm" type="number" min="0" max="9999" value="0">
+    <label class="time-form-label col-form-label">год</label>
+    <input class="time-minutes form-control form-control-sm" type="number" min="0" max="59" value="0">
+    <label class="time-form-label col-form-label">хв</label>
+    <input class="time-seconds form-control form-control-sm" type="number" min="0" max="59.999" value="0" step="0.001">
+    <label class="time-form-label col-form-label">с</label>
+    <%= f.hidden_field :award %>
     <%= f.text_field :reason, hidden: true %>
-  </div>
-  <div class="col-sm-7">
-    <label class="col-form-label">секунд</label>
   </div>
 </div>
 <div class="form-group row">
@@ -26,3 +35,48 @@
     <%= f.text_field :description, class: 'form-control form-control-sm' %>
   </div>
 </div>
+
+<script type="text/javascript">
+    function set_field_award(element_selector, form_selector, sign) {
+        $(element_selector).val( sign * (
+            parseInt($(form_selector + ' .time-hours').val()) * 3600 +
+            parseInt($(form_selector + ' .time-minutes').val()) * 60 +
+            parseFloat($(form_selector + ' .time-seconds').val()))
+        );
+    }
+
+    $(document).ready(function() {
+        var form_selector = $('#game-bonus-form');
+        var award_time = parseFloat($('#game_bonus_award').val());
+        if (award_time < 0) {
+            $("#award_type_penalty").prop("checked", true);
+        } else {
+            $("#award_type_bonus").prop("checked", true);
+        }
+        if (award_time > 0) {
+            var minutes = Math.trunc(award_time / 60);
+            var seconds = award_time - minutes * 60;
+            var hours = Math.trunc(minutes / 60);
+            minutes = minutes % 60;
+            $(form_selector + ' .time-hours').val(hours);
+            $(form_selector + ' .time-minutes').val(minutes);
+            $(form_selector + ' .time-seconds').val(seconds);
+        }
+
+        $('#game-bonus-form .time-hours').on('change', function() {
+            set_field_award('#game_bonus_award', '#game-bonus-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#game-bonus-form .time-minutes').on('change', function() {
+            set_field_award('#game_bonus_award', '#game-bonus-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#game-bonus-form .time-seconds').on('change', function() {
+            set_field_award('#game_bonus_award', '#game-bonus-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#game-bonus-form input[type="radio"]').on('change', function() {
+            set_field_award('#game_bonus_award', '#game-bonus-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+    });
+</script>
