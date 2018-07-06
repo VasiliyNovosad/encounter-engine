@@ -113,7 +113,9 @@ class GamePassing < ActiveRecord::Base
   end
 
   def pass_level!(level, team_id, time, time_start, user_id)
+    p "Pass level start: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time)
+    p "Pass level 1: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     unless closed?(level)
       if game.game_type == 'linear' && last_level? ||
         game.game_type == 'panic' && !closed?(level) &&
@@ -132,9 +134,13 @@ class GamePassing < ActiveRecord::Base
           self.current_level = next_selected_level(level, team_id)
         end
       end
+      p "Pass level 2: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
       save!
+      p "Pass level 3: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
       PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{self.game_id}?level=#{level.position}" : "/play/#{self.game_id}"
+      p "Pass level 4: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     end
+    p "Pass level end: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
   end
 
   def closed?(level)
@@ -219,7 +225,9 @@ class GamePassing < ActiveRecord::Base
   end
 
   def autocomplete_level!(level, team_id, time_start, time_finish, user_id)
+    p "Autocomplete level start: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
+    p "Autocomplete level 1: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     lock!
     if game.game_type == 'linear' && last_level? ||
         game.game_type == 'selected' && last_level_selected?(team_id)
@@ -238,7 +246,9 @@ class GamePassing < ActiveRecord::Base
         end
       end
     end
+    p "Autocomplete level 2: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
     save!
+    p "Autocomplete level end: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L")}"
   end
 
   def use_penalty_hint!(level_id, penalty_hint_id, user_id)
@@ -246,8 +256,8 @@ class GamePassing < ActiveRecord::Base
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
     unless self.penalty_hints.include?(penalty_hint.id)
       unless penalty_hint.nil?
-        GameBonus.create(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty * 60, user_id: user_id, reason: 'за штрафну підказку', description: '')
-        # self.sum_bonuses -= penalty_hint.penalty * 60
+        GameBonus.create(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '')
+        # self.sum_bonuses -= penalty_hint.penalty
         penalty_hints << penalty_hint.id
         save!
         PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}/penalty_hints", hint: {

@@ -14,7 +14,7 @@
             </em>
           </legend>
           <p>
-            <em>Через</em> <strong><%= link_to hint.delay_in_minutes, edit_game_level_hint_path(hint.level.game, hint.level, hint) %></strong> <em>хвилин:</em>
+            <em>Через</em> <strong><%= seconds_to_string(hint.delay || 0) %></strong> <em>:</em>
           </p>
           <p>
             <%= hint.text.html_safe %>

@@ -31,7 +31,7 @@ uk:
         correct_answer: "Код"
       hint:
         text: "Текст"
-        delay_in_minutes: "Через"
+        delay: "Через"
       answer:
         value: "Код"
       question:

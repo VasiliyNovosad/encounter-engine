@@ -77,7 +77,7 @@
     <% @penalty_hints.each_with_index do |hint, index| %>
       <fieldset>
         <legend>
-          Штрафна підказка <%= index + 1 %>: <%= hint[:name] %> (штраф <%= hint[:penalty] %> хв)
+          Штрафна підказка <%= index + 1 %>: <%= hint[:name] %> (штраф <%= seconds_to_string(hint[:penalty] || 0) %>)
         </legend>
         <div id="penalty-hint-<%= hint[:id] %>">
           <% if hint[:used] %>

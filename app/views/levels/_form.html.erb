@@ -20,18 +20,15 @@
     </div>
   </div>
 </div>
-<div class="form-group row" id="duration-block">
-  <%= f.label 'Автозавершення через ', class: 'col-sm-2 col-form-label col-12' %>
-  <div class="col-sm-2 col-8">
-    <%= f.number_field :complete_later_minutes, class: 'form-control form-control-sm' %>
-  </div>
-  <div class="col-sm-8 col-4">
-    <label class="col-form-label">хв</label>
+<div class="form-group row">
+  <%= f.label 'Автозавершення через ', class: 'col-sm-2 col-form-label' %>
+  <div id="level-complete-later-form" class="col-sm-10 form-inline">
+    <%= render 'shared/time_form' %>
+    <%= f.hidden_field :complete_later %>
   </div>
 </div>
 <div class="form-group row">
   <%= f.label 'Умова для проходження', class: 'col-sm-2 col-form-label' %>
-  <%= f.hidden_field :sectors_for_close %>
   <div class="col-sm-10">
     <div class="custom-control custom-radio custom-control-inline">
       <%= radio_button_tag(:condition, "all", true, class: "custom-control-input") %>
@@ -40,9 +37,7 @@
     <div class="custom-control custom-radio custom-control-inline">
       <%= radio_button_tag(:condition, "selected", true, class: "custom-control-input") %>
       <%= label_tag(:condition_selected, "Закрити", class: "custom-control-label") %>
-      <div class="col-sm-3">
-        <%= number_field_tag :sectors_for_close_1, nil, min: 0, class: 'form-control form-control-sm' %>
-      </div>
+      <%= f.number_field :sectors_for_close, min: 0, max: @level.questions.count, class: 'form-control form-control-sm' %>
       <div class="col-sm-6">
         <label class="col-form-label">секторів</label>
       </div>
@@ -55,33 +50,62 @@
         if (!$('#level_olymp').checked) {
             $('#olymp_base_block').css('display', 'none');
         }
-        var sectors_for_close = $('#level_sectors_for_close').val();
-        var sectors_for_close_1 = $('#sectors_for_close_1');
-        if (sectors_for_close == 0) {
+        var sectors_for_close = $('#level_sectors_for_close');
+        if (sectors_for_close.val() == 0) {
             $( "#condition_all" ).prop( "checked", true );
-            sectors_for_close_1.prop('readonly', true);
+            sectors_for_close.prop('readonly', true);
         } else {
             $("#condition_selected").prop( "checked", true );
-            sectors_for_close_1.prop('readonly', false);
-            sectors_for_close_1.val(sectors_for_close);
+            sectors_for_close.prop('readonly', false);
         }
+
+        set_time_form(parseInt($('#level_complete_later').val()), '#level-complete-later-form');
+
+        $('#level-complete-later-form .time-hours').on('change', function() {
+            set_field_time('#level_complete_later', '#level-complete-later-form', 1);
+        });
+
+        $('#level-complete-later-form .time-minutes').on('change', function() {
+            set_field_time('#level_complete_later', '#level-complete-later-form', 1);
+        });
+
+        $('#level-complete-later-form .time-seconds').on('change', function() {
+            set_field_time('#level_complete_later', '#level-complete-later-form', 1);
+        });
     });
+
+    function set_time_form(seconds_time, form_selector) {
+        if (seconds_time > 0) {
+            var minutes = Math.trunc(seconds_time / 60);
+            var seconds = seconds_time % 60;
+            var hours = Math.trunc(minutes / 60);
+            minutes = minutes % 60;
+            $(form_selector + ' .time-hours').val(hours);
+            $(form_selector + ' .time-minutes').val(minutes);
+            $(form_selector + ' .time-seconds').val(seconds);
+        }
+    }
+
+    function set_field_time(element_selector, form_selector, sign) {
+        $(element_selector).val( sign * (
+            parseInt($(form_selector + ' .time-hours').val()) * 3600 +
+            parseInt($(form_selector + ' .time-minutes').val()) * 60 +
+            parseInt($(form_selector + ' .time-seconds').val()))
+        );
+    }
 
     $('#level_olymp').on("click", function(){ toggle($('#level_olymp').get(0)); });
 
     $('input[type="radio"]').on('change', function() {
+        var sectors_for_close = $('#level_sectors_for_close');
         if ($("#condition_all").prop("checked")) {
-            $('#sectors_for_close_1').prop('readonly', true);
-            $('#level_sectors_for_close').val('0');
+            sectors_for_close.prop('readonly', true);
+            sectors_for_close.val(0);
         } else {
-            var sectors_for_close_1 = $('#sectors_for_close_1');
-            sectors_for_close_1.prop('readonly', false);
-            sectors_for_close_1.select();
+            sectors_for_close.prop('readonly', false);
+            sectors_for_close.select();
+            sectors_for_close.val(<%= @level.questions.count %>);
         }
-    });
-
-    $('#sectors_for_close_1').on('change', function() {
-        $('#level_sectors_for_close').val($('#sectors_for_close_1').val());
     });
 
     function toggle(elem) {

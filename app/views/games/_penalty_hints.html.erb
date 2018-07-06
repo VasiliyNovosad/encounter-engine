@@ -10,7 +10,7 @@
     <%= hint.text.html_safe %>
   </p>
   <p>
-    <%= "Штраф: #{hint.penalty} хв" %>
+    <%= "Штраф: #{seconds_to_string(hint.penalty || 0)}" %>
   </p>
   <br>
 <% end %>

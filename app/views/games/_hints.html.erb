@@ -3,7 +3,7 @@
     <%= "Для #{ hint.team.nil? ? 'всіх' : hint.team.name}:" %>
   </p>
   <p>
-    <%= "через #{hint.delay_in_minutes} хв" %>
+    <%= "через #{seconds_to_string(hint.delay || 0)}" %>
   </p>
   <p>
     <%= hint.text.html_safe %>

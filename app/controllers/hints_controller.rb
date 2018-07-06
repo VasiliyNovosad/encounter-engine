@@ -50,7 +50,7 @@ class HintsController < ApplicationController
   protected
 
   def hint_params
-    params.require(:hint).permit(:level_id, :text, :delay_in_minutes, :team_id)
+    params.require(:hint).permit(:level_id, :text, :delay, :team_id)
   end
 
   def find_level

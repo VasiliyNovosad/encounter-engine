@@ -151,9 +151,9 @@ label {
     font-weight: bold;
 }
 
-.edit_level label, .new_level label {
-    width: 150px;
-}
+/*.edit_level label, .new_level label {*/
+    /*width: 150px;*/
+/*}*/
 
 .edit_level .radio, .new_level .radio {
     position: absolute;
@@ -547,4 +547,13 @@ div.team-stat{
 .time-form-label {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.custom-control-label {
+    margin-top: 6px;
+}
+
+#level_sectors_for_close {
+    width: 80px;
+    margin-left: 10px;
 }
