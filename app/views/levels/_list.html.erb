@@ -1,11 +1,13 @@
 <% levels.each do |level| %>
   <p id="level-<%= level.position %>">
     <%= level.position %>. <%= link_to level.name, game_level_path(level.game, level) %>
-    <span class="level-move"><%= link_to "↑", move_up_game_level_path(level.game, level), method: :post unless level.first? %></span>
-    <span class="level-move"><%= link_to "↓", move_down_game_level_path(level.game, level), method: :post unless level.last? %></span>
-    <span class="level-copy"><%= link_to "(скопіювати)", copy_game_level_path(level.game, level), method: :post %></span>
-    <span class="level-dismiss"><%= link_to "(зняти рівень)", dismiss_game_level_path(level.game, level), method: :post unless level.dismissed? %></span>
-    <span class="level-dismiss"><%= link_to "(відмінити зняття рівня)", undismiss_game_level_path(level.game, level), method: :post if level.dismissed? %></span>
+    <% unless level.game.author_finished? %>
+      <span class="level-move"><%= link_to "↑", move_up_game_level_path(level.game, level), method: :post unless level.first? %></span>
+      <span class="level-move"><%= link_to "↓", move_down_game_level_path(level.game, level), method: :post unless level.last? %></span>
+      <span class="level-copy"><%= link_to "(скопіювати)", copy_game_level_path(level.game, level), method: :post %></span>
+      <span class="level-dismiss"><%= link_to "(зняти рівень)", dismiss_game_level_path(level.game, level), method: :post unless level.dismissed? %></span>
+      <span class="level-dismiss"><%= link_to "(відмінити зняття рівня)", undismiss_game_level_path(level.game, level), method: :post if level.dismissed? %></span>
+    <% end %>
   </p>
   <br>
 <% end %>

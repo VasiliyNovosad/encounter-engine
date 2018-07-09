@@ -77,12 +77,11 @@
   <% end %>
 <% end %>
 <br>
-<p class="stat-link"><em><%= link_to "(статистика)", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></em></p>
-<br>
 <%= render 'shared/countdown' %>
 <div id="start-countdown"></div>
 <br>
 
+<p><%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></p>
 <% if @game.started? && !@game.is_testing? %>
   <% if user_signed_in? && current_user.author_of?(@game) %>
     <p><%= link_to "Моніторинг", url_for("/logs/livechannel/#{@game.id}")%></p>
@@ -137,14 +136,14 @@
 <%= render 'teams', accepted_game_entries: @accepted_game_entries, game: @game %>
 <br>
 
-<% if user_signed_in? && current_user.author_of?(@game) %>
+<% if user_signed_in? && current_user.author_of?(@game) && !@game.author_finished? %>
   <p>
     <%= link_to "Редагувати дану гру", edit_game_path(@game) %>
   </p>
   <br>
 <% end %>
 
-<% if @game.game_type == 'selected' && @teams_for_test.count > 0 %>
+<% if @game.game_type == 'selected' && @teams_for_test.count > 0 && !@game.author_finished? %>
   <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order") %></p>
 <% end %>
 <script type="text/javascript">
@@ -160,7 +159,7 @@
   });
 </script>
 
-<% if user_signed_in? && current_user.author_of?(@game) && !@game.started?&& !@game.is_testing? && @game.levels && @game.levels.count > 0 %>
+<% if user_signed_in? && current_user.author_of?(@game) && !@game.started? && !@game.is_testing? && @game.levels && @game.levels.count > 0 %>
 
     <% if game_with_personal? || @game.game_type == 'selected' %>
         <%= form_tag "/games/start_test/#{@game.id}", method: 'post' do %>
@@ -182,16 +181,16 @@
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
   <br>
+  <%= "Ви завершили гру" if (@game.started? && !@game.is_testing? && @game.author_finished?) %>
   <br>
   <br>
   <br>
   <%= link_to "ЗАВЕРШИТИ ГРУ", url_for("/games/end_game/#{@game.id}"), method: :post, data: { confirm: 'Ви впевнені?' } if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
   <br>
-  <%= "Ви завершили гру" if (@game.started? && !@game.is_testing? && @game.author_finished?) %>
   <br>
   <br>
   <br>
   <p>
-    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } %>
+    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } unless @game.started? || @game.author_finished? %>
   </p>
 <% end %>
