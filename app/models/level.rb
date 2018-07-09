@@ -114,4 +114,20 @@ class Level < ActiveRecord::Base
     self.sectors_for_close = questions.count if sectors_for_close > questions.count
   end
 
+  def dismiss!(user_id)
+    closed_levels = ClosedLevel.where(game_id: game_id, level_id: id)
+    closed_levels.each do |closed_level|
+      GameBonus.create!(game_id: closed_level.game_id, level_id: closed_level.level_id, team_id: closed_level.team_id, award: closed_level.closed_at - closed_level.started_at, user_id: user_id, reason: 'зняття рівня', description: '')
+    end
+    self.dismissed = true
+    save!
+  end
+
+  def undismiss!
+    game_bonuses = GameBonus.where(game_id: game_id, level_id: id, reason: 'зняття рівня')
+    game_bonuses.delete_all
+    self.dismissed = false
+    save!
+  end
+
 end

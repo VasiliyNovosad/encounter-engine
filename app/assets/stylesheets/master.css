@@ -561,3 +561,8 @@ div.team-stat{
 input[type="checkbox"] {
     margin-right: 10px;
 }
+
+div.dismissed-level {
+    background-color: black;
+    color: white;
+}

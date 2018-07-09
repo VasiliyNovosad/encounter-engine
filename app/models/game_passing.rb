@@ -80,7 +80,7 @@ class GamePassing < ActiveRecord::Base
       is_correct_answer = true
     end
     save! if changed
-    GameBonus.create(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:wrong_code_penalty], user_id: user.id, reason: 'штраф за неіснуючий код', description: '') if level[:is_wrong_code_penalty]
+    GameBonus.create!(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:wrong_code_penalty], user_id: user.id, reason: 'штраф за неіснуючий код', description: '') if level[:is_wrong_code_penalty]
     { correct: is_correct_answer,
       bonus: is_correct_bonus_answer,
       sectors: answered_question,
@@ -106,7 +106,7 @@ class GamePassing < ActiveRecord::Base
       changed = true
       self.answered_bonuses += bonuses.map { |q| q[:id] }
       bonuses.each do |bonus|
-        GameBonus.create(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус', description: '')
+        GameBonus.create!(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус', description: '')
       end
       # self.sum_bonuses += bonuses.inject(0){|sum,x| sum + x[:bonus] }
       # PrivatePub.publish_to "/game_passings/#{self.id}/bonuses", bonuses: bonuses
@@ -238,7 +238,7 @@ class GamePassing < ActiveRecord::Base
           self.current_level = next_selected_level(level, team_id)
         end
       end
-      GameBonus.create(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty]
+      GameBonus.create!(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty]
       ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
     end
     save!
@@ -249,7 +249,7 @@ class GamePassing < ActiveRecord::Base
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
     unless self.penalty_hints.include?(penalty_hint.id)
       unless penalty_hint.nil?
-        GameBonus.create(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '')
+        GameBonus.create!(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '')
         # self.sum_bonuses -= penalty_hint.penalty
         penalty_hints << penalty_hint.id
         save!

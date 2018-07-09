@@ -52,6 +52,8 @@ Rails.application.routes.draw do
       post 'move_down', on: :member
       post 'change_position', on: :member
       post 'copy', on: :member
+      post 'dismiss', on: :member
+      post 'undismiss', on: :member
     end
     resources :game_bonuses
     get 'show_scenario', on: :member

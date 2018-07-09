@@ -1,6 +1,6 @@
 class LevelsController < ApplicationController
   before_action :find_game
-  before_action :ensure_game_was_not_finished, except: [:show]
+  before_action :ensure_game_was_not_finished, except: [:show, :dismiss, :undismiss]
   before_action :ensure_author
   before_action :find_level, except: [:new, :create]
 
@@ -100,6 +100,16 @@ class LevelsController < ApplicationController
       flash[:notice] = 'ERROR: Item can\'t be cloned.'
       redirect_to game_path(@game)
     end
+  end
+
+  def dismiss
+    @level.dismiss!(current_user.id)
+    redirect_to game_path(@game)
+  end
+
+  def undismiss
+    @level.undismiss!
+    redirect_to game_path(@game)
   end
 
   protected
