@@ -42,11 +42,12 @@
     <div class="form-check">
       <%= f.check_box :is_absolute_limited %>
     </div>
-    <%= f.label 'з', class: 'col-form-label time-form-label' %>
-    <%= f.text_field :valid_from, value: @bonus.valid_from.nil? ? '' : @bonus.valid_from.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
-    <%= f.label 'по', class: 'col-form-label time-form-label' %>
-    <%= f.text_field :valid_to, value: @bonus.valid_to.nil? ? '' : @bonus.valid_to.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
-    <%# :is_absolute_limited, :valid_from, :valid_to, :is_delayed, :delay, :is_relative_limited, :valid %>
+    <div id="bonus-absolute-limit-form" class="form-inline">
+      <%= f.label 'з', class: 'col-form-label time-form-label' %>
+      <%= f.text_field :valid_from, value: @bonus.valid_from.nil? ? '' : @bonus.valid_from.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
+      <%= f.label 'по', class: 'col-form-label time-form-label' %>
+      <%= f.text_field :valid_to, value: @bonus.valid_to.nil? ? '' : @bonus.valid_to.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
+    </div>
   </div>
 </div>
 <div class="form-group row">
@@ -55,7 +56,6 @@
     <div class="form-check">
       <%= f.check_box :is_delayed %>
     </div>
-    <%= f.label 'на', class: 'col-form-label time-form-label' %>
     <%= render 'shared/time_form' %>
     <%= f.number_field :delay_for, hidden: true %>
   </div>
@@ -66,7 +66,6 @@
     <div class="form-check">
       <%= f.check_box :is_relative_limited %>
     </div>
-    <%= f.label 'на', class: 'col-form-label time-form-label' %>
     <%= render 'shared/time_form' %>
     <%= f.number_field :valid_for, hidden: true %>
   </div>
@@ -89,6 +88,18 @@
         lang:'uk' });
 
     $(document).ready(function() {
+        if (!$('#bonus_is_absolute_limited').prop("checked")) {
+            $('#bonus-absolute-limit-form').addClass('invisible');
+        }
+
+        if (!$('#bonus_is_delayed').prop("checked")) {
+            $('#bonus-delay-time-form .my-time-form').addClass('invisible');
+        }
+
+        if (!$('#bonus_is_relative_limited').prop("checked")) {
+            $('#bonus-valid-time-form .my-time-form').addClass('invisible');
+        }
+
         set_time_form(parseInt($('#bonus_delay_for').val()), '#bonus-delay-time-form');
         set_time_form(parseInt($('#bonus_valid_for').val()), '#bonus-valid-time-form');
 
@@ -140,7 +151,35 @@
             set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
         });
 
+        $('#bonus_is_absolute_limited').on('click', function() {
+            if ($('#bonus_is_absolute_limited').prop("checked")) {
+                $('#bonus-absolute-limit-form').removeClass('invisible');
+            } else {
+                $('#bonus_valid_from').val('');
+                $('#bonus_valid_to').val('');
+                $('#bonus-absolute-limit-form').addClass('invisible');
+            }
+        });
 
+        $('#bonus_is_delayed').on('click', function () {
+            if ($('#bonus_is_delayed').prop("checked")) {
+                $('#bonus-delay-time-form .my-time-form').removeClass('invisible');
+            } else {
+                set_time_form(0, '#bonus-delay-time-form');
+                $('#bonus_delay_for').val(0);
+                $('#bonus-delay-time-form .my-time-form').addClass('invisible');
+            }
+        });
+
+        $('#bonus_is_relative_limited').on('click', function () {
+            if ($('#bonus_is_relative_limited').prop("checked")) {
+                $('#bonus-valid-time-form .my-time-form').removeClass('invisible');
+            } else {
+                set_time_form(0, '#bonus-valid-time-form');
+                $('#bonus_valid_for').val(0);
+                $('#bonus-valid-time-form .my-time-form').addClass('invisible');
+            }
+        });
     });
 
 

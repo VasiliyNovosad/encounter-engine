@@ -557,3 +557,7 @@ div.team-stat{
     width: 80px;
     margin-left: 10px;
 }
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}

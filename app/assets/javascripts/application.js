@@ -19,7 +19,7 @@
 //= require_tree .
 
 function set_time_form(seconds_time, form_selector) {
-    if (seconds_time > 0) {
+    if (seconds_time >= 0) {
         var minutes = Math.trunc(seconds_time / 60);
         var seconds = seconds_time % 60;
         var hours = Math.trunc(minutes / 60);
