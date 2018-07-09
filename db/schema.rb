@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180709093505) do
+ActiveRecord::Schema.define(version: 20180709103834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,6 +296,8 @@ ActiveRecord::Schema.define(version: 20180709093505) do
     t.integer  "sectors_for_close",                   default: 0
     t.boolean  "is_autocomplete_penalty",             default: false
     t.integer  "autocomplete_penalty"
+    t.boolean  "is_wrong_code_penalty",               default: false
+    t.integer  "wrong_code_penalty",                  default: 0
   end
 
   create_table "logs", force: :cascade do |t|
