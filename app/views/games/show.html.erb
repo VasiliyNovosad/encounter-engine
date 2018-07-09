@@ -125,7 +125,7 @@
     </p>
 
     <p>
-      <%= link_to "Додати нове завдання", new_game_level_path(@game) %>
+      <%= link_to "Додати нове завдання", new_game_level_path(@game) unless @game.author_finished?%>
     </p>
   </fieldset>
   <br>

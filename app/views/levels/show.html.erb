@@ -42,7 +42,7 @@
   <br>
 <% end %>
 <p>
-  <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level) %>
+  <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level) unless @game.author_finished? %>
 </p>
 
 <br>
@@ -68,7 +68,7 @@
     Завдання:
   </legend>
   <p>
-    <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
+    <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) unless @game.author_finished?%>
   </p>
   <br>
   <p>
@@ -81,7 +81,7 @@
     Пiдказки:
   </legend>
   <p>
-    <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) %>
+    <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) unless @game.author_finished?%>
   </p>
   <br>
   <p>
@@ -94,7 +94,7 @@
     Штрафні пiдказки:
   </legend>
   <p>
-    <%= link_to "Додати штрафну підказку", new_game_level_penalty_hint_path(@game, @level) %>
+    <%= link_to "Додати штрафну підказку", new_game_level_penalty_hint_path(@game, @level) unless @game.author_finished?%>
   </p>
   <br>
   <p>
@@ -107,7 +107,7 @@
     Відповіді:
   </legend>
   <p>
-    <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
+    <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) unless @game.author_finished?%>
   </p>
   <br>
   <p>
@@ -120,7 +120,7 @@
     Бонуси:
   </legend>
   <p>
-    <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
+    <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) unless @game.author_finished?%>
   </p>
   <br>
   <p>
@@ -139,11 +139,13 @@
   <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>
 </p>
 <br>
-<br>
-<br>
-<br>
-<br>
-<p>
-  <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
-</p>
+<% unless @game.author_finished? %>
+  <br>
+  <br>
+  <br>
+  <br>
+  <p>
+    <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
+  </p>
+<% end %>
 
