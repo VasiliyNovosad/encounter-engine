@@ -220,12 +220,12 @@ class GamePassing < ActiveRecord::Base
 
   def autocomplete_level!(level, team_id, time_start, time_finish, user_id)
     lock!
-    if game.game_type == 'linear' && last_level? ||
-        game.game_type == 'selected' && last_level_selected?(team_id)
-      closed_levels << level.id unless closed?(level)
-      set_finish_time(time_finish)
-    else
-      unless closed?(level)
+    unless closed?(level)
+      if game.game_type == 'linear' && last_level? ||
+          game.game_type == 'selected' && last_level_selected?(team_id)
+        closed_levels << level.id
+        set_finish_time(time_finish)
+      else
         update_current_level_entered_at(time_finish)
         closed_levels << level.id
         reset_answered_questions unless game.game_type == 'panic'
@@ -236,9 +236,10 @@ class GamePassing < ActiveRecord::Base
           self.current_level = next_selected_level(level, team_id)
         end
       end
+      GameBonus.create(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty]
+      ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
     end
     save!
-    ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
   end
 
   def use_penalty_hint!(level_id, penalty_hint_id, user_id)

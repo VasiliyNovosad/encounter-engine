@@ -28,6 +28,13 @@
   Умова для проходження: <%= (@level.sectors_for_close || 0) > 0 ? " закрити #{@level.sectors_for_close} секторів" : ' закрити всі сектори' %>
 </p>
 <br>
+<% if @level.is_autocomplete_penalty? %>
+  <p>
+    <strong>Штраф при автозавершенні: </strong>
+    <%= seconds_to_string(@level.autocomplete_penalty || 0) %>
+  </p>
+  <br>
+<% end %>
 <p>
   <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level) %>
 </p>

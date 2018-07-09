@@ -44,6 +44,17 @@
     </div>
   </div>
 </div>
+<div class="form-group row">
+  <%= f.label :is_autocomplete_penalty, class: 'col-sm-2 col-form-label' %>
+  <div id="level-autocomplete-penalty-form" class="col-sm-9 col-9 form-inline">
+    <div class="form-check">
+      <%= f.check_box :is_autocomplete_penalty %>
+    </div>
+    <%= f.label 'на', class: 'col-form-label time-form-label' %>
+    <%= render 'shared/time_form' %>
+    <%= f.number_field :autocomplete_penalty, hidden: true %>
+  </div>
+</div>
 
 <script type="text/javascript">
     $( document ).ready(function() {
@@ -60,6 +71,7 @@
         }
 
         set_time_form(parseInt($('#level_complete_later').val()), '#level-complete-later-form');
+        set_time_form(parseInt($('#level_autocomplete_penalty').val()), '#level-autocomplete-penalty-form');
 
         $('#level-complete-later-form .time-hours').on('change', function() {
             set_field_time('#level_complete_later', '#level-complete-later-form', 1);
@@ -71,6 +83,18 @@
 
         $('#level-complete-later-form .time-seconds').on('change', function() {
             set_field_time('#level_complete_later', '#level-complete-later-form', 1);
+        });
+
+        $('#level-autocomplete-penalty-form .time-hours').on('change', function() {
+            set_field_time('#level_autocomplete_penalty', '#level-autocomplete-penalty-form', 1);
+        });
+
+        $('#level-autocomplete-penalty-form .time-minutes').on('change', function() {
+            set_field_time('#level_autocomplete_penalty', '#level-autocomplete-penalty-form', 1);
+        });
+
+        $('#level-autocomplete-penalty-form .time-seconds').on('change', function() {
+            set_field_time('#level_autocomplete_penalty', '#level-autocomplete-penalty-form', 1);
         });
     });
 

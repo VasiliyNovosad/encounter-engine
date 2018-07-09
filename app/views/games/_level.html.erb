@@ -10,6 +10,24 @@
     </p>
     <br>
   <% end %>
+  <% if level.olymp? %>
+    <p>
+      Олімпійка з базою <%= level.olymp_base || 2 %>
+    </p>
+    <br>
+  <% end %>
+  <% if level.questions.count > 1 %>
+    <p>
+      <strong>Умова для проходження:</strong> <%= (level.sectors_for_close || 0) > 0 ? " закрити #{level.sectors_for_close} секторів" : ' закрити всі сектори' %>
+    </p>
+    <br>
+  <% end %>
+  <% if level.is_autocomplete_penalty? %>
+    <p>
+      <strong>Штраф при автозавершенні: </strong> <%= seconds_to_string(level.autocomplete_penalty || 0) %>
+    </p>
+    <br>
+  <% end %>
   <%= level.text.html_safe unless level.text.nil?%>
   <p>
     Завдання:

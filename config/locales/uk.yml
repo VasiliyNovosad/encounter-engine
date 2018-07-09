@@ -29,6 +29,7 @@ uk:
         olymp: "Олімпійка"
         olymp_base: "База олімпійки"
         correct_answer: "Код"
+        is_autocomplete_penalty: "Штраф при автозавершенні"
       hint:
         text: "Текст"
         delay: "Через"
