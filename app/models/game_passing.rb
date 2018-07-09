@@ -80,12 +80,14 @@ class GamePassing < ActiveRecord::Base
       is_correct_answer = true
     end
     save! if changed
+    GameBonus.create(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:wrong_code_penalty], user_id: user.id, reason: 'штраф за неіснуючий код', description: '') if level[:is_wrong_code_penalty]
     { correct: is_correct_answer,
       bonus: is_correct_bonus_answer,
       sectors: answered_question,
       bonuses: answered_bonus,
       needed: needed,
-      closed: closed}
+      closed: closed
+    }
   end
 
   def pass_question!(questions)
