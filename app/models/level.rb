@@ -116,8 +116,17 @@ class Level < ActiveRecord::Base
 
   def dismiss!(user_id)
     closed_levels = ClosedLevel.where(game_id: game_id, level_id: id)
+    team_bonuses = GameBonus.select('team_id, SUM(award) AS sum_award').where(game_id: game_id, level_id: id).group(:team_id).to_a.group_by { |bonus| bonus.team_id}
     closed_levels.each do |closed_level|
-      GameBonus.create!(game_id: closed_level.game_id, level_id: closed_level.level_id, team_id: closed_level.team_id, award: closed_level.closed_at - closed_level.started_at, user_id: user_id, reason: 'зняття рівня', description: '')
+      GameBonus.create!(
+          game_id: closed_level.game_id,
+          level_id: closed_level.level_id,
+          team_id: closed_level.team_id,
+          award: closed_level.closed_at - closed_level.started_at - (team_bonuses[closed_level.team_id].nil? ? 0 : team_bonuses[closed_level.team_id].first[:sum_award]),
+          user_id: user_id,
+          reason: 'зняття рівня',
+          description: ''
+      )
     end
     self.dismissed = true
     save!
