@@ -61,7 +61,7 @@
     <% end %>
     <br>
 
-    <%= render 'hints' %>
+    <%= render 'hints', upcoming_hints: @game_passing.upcoming_hints(@team_id), hints_to_show: @game_passing.hints_to_show(@team_id), begin_time: (@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at), level: @game_passing.current_level %>
     <%= render 'penalty_hints' %>
 
     <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>

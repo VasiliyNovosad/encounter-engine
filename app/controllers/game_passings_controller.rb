@@ -50,6 +50,7 @@ class GamePassingsController < ApplicationController
 
     render json: { hint_num: hints_to_show.count,
                    hint_text: (hints_to_show.count == 0 ? '' : hints_to_show.last.text.html_safe),
+                   hint_id: (hints_to_show.count == 0 ? nil : hints_to_show.last.id),
                    hint_count: hints_to_show.count + upcoming_hints.count,
                    next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.game.game_type == 'panic' || level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) }.to_json
   end
