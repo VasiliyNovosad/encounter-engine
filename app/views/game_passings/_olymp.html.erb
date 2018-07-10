@@ -1,32 +1,34 @@
 <% olymp_base = @level.olymp_base || 2 %>
 <% levels = Math.log(@sectors.count, olymp_base).to_i + 1 %>
-<table class="olymp" border="1">
-  <tbody>
-    <% (1..(olymp_base**(levels - 1))).each do |i| %>
-      <tr>
-        <% if i <= @sectors.count %>
-          <td id="sector-<%= @sectors[i-1][:position] %>">
-            <%= @sectors[i-1][:value].html_safe %>
-          </td>
-        <% else %>
-          <td></td>
-        <% end %>
-        
-        <% sum = olymp_base**(levels - 1) %>
-        
-        <% (1..(levels - 1)).each do |j| %>
-          <% if i % olymp_base ** j == 1 %>
-            <% if sum + i / olymp_base**j < @sectors.count %>
-              <td rowspan="<%= olymp_base**j %>" id="sector-<%= @sectors[sum + i / olymp_base**j][:position] %>">
-                <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
-              </td>
-            <% else %>
-              <td rowspan="<%= olymp_base**j %>"></td>
-            <% end %>
+<div id="LevelSectorsOlympContainer">
+  <table class="olymp" border="1">
+    <tbody>
+      <% (1..(olymp_base**(levels - 1))).each do |i| %>
+        <tr>
+          <% if i <= @sectors.count %>
+            <td id="sector-<%= @sectors[i-1][:position] %>">
+              <%= @sectors[i-1][:value].html_safe %>
+            </td>
+          <% else %>
+            <td></td>
           <% end %>
-          <% sum += olymp_base**(levels - j - 1) %>
-        <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+
+          <% sum = olymp_base**(levels - 1) %>
+
+          <% (1..(levels - 1)).each do |j| %>
+            <% if i % olymp_base ** j == 1 %>
+              <% if sum + i / olymp_base**j < @sectors.count %>
+                <td rowspan="<%= olymp_base**j %>" id="sector-<%= @sectors[sum + i / olymp_base**j][:position] %>">
+                  <%= @sectors[sum + i / olymp_base**j][:value].html_safe %>
+                </td>
+              <% else %>
+                <td rowspan="<%= olymp_base**j %>"></td>
+              <% end %>
+            <% end %>
+            <% sum += olymp_base**(levels - j - 1) %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

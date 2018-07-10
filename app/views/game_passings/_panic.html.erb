@@ -64,10 +64,7 @@
   <% end %>
   <br>
 
-  <% @level.team_tasks(@team_id).each do |task| %>
-    <%= task.text.html_safe %>
-    <br>
-  <% end %>
+  <%= render 'tasks', tasks: @level.team_tasks(@team_id) %>
   <br>
 
   <% team_questions = @level.team_questions(@team_id) %>
@@ -83,55 +80,9 @@
   <br>
 
   <% unless @game_passing.closed?(@level) %>
-    <div id="LevelHintsContainer">
-      <% hints_count = @game_passing.hints_to_show(@team_id, @level).count + @game_passing.upcoming_hints(@team_id, @level).count %>
-      <% @game_passing.hints_to_show(@team_id, @level).each_with_index do |hint, index| %>
-        <fieldset>
-          <legend>
-            Підказка <%= index + 1 %> із <%= hints_count %>
-          </legend>
-          <%= hint.text.html_safe %>
-        </fieldset>
-        <br>
-      <% end %>
-
-      <% @game_passing.upcoming_hints(@team_id, @level).each_with_index do |hint, index|  %>
-        <div id="<%= "LevelHintCountdownContainer#{hint.id}" %>" class="hint-timer">До підказки <%= @game_passing.hints_to_show(@team_id, @level).count + index + 1 %> лишилось <span id="<%= "LevelHintCountdownTimerText#{hint.id}" %>">3 хвилини</span></div>
-        <div id="<%= "LevelHintCountdownLoadIndicator#{hint.id}" %>" style="display: none;">Завантаження...</div>
-        <br>
-        <script>
-            LevelHintUpdater.setup({
-                initialCountdownValue: <%= hint.available_in(@game_passing.game.starts_at) %>
-                ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, hintId: <%= hint.id %>, hintNum: <%= index %>, levelId: <%= @level.id %>
-            })
-        </script>
-      <% end %>
-    </div>
-    <br>
+    <%= render 'hints' %>
+    <%= render 'penalty_hints' %>
   <% end %>
-
-  <div id="LevelPenaltyHintsContainer">
-    <% @penalty_hints.each_with_index do |hint, index| %>
-      <fieldset>
-        <legend>
-          Штрафна підказка <%= index + 1 %>: <%= hint[:name] %> (штраф <%= seconds_to_string(hint[:penalty] || 0) %>)
-        </legend>
-        <div id="penalty-hint-<%= hint[:id] %>">
-          <% if hint[:used] %>
-            <%= hint[:text].html_safe %>
-          <% else %>
-            <%= form_tag("/play/#{@game.id}/penalty_hint", method: "post", remote: true, format: :js) do %>
-              <%= submit_tag "Взяти штрафну підказку", class: "btn btn-outline-danger btn-sm", data: { confirm: 'Ви впевнені?' } %>
-              <%= hidden_field_tag(:level_id, @level.id) %>
-              <%= hidden_field_tag(:hint_id, hint[:id]) %>
-              <%= hidden_field_tag(:team_id, @team_id) %>
-            <% end %>
-          <% end %>
-        </div>
-      </fieldset>
-      <br>
-    <% end %>
-  </div>
 
   <%= render @level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
   <hr>

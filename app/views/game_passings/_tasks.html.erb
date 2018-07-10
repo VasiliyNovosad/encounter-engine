@@ -1,0 +1,8 @@
+<div id="LevelTasksContainer">
+  <% tasks.each do |task| %>
+    <div id="task-<%= task.id %>">
+      <%= task.text.html_safe %>
+      <br>
+    </div>
+  <% end %>
+</div>

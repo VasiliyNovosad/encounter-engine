@@ -3,121 +3,73 @@
 <br>
 <br>
 <div id="left-game-container">
-<%= form_tag("/play/#{@game.id}", method: "post", remote: true, format: :js) do %>
-  <br>Код:
-  <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: :off) %>
-  <%= submit_tag " надіслати " %>
+  <%= form_tag("/play/#{@game.id}", method: "post", remote: true, format: :js) do %>
+    <br>Код:
+    <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: :off) %>
+    <%= submit_tag " надіслати " %>
+    <br>
+  <% end %>
   <br>
-<% end %>
-<br>
-<div id="entered-code">
-  <% unless @answer.nil? || @answer == '' %>
-    <% if answer_was_correct? %>
-      Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
-    <% else %>
-      Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
+  <div id="entered-code">
+    <% unless @answer.nil? || @answer == '' %>
+      <% if answer_was_correct? %>
+        Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
+      <% else %>
+        Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
-<br>
-<div id="entered-codes">
-  <% @entered_all_answers.each do |answer| %>
-    <p><%= "#{answer[:time].strftime("%H:%M:%S")} #{answer[:user]} #{answer[:answer]}".html_safe %></p>
-  <% end %>
-</div>
-<hr>
-<br>
+  </div>
+  <br>
+  <div id="entered-codes">
+    <% @entered_all_answers.each do |answer| %>
+      <p><%= "#{answer[:time].strftime("%H:%M:%S")} #{answer[:user]} #{answer[:answer]}".html_safe %></p>
+    <% end %>
+  </div>
+  <hr>
+  <br>
 </div>
 
 <div id="main-game-container">
-<fieldset>
-  <legend>
-    <%= @game_passing.current_level.name %>
-  </legend>
+  <fieldset>
+    <legend>
+      <%= @game_passing.current_level.name %>
+    </legend>
 
-  <% if (@game_passing.current_level.complete_later || 0) > 0 %>
-      <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
+    <% if (@game_passing.current_level.complete_later || 0) > 0 %>
+        <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
 
-      <script>
-          LevelCompleter.setup({
-              initialCountdownValue: <%= ((@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @game_passing.current_level.complete_later %>
-              ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>
-          })
-      </script>
-  <% end %>
-  <br>
-  <% @game_passing.current_level.team_tasks(@team_id).each do |task| %>
-    <%= task.text.html_safe %>
+        <script>
+            LevelCompleter.setup({
+                initialCountdownValue: <%= ((@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @game_passing.current_level.complete_later %>
+                ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>
+            })
+        </script>
+    <% end %>
     <br>
-  <% end %>
 
-  <% if @game_passing.current_level.questions.count > 1 %>
-    <div>
-      <br>
-      <b id="codes-closed">Вірних кодів <%= @game_passing.answered_questions.size %> із <%= @game_passing.current_level.team_questions(@team_id).count %>:</b>
-      <hr>
-      <hr>
-    </div>
-  <% end %>
-  <br>
-  <div id="LevelHintsContainer">
-    <% hints_count = @game_passing.hints_to_show(@team_id).count + @game_passing.upcoming_hints(@team_id).count %>
-    <% @game_passing.hints_to_show(@team_id).each_with_index do |hint, index| %>
-        <fieldset>
-          <legend>
-            Підказка <%= index + 1 %> із <%= hints_count %>
-          </legend>
-          <%= hint.text.html_safe %>
-        </fieldset>
+    <%= render 'tasks', tasks: @game_passing.current_level.team_tasks(@team_id) %>
+    <br>
+
+    <% team_questions = @game_passing.current_level.team_questions(@team_id) %>
+    <% if team_questions.count > 1 %>
+      <div>
         <br>
+        <b id="codes-closed">Вірних кодів <%= @game_passing.answered_questions.size %> із <%= team_questions.count %>:</b>
+        <hr>
+        <hr>
+      </div>
     <% end %>
-  </div>
+    <br>
 
-  <div id="LevelPenaltyHintsContainer">
-    <% @penalty_hints.each_with_index do |hint, index| %>
-      <fieldset>
-        <legend>
-          Штрафна підказка <%= index + 1 %>: <%= hint[:name] %> (штраф <%= seconds_to_string(hint[:penalty] || 0) %>)
-        </legend>
-        <div id="penalty-hint-<%= hint[:id] %>">
-          <% if hint[:used] %>
-            <%= hint[:text].html_safe %>
-          <% else %>
-            <%= form_tag("/play/#{@game.id}/penalty_hint", method: "post", remote: true, format: :js) do %>
-              <%= submit_tag "Взяти штрафну підказку", class: "btn btn-outline-danger btn-sm", data: { confirm: 'Ви впевнені?' } %>
-              <%= hidden_field_tag(:level_id, @level.id) %>
-              <%= hidden_field_tag(:hint_id, hint[:id]) %>
-              <%= hidden_field_tag(:team_id, @team_id) %>
-            <% end %>
-          <% end %>
-        </div>
-      </fieldset>
-      <br>
-    <% end %>
-  </div>
+    <%= render 'hints' %>
+    <%= render 'penalty_hints' %>
 
-  <% @game_passing.upcoming_hints(@team_id).each_with_index do |hint, index|  %>
-      <div id="<%= "LevelHintCountdownContainer#{hint.id}" %>" class="hint-timer">До підказки <%= @game_passing.hints_to_show(@team_id).count + index + 1 %> лишилось <span id="<%= "LevelHintCountdownTimerText#{hint.id}" %>">3 хвилини</span></div>
-      <div id="<%= "LevelHintCountdownLoadIndicator#{hint.id}" %>" style="display: none;">Завантаження...</div>
-      <br>
-      <script>
-          LevelHintUpdater.setup({
-              initialCountdownValue: <%= hint.available_in(@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) %>
-              ,gameId: <%= @game_passing.game_id %>, teamId: <%= @team_id %>, hintId: <%= hint.id %>, hintNum: <%= index %>, levelId: <%= @game_passing.current_level.id %>
-          })
-      </script>
-  <% end %>
-
-  <br>
-
-  <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
-  <hr>
-  <br>
-  <%= render 'bonuses' if @bonuses.count > 0 %>
-
-  <br>
-
-</fieldset>
+    <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
+    <hr>
+    <br>
+    <%= render 'bonuses' if @bonuses.count > 0 %>
+    <br>
+  </fieldset>
 </div>
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}" %>
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}/answers" %>

@@ -1,0 +1,22 @@
+<div id="LevelPenaltyHintsContainer">
+  <% @penalty_hints.each_with_index do |hint, index| %>
+    <fieldset>
+      <legend>
+        Штрафна підказка <%= index + 1 %>: <%= hint[:name] %> (штраф <%= seconds_to_string(hint[:penalty] || 0) %>)
+      </legend>
+      <div id="penalty-hint-<%= hint[:id] %>">
+        <% if hint[:used] %>
+          <%= hint[:text].html_safe %>
+        <% else %>
+          <%= form_tag("/play/#{@game.id}/penalty_hint", method: "post", remote: true, format: :js) do %>
+            <%= submit_tag "Взяти штрафну підказку", class: "btn btn-outline-danger btn-sm", data: { confirm: 'Ви впевнені?' } %>
+            <%= hidden_field_tag(:level_id, @level.id) %>
+            <%= hidden_field_tag(:hint_id, hint[:id]) %>
+            <%= hidden_field_tag(:team_id, @team_id) %>
+          <% end %>
+        <% end %>
+      </div>
+    </fieldset>
+    <br>
+  <% end %>
+</div>

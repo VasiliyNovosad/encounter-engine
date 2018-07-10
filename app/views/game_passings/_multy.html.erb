@@ -1,5 +1,7 @@
-<ul>
-  <% @sectors.each do |sector| %>
-      <li id="sector-<%= sector[:position] %>"><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></li>
-  <% end %>
-</ul>
+<div id="LevelSectorsContainer">
+  <ul>
+    <% @sectors.each do |sector| %>
+        <li id="sector-<%= sector[:position] %>"><%= "#{sector[:name]}: #{sector[:value]}".html_safe %></li>
+    <% end %>
+  </ul>
+</div>
