@@ -57,7 +57,7 @@ class Bonus < ActiveRecord::Base
 
   def time_to_delay(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
     result = nil
-    result ||= (self.valid_from - current_time).to_i if self.is_absolute_limited? || !self.valid_from.nil?
+    result ||= (self.valid_from - current_time).to_i if self.is_absolute_limited? && !self.valid_from.nil?
     result ||= (current_level_entered_at - current_time).to_i + (self.delay_for || 0) if (!self.is_absolute_limited? || self.valid_from.nil?) && self.is_delayed?
     result
   end
