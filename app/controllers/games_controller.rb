@@ -158,6 +158,13 @@ class GamesController < ApplicationController
     redirect_to game_path(@game)
   end
 
+  def open_game
+    @game.open_game!
+    redirect_to dashboard_path
+  end
+
+
+
   protected
 
   def game_params

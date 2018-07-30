@@ -59,6 +59,10 @@ Rails.application.routes.draw do
     get 'show_scenario', on: :member
     get 'new_level_order', on: :member
     post 'create_level_order', on: :member
+    post 'end_game', on: :member
+    post 'open_game', on: :member
+    post 'start_test', on: :member
+    post 'finish_test', on: :member
   end
 
   match '/game_entries/recall/:id', to: 'game_entries#recall', via: 'post'
@@ -91,10 +95,6 @@ Rails.application.routes.draw do
   match '/signout', to: 'sessions#destroy', via: 'get'
   match '/dashboard', to: 'dashboard#index',         via: 'get'
   match '/team-room', to: 'team_room#index',         via: 'get'
-
-  match '/games/end_game/:id', to: 'games#end_game', via: 'post'
-  match '/games/start_test/:id', to: 'games#start_test', via: 'post'
-  match '/games/finish_test/:id', to: 'games#finish_test', via: 'post'
 
   match '/teams/edit/delete_member', to: 'teams#delete_member', via: 'post'
   match '/teams/edit/captain', to: 'teams#make_member_captain', via: 'post'

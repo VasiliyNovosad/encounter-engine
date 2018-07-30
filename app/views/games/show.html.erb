@@ -162,13 +162,13 @@
 <% if user_signed_in? && current_user.author_of?(@game) && !@game.started? && !@game.is_testing? && @game.levels && @game.levels.count > 0 %>
 
     <% if game_with_personal? || @game.game_type == 'selected' %>
-        <%= form_tag "/games/start_test/#{@game.id}", method: 'post' do %>
+        <%= form_tag start_test_game_path(@game), method: :post do %>
             <%= label_tag "Почати тестування для команди" %>
             <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
             <%= submit_tag "Старт" %>
         <% end %>
     <% else %>
-        <%= link_to 'Почати тестування', url_for("/games/start_test/#{@game.id}"), method: :post %>
+        <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post %>
     <% end %>
 
 <% end %>
@@ -176,7 +176,7 @@
 <% if user_signed_in? && current_user.author_of?(@game) && @game.is_testing? %>
    <%= link_to "Старт", url_for("/play/#{@game.id}") %>
    <br>
-   <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}"), method: :post %>
+   <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post %>
 <% end %>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
@@ -185,7 +185,8 @@
   <br>
   <br>
   <br>
-  <%= link_to "ЗАВЕРШИТИ ГРУ", url_for("/games/end_game/#{@game.id}"), method: :post, data: { confirm: 'Ви впевнені?' } if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
+  <%= link_to "ЗАКРИТИ ГРУ", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' } if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
+  <%= link_to "ВІДКРИТИ ГРУ", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' } if @game.author_finished? %>
   <br>
   <br>
   <br>

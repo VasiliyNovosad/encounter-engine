@@ -125,6 +125,11 @@ class Game < ActiveRecord::Base
     self.save!
   end
 
+  def open_game!
+    self.author_finished_at = nil
+    self.save!
+  end
+
   def author_finished?
     !self.author_finished_at.nil?
   end
