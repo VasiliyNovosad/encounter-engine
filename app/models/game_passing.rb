@@ -41,6 +41,7 @@ class GamePassing < ActiveRecord::Base
     is_correct_bonus_answer = false
     changed = false
 
+
     if correct_bonus_answer?(answer, level, team_id)
       answered_bonus = level.find_bonuses_by_answer(answer, team_id).map do |q|
         {
@@ -80,7 +81,7 @@ class GamePassing < ActiveRecord::Base
       is_correct_answer = true
     end
     save! if changed
-    if level[:is_wrong_code_penalty] && !is_correct_bonus_answer && !is_correct_answer
+    if level[:is_wrong_code_penalty] && !is_correct_bonus_answer && !is_correct_answer && !level[:wrong_code_penalty].zero?
       GameBonus.create!(
         game_id: game.id,
         level_id: level.id,
@@ -91,7 +92,8 @@ class GamePassing < ActiveRecord::Base
         description: ''
       )
     end
-    { correct: is_correct_answer,
+    {
+      correct: is_correct_answer,
       bonus: is_correct_bonus_answer,
       sectors: answered_question,
       bonuses: answered_bonus,
@@ -102,30 +104,30 @@ class GamePassing < ActiveRecord::Base
 
   def pass_question!(questions)
     changed = false
-    if questions.length > 0
+    unless questions.empty?
       changed = true
       self.answered_questions += questions.map { |q| q[:id] }
-      # PrivatePub.publish_to "/game_passings/#{self.id}/sectors", sectors: questions
     end
     changed
   end
 
   def pass_bonus!(bonuses)
     changed = false
-    if bonuses.length > 0
-      changed = true
-      self.answered_bonuses += bonuses.map { |q| q[:id] }
+    unless bonuses.empty?
       bonuses.each do |bonus|
-        GameBonus.create!(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус', description: '')
+        unless self.answered_bonuses.include?(bonus[:id])
+          self.answered_bonuses.push(bonus[:id])
+          GameBonus.create!(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус', description: '') unless bonus[:bonus].zero?
+          changed = true
+        end
       end
-      # self.sum_bonuses += bonuses.inject(0){|sum,x| sum + x[:bonus] }
-      # PrivatePub.publish_to "/game_passings/#{self.id}/bonuses", bonuses: bonuses
     end
     changed
   end
 
   def pass_level!(level, team_id, time, time_start, user_id)
     unless closed?(level)
+      lock!
       if game.game_type == 'linear' && last_level? ||
         game.game_type == 'panic' && !closed?(level) &&
         closed_levels.count == game.levels.count - 1 ||
@@ -231,27 +233,30 @@ class GamePassing < ActiveRecord::Base
   end
 
   def autocomplete_level!(level, team_id, time_start, time_finish, user_id)
-    lock!
-    unless closed?(level)
-      if game.game_type == 'linear' && last_level? ||
-          game.game_type == 'selected' && last_level_selected?(team_id)
-        closed_levels << level.id
-        set_finish_time(time_finish)
-      else
-        update_current_level_entered_at(time_finish)
-        closed_levels << level.id
-        reset_answered_questions unless game.game_type == 'panic'
-        reset_answered_bonuses unless game.game_type == 'panic'
-        if game.game_type == 'linear'
-          self.current_level = level.next
-        elsif game.game_type == 'selected'
-          self.current_level = next_selected_level(level, team_id)
+    with_lock do
+      unless closed?(level)
+        if game.game_type == 'linear' && last_level? ||
+            game.game_type == 'panic' && !closed?(level) &&
+                closed_levels.count == game.levels.count - 1 ||
+            game.game_type == 'selected' && last_level_selected?(team_id)
+          closed_levels << level.id
+          set_finish_time(time_finish)
+        else
+          update_current_level_entered_at(time_finish)
+          closed_levels << level.id
+          reset_answered_questions unless game.game_type == 'panic'
+          reset_answered_bonuses unless game.game_type == 'panic'
+          if game.game_type == 'linear'
+            self.current_level = level.next
+          elsif game.game_type == 'selected'
+            self.current_level = next_selected_level(level, team_id)
+          end
         end
+        GameBonus.create!(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty] && !level[:autocomplete_penalty].zero?
+        ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
       end
-      GameBonus.create!(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty]
-      ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
+      save!
     end
-    save!
   end
 
   def use_penalty_hint!(level_id, penalty_hint_id, user_id)
@@ -259,7 +264,7 @@ class GamePassing < ActiveRecord::Base
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
     unless self.penalty_hints.include?(penalty_hint.id)
       unless penalty_hint.nil?
-        GameBonus.create!(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '')
+        GameBonus.create!(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '') unless penalty_hint.penalty.zero?
         # self.sum_bonuses -= penalty_hint.penalty
         penalty_hints << penalty_hint.id
         save!
@@ -276,12 +281,14 @@ class GamePassing < ActiveRecord::Base
   end
 
   def miss_bonus!(level_id, bonus_id)
-    level = Level.find(level_id)
-    bonus = level.bonuses.find(bonus_id)
-    unless self.missed_bonuses.include?(bonus_id)
-      unless bonus.nil?
-        missed_bonuses << bonus_id
-        save!
+    with_lock do
+      level = Level.find(level_id)
+      bonus = level.bonuses.find(bonus_id)
+      unless self.missed_bonuses.include?(bonus_id)
+        unless bonus.nil?
+          missed_bonuses << bonus_id
+          save!
+        end
       end
     end
   end

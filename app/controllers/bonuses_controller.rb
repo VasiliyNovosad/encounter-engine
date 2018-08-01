@@ -8,6 +8,7 @@ class BonusesController < ApplicationController
 
   def new
     @bonus = @level.bonuses.build(name: "Бонус #{@level.bonuses.count + 1}")
+    @bonus.bonus_answers.build
   end
 
   def create

@@ -174,18 +174,6 @@ class GamePassingsController < ApplicationController
     end
   end
 
-  def save_log(level = @game_passing.current_level, time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time, answer_type = 0)
-    Log.create! game_id: @game.id,
-                level: level.name,
-                level_id: level.id,
-                team: @team.name,
-                team_id: @team.id,
-                time: time,
-                answer: @answer || 'timeout',
-                user: current_user,
-                answer_type: answer_type
-  end
-
   def show_results
     @game_bonuses = GameBonus.of_game(@game).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
     @game_passings = GamePassing.of_game(@game)
@@ -217,7 +205,7 @@ class GamePassingsController < ApplicationController
     unless @game_passing.finished?
       level = Level.find(level_id)
       @game_passing = GamePassing.of(@team, @game)
-      if level == @game_passing.current_level
+      if level == @game_passing.current_level || @game.game_type == 'panic'
         begin
           time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
           time_finish = time_start + level.complete_later
@@ -241,6 +229,20 @@ class GamePassingsController < ApplicationController
   end
 
   protected
+
+  def save_log(level = @game_passing.current_level, time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time, answer_type = 0)
+    Log.create!(
+      game_id: @game.id,
+      level: level.name,
+      level_id: level.id,
+      team: @team.name,
+      team_id: @team.id,
+      time: time,
+      answer: @answer || 'timeout',
+      user: current_user,
+      answer_type: answer_type
+    )
+  end
 
   def find_game
     @game = Game.find(params[:game_id])

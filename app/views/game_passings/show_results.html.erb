@@ -82,5 +82,5 @@
 
 <% if @game.is_testing? %>
   <br>
-  <%= link_to "Завершити тестування", url_for("/games/finish_test/#{@game.id}"), method: :post if user_signed_in? && current_user.author_of?(@game) %>
+  <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post if user_signed_in? && current_user.author_of?(@game) %>
 <% end %>

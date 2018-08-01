@@ -138,6 +138,33 @@ class Game < ActiveRecord::Base
     self.is_testing
   end
 
+  def start_test!(team_id)
+    self.is_testing = 't'
+    self.test_date = self.starts_at
+    self.starts_at = Time.zone.now + 0.1.second
+    self.registration_deadline = nil
+    self.tested_team_id = team_id
+    self.save!
+  end
+
+  def stop_test!
+    self.is_testing = 'f'
+    self.starts_at = self.test_date
+    self.test_date = Time.zone.now
+    self.tested_team_id = nil
+    self.save!
+
+    game_passing = GamePassing.of_game(self)
+    logs = Log.of_game(self)
+    game_bonuses = GameBonus.of_game(self)
+    closed_levels = ClosedLevel.of_game(self.id)
+
+    game_passing.delete_all
+    logs.delete_all
+    game_bonuses.delete_all
+    closed_levels.delete_all
+  end
+
   protected
 
   def game_starts_in_the_future

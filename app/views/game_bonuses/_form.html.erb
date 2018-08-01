@@ -41,13 +41,13 @@
         $(element_selector).val( sign * (
             parseInt($(form_selector + ' .time-hours').val()) * 3600 +
             parseInt($(form_selector + ' .time-minutes').val()) * 60 +
-            parseFloat($(form_selector + ' .time-seconds').val()))
+            Math.round(parseFloat($(form_selector + ' .time-seconds').val()) * 1000) / 1000)
         );
     }
 
     $(document).ready(function() {
-        var form_selector = $('#game-bonus-form');
-        var award_time = parseFloat($('#game_bonus_award').val());
+        var form_selector = '#game-bonus-form';
+        var award_time = Math.round(parseFloat($('#game_bonus_award').val()) * 1000) / 1000;
         if (award_time < 0) {
             $("#award_type_penalty").prop("checked", true);
         } else {
@@ -60,7 +60,7 @@
             minutes = minutes % 60;
             $(form_selector + ' .time-hours').val(hours);
             $(form_selector + ' .time-minutes').val(minutes);
-            $(form_selector + ' .time-seconds').val(seconds);
+            $(form_selector + ' .time-seconds').val(Math.round(seconds * 1000) / 1000);
         }
 
         $('#game-bonus-form .time-hours').on('change', function() {

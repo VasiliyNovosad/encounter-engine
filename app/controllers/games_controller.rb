@@ -83,41 +83,22 @@ class GamesController < ApplicationController
     @game.finish_game!
     game_passings = GamePassing.of_game(@game)
     game_passings.each(&:end!)
-    redirect_to dashboard_path
+    redirect_to game_path(@game)
   end
 
   def start_test
-    game = find_game
-    # game.is_draft = 'f'
-    game.is_testing = 't'
-    game.test_date = game.starts_at
-    game.starts_at = Time.zone.now + 0.1.second
-    game.registration_deadline = nil
-    game.tested_team_id = params[:team_id]
-    game.save!
-    sleep(rand(1))
+    unless @game.is_testing?
+      @game.start_test!(params[:team_id])
+      sleep(rand(1))
+    end
 
     redirect_to game_path(@game)
   end
 
   def finish_test
-    game = find_game
-    # game.is_draft = 't'
-    game.is_testing = 'f'
-    game.starts_at = game.test_date
-    game.test_date = Time.zone.now
-    game.tested_team_id = nil
-    game.save!
-
-    game_passing = GamePassing.of_game(game)
-    logs = Log.of_game(game)
-    game_bonuses = GameBonus.of_game(game)
-    closed_levels = ClosedLevel.of_game(game.id)
-
-    game_passing.delete_all
-    logs.delete_all
-    game_bonuses.delete_all
-    closed_levels.delete_all
+    if @game.is_testing?
+      @game.stop_test!
+    end
 
     redirect_to game_path(@game)
   end
@@ -160,7 +141,7 @@ class GamesController < ApplicationController
 
   def open_game
     @game.open_game!
-    redirect_to dashboard_path
+    redirect_to game_path(@game)
   end
 
 

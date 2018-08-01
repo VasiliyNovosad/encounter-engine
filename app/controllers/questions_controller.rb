@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
 
   def new
     @question = @level.questions.build(name: "Сектор #{@level.questions.count + 1}")
+    @question.answers.build
   end
 
   def create

@@ -40,7 +40,8 @@ var LevelCompleter = function() {
 
     var autocompleteLevel = function() {
         $.ajax({
-            url: '/play/' + gameId + '/autocomplete_level?level=' + levelId, method: 'GET',
+            url: '/play/' + gameId + '/autocomplete_level?level=' + levelId,
+            method: 'GET',
             success: function() {
                 window.location = '/play/' + gameId;
             }

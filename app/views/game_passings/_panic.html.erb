@@ -47,20 +47,20 @@
     <%= @level.name %>
   </legend>
 
-  <%= render 'shared/panic_countdown' %>
-  <div id="panic-countdown"></div>
-  <script type="text/javascript">
-      <% unless @game.starts_at.nil? %>
-      var date = new Date(<%= (@game.starts_at + @game.duration * 60 + 1).strftime("%Y,%m-1,%d,%H,%M,%S") %>);
-      <% end %>
-
-      $("#panic-countdown").countdown(date,{
-          prefix:'До завершення лишилось: '
-      });
-  </script>
   <% if @game_passing.closed?(@level) %>
     <br>
     <p><span class="right_code">Рівень закрито</span></p>
+  <% else %>
+    <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
+
+    <script>
+        LevelCompleter.setup({
+            initialCountdownValue: <%= (@game.starts_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + ((@level.complete_later || 0) > 0 ? @level.complete_later : @game.duration * 60) %>
+            ,gameId: <%= @game.id %>, levelId: <%= @level.id %>
+        })
+    </script>
+    <br>
+
   <% end %>
   <br>
 
