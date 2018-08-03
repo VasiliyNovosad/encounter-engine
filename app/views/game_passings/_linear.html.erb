@@ -41,7 +41,7 @@
         <script>
             LevelCompleter.setup({
                 initialCountdownValue: <%= ((@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @game_passing.current_level.complete_later %>
-                ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>
+                ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>, gameType: '<%= @game.game_type %>', levelNumber: <%= @game_passing.current_level.position %>
             })
         </script>
     <% end %>
@@ -67,7 +67,7 @@
     <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
     <hr>
     <br>
-    <%= render 'bonuses' if @bonuses.count > 0 %>
+    <%= render 'bonuses', level: @game_passing.current_level if @bonuses.count > 0 %>
     <br>
   </fieldset>
 </div>

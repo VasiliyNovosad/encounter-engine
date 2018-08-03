@@ -68,8 +68,7 @@ class Bonus < ActiveRecord::Base
   end
 
   def is_limited_now?(current_level_entered_at, current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
-    (self.is_absolute_limited? && !self.valid_to.nil? || self.is_relative_limited) &&
-        time_to_miss(current_level_entered_at, current_time) > 0
+    (self.is_absolute_limited? && !self.valid_to.nil? || self.is_relative_limited) # && time_to_miss(current_level_entered_at, current_time) > 0
   end
 
 end

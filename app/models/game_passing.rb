@@ -117,7 +117,7 @@ class GamePassing < ActiveRecord::Base
       bonuses.each do |bonus|
         unless self.answered_bonuses.include?(bonus[:id])
           self.answered_bonuses.push(bonus[:id])
-          GameBonus.create!(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: 'за бонус', description: '') unless bonus[:bonus].zero?
+          GameBonus.create!(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: "за бонус: #{bonus[:name]}", description: '') unless bonus[:bonus].zero?
           changed = true
         end
       end
@@ -126,28 +126,29 @@ class GamePassing < ActiveRecord::Base
   end
 
   def pass_level!(level, team_id, time, time_start, user_id)
-    unless closed?(level)
-      lock!
-      if game.game_type == 'linear' && last_level? ||
-        game.game_type == 'panic' && !closed?(level) &&
-        closed_levels.count == game.levels.count - 1 ||
-        game.game_type == 'selected' && last_level_selected?(team_id)
-        closed_levels << level.id unless closed?(level)
-        set_finish_time(time)
-      else
-        update_current_level_entered_at(time)
-        closed_levels << level.id unless closed?(level)
-        reset_answered_questions unless game.game_type == 'panic'
-        reset_answered_bonuses unless game.game_type == 'panic'
-        if game.game_type == 'linear'
-          self.current_level = level.next
-        elsif game.game_type == 'selected'
-          self.current_level = next_selected_level(level, team_id)
+    with_lock do
+      unless closed?(level)
+        if game.game_type == 'linear' && last_level? ||
+          game.game_type == 'panic' && !closed?(level) &&
+          closed_levels.count == game.levels.count - 1 ||
+          game.game_type == 'selected' && last_level_selected?(team_id)
+          closed_levels << level.id unless closed?(level)
+          set_finish_time(time)
+        else
+          update_current_level_entered_at(time)
+          closed_levels << level.id unless closed?(level)
+          reset_answered_questions unless game.game_type == 'panic'
+          reset_answered_bonuses unless game.game_type == 'panic'
+          if game.game_type == 'linear'
+            self.current_level = level.next
+          elsif game.game_type == 'selected'
+            self.current_level = next_selected_level(level, team_id)
+          end
         end
+        save!
+        ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time)
+        PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{self.game_id}?level=#{level.position}" : "/play/#{self.game_id}"
       end
-      save!
-      ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time)
-      PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{self.game_id}?level=#{level.position}" : "/play/#{self.game_id}"
     end
   end
 
@@ -252,10 +253,10 @@ class GamePassing < ActiveRecord::Base
             self.current_level = next_selected_level(level, team_id)
           end
         end
+        save!
         GameBonus.create!(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty] && !level[:autocomplete_penalty].zero?
         ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
       end
-      save!
     end
   end
 

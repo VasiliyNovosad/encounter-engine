@@ -1,10 +1,9 @@
 var LevelCompleter = function() {
-    var countdownValue = 0 ,gameId = 0, levelId = 0, intervalId = null;
+    var countdownValue = 0, gameId = 0, levelId = 0, intervalId = null, gameType = 'linear', levelNumber = 0;
 
     var $countdownContainer, $countdownTimerText;
 
     var start = function(initialCountdownValue) {
-        console.log(initialCountdownValue);
         if (initialCountdownValue < 0) {
             autocompleteLevel();
         } else {
@@ -43,7 +42,11 @@ var LevelCompleter = function() {
             url: '/play/' + gameId + '/autocomplete_level?level=' + levelId,
             method: 'GET',
             success: function() {
-                window.location = '/play/' + gameId;
+                if (gameType == 'panic') {
+                    window.location = '/play/' + gameId + '?level=' + levelNumber;
+                } else {
+                    window.location = '/play/' + gameId;
+                }
             }
         });
     };
@@ -55,7 +58,9 @@ var LevelCompleter = function() {
                 $countdownTimerText = $('#LevelCompleteCountdownTimerText');
                 
                 gameId = config.gameId;
+                gameType = config.gameType || 'linear';
                 levelId = config.levelId;
+                levelNumber = config.levelNumber;
                 start(config.initialCountdownValue);
             });
         }

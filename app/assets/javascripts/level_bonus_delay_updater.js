@@ -89,7 +89,6 @@ var LevelBonusDelayUpdater = function() {
                         loadingIndicator: $('#LevelBonusDelayCountdownLoadIndicator' + config.bonusId),
                         countdownValue: config.initialCountdownValue
                     };
-                console.log(timerData);
                 start(config.bonusNum);
             });
         }
