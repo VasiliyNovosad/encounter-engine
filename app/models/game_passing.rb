@@ -241,7 +241,7 @@ class GamePassing < ActiveRecord::Base
                 closed_levels.count == game.levels.count - 1 ||
             game.game_type == 'selected' && last_level_selected?(team_id)
           closed_levels << level.id
-          set_finish_time(time_finish)
+          set_finish_time(get_finish_time(time_finish))
         else
           update_current_level_entered_at(time_finish)
           closed_levels << level.id
@@ -325,6 +325,16 @@ class GamePassing < ActiveRecord::Base
 
   def set_finish_time(time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
     self.finished_at = time
+  end
+
+  def get_finish_time(time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)
+    if game.game_type == 'panic'
+      closed_levels_times = ClosedLevel.of_game(game_id).of_team(team_id).pluck(:closed_at)
+      closed_levels_times.push(time)
+      closed_levels_times.max
+    else
+      time
+    end
   end
 
   def reset_answered_questions
