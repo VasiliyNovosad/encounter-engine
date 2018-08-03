@@ -41,12 +41,14 @@ Rails.application.routes.draw do
         post 'move_up', on: :member
         post 'move_down', on: :member
         post 'copy', on: :member
+        post 'copy_to_bonus', on: :member
       end
       resources :bonuses do
         resources :bonus_answers
         post 'move_up', on: :member
         post 'move_down', on: :member
         post 'copy', on: :member
+        post 'copy_to_sector', on: :member
       end
       post 'move_up', on: :member
       post 'move_down', on: :member

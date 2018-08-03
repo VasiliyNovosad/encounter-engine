@@ -12,17 +12,22 @@
                 <%= link_to "(редагувати)", edit_game_level_bonus_path(bonus.level.game, bonus.level, bonus) %>
                 <%= link_to "(видалити)", game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :delete, data: { confirm: 'Ви впевнені?' } %>
                 <%= link_to "(скопіювати)", copy_game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :post %>
+                <%= link_to "(скопіювати в сектор)", copy_to_sector_game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :post %>
               </em>
             </legend>
             <p>
               <strong><%= bonus.name %>:</strong>
             </p>
-            <p>
-              <strong>Завдання: </strong><%= bonus.task.html_safe %>
-            </p>
-            <p>
-              <strong>Підказка: </strong><%= bonus.help.html_safe %>
-            </p>
+            <% unless bonus.task.nil? %>
+              <p>
+                <strong>Завдання: </strong><%= bonus.task.html_safe %>
+              </p>
+            <% end %>
+            <% unless bonus.help.nil? %>
+              <p>
+                <strong>Підказка: </strong><%= bonus.help.html_safe %>
+              </p>
+            <% end %>
             <% if (bonus.award_time || 0) > 0 %>
               <p>
                 <strong>Винагорода: </strong><%= seconds_to_string(bonus.award_time || 0) %>
