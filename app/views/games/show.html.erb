@@ -66,9 +66,9 @@
   </p>
 <% end %>
 
-<% if current_user&.captain? %>
-    <p><% game_entry = GameEntry.of(current_user.team, @game)%>
-      <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: current_user.team %></p>
+<% if current_user&.captain? || @game.game_type == 'single' %>
+    <p><% game_entry = GameEntry.of(@game.game_type == 'multy' ? current_user.team : current_user.single_team, @game)%>
+      <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: @game.game_type == 'multy' ? current_user.team : current_user.single_team %></p>
 <% end %>
 <br>
 

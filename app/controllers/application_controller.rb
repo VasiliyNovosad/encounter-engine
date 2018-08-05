@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_team_captain
-    unless  user_signed_in? && current_user.captain?
+    unless  user_signed_in? && (current_user.captain? || @game.team_type == 'single')
       redirect_to root_path, alert: 'Ви повинні бути капітаном для виконання цієї дії'
     end
   end

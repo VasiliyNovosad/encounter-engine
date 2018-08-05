@@ -166,7 +166,7 @@ class GamesController < ApplicationController
   end
 
   def find_team
-    @team = current_user ? current_user.team : nil
+    @team = current_user ? (@game.game_type == 'multy' ? current_user.team : current_user.single_team) : nil
   end
 
   def find_teams
