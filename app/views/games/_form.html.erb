@@ -61,6 +61,12 @@
   </div>
 </div>
 <div class="form-group row">
+  <%= f.label :team_type, class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-10">
+    <%= f.select(:team_type, [['Одиночна', 'single'], ['Командна', 'multy']], {}, { class: 'form-control form-control-sm' }) %>
+  </div>
+</div>
+<div class="form-group row">
   <%= f.label :game_size, class: 'col-sm-2 col-form-label' %>
   <div class="col-sm-10">
     <%= f.select(:game_size, [['Лайт', 'Лайт'], ['Драйв', 'Драйв'], ['Онлайн', 'Онлайн']], {}, { class: 'form-control form-control-sm' }) %>

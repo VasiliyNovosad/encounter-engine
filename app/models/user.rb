@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :confirmable, :validatable
 
   belongs_to :team
+  belongs_to :single_team, class_name: 'Team', primary_key: 'single_team_id'
 
   has_many :created_games, class_name: 'Game', foreign_key: 'author_id'
   has_and_belongs_to_many :games, join_table: 'games_authors', foreign_key: 'author_id', association_foreign_key: 'game_id'
@@ -15,8 +16,12 @@ class User < ActiveRecord::Base
   scope :by_nickname, ->(nickname) { where('lower(nickname) = ?', nickname) }
 
   before_save do
-    self.email = email.downcase
+    self.email = email.downcase.strip
     self.nickname = nickname.strip
+    if single_team_id.nil?
+      new_team = Team.create!(name: self.nickname, team_type: 'single')
+      self.single_team_id = new_team.id
+    end
   end
 
   validates :nickname, presence: true

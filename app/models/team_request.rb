@@ -28,7 +28,7 @@ class TeamRequest < ActiveRecord::Base
 
   def find_team
     require 'ee_strings.rb'
-    team = Team.by_name(team_name.downcase_utf8_cyr)
+    team = Team.by_name(team_name.downcase_utf8_cyr).where(team_type: 'multy')
     self.team = team.first if team && team.count > 0
   end
 
