@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :confirmable, :validatable
 
   belongs_to :team
-  belongs_to :single_team, class_name: 'Team', primary_key: 'single_team_id'
+  belongs_to :single_team, class_name: 'Team', foreign_key: 'single_team_id'
 
   has_many :created_games, class_name: 'Game', foreign_key: 'author_id'
   has_and_belongs_to_many :games, join_table: 'games_authors', foreign_key: 'author_id', association_foreign_key: 'game_id'
