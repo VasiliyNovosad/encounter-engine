@@ -153,7 +153,7 @@ class GamesController < ApplicationController
       :name, :description, :game_type, :duration, :starts_at,
       :registration_deadline, :max_team_number, :is_draft,
       :is_testing, :author, :test_date, :tested_team_id, :game_size,
-      :price, :place, :city, :small_description, :image
+      :price, :place, :city, :small_description, :image, :team_type
     )
   end
 
