@@ -10,7 +10,7 @@
           <div id="game-<%= game.id %>">
             <%= render 'shared/current_game', game: game %>
             <% if current_user %>
-              <% team = game.game_type == 'multy' ? current_user.team : current_user.single_team %>
+              <% team = game.team_type == 'multy' ? current_user.team : current_user.single_team %>
               <% if team.nil? || team.finished?(game) || game.created_by?(current_user) %>
                  <em><%= link_to "(результати)", url_for("/game_passings/show_results?game_id=#{game.id}") %></em>
               <% else %>

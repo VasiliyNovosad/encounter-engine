@@ -263,14 +263,14 @@ class GamePassingsController < ApplicationController
   end
 
   def find_team
-    @team = @game.game_type == 'multy' ? current_user.team : current_user.single_team
+    @team = @game.team_type == 'multy' ? current_user.team : current_user.single_team
     if @game.is_testing? && !@game.tested_team_id.nil?
       @team = Team.find(@game.tested_team_id)
     end
   end
 
   def find_team_id
-    @team_id = @game.game_type == 'multy' ? current_user.team_id : current_user.single_team_id
+    @team_id = @game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id
     if @game.is_testing? && !@game.tested_team_id.nil?
       @team_id = @game.tested_team_id
     end
@@ -284,7 +284,7 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_user_has_team
-    if @game.game_type == 'multy' && current_user.team_id.nil? || current_user.single_team_id.nil?
+    if @game.team_type == 'multy' && current_user.team_id.nil? || current_user.single_team_id.nil?
       redirect_to game_path(@game), alert: 'Необхідно створити команду або зайти в уже створену'
     end
   end
@@ -302,7 +302,7 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_team_is_accepted
-    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game).of_team(@game.game_type == 'multy' ? current_user.team : current_user.single_team).first.nil? || GameEntry.of_game(@game).of_team(@game.game_type == 'multy' ? current_user.team : current_user.single_team).first.status != 'accepted') && !@game.is_testing?
+    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game).of_team(@game.team_type == 'multy' ? current_user.team : current_user.single_team).first.nil? || GameEntry.of_game(@game).of_team(@game.team_type == 'multy' ? current_user.team : current_user.single_team).first.status != 'accepted') && !@game.is_testing?
   end
 
   def ensure_not_finished
