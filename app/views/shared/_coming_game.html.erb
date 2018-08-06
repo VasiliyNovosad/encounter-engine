@@ -22,6 +22,10 @@
 </p>
 
 <p>
+  <em>Тип команди:</em> <%= {'single' => ' Одиночна', 'multy' => ' Командна' }[game.team_type] %>
+</p>
+
+<p>
   <em>Тип гри:</em> <%= game.game_size || 'Лайт' %>
 </p>
 
@@ -35,7 +39,7 @@
   </p>
 <% end %>
 
-<% if current_user&.captain? || game.game_type == 'single' %>
+<% if current_user&.captain? || game.team_type == 'single' %>
   <p>
     <% game_entry = GameEntry.of(game.team_type == 'multy' ? current_user.team : current_user.single_team, game)%>
     <%= render 'shared/game_entry_controls', game_entry: game_entry, game: game, team: game.team_type == 'multy' ? current_user.team : current_user.single_team %>

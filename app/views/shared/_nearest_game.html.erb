@@ -22,6 +22,10 @@
 </p>
 
 <p>
+  <em>Тип команди:</em> <%= {'single' => ' Одиночна', 'multy' => ' Командна' }[game.team_type] %>
+</p>
+
+<p>
   <em>Тип гри:</em> <%= game.game_size || 'Лайт' %>
 </p>
 
@@ -45,7 +49,7 @@
   <em>Місце старту:</em> <%= " #{game.place}" %>
 </p>
 
-<% if current_user&.captain? || game.game_type == 'single' %>
+<% if current_user&.captain? || game.team_type == 'single' %>
     <p>
       <% team = game.team_type == 'multy' ? current_user.team : current_user.single_team %>
       <% game_entry = GameEntry.of(team, game)%>
