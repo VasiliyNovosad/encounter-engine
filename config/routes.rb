@@ -57,6 +57,8 @@ Rails.application.routes.draw do
       post 'copy', on: :member
       post 'dismiss', on: :member
       post 'undismiss', on: :member
+      post 'add_answer_to_sectors', on: :member
+      post 'add_answer_to_bonuses', on: :member
     end
     resources :game_bonuses
     get 'show_scenario', on: :member

@@ -105,6 +105,32 @@ class LevelsController < ApplicationController
     redirect_to game_path(@game)
   end
 
+  def add_answer_to_sectors
+    answer_value = params[:answer]
+    unless answer_value.empty?
+      @level.questions.each do |question|
+        unless question.answers.pluck(:value).include?(answer_value)
+          question.answers.build(value: answer_value)
+          question.save!
+        end
+      end
+    end
+    redirect_to game_level_path(@level.game, @level)
+  end
+
+  def add_answer_to_bonuses
+    answer_value = params[:bonus_answer]
+    unless answer_value.empty?
+      @level.bonuses.each do |bonus|
+        unless bonus.bonus_answers.pluck(:value).include?(answer_value)
+          bonus.bonus_answers.build(value: answer_value)
+          bonus.save!
+        end
+      end
+    end
+    redirect_to game_level_path(@level.game, @level)
+  end
+
   protected
 
   def level_params
