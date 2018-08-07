@@ -117,4 +117,10 @@
         var hint_block = $('#penalty-hint-' + hint.id).get(0);
         hint_block.innerHTML = hint.text;
     });
+
+    $(document).on("ajax:error", 'body', function(e, data, status) {
+        if (data.status == 0) {
+            $('#entered-code').get(0).innerHTML = '<span class="wrong_code">проблема мережі</span>';
+        }
+    });
 </script>
