@@ -6,7 +6,7 @@
 <fieldset>
   <% if (level.complete_later || 0) > 0 %>
     <p>
-      <span class="hint-timer">Автозавершення через <%= level.complete_later / 60 %> хв</span>
+      <span class="hint-timer">Автозавершення через <%= seconds_to_string(level.complete_later || 0) %></span>
     </p>
     <br>
   <% end %>
