@@ -47,6 +47,8 @@
     <% end %>
     <br>
 
+    <%= render 'messages', messages: @game_passing.current_level.messages %>
+    <br><br>
     <%= render 'tasks', tasks: @game_passing.current_level.team_tasks(@team_id) %>
     <br>
 
