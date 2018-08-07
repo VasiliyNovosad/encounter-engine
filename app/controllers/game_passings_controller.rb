@@ -144,13 +144,6 @@ class GamePassingsController < ApplicationController
               }
           )
         end
-        PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers", {
-            answers: answered,
-            sectors: answer_was_correct[:sectors],
-            bonuses: answer_was_correct[:bonuses],
-            needed: answer_was_correct[:needed],
-            closed: answer_was_correct[:closed]
-        }
         if @game_passing.finished?
           PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}", url: '/game_passings/show_results'
           respond_to do |format|
@@ -167,7 +160,15 @@ class GamePassingsController < ApplicationController
               get_penalty_hints(@level)
               render 'show_current_level', layout: 'in_game'
             end
-            format.js
+            format.js do
+              PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers", {
+                  answers: answered,
+                  sectors: answer_was_correct[:sectors],
+                  bonuses: answer_was_correct[:bonuses],
+                  needed: answer_was_correct[:needed],
+                  closed: answer_was_correct[:closed]
+              }
+            end
           end
         end
       end
