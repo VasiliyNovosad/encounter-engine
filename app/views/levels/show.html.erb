@@ -48,6 +48,7 @@
 <br>
 
 <p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
+<a href="#messages-block"><span class="purple">повідомлення</span></a>,
 <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
 <a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
 <a href="#sectors-block"><span class="right_code">відповіді</span></a>,
@@ -73,6 +74,19 @@
   <br>
   <p>
     <%= render 'tasks/list', tasks: @level.tasks %>
+  </p>
+</fieldset>
+<br>
+<fieldset id="messages-block">
+  <legend class="purple">
+    Повідомлення:
+  </legend>
+  <p>
+    <%= link_to "Додати повідомлення", new_game_level_message_path(@game, @level) unless @game.author_finished?%>
+  </p>
+  <br>
+  <p>
+    <%= render 'messages/list', messages: @level.messages %>
   </p>
 </fieldset>
 <br>
@@ -129,6 +143,7 @@
 </fieldset>
 <br>
 <p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
+  <a href="#messages-block"><span class="purple">повідомлення</span></a>,
   <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
   <a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
   <a href="#sectors-block"><span class="right_code">відповіді</span></a>,

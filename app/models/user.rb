@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   has_many :logs
   has_many :game_bonuses, class_name: 'GameBonus'
   has_many :closed_levels, class_name: 'ClosedLevel'
+  has_many :messages
 
   scope :by_nickname, ->(nickname) { where('lower(nickname) = ?', nickname) }
 

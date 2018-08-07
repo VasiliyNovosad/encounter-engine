@@ -50,6 +50,7 @@ Rails.application.routes.draw do
         post 'copy', on: :member
         post 'copy_to_sector', on: :member
       end
+      resources :messages
       post 'move_up', on: :member
       post 'move_down', on: :member
       post 'change_position', on: :member

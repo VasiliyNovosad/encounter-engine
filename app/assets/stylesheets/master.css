@@ -566,3 +566,12 @@ div.dismissed-level {
     background-color: black;
     color: white;
 }
+
+.level-checkbox {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.author_message {
+    color: #2ECC40;
+}

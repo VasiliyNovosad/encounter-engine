@@ -1,0 +1,16 @@
+<h2>
+  Завдання "<strong><%= link_to @level.name, game_level_path(@game, @level) %></strong>"
+</h2>
+
+<p>
+  <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
+</p>
+
+<br>
+
+<%= form_for @message, url: game_level_message_path(@game, @level, @message) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= render 'form', f: f %>
+  <%= f.submit "Змінити повідомлення", class: 'btn btn-light' %>
+  <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "messages-block") %></em>
+<% end %>

@@ -64,6 +64,8 @@
   <% end %>
   <br>
 
+  <%= render 'messages', messages: @level.messages %>
+  <br><br>
   <%= render 'tasks', tasks: @level.team_tasks(@team_id) %>
   <br>
 
