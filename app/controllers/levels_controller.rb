@@ -107,7 +107,7 @@ class LevelsController < ApplicationController
 
   def add_answer_to_sectors
     answer_value = params[:answer]
-    unless answer_value.empty?
+    unless answer_value.strip.empty?
       @level.questions.each do |question|
         unless question.answers.pluck(:value).include?(answer_value)
           question.answers.build(value: answer_value)
@@ -120,7 +120,7 @@ class LevelsController < ApplicationController
 
   def add_answer_to_bonuses
     answer_value = params[:bonus_answer]
-    unless answer_value.empty?
+    unless answer_value.strip.empty?
       @level.bonuses.each do |bonus|
         unless bonus.bonus_answers.pluck(:value).include?(answer_value)
           bonus.bonus_answers.build(value: answer_value)
