@@ -138,7 +138,7 @@ class GamePassing < ActiveRecord::Base
           update_current_level_entered_at(time)
           closed_levels << level.id unless closed?(level)
           reset_answered_questions unless game.game_type == 'panic'
-          reset_answered_bonuses unless game.game_type == 'panic'
+          # reset_answered_bonuses unless game.game_type == 'panic'
           if game.game_type == 'linear'
             self.current_level = level.next
           elsif game.game_type == 'selected'
@@ -246,7 +246,7 @@ class GamePassing < ActiveRecord::Base
           update_current_level_entered_at(time_finish)
           closed_levels << level.id
           reset_answered_questions unless game.game_type == 'panic'
-          reset_answered_bonuses unless game.game_type == 'panic'
+          # reset_answered_bonuses unless game.game_type == 'panic'
           if game.game_type == 'linear'
             self.current_level = level.next
           elsif game.game_type == 'selected'
@@ -300,7 +300,12 @@ class GamePassing < ActiveRecord::Base
 
   def get_team_answer(level, team, correct_answers)
     log = Log.of_game(game).of_level(level).of_team(team).where('lower(answer) IN (?)', correct_answers).first
-    "#{log.answer} (#{log.user.nickname})"
+    log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
+  end
+
+  def get_team_bonus_answer(bonus, team, correct_answers)
+    log = Log.of_game(game).of_team(team).where(level_id: bonus.levels.pluck(:id)).where('lower(answer) IN (?)', correct_answers).first
+    log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
   end
 
   protected

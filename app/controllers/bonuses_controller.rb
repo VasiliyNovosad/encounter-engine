@@ -7,14 +7,15 @@ class BonusesController < ApplicationController
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
   def new
-    @bonus = @level.bonuses.build(name: "Бонус #{@level.bonuses.count + 1}")
+    @bonus = @game.bonuses.build(name: "Бонус #{@level.bonuses.count + 1}")
     @bonus.bonus_answers.build
   end
 
   def create
-    @bonus = @level.bonuses.build(bonus_params)
+    params[:bonus][:level_ids] ||= [@level.id]
+    @bonus = @game.bonuses.build(bonus_params)
     if @bonus.save
-      redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@bonus.id}")
+      redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
     else
       render :new
     end
@@ -28,8 +29,9 @@ class BonusesController < ApplicationController
   end
 
   def update
+    params[:bonus][:level_ids] ||= [@level.id]
     if @bonus.update_attributes(bonus_params)
-      redirect_to game_level_path(@bonus.level.game, @bonus.level, anchor: "bonus-#{@bonus.id}")
+      redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
     else
       render :edit
     end
@@ -37,17 +39,17 @@ class BonusesController < ApplicationController
 
   def destroy
     @bonus.destroy
-    redirect_to game_level_path(@level.game, @level, anchor: "bonuses-block")
+    redirect_to game_level_path(@game, @level, anchor: "bonuses-block")
   end
 
   def move_up
     @bonus.move_higher
-    redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@bonus.id}")
+    redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
   end
 
   def move_down
     @bonus.move_lower
-    redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@bonus.id}")
+    redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
   end
 
   def copy
@@ -58,6 +60,9 @@ class BonusesController < ApplicationController
       new_answer = answer.dup
       new_answer.bonus_id = nil
       @new_bonus.bonus_answers << new_answer
+    end
+    @bonus.levels.each do |level|
+      @new_bonus.levels << level
     end
     if @new_bonus.save
       redirect_to game_level_path(@level.game, @level, anchor: "bonus-#{@new_bonus.id}")
@@ -88,7 +93,7 @@ class BonusesController < ApplicationController
     params.require(:bonus).permit(
         :name, :task, :help, :award_time, :correct_answer, :team_id,
         :is_absolute_limited, :valid_from, :valid_to, :is_delayed,
-        :delay_for, :is_relative_limited, :valid_for,
+        :delay_for, :is_relative_limited, :valid_for, level_ids: [],
         bonus_answers_attributes: [:id, :value, :team_id, :_destroy])
   end
 

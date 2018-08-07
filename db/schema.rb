@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807022945) do
+ActiveRecord::Schema.define(version: 20180807061009) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20180807022945) do
     t.integer  "delay_for"
     t.boolean  "is_relative_limited", default: false
     t.integer  "valid_for"
+    t.integer  "game_id"
   end
 
   create_table "closed_levels", force: :cascade do |t|
@@ -301,6 +302,14 @@ ActiveRecord::Schema.define(version: 20180807022945) do
     t.integer  "wrong_code_penalty",                  default: 0
     t.boolean  "dismissed",                           default: false
   end
+
+  create_table "levels_bonuses", id: false, force: :cascade do |t|
+    t.integer "bonus_id"
+    t.integer "level_id"
+  end
+
+  add_index "levels_bonuses", ["bonus_id"], name: "index_levels_bonuses_on_bonus_id", using: :btree
+  add_index "levels_bonuses", ["level_id"], name: "index_levels_bonuses_on_level_id", using: :btree
 
   create_table "logs", force: :cascade do |t|
     t.integer  "game_id"

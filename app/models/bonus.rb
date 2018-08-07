@@ -1,6 +1,7 @@
 class Bonus < ActiveRecord::Base
-  belongs_to :level
+  has_and_belongs_to_many :levels, join_table: 'levels_bonuses'
   belongs_to :team
+  belongs_to :game
   has_many :bonus_answers, dependent: :destroy
   acts_as_list scope: [:level_id, :team_id]
 

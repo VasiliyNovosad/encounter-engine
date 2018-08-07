@@ -7,9 +7,9 @@ class Level < ActiveRecord::Base
   has_many :hints, -> { order(:delay) }, dependent: :destroy
   has_many :penalty_hints, dependent: :destroy
   has_many :tasks, dependent: :destroy
-  has_many :bonuses, -> { order(:position) }, dependent: :destroy
   has_many :game_bonuses, class_name: 'GameBonus'
   has_and_belongs_to_many :messages, join_table: 'messages_levels'
+  has_and_belongs_to_many :bonuses, join_table: 'levels_bonuses'
 
 
   # validates :text, presence: { message: 'Не введено текст завдання' }, if: :tasks_not_presence?
