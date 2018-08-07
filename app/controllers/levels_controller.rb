@@ -84,14 +84,7 @@ class LevelsController < ApplicationController
       @new_level.questions << new_question
     end
     @level.bonuses.each do |bonus|
-      new_bonus = bonus.dup
-      new_bonus.level_id = nil
-      bonus.bonus_answers.each do |answer|
-        new_answer = answer.dup
-        new_answer.bonus_id = nil
-        new_bonus.bonus_answers << new_answer
-      end
-      @new_level.bonuses << new_bonus
+      @new_level.bonuses << bonus
     end
     if @new_level.save
       redirect_to game_path(@game)

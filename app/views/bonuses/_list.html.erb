@@ -9,10 +9,10 @@
                   <em>Для </em> <strong><%= link_to bonus.team.name, team_path(bonus.team) %></strong>:
               <% end %>
               <em>
-                <%= link_to "(редагувати)", edit_game_level_bonus_path(bonus.level.game, bonus.level, bonus) %>
-                <%= link_to "(видалити)", game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-                <%= link_to "(скопіювати)", copy_game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :post %>
-                <%= link_to "(скопіювати в сектор)", copy_to_sector_game_level_bonus_path(bonus.level.game, bonus.level, bonus), method: :post %>
+                <%= link_to "(редагувати)", edit_game_level_bonus_path(@game, @level, bonus) %>
+                <%= link_to "(видалити)", game_level_bonus_path(@game, @level, bonus), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+                <%= link_to "(скопіювати)", copy_game_level_bonus_path(@game, @level, bonus), method: :post %>
+                <%= link_to "(скопіювати в сектор)", copy_to_sector_game_level_bonus_path(@game, @level, bonus), method: :post %>
               </em>
             </legend>
             <p>
