@@ -1,40 +1,40 @@
 var LevelBonusDelayUpdater = function() {
     var timerData = [];
 
-    var start = function(bonusNum) {
-        updateCountdown(bonusNum);
-        timerData[bonusNum].intervalId = setInterval(function () { updateCountdown(bonusNum); }, 1000);
+    var start = function(bonusId) {
+        updateCountdown(bonusId);
+        timerData[bonusId].intervalId = setInterval(function () { updateCountdown(bonusId); }, 1000);
 
-        setTimeout(function () { stop(bonusNum)}, timerData[bonusNum].countdownValue * 1000 + 1000);
+        setTimeout(function () { stop(bonusId)}, timerData[bonusId].countdownValue * 1000 + 1000);
     }
-    ,stop = function(bonusNum) {
-        clearInterval(timerData[bonusNum].intervalId);
-        timerData[bonusNum].countdownValue = 0;
+    ,stop = function(bonusId) {
+        clearInterval(timerData[bonusId].intervalId);
+        timerData[bonusId].countdownValue = 0;
 
-        loadBonus(bonusNum);
+        loadBonus(bonusId);
     }
-    ,updateCountdown = function(bonusNum) {
-        var minutes = timerData[bonusNum].countdownValue / 60
+    ,updateCountdown = function(bonusId) {
+        var minutes = timerData[bonusId].countdownValue / 60
         ,seconds = 0;
 
         if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
             minutes = Math.floor(minutes);
-            seconds = timerData[bonusNum].countdownValue % 60;
+            seconds = timerData[bonusId].countdownValue % 60;
         } else {
-            seconds = timerData[bonusNum].countdownValue % 60;
+            seconds = timerData[bonusId].countdownValue % 60;
         }
 
-        timerData[bonusNum].countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
-        timerData[bonusNum].countdownValue--;
+        timerData[bonusId].countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        timerData[bonusId].countdownValue--;
     }
-    ,hideCountdownContainer = function(bonusNum) {
-        timerData[bonusNum].countdownContainer.hide();
+    ,hideCountdownContainer = function(bonusId) {
+        timerData[bonusId].countdownContainer.hide();
     }
-    ,showLoadIndicator = function(bonusNum) {
-        timerData[bonusNum].loadingIndicator.show();
+    ,showLoadIndicator = function(bonusId) {
+        timerData[bonusId].loadingIndicator.show();
     }
-    ,hideLoadIndicator = function(bonusNum) {
-        timerData[bonusNum].loadingIndicator.hide();
+    ,hideLoadIndicator = function(bonusId) {
+        timerData[bonusId].loadingIndicator.hide();
     }
     ,appendBonus = function(bonus_num, bonus_name, bonus_task, bonus_id, bonus_limited, bonus_valid_for, game_id, team_id, level_id) {
         var bonus = '';
@@ -57,19 +57,19 @@ var LevelBonusDelayUpdater = function() {
                 '              })\n' +
                 '          </script>'
         } else {
-            bonus = '<p class="bonus"><b>' + bonus_name + '</b></p>' + bonus_task;
+            bonus = '<p class="bonus"><b>' + bonus_id + '</b></p>' + bonus_task;
         }
-        $('#bonus-' + bonus_num).html(bonus);
+        $('#bonus-' + bonus_id).html(bonus);
     }
-    ,loadBonus = function(bonusNum) {
-        hideCountdownContainer(bonusNum);
-        showLoadIndicator(bonusNum);
+    ,loadBonus = function(bonusId) {
+        hideCountdownContainer(bonusId);
+        showLoadIndicator(bonusId);
 
         $.ajax({
-            url: '/play/' + timerData[bonusNum].gameId + '/bonus?team_id=' + timerData[bonusNum].teamId + '&level_id=' + timerData[bonusNum].levelId + '&bonus_id=' + timerData[bonusNum].bonusId, method: 'GET', dataType: 'json',
+            url: '/play/' + timerData[bonusId].gameId + '/bonus?team_id=' + timerData[bonusId].teamId + '&level_id=' + timerData[bonusId].levelId + '&bonus_id=' + bonusId, method: 'GET', dataType: 'json',
             success: function(data) {
-                hideLoadIndicator(bonusNum);
-                appendBonus(data.bonus_num, data.bonus_name, data.bonus_task, data.bonus_id, data.bonus_limited, data.bonus_valid_for, timerData[data.bonus_num].gameId, timerData[data.bonus_num].teamId, timerData[data.bonus_num].levelId);
+                hideLoadIndicator(bonusId);
+                appendBonus(data.bonus_num, data.bonus_name, data.bonus_task, data.bonus_id, data.bonus_limited, data.bonus_valid_for, timerData[data.bonus_id].gameId, timerData[data.bonus_id].teamId, timerData[data.bonus_id].levelId);
             }
         });
     };
@@ -77,7 +77,7 @@ var LevelBonusDelayUpdater = function() {
     return {
         setup: function(config) {
             $(document).ready(function() {
-                timerData[config.bonusNum] =
+                timerData[config.bonusId] =
                     {
                         gameId: config.gameId,
                         teamId: config.teamId,
@@ -89,7 +89,7 @@ var LevelBonusDelayUpdater = function() {
                         loadingIndicator: $('#LevelBonusDelayCountdownLoadIndicator' + config.bonusId),
                         countdownValue: config.initialCountdownValue
                     };
-                start(config.bonusNum);
+                start(config.bonusId);
             });
         }
     };

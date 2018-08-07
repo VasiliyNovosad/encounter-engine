@@ -1,7 +1,7 @@
 <div id="LevelBonusesContainer">
   <ul>
     <% @bonuses.each do |bonus| %>
-        <li id="bonus-<%= bonus[:position] %>">
+        <li id="bonus-<%= bonus[:id] %>">
           <% if bonus[:answered] %>
             <p class="bonus-answered">
               <b>

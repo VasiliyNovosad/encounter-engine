@@ -83,7 +83,7 @@ class GamePassingsController < ApplicationController
     bonus = level.bonuses.find(bonus_id)
     @game_passing.miss_bonus!(level_id, bonus.id)
 
-    render json: {bonus_num: bonus.position, bonus_name: bonus.name}
+    render json: {bonus_id: bonus.id, bonus_name: bonus.name}
   end
 
   def post_answer
