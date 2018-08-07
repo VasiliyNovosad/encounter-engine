@@ -10,7 +10,7 @@ class MessagesController < ApplicationController
   end
 
   def new
-    @message = @game.messages.build
+    @message = @game.messages.build(level_ids: [@level.id])
   end
 
   def create
