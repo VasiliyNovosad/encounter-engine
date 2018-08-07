@@ -7,6 +7,7 @@
       <span class="level-copy"><%= link_to "(скопіювати)", copy_game_level_path(level.game, level), method: :post %></span>
       <span class="level-dismiss"><%= link_to "(зняти рівень)", dismiss_game_level_path(level.game, level), method: :post unless level.dismissed? %></span>
       <span class="level-dismiss"><%= link_to "(відмінити зняття рівня)", undismiss_game_level_path(level.game, level), method: :post if level.dismissed? %></span>
+      <span class="level-dismiss"><%= link_to "(видалити)", game_level_path(level.game, level), method: :delete, data: { confirm: 'Ви впевнені?' } %></span>
     <% end %>
   </p>
   <br>
