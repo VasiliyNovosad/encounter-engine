@@ -10,8 +10,8 @@ class Game < ActiveRecord::Base
   has_many :game_entries, class_name: 'GameEntry'
   has_many :game_passings, class_name: 'GamePassing'
   has_many :game_bonuses, class_name: 'GameBonus', dependent: :destroy
-  has_many :messages
-  has_many :bonuses
+  has_many :messages, dependent: :destroy
+  has_many :bonuses, -> { order(:position) }, dependent: :destroy
 
   validates_presence_of :name,
                         message: 'Не введено назву гри'
