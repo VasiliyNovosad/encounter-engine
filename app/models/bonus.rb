@@ -3,7 +3,7 @@ class Bonus < ActiveRecord::Base
   belongs_to :team
   belongs_to :game
   has_many :bonus_answers, dependent: :destroy
-  acts_as_list scope: [:level_id, :team_id]
+  acts_as_list scope: :game_id
 
   accepts_nested_attributes_for :bonus_answers, reject_if: :all_blank, allow_destroy: true
 

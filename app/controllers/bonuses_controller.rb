@@ -55,7 +55,7 @@ class BonusesController < ApplicationController
   def copy
     @new_bonus = @bonus.dup
     @new_bonus.name = "Бонус #{@level.bonuses.count + 1}"
-    @new_bonus.set_list_position(@level.bonuses.count + 1)
+    @new_bonus.set_list_position(@game.bonuses.count + 1)
     @bonus.bonus_answers.each do |answer|
       new_answer = answer.dup
       new_answer.bonus_id = nil

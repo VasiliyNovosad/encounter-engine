@@ -130,13 +130,15 @@
   <p>
     <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) unless @game.author_finished?%>
   </p>
-  <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>
-    <br><%= submit_tag "Додати " %> відповідь
-    <%= text_field_tag(:answer) %>
-    у всі сектори
+  <% unless @level.questions.empty? %>
+    <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>
+      <br><%= submit_tag "Додати " %> відповідь
+      <%= text_field_tag(:answer) %>
+      у всі сектори
+      <br>
+    <% end %>
     <br>
   <% end %>
-  <br>
   <p>
     <%= render 'questions/list', questions: @level.questions %>
   </p>
@@ -149,12 +151,15 @@
   <p>
     <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) unless @game.author_finished?%>
   </p>
-  <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
-    <br><%= submit_tag "Додати " %> відповідь
-    <%= text_field_tag(:bonus_answer) %>
-    у всі бонуси
+  <% unless @level.bonuses.empty? %>
+    <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
+      <br><%= submit_tag "Додати " %> відповідь
+      <%= text_field_tag(:bonus_answer) %>
+      у всі бонуси
+      <br>
+    <% end %>
     <br>
-  <% end %><br>
+  <% end %>
   <p>
     <%= render 'bonuses/list', bonuses: @level.bonuses %>
   </p>
