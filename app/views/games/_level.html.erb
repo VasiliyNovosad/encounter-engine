@@ -36,37 +36,39 @@
   <% end %>
   <%= level.text.html_safe unless level.text.nil?%>
   <p>
-    Завдання:
+    <span class="openedlevel">Завдання:</span>
     <%= render 'tasks', tasks: level.tasks %>
   </p>
   <br>
   <% if level.hints.count > 0 %>
-    Підказки:
+    <span class="hint-timer">Підказки:</span>
     <p>
       <%= render 'hints', hints: level.hints %>
     </p>
     <br>
   <% end %>
   <% if level.penalty_hints.count > 0 %>
-    Штрафні підказки:
+    <span class="yellow">Штрафні підказки:</span>
     <p>
       <%= render 'penalty_hints', penalty_hints: level.penalty_hints %>
     </p>
     <br>
   <% end %>
   <% if level.bonuses.count > 0 %>
-    Бонуси:
+    <span class="bonus">Бонуси:</span>
     <p>
       <%= render 'bonuses', bonuses: level.bonuses %>
     </p>
     <br>
   <% end %>
-  <b>Відповіді:</b>
-  <p>
-    <%= render 'answers', level: level %>
-  </p>
-  <% unless level.description.nil? || level.description.empty? %>
+  <% if level.questions.count > 0 %>
+    <span class="right_code">Відповіді:</span>
+    <p>
+      <%= render 'answers', level: level %>
+    </p>
     <br>
+<% end %>
+  <% unless level.description.nil? || level.description.empty? %>
     <p>
       <strong>Коментар: </strong> <pre class="level_description"><%= level.description %></pre>
     </p>
