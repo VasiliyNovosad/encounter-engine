@@ -14,6 +14,7 @@ class MessagesController < ApplicationController
   end
 
   def create
+    params[:message][:level_ids] ||= [@level.id]
     @message = @game.messages.build(message_params)
     @message.user = current_user
     if @message.save
@@ -32,7 +33,7 @@ class MessagesController < ApplicationController
   end
 
   def update
-    params[:message][:level_ids] ||= []
+    params[:message][:level_ids] ||= [@level.id]
     if @message.update_attributes(message_params)
       redirect_to game_level_path(@game, @level, anchor: 'messages-block')
     else
