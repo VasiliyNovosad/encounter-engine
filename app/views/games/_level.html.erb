@@ -65,4 +65,10 @@
   <p>
     <%= render 'answers', level: level %>
   </p>
+  <% unless level.description.nil? || level.description.empty? %>
+    <br>
+    <p>
+      <strong>Коментар: </strong> <pre class="level_description"><%= level.description %></pre>
+    </p>
+  <% end %>
 </fieldset>

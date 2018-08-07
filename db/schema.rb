@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807061009) do
+ActiveRecord::Schema.define(version: 20180807080533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -301,6 +301,7 @@ ActiveRecord::Schema.define(version: 20180807061009) do
     t.boolean  "is_wrong_code_penalty",               default: false
     t.integer  "wrong_code_penalty",                  default: 0
     t.boolean  "dismissed",                           default: false
+    t.text     "description"
   end
 
   create_table "levels_bonuses", id: false, force: :cascade do |t|

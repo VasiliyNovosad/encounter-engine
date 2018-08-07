@@ -41,6 +41,13 @@
   </p>
   <br>
 <% end %>
+<% unless @level.description.nil? || @level.description.empty? %>
+  <p>
+    <strong>Коментар: </strong> <pre class="level_description"><%= @level.description %></pre>
+  </p>
+  <br>
+<% end %>
+
 <p>
   <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level) unless @game.author_finished? %>
 </p>

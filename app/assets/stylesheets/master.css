@@ -575,3 +575,7 @@ div.dismissed-level {
 .author_message {
     color: #2ECC40;
 }
+
+.level_description {
+    color: orange;
+}
