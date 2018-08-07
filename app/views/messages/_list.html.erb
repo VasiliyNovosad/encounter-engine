@@ -1,0 +1,17 @@
+<% if messages.empty? %>
+  <em>Повідомлень немає</em>
+<% else %>
+  <% messages.each do |message| %>
+    <fieldset id="messages-<%= message.id %>">
+      <legend>
+        <em>
+          <%= link_to "(редагувати)", edit_game_level_message_path(message.game, @level, message) %>
+          <%= link_to "(видалити)", game_level_message_path(message.game, @level, message), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+        </em>
+      </legend>
+      <p>
+        <%= message.text.html_safe %>
+      </p>
+    </fieldset>
+  <% end %>
+<% end %>
