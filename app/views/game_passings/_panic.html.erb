@@ -82,7 +82,7 @@
   <br>
 
   <% unless @game_passing.closed?(@level) %>
-    <%= render 'hints', begin_time: @game_passing.game.starts_at %>
+    <%= render 'hints', begin_time: @game.starts_at %>
     <%= render 'penalty_hints' %>
   <% end %>
 
@@ -98,7 +98,7 @@
 
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}" %>
 <%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers" %>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}/penalty_hints" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/penalty_hints" %>
 
 <script>
     PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>", function(data, channel) {
@@ -135,7 +135,7 @@
 
     });
 
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>/penalty_hints", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/penalty_hints", function(data, channel) {
         var hint = data.hint || {};
         var hint_block = $('#penalty-hint-' + hint.id).get(0);
         hint_block.innerHTML = hint.text;
