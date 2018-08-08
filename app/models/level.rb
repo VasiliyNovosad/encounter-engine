@@ -96,16 +96,7 @@ class Level < ActiveRecord::Base
   end
 
   def team_tasks(team_id)
-    all_tasks = []
-    team_tasks = tasks.where(team_id: team_id).to_a
-    unless team_tasks.nil?
-      all_tasks += team_tasks
-    end
-    team_tasks = tasks.where('team_id IS NULL').to_a
-    unless team_tasks.nil?
-      all_tasks += team_tasks
-    end
-    all_tasks
+    tasks.where("team_id IS NULL OR team_id = #{team_id}")
   end
 
   def team_bonuses(team_id)

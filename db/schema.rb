@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807080533) do
+ActiveRecord::Schema.define(version: 20180808210911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 20180807080533) do
     t.integer  "team_id"
   end
 
+  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
+
   create_table "bonus_answers", force: :cascade do |t|
     t.integer  "bonus_id"
     t.integer  "team_id"
@@ -32,6 +34,8 @@ ActiveRecord::Schema.define(version: 20180807080533) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "bonus_answers", ["bonus_id"], name: "index_bonus_answers_on_bonus_id", using: :btree
 
   create_table "bonuses", force: :cascade do |t|
     t.integer  "level_id"
@@ -323,6 +327,8 @@ ActiveRecord::Schema.define(version: 20180807080533) do
     t.integer  "level_id"
     t.integer  "answer_type",             default: 0
   end
+
+  add_index "logs", ["game_id", "level_id", "team_id"], name: "index_logs_on_game_id_and_level_id_and_team_id", using: :btree
 
   create_table "messages", force: :cascade do |t|
     t.integer  "game_id"

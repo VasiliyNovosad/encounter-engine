@@ -431,8 +431,9 @@ class GamePassingsController < ApplicationController
   def get_answered_questions(level)
     @sectors = []
     return unless level.multi_question?(@team_id)
-    answered_questions = level.questions.where(id: @game_passing.answered_questions)
-    level.team_questions(@team_id).includes(:answers).each do |question|
+    team_questions = level.team_questions(@team_id)
+    answered_questions = team_questions.where(id: @game_passing.answered_questions)
+    team_questions.includes(:answers).each do |question|
       correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       value = level.olymp? ? question.name : '-'
       answered = answered_questions.include?(question)
