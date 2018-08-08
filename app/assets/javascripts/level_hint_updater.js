@@ -29,17 +29,23 @@ var LevelHintUpdater = function() {
     }
 
     ,updateCountdown = function(hintNum) {
-        var minutes = timerData[hintNum].countdownValue / 60
-        ,seconds = 0;
+        var hours = Math.floor(timerData[hintNum].countdownValue / 3600);
+        var minutes = Math.floor((timerData[hintNum].countdownValue) / 60) - 60 * hours;
+        var seconds = timerData[hintNum].countdownValue % 60;
 
-        if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
-            minutes = Math.floor(minutes);
-            seconds = timerData[hintNum].countdownValue % 60;
-        } else {
-            seconds = timerData[hintNum].countdownValue % 60;
-        }
+        // if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
+        //     minutes = Math.floor(minutes);
+        //     seconds = timerData[hintNum].countdownValue % 60;
+        // } else {
+        //     seconds = timerData[hintNum].countdownValue % 60;
+        // }
+        var text = '';
+        if (hours > 0) text = text + hours + ' год ';
+        if (minutes > 0) text = text + minutes + ' хв ';
+        if (seconds > 0) text = text + seconds + ' сек';
 
-        timerData[hintNum].countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        // timerData[hintNum].countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        timerData[hintNum].countdownTimerText.text(text);
         timerData[hintNum].countdownValue--;
     }
 

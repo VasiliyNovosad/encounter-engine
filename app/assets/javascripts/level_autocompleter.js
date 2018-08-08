@@ -23,17 +23,27 @@ var LevelCompleter = function() {
     };
 
     var updateCountdown = function() {
-        var minutes = countdownValue / 60
-        ,seconds = 0;
+        // var minutes = countdownValue / 60
+        // ,seconds = 0;
+        //
+        // if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
+        //     minutes = Math.floor(minutes);
+        //     seconds = countdownValue % 60;
+        // } else {
+        //     seconds = countdownValue % 60;
+        // }
 
-        if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
-            minutes = Math.floor(minutes);
-            seconds = countdownValue % 60;
-        } else {
-            seconds = countdownValue % 60;
-        }
+        var hours = Math.floor(countdownValue / 3600);
+        var minutes = Math.floor((countdownValue) / 60)  - 60 * hours;
+        var seconds = countdownValue % 60;
 
-        $countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        var text = '';
+        if (hours > 0) text = text + hours + ' год ';
+        if (minutes > 0) text = text + minutes + ' хв ';
+        if (seconds > 0) text = text + seconds + ' сек';
+
+        // $countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        $countdownTimerText.text(text);
         countdownValue--;
     };
 

@@ -20,19 +20,105 @@ class GamePassingsController < ApplicationController
   before_action :ensure_author, only: [:index]
 
   def show_current_level
-    if @game_passing.finished_at.nil? && !(@game.game_type == 'panic' && (@game.starts_at + @game.duration * 60) < Time.now)
-      @level = if @game.game_type == 'panic'
-                 params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
-               else
-                 @game_passing.current_level
-               end
-      get_uniq_level_codes(@level)
-      get_answered_bonuses(@level) # unless @game.game_type == 'panic'
-      get_answered_questions(@level) # unless @game.game_type == 'panic'
-      get_penalty_hints(@level)
-      render layout: 'in_game'
-    else
-      redirect_to  game_passings_show_results_url(game_id: @game.id)
+    respond_to do |format|
+      if @game_passing.finished_at.nil? && !(@game.game_type == 'panic' && (@game.starts_at + @game.duration * 60) < Time.now)
+        @level = if @game.game_type == 'panic'
+                   params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
+                 else
+                   @game_passing.current_level
+                 end
+        get_uniq_level_codes(@level)
+        get_answered_bonuses(@level) # unless @game.game_type == 'panic'
+        get_answered_questions(@level) # unless @game.game_type == 'panic'
+        get_penalty_hints(@level)
+        @upcoming_hints = @game_passing.upcoming_hints(@team_id, @level)
+        @hints_to_show = @game_passing.hints_to_show(@team_id, @level)
+        format.html { render layout: 'in_game' }
+        format.json do
+          level_position = @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position
+          all_sectors = @level.team_questions(@team_id)
+          sectors_count = all_sectors.count
+          level_time =  if @game.game_type == 'panic'
+                          (@level.complete_later || 0).zero? ? @game.duration * 60 : @level.complete_later
+                        else
+                          @level.complete_later || 0
+                        end
+          level_start = level_position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
+          hint_num = 0
+          current_level_json = {
+              game: {id: @game.id, name: @game.name, levels_count: @game.levels.count, game_type: @game.game_type},
+              team: {id: @team.id, name: @team.name},
+              level: {
+                  id: @level.id,
+                  name: @level.name,
+                  position: level_position,
+                  autocomplete_time: level_time,
+                  left_time: level_time == 0 ? 0 : (level_start - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level_time,
+                  sectors_count: sectors_count,
+                  sectors_need: @level.sectors_for_close.zero? ? sectors_count : @level.sectors_for_close,
+                  sectors_closed: @game.game_type == 'panic' ? @game_passing.answered_questions.count : (@game_passing.answered_questions.to_set & all_sectors.map(&:id).to_set).count,
+                  tasks: @level.team_tasks(@team_id).map { |task| {id: task.id, text: task.text} },
+                  messages: @level.messages.map { |message| { user: message.user.nickname, text: message.text} },
+                  hints: @hints_to_show.map do |hint|
+                    hint_num += 1
+                    {
+                      id: hint.id,
+                      number: hint_num,
+                      text: hint.text,
+                      time_to_hint: 0
+                    }
+                  end + @upcoming_hints.map do |hint|
+                    hint_num += 1
+                    {
+                      id: hint.id,
+                      number: hint_num,
+                      text: '',
+                      time_to_hint: hint.available_in(level_start)
+                    }
+                  end,
+                  penalty_hints: @penalty_hints.map do |hint|
+                    {
+                      id: hint[:id],
+                      name: hint[:name],
+                      penalty: hint[:penalty] || 0,
+                      used: hint[:used],
+                      text: hint[:used] ? hint[:text] : ''
+                    }
+                  end,
+                  sectors: @sectors.map do |sector|
+                    {
+                      id: sector[:id],
+                      position: sector[:position],
+                      name: sector[:name],
+                      answered: sector[:answered],
+                      answer: sector[:answered] ? sector[:answer] : ''
+                    }
+                  end,
+                  bonuses: @bonuses.map do |bonus|
+                    {
+                        id: bonus[:id],
+                        name: bonus[:name],
+                        answered: bonus[:answered],
+                        help: bonus[:answered] ? bonus[:help] : '',
+                        award: bonus[:answered] ? bonus[:award] : 0,
+                        answer: bonus[:answered] ? bonus[:value] : '',
+                        missed: bonus[:missed],
+                        delayed: bonus[:delayed] && !bonus[:missed],
+                        delay_for: bonus[:delayed] && !bonus[:missed] ? bonus[:delay_for] : 0,
+                        limited: bonus[:limited] && !bonus[:missed] && !bonus[:answered] && (!bonus[:delayed] || bonus[:delay_for].zero?),
+                        valid_for: bonus[:limited] && !bonus[:answered] && !bonus[:missed] ? bonus[:valid_for] : 0,
+                        task: bonus[:answered] || bonus[:missed] || bonus[:delayed] ? '' : bonus[:task]
+                    }
+                  end
+              }
+          }
+
+          render json: current_level_json
+        end
+      else
+        format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
+        format.json { render json: {status: 'ok', message: 'game finished'} }
+      end
     end
   end
 
@@ -349,9 +435,13 @@ class GamePassingsController < ApplicationController
     level.team_questions(@team_id).includes(:answers).each do |question|
       correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       value = level.olymp? ? question.name : '-'
-      @sectors << { position: question.position,
+      answered = answered_questions.include?(question)
+      @sectors << { id: question.id,
+                    position: question.position,
                     name: question.name,
-                    value: answered_questions.include?(question) ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value }
+                    answered: answered,
+                    answer: answered ? @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers) : '',
+                    value: answered ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value }
     end
   end
 

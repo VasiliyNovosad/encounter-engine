@@ -32,27 +32,27 @@
 <div id="main-game-container">
   <fieldset>
     <legend>
-      <%= @game_passing.current_level.name %>
+      <%= @level.name %>
     </legend>
 
-    <% if (@game_passing.current_level.complete_later || 0) > 0 %>
+    <% if (@level.complete_later || 0) > 0 %>
         <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
 
         <script>
             LevelCompleter.setup({
-                initialCountdownValue: <%= ((@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @game_passing.current_level.complete_later %>
-                ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>, gameType: '<%= @game.game_type %>', levelNumber: <%= @game_passing.current_level.position %>
+                initialCountdownValue: <%= (((@game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position) == 1 ? @game.starts_at : @level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @level.complete_later %>
+                ,gameId: <%= @game_passing.game_id %>, levelId: <%= @game_passing.current_level.id %>, gameType: '<%= @game.game_type %>', levelNumber: <%= @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position %>
             })
         </script>
     <% end %>
     <br>
 
-    <%= render 'messages', messages: @game_passing.current_level.messages %>
+    <%= render 'messages', messages: @level.messages %>
     <br><br>
-    <%= render 'tasks', tasks: @game_passing.current_level.team_tasks(@team_id) %>
+    <%= render 'tasks', tasks: @level.team_tasks(@team_id) %>
     <br>
 
-    <% team_questions = @game_passing.current_level.team_questions(@team_id) %>
+    <% team_questions = @level.team_questions(@team_id) %>
     <% if team_questions.count > 1 %>
       <div>
         <br>
@@ -63,26 +63,26 @@
     <% end %>
     <br>
 
-    <%= render 'hints', upcoming_hints: @game_passing.upcoming_hints(@team_id), hints_to_show: @game_passing.hints_to_show(@team_id), begin_time: (@game_passing.current_level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at), level: @game_passing.current_level %>
+    <%= render 'hints', begin_time: ((@game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position) == 1 ? @game.starts_at : @game_passing.current_level_entered_at) %>
     <%= render 'penalty_hints' %>
 
-    <%= render @game_passing.current_level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
+    <%= render @level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
     <hr>
     <br>
-    <%= render 'bonuses', level: @game_passing.current_level if @bonuses.count > 0 %>
+    <%= render 'bonuses', level: @level if @bonuses.count > 0 %>
     <br>
   </fieldset>
 </div>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}" %>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}/answers" %>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@game_passing.current_level.id}/penalty_hints" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers" %>
+<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/penalty_hints" %>
 
 <script>
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>", function(data, channel) {
         window.location.href = data.url;
     });
 
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>/answers", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/answers", function(data, channel) {
         var answers = data.answers || [];
         for (var i = 0; i < answers.length; i++) {
             $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));
@@ -90,7 +90,7 @@
         var sectors = data.sectors || [];
         for (var i = 0; i < sectors.length; i++) {
             var sector = $('#sector-' + sectors[i].position).get(0);
-            <% if @game_passing.current_level.olymp? %>
+            <% if @level.olymp? %>
               sector.innerHTML = sectors[i].value;
             <% else %>
               sector.innerHTML = sectors[i].name + ': ' + sectors[i].value;
@@ -112,7 +112,7 @@
 
     });
 
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @game_passing.current_level.id %>/penalty_hints", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/penalty_hints", function(data, channel) {
         var hint = data.hint || {};
         var hint_block = $('#penalty-hint-' + hint.id).get(0);
         hint_block.innerHTML = hint.text;

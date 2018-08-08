@@ -14,17 +14,23 @@ var LevelBonusDelayUpdater = function() {
         loadBonus(bonusId);
     }
     ,updateCountdown = function(bonusId) {
-        var minutes = timerData[bonusId].countdownValue / 60
-        ,seconds = 0;
+        var hours = Math.floor(timerData[bonusId].countdownValue / 3600);
+        var minutes = Math.floor((timerData[bonusId].countdownValue) / 60) - 60 * hours;
+        var seconds = timerData[bonusId].countdownValue % 60;
 
-        if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
-            minutes = Math.floor(minutes);
-            seconds = timerData[bonusId].countdownValue % 60;
-        } else {
-            seconds = timerData[bonusId].countdownValue % 60;
-        }
+        // if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
+        //     minutes = Math.floor(minutes);
+        //     seconds = timerData[hintNum].countdownValue % 60;
+        // } else {
+        //     seconds = timerData[hintNum].countdownValue % 60;
+        // }
+        var text = '';
+        if (hours > 0) text = text + hours + ' год ';
+        if (minutes > 0) text = text + minutes + ' хв ';
+        if (seconds > 0) text = text + seconds + ' сек';
 
-        timerData[bonusId].countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        // timerData[bonusId].countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
+        timerData[bonusId].countdownTimerText.text(text);
         timerData[bonusId].countdownValue--;
     }
     ,hideCountdownContainer = function(bonusId) {

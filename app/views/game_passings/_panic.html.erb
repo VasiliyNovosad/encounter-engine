@@ -82,7 +82,7 @@
   <br>
 
   <% unless @game_passing.closed?(@level) %>
-    <%= render 'hints', upcoming_hints: @game_passing.upcoming_hints(@team_id, @level), hints_to_show: @game_passing.hints_to_show(@team_id, @level), begin_time: @game_passing.game.starts_at, level: @level %>
+    <%= render 'hints', begin_time: @game_passing.game.starts_at %>
     <%= render 'penalty_hints' %>
   <% end %>
 
