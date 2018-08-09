@@ -27,10 +27,10 @@ class GamePassingsController < ApplicationController
                  else
                    @game_passing.current_level
                  end
-        get_uniq_level_codes(@level)
-        get_answered_bonuses(@level) # unless @game.game_type == 'panic'
-        get_answered_questions(@level) # unless @game.game_type == 'panic'
-        get_penalty_hints(@level)
+        @entered_all_answers = get_uniq_level_codes(@level)
+        @bonuses = get_answered_bonuses(@level)
+        @sectors = get_answered_questions(@level)
+        @penalty_hints = get_penalty_hints(@level)
         @upcoming_hints = @game_passing.upcoming_hints(@team_id, @level)
         @hints_to_show = @game_passing.hints_to_show(@team_id, @level)
         format.html { render layout: 'in_game' }
@@ -130,15 +130,16 @@ class GamePassingsController < ApplicationController
   def get_current_level_tip
     level_id = params[:level_id]
     level = Level.find(level_id)
-    upcoming_hints = @game_passing.upcoming_hints(@team_id, level).to_a
-    next_hint = upcoming_hints.count > 0 ? upcoming_hints.first : nil
+    upcoming_hints_count = @game_passing.upcoming_hints(@team_id, level).count
     hints_to_show = @game_passing.hints_to_show(@team_id, level)
+    hint_to_show_count = hints_to_show.count
+    last_hint = hints_to_show.last
 
-    render json: { hint_num: hints_to_show.count,
-                   hint_text: (hints_to_show.count == 0 ? '' : hints_to_show.last.text.html_safe),
-                   hint_id: (hints_to_show.count == 0 ? nil : hints_to_show.last.id),
-                   hint_count: hints_to_show.count + upcoming_hints.count,
-                   next_available_in: next_hint.nil? ? nil : next_hint.available_in(@game_passing.game.game_type == 'panic' || level.position == 1 ? @game_passing.game.starts_at : @game_passing.current_level_entered_at) }.to_json
+    render json: { hint_num: hint_to_show_count,
+                   hint_text: (hint_to_show_count == 0 ? '' : last_hint.text.html_safe),
+                   hint_id: (hint_to_show_count == 0 ? nil : last_hint.id),
+                   hint_count: hint_to_show_count + upcoming_hints_count
+                 }
   end
 
   def get_current_level_bonus
@@ -186,12 +187,7 @@ class GamePassingsController < ApplicationController
       if @answer == ''
         respond_to do |format|
           format.html do
-            @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-            get_uniq_level_codes(@level)
-            get_answered_bonuses(@level)
-            get_answered_questions(@level)
-            get_penalty_hints(@level)
-            render 'show_current_level', layout: 'in_game'
+            redirect_to :show_current_level
           end
           format.js
         end
@@ -239,12 +235,7 @@ class GamePassingsController < ApplicationController
         else
           respond_to do |format|
             format.html do
-              @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-              get_uniq_level_codes(@level)
-              get_answered_bonuses(@level)
-              get_answered_questions(@level)
-              get_penalty_hints(@level)
-              render 'show_current_level', layout: 'in_game'
+              redirect_to :show_current_level
             end
             format.js do
               PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers", {
@@ -265,7 +256,7 @@ class GamePassingsController < ApplicationController
     @game_bonuses = GameBonus.of_game(@game).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
     @game_passings = GamePassing.of_game(@game)
 
-    unless @game.game_type == 'linear' || @game.game_type == 'selected'
+    if @game.game_type == 'panic'
       @game_finished_at = @game.starts_at + @game.duration * 60
       @game_passings = @game_passings.map do |game_passing|
         team_bonus = @game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
@@ -398,68 +389,58 @@ class GamePassingsController < ApplicationController
   end
 
   def get_uniq_level_codes(level)
-    log_of_level = []
-    Log.of_game(@game).of_level(level).of_team(Team.find(@team_id)).order(time: :desc).includes(:user).each do |log|
+    Log.of_game(@game).of_level(level).of_team(Team.find(@team_id)).order(time: :desc).includes(:user).map do |log|
       if log.answer_type == 1
-        log_of_level.push(
-            {
+        {
             time: log.time,
             user: log.user.nickname,
             answer: "<span class=\"right_code\">#{log.answer}</span>"
-        })
+        }
       elsif log.answer_type == 2
-        log_of_level.push(
-          {
+        {
                   time: log.time,
                   user: log.user.nickname,
                   answer: "<span class=\"bonus\">#{log.answer}</span>"
                }
-        )
       else
-        log_of_level.push(
-            {
+        {
                 time: log.time,
                 user: log.user.nickname,
                 answer: log.answer
             }
-        )
       end
     end
-    @entered_all_answers = log_of_level
   end
 
   def get_answered_questions(level)
-    @sectors = []
-    return unless level.multi_question?(@team_id)
     team_questions = level.team_questions(@team_id)
     answered_questions = team_questions.where(id: @game_passing.answered_questions)
-    team_questions.includes(:answers).each do |question|
+    team_questions.includes(:answers).map do |question|
       correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       value = level.olymp? ? question.name : '-'
       answered = answered_questions.include?(question)
-      @sectors << { id: question.id,
-                    position: question.position,
-                    name: question.name,
-                    answered: answered,
-                    answer: answered ? @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers) : '',
-                    value: answered ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value }
+      {
+        id: question.id,
+        position: question.position,
+        name: question.name,
+        answered: answered,
+        answer: answered ? @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers) : '',
+        value: answered ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value
+      }
     end
   end
 
   def get_penalty_hints(level)
-    @penalty_hints = []
-    level.team_penalty_hints(@team_id).each do |hint|
+    level.team_penalty_hints(@team_id).map do |hint|
       is_get_hint = @game_passing.penalty_hints.include?(hint.id)
-      @penalty_hints << { id: hint.id, name: hint.name, text: is_get_hint ? hint.text : '', used: is_get_hint, penalty: hint.penalty}
+      { id: hint.id, name: hint.name, text: is_get_hint ? hint.text : '', used: is_get_hint, penalty: hint.penalty}
     end
-    @penalty_hints
   end
 
   def get_answered_bonuses(level)
-    @bonuses = []
-    return unless level.has_bonuses?(@team_id)
+    return [] unless level.has_bonuses?(@team_id)
     answered_bonuses = level.bonuses.where(id: @game_passing.answered_bonuses)
-    @bonuses = level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
+    level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       current_level_entered_at = (level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
       current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
@@ -479,6 +460,5 @@ class GamePassingsController < ApplicationController
         missed: @game_passing.missed_bonuses.include?(bonus.id)
       }
     end
-    @bonuses
   end
 end

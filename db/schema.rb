@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180808210911) do
+ActiveRecord::Schema.define(version: 20180809061338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -191,6 +191,8 @@ ActiveRecord::Schema.define(version: 20180808210911) do
     t.datetime "updated_at",                           null: false
   end
 
+  add_index "game_bonuses", ["game_id"], name: "index_game_bonuses_on_game_id", using: :btree
+
   create_table "game_entries", force: :cascade do |t|
     t.integer "game_id"
     t.integer "team_id"
@@ -307,6 +309,8 @@ ActiveRecord::Schema.define(version: 20180808210911) do
     t.boolean  "dismissed",                           default: false
     t.text     "description"
   end
+
+  add_index "levels", ["game_id"], name: "index_levels_on_game_id", using: :btree
 
   create_table "levels_bonuses", id: false, force: :cascade do |t|
     t.integer "bonus_id"
