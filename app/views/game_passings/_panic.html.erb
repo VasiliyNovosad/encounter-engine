@@ -137,7 +137,7 @@
 
     PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/penalty_hints", function(data, channel) {
         var hint = data.hint || {};
-        var hint_block = $('#penalty-hint-' + hint.id).get(0);
+        var hint_block = $('#penalty-hint-' + hint.id + ' .penalty-hint-body').get(0);
         hint_block.innerHTML = hint.text;
     });
 

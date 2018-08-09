@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180809061338) do
+ActiveRecord::Schema.define(version: 20180809081703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -356,8 +356,10 @@ ActiveRecord::Schema.define(version: 20180809061338) do
     t.text     "text"
     t.integer  "penalty"
     t.integer  "team_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "is_delayed", default: false
+    t.integer  "delay_for"
   end
 
   create_table "questions", force: :cascade do |t|

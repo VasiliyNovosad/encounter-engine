@@ -50,7 +50,7 @@ class PenaltyHintsController < ApplicationController
   protected
 
   def penalty_hint_params
-    params.require(:penalty_hint).permit(:level_id, :name, :text, :penalty, :team_id)
+    params.require(:penalty_hint).permit(:level_id, :name, :text, :penalty, :team_id, :is_delayed, :delay_for)
   end
 
   def find_level

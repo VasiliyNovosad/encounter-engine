@@ -24,9 +24,24 @@
     <%= f.hidden_field :penalty %>
   </div>
 </div>
+<div class="form-group row">
+  <%= f.label :is_delayed, class: 'col-sm-2 col-form-label' %>
+  <div id="hint-delay-time-form" class="col-sm-9 col-9 form-inline">
+    <div class="form-check">
+      <%= f.check_box :is_delayed %>
+    </div>
+    <%= render 'shared/time_form' %>
+    <%= f.number_field :delay_for, hidden: true %>
+  </div>
+</div>
 
 <script type="text/javascript">
     $( document ).ready(function() {
+        if (!$('#penalty_hint_is_delayed').prop("checked")) {
+            $('#hint-delay-time-form .my-time-form').addClass('invisible');
+        }
+
+        set_time_form(parseInt($('#penalty_hint_delay_for').val()), '#hint-delay-time-form');
         set_time_form(parseInt($('#penalty_hint_penalty').val()), '#hint-penalty-form');
 
         $('#hint-penalty-form .time-hours').on('change', function() {
@@ -39,6 +54,28 @@
 
         $('#hint-penalty-form .time-seconds').on('change', function() {
             set_field_time('#penalty_hint_penalty', '#hint-penalty-form', 1);
+        });
+
+        $('#hint-delay-time-form .time-hours').on('change', function() {
+            set_field_time('#penalty_hint_delay_for', '#hint-delay-time-form', 1);
+        });
+
+        $('#hint-delay-time-form .time-minutes').on('change', function() {
+            set_field_time('#penalty_hint_delay_for', '#hint-delay-time-form', 1);
+        });
+
+        $('#hint-delay-time-form .time-seconds').on('change', function() {
+            set_field_time('#penalty_hint_delay_for', '#hint-delay-time-form', 1);
+        });
+
+        $('#penalty_hint_is_delayed').on('click', function () {
+            if ($('#penalty_hint_is_delayed').prop("checked")) {
+                $('#hint-delay-time-form .my-time-form').removeClass('invisible');
+            } else {
+                set_time_form(0, '#hint-delay-time-form');
+                $('#penalty_hint_delay_for').val(0);
+                $('#hint-delay-time-form .my-time-form').addClass('invisible');
+            }
         });
     });
 </script>

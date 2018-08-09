@@ -58,6 +58,10 @@ uk:
         recepient_nickname: "Гравець"
       game_passing:
         answer: "Код"
+      penalty_hint:
+        name: "Назва"
+        text: "Текст"
+        is_delayed: "Обмежити час появи"
     models:
       user: "Користувач"
       game: "Гра"
@@ -71,6 +75,7 @@ uk:
       invitation: "Запрошення"
       game_passing: "Сесія гри"
       game_entry: "Заявка на гру"
+      penalty_hint: "Штрафна підказка"
     errors:
       messages:
         record_invalid: "Виникли помилки: %{errors}"

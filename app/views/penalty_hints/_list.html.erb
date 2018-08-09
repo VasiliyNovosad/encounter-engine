@@ -23,6 +23,13 @@
           <p>
             <%= "Штраф: #{seconds_to_string(hint.penalty || 0)}" %>
           </p>
+          <% if hint.is_delayed? && (hint.delay_for || 0) > 0 %>
+            <p>
+              <strong>Обмежити час появи: </strong>
+              <%= "на #{seconds_to_string(hint.delay_for || 0)}" %>
+            </p>
+          <% end %>
+
         </fieldset>
     <% end %>
 <% end %>

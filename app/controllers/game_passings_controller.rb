@@ -297,12 +297,30 @@ class GamePassingsController < ApplicationController
     render json: { result: true }.to_json
   end
 
-  def penalty_hint
+  def use_penalty_hint
     level_id = params[:level_id]
     penalty_hint_id = params[:hint_id]
     @game_passing.use_penalty_hint!(level_id, penalty_hint_id, current_user.id)
     respond_to do |format|
       format.js
+    end
+  end
+
+  def show_penalty_hint
+    level_id = params[:level_id]
+    level = Level.find(level_id)
+    penalty_hint_id = params[:hint_id]
+    penalty_hint = level.penalty_hints.find(penalty_hint_id)
+    current_level_entered_at = level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at
+    current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
+    if !penalty_hint.nil? && (!penalty_hint.is_delayed? || (penalty_hint.time_to_delay(current_level_entered_at, current_time) || 0) <= 0)
+      render json: {
+          hint_name: penalty_hint.name,
+          hint_id: penalty_hint.id,
+          hint_penalty: seconds_to_string(penalty_hint.penalty || 0)
+      }
+    else
+      render json: {}
     end
   end
 
@@ -432,8 +450,19 @@ class GamePassingsController < ApplicationController
 
   def get_penalty_hints(level)
     level.team_penalty_hints(@team_id).map do |hint|
-      is_get_hint = @game_passing.penalty_hints.include?(hint.id)
-      { id: hint.id, name: hint.name, text: is_get_hint ? hint.text : '', used: is_get_hint, penalty: hint.penalty}
+      is_got_hint = @game_passing.penalty_hints.include?(hint.id)
+      current_level_entered_at = (level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
+      current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
+      time_to_show = hint.time_to_delay(current_level_entered_at, current_time) || 0
+      {
+          id: hint.id,
+          name: hint.name,
+          text: is_got_hint ? hint.text : '',
+          used: is_got_hint,
+          penalty: hint.penalty,
+          delayed: hint.is_delayed,
+          time_to_show: is_got_hint || !hint.is_delayed || time_to_show < 0 ? 0 : time_to_show
+      }
     end
   end
 
