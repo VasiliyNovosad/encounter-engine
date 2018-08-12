@@ -253,22 +253,37 @@ class GamePassingsController < ApplicationController
   end
 
   def show_results
-    @game_bonuses = GameBonus.of_game(@game).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
-    @game_passings = GamePassing.of_game(@game)
+    game_bonuses = GameBonus.of_game(@game).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
+    game_passings = GamePassing.of_game(@game)
 
     if @game.game_type == 'panic'
-      @game_finished_at = @game.starts_at + @game.duration * 60
-      @game_passings = @game_passings.map do |game_passing|
-        team_bonus = @game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+      game_finished_at = @game.starts_at + @game.duration * 60
+      @game_passings = game_passings.map do |game_passing|
+        team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
         {
             team_id: game_passing.team.id,
             team_name: game_passing.team.name,
-            finished_at: game_passing.finished_at || @game_finished_at,
+            finished_at: game_passing.finished_at || game_finished_at,
             closed_levels: game_passing.closed_levels.count,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
         }
       end.sort do |a, b|
         (a[:finished_at] - a[:sum_bonuses]) <=> (b[:finished_at] - b[:sum_bonuses])
+      end
+    else
+      current_time = Time.now
+      @game_passings = game_passings.map do |game_passing|
+        team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+        {
+            team_id: game_passing.team.id,
+            team_name: game_passing.team.name,
+            finished_at: game_passing.finished_at,
+            closed_levels: game_passing.closed_levels.count,
+            sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
+            exited: game_passing.exited?
+        }
+      end.sort_by do |v|
+        [-v[:closed_levels], (v[:finished_at] || current_time) - v[:sum_bonuses]]
       end
     end
   end
