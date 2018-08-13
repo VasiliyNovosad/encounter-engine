@@ -75,10 +75,12 @@
   <legend class="openedlevel">
     Завдання:
   </legend>
-  <p>
-    <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) unless @game.author_finished?%>
-  </p>
-  <br>
+  <% unless @game.author_finished? %>
+    <p>
+      <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
+    </p>
+    <br>
+  <% end %>
   <p>
     <%= render 'tasks/list', tasks: @level.tasks %>
   </p>
@@ -88,10 +90,12 @@
   <legend class="purple">
     Повідомлення:
   </legend>
-  <p>
-    <%= link_to "Додати повідомлення", new_game_level_message_path(@game, @level) unless @game.author_finished?%>
-  </p>
-  <br>
+  <% unless @game.author_finished? %>
+    <p>
+      <%= link_to "Додати повідомлення", new_game_level_message_path(@game, @level) %>
+    </p>
+    <br>
+  <% end %>
   <p>
     <%= render 'messages/list', messages: @level.messages %>
   </p>
@@ -101,10 +105,12 @@
   <legend class="hint-timer">
     Пiдказки:
   </legend>
-  <p>
-    <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) unless @game.author_finished?%>
-  </p>
-  <br>
+  <% unless @game.author_finished? %>
+    <p>
+      <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) %>
+    </p>
+    <br>
+  <% end %>
   <p>
     <%= render 'hints/list', hints: @level.hints %>
   </p>
@@ -114,10 +120,12 @@
   <legend class="yellow">
     Штрафні пiдказки:
   </legend>
-  <p>
-    <%= link_to "Додати штрафну підказку", new_game_level_penalty_hint_path(@game, @level) unless @game.author_finished?%>
-  </p>
-  <br>
+  <% unless @game.author_finished? %>
+    <p>
+      <%= link_to "Додати штрафну підказку", new_game_level_penalty_hint_path(@game, @level) %>
+    </p>
+    <br>
+  <% end %>
   <p>
     <%= render 'penalty_hints/list', penalty_hints: @level.penalty_hints %>
   </p>
@@ -127,24 +135,26 @@
   <legend class="right_code">
     Відповіді:
   </legend>
-  <p>
-    <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) unless @game.author_finished?%>
-  </p>
-  <% unless @level.questions.empty? %>
-    <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>
-      <br><%= submit_tag "Додати " %> відповідь
-      <%= text_field_tag(:answer) %>
-      у всі сектори
+  <% unless @game.author_finished? %>
+    <p>
+      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
+    </p>
+    <% unless @level.questions.empty? %>
+      <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>
+        <br><%= submit_tag "Додати " %> відповідь
+        <%= text_field_tag(:answer) %>
+        у всі сектори
+        <br>
+      <% end %>
       <br>
     <% end %>
-    <br>
   <% end %>
   <p>
     <%= render 'questions/list', questions: @level.questions %>
   </p>
-  <% if @level.questions.count > 5 %>
+  <% if !@game.author_finished? && @level.questions.count > 5 %>
     <p>
-      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) unless @game.author_finished?%>
+      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
     </p>
   <% end %>
 </fieldset>
@@ -153,25 +163,27 @@
   <legend class="bonus">
     Бонуси:
   </legend>
-  <p>
-    <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) unless @game.author_finished?%>
-  </p>
-  <% unless @level.bonuses.empty? %>
-    <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
-      <br><%= submit_tag "Додати " %> відповідь
-      <%= text_field_tag(:bonus_answer) %>
-      у всі бонуси
+  <% unless @game.author_finished? %>
+    <p>
+      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
+    </p>
+    <% unless @level.bonuses.empty? %>
+      <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
+        <br><%= submit_tag "Додати " %> відповідь
+        <%= text_field_tag(:bonus_answer) %>
+        у всі бонуси
+        <br>
+      <% end %>
       <br>
     <% end %>
-    <br>
   <% end %>
   <p>
     <%= render 'bonuses/list', bonuses: @level.bonuses %>
   </p>
-  <% if @level.bonuses.count > 5 %>
+  <% if !@game.author_finished? && @level.bonuses.count > 5 %>
     <br>
     <p>
-      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) unless @game.author_finished?%>
+      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
     </p>
   <% end %>
 </fieldset>
