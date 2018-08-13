@@ -9,9 +9,11 @@
         <%= accepted_game_entries.index(entry) + 1 %>. <%= link_to entry.team.name, team_path(entry.team) if user_signed_in? %>
         <%= entry.team.name unless user_signed_in? %>
       </strong>
-      <em>
-        <%= link_to "(відмінити)", url_for("/game_entries/reaccept/#{entry.id}"), method: :post if user_signed_in? && current_user.author_of?(game) %>
-      </em>
+      <% unless @game.author_finished? %>
+        <em>
+          <%= link_to "(відмінити)", url_for("/game_entries/reaccept/#{entry.id}"), method: :post if user_signed_in? && current_user.author_of?(game) %>
+        </em>
+      <% end %>
     </p>
   <% end %>
 </fieldset>
