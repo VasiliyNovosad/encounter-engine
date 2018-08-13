@@ -8,12 +8,14 @@
               <% else %>
                   <em>Для </em> <strong><%= link_to question.team.name, team_path(question.team) %></strong>:
               <% end %>
-              <em>
-                <%= link_to "(редагувати)", edit_game_level_question_path(question.level.game, question.level, question) %>
-                <%= link_to "(видалити)", game_level_question_path(question.level.game, question.level, question), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-                <%= link_to "(скопіювати)", copy_game_level_question_path(question.level.game, question.level, question), method: :post %>
-                <!-- <%= link_to "(скопіювати в бонус)", copy_to_bonus_game_level_question_path(question.level.game, question.level, question), method: :post %> -->
-              </em>
+              <% unless @game.author_finished? %>
+                <em>
+                  <%= link_to "(редагувати)", edit_game_level_question_path(question.level.game, question.level, question) %>
+                  <%= link_to "(видалити)", game_level_question_path(question.level.game, question.level, question), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+                  <%= link_to "(скопіювати)", copy_game_level_question_path(question.level.game, question.level, question), method: :post %>
+                  <!-- <%= link_to "(скопіювати в бонус)", copy_to_bonus_game_level_question_path(question.level.game, question.level, question), method: :post %> -->
+                </em>
+              <% end %>
             </legend>
             <p>
               <strong><%= question.name %>:</strong>

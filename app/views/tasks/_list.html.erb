@@ -9,10 +9,12 @@
             <% else %>
                 <em>Для </em> <strong><%= link_to task.team.name, team_path(task.team) %></strong>:
             <% end %>
-            <em>
-              <%= link_to "(редагувати)", edit_game_level_task_path(task.level.game, task.level, task) %>
-              <%= link_to "(видалити)", game_level_task_path(task.level.game, task.level, task), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-            </em>
+            <% unless @game.author_finished? %>
+              <em>
+                <%= link_to "(редагувати)", edit_game_level_task_path(task.level.game, task.level, task) %>
+                <%= link_to "(видалити)", game_level_task_path(task.level.game, task.level, task), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+              </em>
+            <% end %>
           </legend>
           <p>
             <%= task.text.html_safe %>
