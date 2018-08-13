@@ -142,6 +142,11 @@
   <p>
     <%= render 'questions/list', questions: @level.questions %>
   </p>
+  <% if @level.questions.count > 5 %>
+    <p>
+      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) unless @game.author_finished?%>
+    </p>
+  <% end %>
 </fieldset>
 <br>
 <fieldset id="bonuses-block">
@@ -163,6 +168,12 @@
   <p>
     <%= render 'bonuses/list', bonuses: @level.bonuses %>
   </p>
+  <% if @level.bonuses.count > 5 %>
+    <br>
+    <p>
+      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) unless @game.author_finished?%>
+    </p>
+  <% end %>
 </fieldset>
 <br>
 <p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
