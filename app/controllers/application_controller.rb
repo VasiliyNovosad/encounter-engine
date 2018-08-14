@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_team_member
-    unless  user_signed_in? && current_user.member_of_any_team?
+    unless  user_signed_in? && (current_user.member_of_any_team? || @game.team_type == 'single')
       redirect_to root_path, alert: 'Ви не авторизовані для відвідування цієї сторінки'
     end
   end
