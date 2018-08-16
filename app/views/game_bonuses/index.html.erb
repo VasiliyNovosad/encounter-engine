@@ -27,7 +27,7 @@
       <td><%= "#{bonus.award > 0 ? 'бонус' : 'штраф'} #{seconds_to_string((bonus.award || 0).abs)}" %></td>
       <td><%= bonus.description %> </td>
       <td>
-        <% if user_signed_in? && current_user.author_of?(@game) && bonus.reason == 'додано автором' %>
+        <% if user_signed_in? && current_user.author_of?(@game) && bonus.reason == 'додано автором' && !@game.author_finished? %>
           <div class="btn-group" role="group" aria-label="...">
             <%= link_to "змінити", edit_game_game_bonus_path(@game, bonus), class: "btn btn-sm btn-info"%>
             <%= link_to "видалити", game_game_bonus_path(@game, bonus), class: "btn btn-sm btn-danger", data: {:confirm => 'Ви впевнені?'}, :method => :delete%>

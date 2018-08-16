@@ -39,4 +39,12 @@ module GamesHelper
       telegram[0] == '@' ? telegram[1..-1] : telegram
     end
   end
+
+  def game_start_date(game)
+    if game.starts_at.nil?
+      'Дата початку гри ще не призначена'
+    else
+      "<em>Початок гри</em>: #{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}".html_safe
+    end
+  end
 end

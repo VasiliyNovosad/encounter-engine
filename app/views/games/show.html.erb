@@ -18,11 +18,7 @@
 <% end %>
 
 <p>
-  <% if @game.starts_at.nil? %>
-    Дата початку гри ще не призначена
-  <%  else  %>
-    <em>Початок гри</em>: <%=  (@game.is_testing? ? @game.test_date : @game.starts_at).strftime('%H:%M %d.%m.%Y')  %>
-  <%  end %>
+  <%= game_start_date(@game) %>
 </p>
 <p>
   <% if @game.registration_deadline.nil? %>

@@ -18,22 +18,24 @@
     </thead>
     <tbody>
       <% @game_passings.each_with_index do |game_passing, index| %>
-        <tr>
-          <td><%= game_passing[:finished_at].nil? ? '-' : (index + 1) %></td>
-          <td><%= game_passing[:team_name] %></td>
-          <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
-          <td>
-            <% if game_passing[:exited] %>
-              <b>Зійшли з дистанції</b>(<%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %><%= ' ' + game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>)
-            <% elsif game_passing[:finished_at].nil? %>
-              <b>Не фінішували</b>
-            <% else %>
-              <%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %> <%= game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>
-            <% end %>
-          </td>
-          <td><%= link_to seconds_to_string((game_passing[:sum_bonuses] || 0)), game_game_bonuses_path(@game, team_id: game_passing[:team_id]) %></td>
-          <td><%= game_passing[:finished_at].nil? ? '-' : Time.at(game_passing[:finished_at] - @game.starts_at - game_passing[:sum_bonuses]).utc.strftime("%H:%M:%S.%L") %> </td>
-        </tr>
+        <% unless !@game.author_finished? && game_passing[:finished_at].nil? %>
+          <tr>
+            <td><%= game_passing[:finished_at].nil? ? '-' : (index + 1) %></td>
+            <td><%= game_passing[:team_name] %></td>
+            <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
+            <td>
+              <% if game_passing[:exited] %>
+                <b>Зійшли з дистанції</b>(<%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %><%= ' ' + game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>)
+              <% elsif game_passing[:finished_at].nil? %>
+                <b>Не фінішували</b>
+              <% else %>
+                <%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %> <%= game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>
+              <% end %>
+            </td>
+            <td><%= link_to seconds_to_string((game_passing[:sum_bonuses] || 0)), game_game_bonuses_path(@game, team_id: game_passing[:team_id]) %></td>
+            <td><%= game_passing[:finished_at].nil? ? '-' : Time.at(game_passing[:finished_at] - @game.starts_at - game_passing[:sum_bonuses]).utc.strftime("%H:%M:%S.%L") %> </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
