@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180809081703) do
+ActiveRecord::Schema.define(version: 20180817122053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -263,6 +263,8 @@ ActiveRecord::Schema.define(version: 20180809081703) do
     t.integer  "team_id"
   end
 
+  add_index "hints", ["level_id"], name: "index_hints_on_level_id", using: :btree
+
   create_table "images", force: :cascade do |t|
     t.string   "alt",               default: ""
     t.string   "hint",              default: ""
@@ -362,6 +364,8 @@ ActiveRecord::Schema.define(version: 20180809081703) do
     t.integer  "delay_for"
   end
 
+  add_index "penalty_hints", ["level_id"], name: "index_penalty_hints_on_level_id", using: :btree
+
   create_table "questions", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.integer  "level_id"
@@ -378,6 +382,8 @@ ActiveRecord::Schema.define(version: 20180809081703) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "tasks", ["level_id"], name: "index_tasks_on_level_id", using: :btree
 
   create_table "team_requests", force: :cascade do |t|
     t.integer  "team_id"
