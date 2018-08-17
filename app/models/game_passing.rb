@@ -58,7 +58,6 @@ class GamePassing < ActiveRecord::Base
       is_correct_bonus_answer = true
     end
     save!
-    changed = false
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id).map do |q|
         {
@@ -70,10 +69,7 @@ class GamePassing < ActiveRecord::Base
       end.compact
       changed = pass_question!(answered_question)
       is_correct_answer = true
-      if changed
-        save!
-        changed = false
-      end
+      save! if changed
       needed = level.team_questions(team_id).count
       closed = (answered_questions.to_set & level.team_questions(team_id).map(&:id).to_set).count
       start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at

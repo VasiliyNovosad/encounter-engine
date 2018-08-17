@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180817122053) do
+ActiveRecord::Schema.define(version: 20180817140212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,6 +320,7 @@ ActiveRecord::Schema.define(version: 20180817122053) do
   end
 
   add_index "levels_bonuses", ["bonus_id"], name: "index_levels_bonuses_on_bonus_id", using: :btree
+  add_index "levels_bonuses", ["level_id", "bonus_id"], name: "index_levels_bonuses_on_level_id_and_bonus_id", using: :btree
   add_index "levels_bonuses", ["level_id"], name: "index_levels_bonuses_on_level_id", using: :btree
 
   create_table "logs", force: :cascade do |t|
@@ -349,6 +350,7 @@ ActiveRecord::Schema.define(version: 20180817122053) do
     t.integer "level_id"
   end
 
+  add_index "messages_levels", ["level_id", "message_id"], name: "index_messages_levels_on_level_id_and_message_id", using: :btree
   add_index "messages_levels", ["level_id"], name: "index_messages_levels_on_level_id", using: :btree
   add_index "messages_levels", ["message_id"], name: "index_messages_levels_on_message_id", using: :btree
 
