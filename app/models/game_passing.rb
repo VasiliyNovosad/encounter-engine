@@ -39,9 +39,7 @@ class GamePassing < ActiveRecord::Base
     answer.strip!
     is_correct_answer = false
     is_correct_bonus_answer = false
-    changed = false
-
-
+    lock!
     if correct_bonus_answer?(answer, level, team_id)
       answered_bonus = level.find_bonuses_by_answer(answer, team_id).map do |q|
         {
@@ -56,9 +54,11 @@ class GamePassing < ActiveRecord::Base
           user_id: user.id
         } unless answered_bonuses.include?(q.id)
       end.compact
-      changed = pass_bonus!(answered_bonus)
+      pass_bonus!(answered_bonus)
       is_correct_bonus_answer = true
     end
+    save!
+    changed = false
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id).map do |q|
         {
@@ -69,18 +69,16 @@ class GamePassing < ActiveRecord::Base
         } unless answered_questions.include?(q.id)
       end.compact
       changed = pass_question!(answered_question)
-      if changed {
+      is_correct_answer = true
+      if changed
         save!
         changed = false
-      }
       end
       needed = level.team_questions(team_id).count
       closed = (answered_questions.to_set & level.team_questions(team_id).map(&:id).to_set).count
       start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
       pass_level!(level, team_id, time, start_time, user.id) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
-      is_correct_answer = true
     end
-    save! if changed
     if level[:is_wrong_code_penalty] && !is_correct_bonus_answer && !is_correct_answer && !level[:wrong_code_penalty].zero?
       GameBonus.create!(
         game_id: game.id,

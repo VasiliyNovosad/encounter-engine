@@ -1,37 +1,35 @@
-<% unless questions.empty? %>
-    <% questions.each do |question| %>
-        <div id="question-<%= question.id %>">
-          <fieldset>
-            <legend>
-              <% if question.team.nil? %>
-                  <em>Для всіх</em>:
-              <% else %>
-                  <em>Для </em> <strong><%= link_to question.team.name, team_path(question.team) %></strong>:
-              <% end %>
-              <% unless @game.author_finished? %>
-                <em>
-                  <%= link_to "(редагувати)", edit_game_level_question_path(question.level.game, question.level, question) %>
-                  <%= link_to "(видалити)", game_level_question_path(question.level.game, question.level, question), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-                  <%= link_to "(скопіювати)", copy_game_level_question_path(question.level.game, question.level, question), method: :post %>
-                  <!-- <%= link_to "(скопіювати в бонус)", copy_to_bonus_game_level_question_path(question.level.game, question.level, question), method: :post %> -->
-                </em>
-              <% end %>
-            </legend>
-            <p>
-              <strong><%= question.name %>:</strong>
-            </p>
-            <% question.answers.each do |answer| %>
-              <p>
-                <span class="right_code"><%= answer.value %></span>
-                <% if answer.team.nil? %>
-                    <em> (для всіх)</em>
-                <% else %>
-                    <em> (для </em> <strong><%= link_to answer.team.name, team_path(answer.team) %></strong>)
-                <% end %>
-              </p>
-            <% end %>
-          </fieldset>
-        </div>
-        <br>
-    <% end %>
+<% questions.each do |question| %>
+  <div id="question-<%= question.id %>">
+    <fieldset>
+      <legend>
+        <% if question.team.nil? %>
+            <em>Для всіх</em>:
+        <% else %>
+            <em>Для </em> <strong><%= link_to question.team.name, team_path(question.team) %></strong>:
+        <% end %>
+        <% unless @game.author_finished? %>
+          <em>
+            <%= link_to "(редагувати)", edit_game_level_question_path(question.level.game, question.level, question) %>
+            <%= link_to "(видалити)", game_level_question_path(question.level.game, question.level, question), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+            <%= link_to "(скопіювати)", copy_game_level_question_path(question.level.game, question.level, question), method: :post %>
+            <!-- <%= link_to "(скопіювати в бонус)", copy_to_bonus_game_level_question_path(question.level.game, question.level, question), method: :post %> -->
+          </em>
+        <% end %>
+      </legend>
+      <p>
+        <strong><%= question.name %>:</strong>
+      </p>
+      <% question.answers.each do |answer| %>
+        <p>
+          <span class="right_code"><%= answer.value %></span>
+          <% if answer.team.nil? %>
+              <em> (для всіх)</em>
+          <% else %>
+              <em> (для </em> <strong><%= link_to answer.team.name, team_path(answer.team) %></strong>)
+          <% end %>
+        </p>
+      <% end %>
+    </fieldset>
+  </div>
+  <br>
 <% end %>

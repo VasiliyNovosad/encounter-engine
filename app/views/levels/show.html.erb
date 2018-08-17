@@ -139,7 +139,7 @@
     <p>
       <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
     </p>
-    <% unless @level.questions.empty? %>
+    <% if @level.questions.exists? %>
       <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>
         <br><%= submit_tag "Додати " %> відповідь
         <%= text_field_tag(:answer) %>
@@ -167,7 +167,7 @@
     <p>
       <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
     </p>
-    <% unless @level.bonuses.empty? %>
+    <% if @level.bonuses.exists? %>
       <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
         <br><%= submit_tag "Додати " %> відповідь
         <%= text_field_tag(:bonus_answer) %>
