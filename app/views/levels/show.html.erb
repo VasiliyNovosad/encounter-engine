@@ -141,9 +141,9 @@
     </p>
     <% if @level.questions.exists? %>
       <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>
-        <br><%= submit_tag "Додати " %> відповідь
+        <br>Додати відповідь
         <%= text_field_tag(:answer) %>
-        у всі сектори
+        у всі сектори <%= submit_tag "  +  ", class: 'btn btn-sm btn-success' %>
         <br>
       <% end %>
       <br>
@@ -169,9 +169,9 @@
     </p>
     <% if @level.bonuses.exists? %>
       <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
-        <br><%= submit_tag "Додати " %> відповідь
+        <br>Додати відповідь
         <%= text_field_tag(:bonus_answer) %>
-        у всі бонуси
+        у всі бонуси <%= submit_tag "  +  ", class: 'btn btn-sm btn-primary' %>
         <br>
       <% end %>
       <br>
