@@ -305,16 +305,18 @@ textarea {
 
     .partner-block > div {
         display: inline-block;
+        /*width: 100%;*/
     }
 
     .partner-logo {
-        width: 145px;
+        width: 40%;
         float: left;
-        margin: 0 20px;
+        margin: 0 5%;
     }
 
     .partner-logo img {
-        width: 120px;
+        width: 100%;
+        max-width: 140px;
     }
 }
 
