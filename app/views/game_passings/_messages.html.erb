@@ -1,7 +1,7 @@
 <div id="LevelMessagesContainer">
   <% messages.each do |message| %>
     <div id="message-<%= message.id %>" class="author_message">
-      <%= "Повідомлення від #{message.user.nickname}: #{message.text.html_safe}" %>
+      <%= "Повідомлення від #{message.user.nickname}: #{message.text}".html_safe %>
     </div>
     <br>
   <% end %>
