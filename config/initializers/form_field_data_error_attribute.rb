@@ -1,11 +1,7 @@
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   html = ''
 
-  form_fields = [
-      'textarea',
-      'input',
-      'select'
-  ]
+  form_fields = %w(textarea input select)
 
   elements = Nokogiri::HTML::DocumentFragment.parse(html_tag).css "label, " + form_fields.join(', ')
 

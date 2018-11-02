@@ -20,8 +20,9 @@ class GamePassingsController < ApplicationController
   before_action :ensure_author, only: [:index]
 
   def show_current_level
+    time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     respond_to do |format|
-      if @game_passing.finished_at.nil? && !(@game.game_type == 'panic' && (@game.starts_at + @game.duration * 60) < Time.now)
+      if @game_passing.finished_at.nil? && !(@game.game_type == 'panic' && (@game.starts_at + @game.duration * 60) < time)
         @level = if @game.game_type == 'panic'
                    params[:level] ? @game.levels.where(position: params[:level]).first : @game.levels.first
                  else
@@ -53,7 +54,7 @@ class GamePassingsController < ApplicationController
                   name: @level.name,
                   position: level_position,
                   autocomplete_time: level_time,
-                  left_time: level_time == 0 ? 0 : (level_start - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level_time,
+                  left_time: level_time == 0 ? 0 : (level_start - time).to_i + level_time,
                   sectors_count: sectors_count,
                   sectors_need: @level.sectors_for_close.zero? ? sectors_count : @level.sectors_for_close,
                   sectors_closed: @game.game_type == 'panic' ? @game_passing.answered_questions.count : (@game_passing.answered_questions.to_set & all_sectors.map(&:id).to_set).count,
@@ -179,16 +180,37 @@ class GamePassingsController < ApplicationController
        @game.game_type == 'panic' &&
        @game.starts_at + 60 * @game.duration < time
       respond_to do |format|
-        format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
+        # format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
         format.js
       end
     else
+
+      level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
+      if (level == @game_passing.current_level || @game.game_type == 'panic') && !level.complete_later.nil? && level.complete_later > 0
+        begin
+          time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
+          time_finish = time_start + level.complete_later
+          if time > time_finish
+            save_log(level, time_finish, 3)
+            @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
+            respond_to do |format|
+              # format.html do
+              #   redirect_to 'show_current_level'
+              # end
+              format.js
+            end
+          end
+        rescue
+
+        end
+      end
+
       @answer = params[:answer].strip
       if @answer == ''
         respond_to do |format|
-          format.html do
-            redirect_to :show_current_level
-          end
+          # format.html do
+          #   redirect_to 'show_current_level'
+          # end
           format.js
         end
       else
@@ -229,14 +251,14 @@ class GamePassingsController < ApplicationController
         if @game_passing.finished?
           PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}", url: '/game_passings/show_results'
           respond_to do |format|
-            format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
+            # format.html { redirect_to game_passings_show_results_url(game_id: @game.id) }
             format.js
           end
         else
           respond_to do |format|
-            format.html do
-              redirect_to :show_current_level
-            end
+            # format.html do
+            #   redirect_to 'show_current_level'
+            # end
             format.js do
               PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers", {
                   answers: answered,
@@ -294,6 +316,7 @@ class GamePassingsController < ApplicationController
   end
 
   def autocomplete_level
+    time = Time.now
     level_id = params[:level]
     unless @game_passing.finished?
       level = Level.find(level_id)
@@ -302,8 +325,10 @@ class GamePassingsController < ApplicationController
         begin
           time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
           time_finish = time_start + level.complete_later
-          save_log(level, time_finish, 3)
-          @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
+          if time_finish < time
+            save_log(level, time_finish, 3)
+            @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
+          end
         rescue
 
         end
