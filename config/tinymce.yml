@@ -37,4 +37,5 @@ plugins:
 fontsize_formats:
   - 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 18pt 24pt 36pt 48pt
 skin: tundora
-extended_valid_elements: 'script[language|type|src]'
+extended_valid_elements: 'script[language|type|src],style[type]'
+valid_children: '+body[style]'
