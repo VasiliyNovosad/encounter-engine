@@ -82,7 +82,7 @@ class GamePassing < ActiveRecord::Base
         team_id: team.id,
         award: -level[:wrong_code_penalty],
         user_id: user.id,
-        reason: 'штраф за неіснуючий код',
+        reason: 'штраф за неіснуючий код ' + answer,
         description: ''
       )
     end
@@ -111,7 +111,18 @@ class GamePassing < ActiveRecord::Base
       bonuses.each do |bonus|
         unless self.answered_bonuses.include?(bonus[:id])
           self.answered_bonuses.push(bonus[:id])
-          GameBonus.create!(game_id: game.id, level_id: bonus[:level_id], team_id: team.id, award: bonus[:bonus], user_id: bonus[:user_id], reason: "за бонус: #{bonus[:name]}", description: '') unless bonus[:bonus].zero?
+          game_bonus_options = {
+            game_id: game.id,
+            level_id: bonus[:level_id],
+            team_id: team.id,
+            award: bonus[:bonus],
+            user_id: bonus[:user_id],
+            reason: "за бонус: #{bonus[:name]}",
+            description: ''
+          }
+          unless bonus[:bonus].zero? || GameBonus.where(game_bonus_options).count > 0
+            GameBonus.create!(game_bonus_options)
+          end
           changed = true
         end
       end
@@ -246,7 +257,19 @@ class GamePassing < ActiveRecord::Base
           self.current_level = next_selected_level(level, team_id)
         end
       end
-      GameBonus.create!(game_id: game.id, level_id: level.id, team_id: team.id, award: -level[:autocomplete_penalty], user_id: user_id, reason: 'штраф за автоперехід', description: '') if level[:is_autocomplete_penalty] && !level[:autocomplete_penalty].zero?
+      game_bonus_options = {
+          game_id: game.id,
+          level_id: level.id,
+          team_id: team.id,
+          award: -level[:autocomplete_penalty],
+          user_id: user_id,
+          reason: 'штраф за автоперехід',
+          description: ''
+      }
+      if level[:is_autocomplete_penalty] && !level[:autocomplete_penalty].zero? &&
+          GameBonus.where(game_bonus_options).count.zero?
+        GameBonus.create!(game_bonus_options)
+      end
       ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
     end
     save!

@@ -267,6 +267,23 @@ class GamePassingsController < ApplicationController
                   needed: answer_was_correct[:needed],
                   closed: answer_was_correct[:closed]
               }
+              if @game.game_type == 'panic'
+                levels = Hash.new { |h, k| h[k] = [] }
+                answer_was_correct[:bonuses].each do |bonus|
+                  Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
+                    levels[level_id].push(bonus.merge({level_id: level_id})) unless level_id == bonus[:level_id]
+                  end
+                end
+                levels.each do |k, v|
+                  PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{k}/answers", {
+                      answers: [],
+                      sectors: [],
+                      bonuses: v,
+                      needed: [],
+                      closed: []
+                  }
+                end
+              end
             end
           end
         end
