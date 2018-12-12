@@ -267,7 +267,7 @@ class GamePassingsController < ApplicationController
                   needed: answer_was_correct[:needed],
                   closed: answer_was_correct[:closed]
               }
-              if @game.game_type == 'panic'
+              if @game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
                 levels = Hash.new { |h, k| h[k] = [] }
                 answer_was_correct[:bonuses].each do |bonus|
                   Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
