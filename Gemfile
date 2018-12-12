@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby '2.5.3'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '4.2.10'
+gem 'rails', '4.2.11'
 gem 'pg', '0.21.0'
 
 # Use sqlite3 as the database for Active Record
