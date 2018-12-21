@@ -246,6 +246,7 @@ GEM
     nokogumbo (1.5.0)
       nokogiri
     orm_adapter (0.5.0)
+    passenger_monit (0.1.1)
     pg (0.21.0)
     private_pub (1.0.3)
       faye
@@ -411,6 +412,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari (= 0.15.1)
   nokogiri
+  passenger_monit
   pg (= 0.21.0)
   private_pub
   rails (= 4.2.11)
