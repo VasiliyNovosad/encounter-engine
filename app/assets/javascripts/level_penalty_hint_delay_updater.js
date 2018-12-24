@@ -1,5 +1,5 @@
 var LevelPenaltyHintDelayUpdater = function() {
-    var timerData = [];
+    var timerData = {};
 
     var start = function(hintId) {
         updateCountdown(hintId);

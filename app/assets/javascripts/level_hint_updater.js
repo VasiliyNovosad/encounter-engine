@@ -1,5 +1,5 @@
 var LevelHintUpdater = function() {
-    var timerData = [];
+    var timerData = {};
     // var
     // countdownValue = 0
     // ,gameId = 0

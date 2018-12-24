@@ -1,5 +1,5 @@
 var LevelBonusLimitUpdater = function() {
-    var timerData = [];
+    var timerData = {};
 
     var start = function(bonusId) {
         updateCountdown(bonusId);
