@@ -1,6 +1,6 @@
 <div id="LevelBonusesContainer">
   <ul>
-    <% @bonuses.each do |bonus| %>
+    <% bonuses.each do |bonus| %>
         <li id="bonus-<%= bonus[:id] %>">
           <% if bonus[:answered] %>
             <p class="bonus-answered">
@@ -18,7 +18,7 @@
           <% elsif bonus[:missed] %>
             <p class="bonus-missed"><b><%= "#{bonus[:name]}: не виконано" %></b></p>
           <% elsif bonus[:delayed] %>
-            <% unless @game_passing.closed?(@level) %>
+            <% unless game_passing.closed?(level) %>
               <div id="<%= "LevelBonusDelayCountdownContainer#{bonus[:id]}" %>" class="bonus-delay-timer">
                 <%= bonus[:name] %> відкриється через <span id="<%= "LevelBonusDelayCountdownTimerText#{bonus[:id]}" %>">3 хвилини</span>
               </div>
@@ -27,8 +27,8 @@
               <script>
                   LevelBonusDelayUpdater.setup({
                       initialCountdownValue: <%= bonus[:delay_for] %>,
-                      gameId: <%= @game_passing.game_id %>,
-                      teamId: <%= @team_id %>,
+                      gameId: <%= game_passing.game_id %>,
+                      teamId: <%= team_id %>,
                       bonusId: <%= bonus[:id] %>,
                       bonusNum: <%= bonus[:position] %>,
                       levelId: <%= level.id %>
@@ -36,7 +36,7 @@
               </script>
             <% end %>
           <% elsif bonus[:limited] %>
-            <% unless @game_passing.closed?(@level) %>
+            <% unless game_passing.closed?(level) %>
               <div id="<%= "LevelBonusLimitCountdownContainer#{bonus[:id]}" %>" class="bonus bonus-limit-timer">
                 <%= bonus[:name] %> доступний <span id="<%= "LevelBonusLimitCountdownTimerText#{bonus[:id]}" %>">3 хвилини</span>
               </div>
@@ -46,8 +46,8 @@
               <script>
                   LevelBonusLimitUpdater.setup({
                       initialCountdownValue: <%= bonus[:valid_for] %>,
-                      gameId: <%= @game_passing.game_id %>,
-                      teamId: <%= @team_id %>,
+                      gameId: <%= game_passing.game_id %>,
+                      teamId: <%= team_id %>,
                       bonusId: <%= bonus[:id] %>,
                       bonusNum: <%= bonus[:position] %>,
                       levelId: <%= level.id %>

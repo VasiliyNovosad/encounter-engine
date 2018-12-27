@@ -1,9 +1,9 @@
-<div id="updateButton"><%= link_to "Оновити", url_for("/play/#{@game.id}") %></div>
-<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}"), target: :_blank%></div>
+<div id="updateButton"><%= link_to "Оновити", url_for("/play/#{game.id}") %></div>
+<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{game.id}"), target: :_blank%></div>
 <br>
 <br>
 <div id="left-game-container">
-  <%= form_tag("/play/#{@game.id}", method: "post", remote: true, format: :js) do %>
+  <%= form_tag("/play/#{game.id}", method: "post", remote: true, format: :js) do %>
     <br>Код:
     <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: :off) %>
     <%= submit_tag " надіслати " %>
@@ -11,17 +11,17 @@
   <% end %>
   <br>
   <div id="entered-code">
-    <% unless @answer.nil? || @answer == '' %>
+    <% unless answer.nil? || answer == '' %>
       <% if answer_was_correct? %>
-        Код <span class="right_code"><%= @answer %></span> вірний.<br><hr>
+        Код <span class="right_code"><%= answer %></span> вірний.<br><hr>
       <% else %>
-        Код <span class="wrong_code"><%= @answer %></span> невірний.<br><hr>
+        Код <span class="wrong_code"><%= answer %></span> невірний.<br><hr>
       <% end %>
     <% end %>
   </div>
   <br>
   <div id="entered-codes">
-    <% @entered_all_answers.each do |answer| %>
+    <% entered_all_answers.each do |answer| %>
       <p><%= "#{answer[:time].strftime("%H:%M:%S")} #{answer[:user]} #{answer[:answer]}".html_safe %></p>
     <% end %>
   </div>
@@ -32,57 +32,57 @@
 <div id="main-game-container">
   <fieldset>
     <legend>
-      <%= @level.name %>
+      <%= level.name %>
     </legend>
 
-    <% if (@level.complete_later || 0) > 0 %>
+    <% if (level.complete_later || 0) > 0 %>
         <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
 
         <script>
             LevelCompleter.setup({
-                initialCountdownValue: <%= (((@game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position) == 1 ? @game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @level.complete_later %>
-                ,gameId: <%= @game.id %>, levelId: <%= @level.id %>, gameType: '<%= @game.game_type %>', levelNumber: <%= @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position %>
+                initialCountdownValue: <%= (((game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position) == 1 ? game.starts_at : game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level.complete_later %>
+                ,gameId: <%= game.id %>, levelId: <%= level.id %>, gameType: '<%= game.game_type %>', levelNumber: <%= game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %>
             })
         </script>
     <% end %>
     <br>
 
-    <%= render 'messages', messages: @level.messages %>
+    <%= render partial: 'messages', locals: { messages: level.messages } %>
     <br><br>
-    <%= render 'tasks', tasks: @level.team_tasks(@team_id) %>
+    <%= render partial: 'tasks', locals: { tasks: level.team_tasks(team_id) } %>
     <br>
 
-    <% team_questions = @level.team_questions(@team_id) %>
+    <% team_questions = level.team_questions(team_id) %>
     <% if team_questions.count > 1 %>
       <div>
         <br>
-        <b id="codes-closed">Вірних кодів <%= @game_passing.answered_questions.size %> із <%= team_questions.count %>:</b>
+        <b id="codes-closed">Вірних кодів <%= game_passing.answered_questions.size %> із <%= team_questions.count %>:</b>
         <hr>
         <hr>
       </div>
     <% end %>
     <br>
 
-    <%= render 'hints', begin_time: ((@game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position) == 1 ? @game.starts_at : @game_passing.current_level_entered_at) %>
-    <%= render 'penalty_hints' %>
+    <%= render partial: 'hints', locals: { upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: ((game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position) == 1 ? game.starts_at : game_passing.current_level_entered_at), game_passing: game_passing, level: level, team_id: team_id } %>
+    <%= render partial: 'penalty_hints', locals: { penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id } %>
 
-    <%= render @level.olymp? ? 'olymp' : 'multy' if @sectors.count > 1 %>
+    <%= render partial: level.olymp? ? 'olymp' : 'multy', locals: {sectors: sectors, level: level} if sectors.count > 1 %>
     <hr>
     <br>
-    <%= render 'bonuses', level: @level if @bonuses.count > 0 %>
+    <%= render partial: 'bonuses', locals: { level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id } if bonuses.count > 0 %>
     <br>
   </fieldset>
 </div>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}" %>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/answers" %>
-<%= subscribe_to "/game_passings/#{@game_passing.id}/#{@level.id}/penalty_hints" %>
+<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}" %>
+<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/answers" %>
+<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/penalty_hints" %>
 
 <script>
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>", function(data, channel) {
         window.location.href = data.url;
     });
 
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/answers", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/answers", function(data, channel) {
         let answers = data.answers || [];
         for (let i = 0; i < answers.length; i++) {
             $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));
@@ -90,7 +90,7 @@
         let sectors = data.sectors || [];
         for (let i = 0; i < sectors.length; i++) {
             let sector = $('#sector-' + sectors[i].position).get(0);
-            <% if @level.olymp? %>
+            <% if level.olymp? %>
               sector.innerHTML = sectors[i].value;
             <% else %>
               sector.innerHTML = sectors[i].name + ': ' + sectors[i].value;
@@ -114,7 +114,7 @@
 
     });
 
-    PrivatePub.subscribe("/game_passings/<%= @game_passing.id %>/<%= @level.id %>/penalty_hints", function(data, channel) {
+    PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/penalty_hints", function(data, channel) {
         let hint = data.hint || {};
         let hint_block = $('#penalty-hint-' + hint.id + ' .penalty-hint-body').get(0);
         hint_block.innerHTML = hint.text;

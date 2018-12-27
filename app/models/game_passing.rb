@@ -261,12 +261,12 @@ class GamePassing < ActiveRecord::Base
           game_id: game.id,
           level_id: level.id,
           team_id: team.id,
-          award: -level[:autocomplete_penalty],
+          award: - (level.autocomplete_penalty || 0),
           user_id: user_id,
           reason: 'штраф за автоперехід',
           description: ''
       }
-      if level[:is_autocomplete_penalty] && !level[:autocomplete_penalty].zero? &&
+      if level.is_autocomplete_penalty && !level.autocomplete_penalty.zero? &&
           GameBonus.where(game_bonus_options).count.zero?
         GameBonus.create!(game_bonus_options)
       end

@@ -34,7 +34,21 @@ class GamePassingsController < ApplicationController
         @penalty_hints = get_penalty_hints(@level)
         @upcoming_hints = @game_passing.upcoming_hints(@team_id, @level)
         @hints_to_show = @game_passing.hints_to_show(@team_id, @level)
-        format.html { render layout: 'in_game' }
+        format.html do
+          render layout: 'in_game', locals: {
+              game_passing: @game_passing,
+              game: @game,
+              team_id: @team_id,
+              level: @level,
+              entered_all_answers: @entered_all_answers,
+              bonuses: @bonuses,
+              sectors: @sectors,
+              penalty_hints: @penalty_hints,
+              upcoming_hints: @upcoming_hints,
+              hints_to_show: @hints_to_show,
+              answer: @answer
+          }
+        end
         format.json do
           level_position = @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position
           all_sectors = @level.team_questions(@team_id)
@@ -346,8 +360,8 @@ class GamePassingsController < ApplicationController
             save_log(level, time_finish, 3)
             @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
           end
-        rescue
-
+        rescue Exception => e
+          raise e
         end
       end
     end

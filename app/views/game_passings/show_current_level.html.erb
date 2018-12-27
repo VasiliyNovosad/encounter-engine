@@ -1,18 +1,28 @@
 <h2>
-  "<strong><%= @game.name %></strong>"
+  "<strong><%= game.name %></strong>"
   <br>
-  Завдання <%= @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position %> із <%= @game.levels.count %>
+  Завдання <%= game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %> із <%= game.levels.count %>
 </h2>
 <br>
 
-<%= render @game.game_type == 'panic' ? 'panic' : 'linear' %>
+<%= render partial: game.game_type == 'panic' ? 'panic' : 'linear', locals: { game_passing: game_passing,
+                                        game: game,
+                                        team_id: team_id,
+                                        level: level,
+                                        entered_all_answers: entered_all_answers,
+                                        bonuses: bonuses,
+                                        sectors: sectors,
+                                        penalty_hints: penalty_hints,
+                                        upcoming_hints: upcoming_hints,
+                                        hints_to_show: hints_to_show,
+                                        answer: answer } %>
 
 <!--
 <% if current_user.captain? %>
     <%#= link_to "Зійти з дистанції", url: "game_passings/exit_game/#{@game_passing.game_id}" %>
 <% end %>
 -->
-<% if @game.is_testing? %>
+<% if game.is_testing? %>
   <br>
-  <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post %>
+  <%= link_to "Завершити тестування", finish_test_game_path(game), method: :post %>
 <% end %>
