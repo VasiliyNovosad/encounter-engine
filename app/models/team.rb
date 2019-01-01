@@ -19,12 +19,12 @@ class Team < ActiveRecord::Base
   before_save :adopt_captain
 
   def current_level_in(game)
-    game_passing = GamePassing.of(self, game)
+    game_passing = GamePassing.of(id, game.id)
     game_passing.try(:current_level)
   end
 
   def finished?(game)
-    game_passing = GamePassing.of(self, game)
+    game_passing = GamePassing.of(id, game.id)
     !!game_passing.try(:finished?)
   end
 

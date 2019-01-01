@@ -6,12 +6,12 @@ class GameEntry < ActiveRecord::Base
   validates_presence_of :team_id, message: 'Не вказано команду'
   validates :team_id, uniqueness: { scope: :game, message: 'Заявка на цю гру уже була подана' }
 
-  scope :of_game, ->(game) { where(game_id: game.id) }
-  scope :of_team, ->(team) { where(team_id: team.id) }
+  scope :of_game, ->(game_id) { where(game_id: game_id) }
+  scope :of_team, ->(team_id) { where(team_id: team_id) }
   scope :with_status, ->(status) { where(status: status) }
 
-  def self.of(team, game)
-    of_team(team).of_game(game).first
+  def self.of(team_id, game_id)
+    of_team(team_id).of_game(game_id).first
   end
 
   def reopen!

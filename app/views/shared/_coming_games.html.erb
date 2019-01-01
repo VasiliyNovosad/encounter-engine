@@ -1,5 +1,3 @@
-<% coming_games = Game.order(:starts_at).notstarted %>
-
 <% if coming_games.count > 0 %>
   <% nearest_game = coming_games.first %>
   <fieldset id="nearest" class="game-fieldset">

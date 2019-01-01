@@ -138,7 +138,7 @@ class GamePassingsController < ApplicationController
   end
 
   def index
-    @game_passings = GamePassing.of_game(@game)
+    @game_passings = GamePassing.of_game(@game.id)
     render
   end
 
@@ -306,8 +306,8 @@ class GamePassingsController < ApplicationController
   end
 
   def show_results
-    game_bonuses = GameBonus.of_game(@game).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
-    game_passings = GamePassing.of_game(@game)
+    game_bonuses = GameBonus.of_game(@game.id).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
+    game_passings = GamePassing.of_game(@game.id).includes(:team)
 
     if @game.game_type == 'panic'
       game_finished_at = @game.starts_at + @game.duration * 60
@@ -351,7 +351,7 @@ class GamePassingsController < ApplicationController
     level_id = params[:level]
     unless @game_passing.finished?
       level = Level.find(level_id)
-      @game_passing = GamePassing.of(@team, @game)
+      @game_passing = GamePassing.of(@team.id, @game.id)
       if level == @game_passing.current_level || @game.game_type == 'panic'
         begin
           time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
@@ -360,7 +360,7 @@ class GamePassingsController < ApplicationController
             save_log(level, time_finish, 3)
             @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
           end
-        rescue Exception => e
+        rescue => e
           raise e
         end
       end
@@ -420,12 +420,12 @@ class GamePassingsController < ApplicationController
   end
 
   def find_or_create_game_passing
-    @game_passing = GamePassing.of(@team, @game)
+    @game_passing = GamePassing.of(@team.id, @game.id)
 
     if @game_passing.nil?
       @game_passing = GamePassing.create! team: @team,
                                           game: @game,
-                                          current_level: @game.game_type == 'selected' ? Level.find_by_id(LevelOrder.of(@game, Team.find_by_id(@team_id)).first.level_id) : @game.levels.first
+                                          current_level: @game.game_type == 'selected' ? Level.find_by_id(LevelOrder.of(@game.id, @team_id).first.level_id) : @game.levels.first
     end
   end
 
@@ -469,7 +469,7 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_team_is_accepted
-    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game).of_team(@game.team_type == 'multy' ? current_user.team : current_user.single_team).first.nil? || GameEntry.of_game(@game).of_team(@game.team_type == 'multy' ? current_user.team : current_user.single_team).first.status != 'accepted') && !@game.is_testing?
+    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team.id : current_user.single_team.id).first.nil? || GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team.id : current_user.single_team.id).first.status != 'accepted') && !@game.is_testing?
   end
 
   def ensure_not_finished
@@ -478,7 +478,7 @@ class GamePassingsController < ApplicationController
   end
 
   def get_uniq_level_codes(level)
-    Log.of_game(@game).of_level(level).of_team(Team.find(@team_id)).order(time: :desc).includes(:user).map do |log|
+    Log.of_game(@game.id).of_level(level.id).of_team(@team_id).order(time: :desc).includes(:user).map do |log|
       if log.answer_type == 1
         {
             time: log.time,

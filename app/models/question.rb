@@ -11,6 +11,8 @@ class Question < ActiveRecord::Base
 
   before_validation :set_name
 
+  scope :of_team, ->(team_id) { where('team_id IS NULL OR team_id = ?', team_id) }
+
   def correct_answer=(answer)
     if answers.empty?
       answers.build(value: answer, team_id: team.nil? ? nil : team.id)

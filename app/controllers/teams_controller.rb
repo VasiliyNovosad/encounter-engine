@@ -38,7 +38,7 @@ class TeamsController < ApplicationController
 
   def show
     @team = Team.find(params[:id])
-    @team_requests = TeamRequest.for(@team)
+    @team_requests = TeamRequest.for(@team.id)
   end
 
   def delete_member

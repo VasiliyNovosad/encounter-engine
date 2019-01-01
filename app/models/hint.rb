@@ -2,6 +2,8 @@ class Hint < ActiveRecord::Base
   belongs_to :level
   belongs_to :team
 
+  scope :of_team, ->(team_id) { where('team_id IS NULL OR team_id = ?', team_id) }
+
   def delay_in_minutes
     delay.nil? ? nil : delay / 60
   end

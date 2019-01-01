@@ -39,20 +39,20 @@
           <strong>Штраф: </strong><%= seconds_to_string(-(bonus.award_time || 0)) %>
         </p>
       <% end %>
-      <% if bonus.is_absolute_limited %>
+      <% if bonus.is_absolute_limited? %>
         <p>
           <strong>Обмежити час доступності: </strong>
           <%= bonus.valid_from.nil? ? '' : " з #{bonus.valid_from.strftime("%d.%m.%Y %H:%M")}" %>
           <%= bonus.valid_to.nil? ? '' : " по #{bonus.valid_to.strftime("%d.%m.%Y %H:%M")}" %>
         </p>
       <% end %>
-      <% if bonus.is_delayed %>
+      <% if bonus.is_delayed? %>
         <p>
           <strong>Обмежити час появи: </strong>
           <%= "на #{seconds_to_string(bonus.delay_for || 0)}" %>
         </p>
       <% end %>
-      <% if bonus.is_relative_limited %>
+      <% if bonus.is_relative_limited? %>
         <p>
           <strong>Обмежити час виконання: </strong>
           <%= "на #{seconds_to_string(bonus.valid_for || 0)}" %>

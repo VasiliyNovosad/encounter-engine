@@ -4,7 +4,7 @@
   </legend>
 
   <% unless current_user.captain? %>
-    <% @invitations.each do |invitation| %>
+    <% invitations.each do |invitation| %>
         <% if invitation.to_team %>
           <p>Вас запрошено в команду <%= invitation.to_team.name %>
             <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id), method: :post %></em>

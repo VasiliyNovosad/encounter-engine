@@ -12,14 +12,11 @@ class GamesController < ApplicationController
 
   def index
     @page_content = "index,follow"
-    if params[:user_id].blank?
-      @games = Game.non_drafts
-    else
-      user = User.find(params[:user_id])
-      @games = user.created_games
-    end
     @seo_block = create_index_seo_block
-    render
+    coming_games = Game.notstarted
+    finished_games = Game.finished.order(starts_at: :desc)
+    current_games = Game.started - finished_games
+    render :index, locals: {current_games: current_games, coming_games: coming_games, finished_games: finished_games}
   end
 
   def new
@@ -43,10 +40,10 @@ class GamesController < ApplicationController
       return redirect_to @game, :status => :moved_permanently
     end
     @page_title = "#{@game.name} ᐈ【 Квести Луцьк 】"
-    @page_description = "❰❰❰ #{@game.name} ❱❱❱ #{@game.small_description && @game.small_description != '' ? @game.small_description : "це: ➔ цікаві логічні завдання від кращих авторів Луцька, ➔ захоплюючі пошуки, ➔ драйв та адреналін, ➔ неймовірні пригоди та яскраві емоції, ➔ новий формат інтелектуально-активного відпочинку! ➤ Якщо ти рухаєш мізками та дупою швидше ніж твоя бабуся, ПРИЄДНУЙСЯ"} ➤【 Квест 🔍 Луцьк 】"
+    @page_description = "❰❰❰ #{@game.name} ❱❱❱ #{ @game.small_description.blank? ? "це: ➔ цікаві логічні завдання від кращих авторів Луцька, ➔ захоплюючі пошуки, ➔ драйв та адреналін, ➔ неймовірні пригоди та яскраві емоції, ➔ новий формат інтелектуально-активного відпочинку! ➤ Якщо ти рухаєш мізками та дупою швидше ніж твоя бабуся, ПРИЄДНУЙСЯ" : @game.small_description } ➤【 Квест 🔍 Луцьк 】"
     @page_content = "index,follow"
-    @teams_for_test = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
-    @game_entries = GameEntry.of_game(@game).with_status('new')
+    @teams_for_test = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @game_entries = GameEntry.of_game(@game.id).with_status('new')
     @levels = @game.levels
     @topic = Forem::Topic.find(@game.topic_id) unless @game.topic_id.nil?
     @seo_block = create_show_seo_block
@@ -81,7 +78,7 @@ class GamesController < ApplicationController
 
   def end_game
     @game.finish_game!
-    game_passings = GamePassing.of_game(@game)
+    game_passings = GamePassing.of_game(@game.id)
     game_passings.each(&:end!)
     redirect_to game_path(@game)
   end
@@ -109,11 +106,11 @@ class GamesController < ApplicationController
   def new_level_order
     @levels = @game.levels
     @level_orders = {}
-    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
     (1..@levels.count).each do |index|
       levels = {}
       @teams.each do |team|
-        ordered_level = LevelOrder.of(@game, team).where(position: index).first
+        ordered_level = LevelOrder.of(@game.id, team.id).where(position: index).first
         new_level = @levels.where(position: index).first
         levels[team.id] = (ordered_level.nil? ? new_level.id : ordered_level.level_id)
       end
@@ -124,7 +121,7 @@ class GamesController < ApplicationController
 
   def create_level_order
     @levels = @game.levels
-    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
     (1..@levels.count).each do |index|
       @teams.each do |team|
         selected_level = params["level_id_#{index}_#{team.id}"]
@@ -170,7 +167,7 @@ class GamesController < ApplicationController
   end
 
   def find_teams
-    @accepted_game_entries = GameEntry.of_game(@game).with_status('accepted')
+    @accepted_game_entries = GameEntry.of_game(@game.id).with_status('accepted')
   end
 
   def no_start_time?

@@ -17,7 +17,7 @@ class Level < ActiveRecord::Base
   validates :name, presence: { message: 'Не введено назву завдання' }
   # validates :name, uniqueness: { scope: :game, message: 'Рівень з такою назвою уже є в даній грі' }
 
-  scope :of_game, ->(game) { where(game_id: game.id).order(:position) }
+  scope :of_game, ->(game_id) { where(game_id: game_id).order(:position) }
 
   before_save :check_sectors_for_close
 
@@ -88,19 +88,19 @@ class Level < ActiveRecord::Base
   end
 
   def team_questions(team_id)
-    questions.where("team_id IS NULL OR team_id = #{team_id}")
+    questions.of_team(team_id)
   end
 
   def team_penalty_hints(team_id)
-    penalty_hints.where("team_id IS NULL OR team_id = #{team_id}")
+    penalty_hints.of_team(team_id)
   end
 
   def team_tasks(team_id)
-    tasks.where("team_id IS NULL OR team_id = #{team_id}")
+    tasks.of_team(team_id)
   end
 
   def team_bonuses(team_id)
-    bonuses.where("team_id IS NULL OR team_id = #{team_id}")
+    bonuses.of_team(team_id)
   end
 
   def check_sectors_for_close

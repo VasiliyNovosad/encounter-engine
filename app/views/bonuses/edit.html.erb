@@ -1,16 +1,16 @@
 <h2>
-  Завдання "<strong><%= link_to @level.name, game_level_path(@game, @level) %></strong>"
+  Завдання "<strong><%= link_to level.name, game_level_path(game, level) %></strong>"
 </h2>
 
 <p>
-  <em>(гра "<%= link_to @game.name, game_path(@game) %>")</em>
+  <em>(гра "<%= link_to game.name, game_path(game) %>")</em>
 </p>
 
 <br>
 
-<%= form_for @bonus, url: game_level_bonus_path(@game, @level, @bonus) do |f| %>
+<%= form_for bonus, url: game_level_bonus_path(game, level, bonus) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
-  <%= render 'form', f: f %>
+  <%= render 'form', f: f, teams: teams, game: game, bonus: bonus %>
   <%= f.submit "Змінити", class: 'btn btn-light' %>
-  <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}") %></em>
+  <em><%= link_to "(відмінити)", game_level_path(game, level, anchor: "bonus-#{bonus.id}") %></em>
 <% end %>

@@ -15,7 +15,7 @@ class LogsController < ApplicationController
     filter[:level_id] = params[:level_id].to_i unless params[:level_id].nil? || params[:level_id] == '' || params[:level_id].to_i == 0
     filter[:team_id] = params[:team_id].to_i unless params[:team_id].nil? || params[:team_id] == '' || params[:team_id].to_i == 0
     filter[:user_id] = params[:user_id].to_i unless params[:user_id].nil? || params[:user_id] == '' || params[:user_id].to_i == 0
-    logs = Log.of_game(@game)
+    logs = Log.of_game(@game.id)
     @log_levels = Level.where(id: logs.map(&:level_id).uniq).order(:position)
     @level_id = params[:level_id].to_i
     @log_teams = Team.where(id: logs.map(&:team_id).uniq).order(:name).map{ |team| [team.name, team.id] }
@@ -26,7 +26,7 @@ class LogsController < ApplicationController
     levels = {}
     @log_levels.each { |level| levels[level.id] = "#{level.position}. #{level.name}" }
     @user_id = params[:user_id].to_i
-    @logs = Log.of_game(@game).where(filter).order(time: :desc).page(params[:page] || 1)
+    @logs = Log.of_game(@game.id).where(filter).order(time: :desc).page(params[:page] || 1)
     @all_logs = []
 
     if @game.starts_at < DateTime.new(2018,7,5,0,0,0)
@@ -113,27 +113,27 @@ class LogsController < ApplicationController
   end
 
   def show_level_log
-    @logs = Log.of_game(@game).of_team(@team).of_level(@level).order_by_time
+    @logs = Log.of_game(@game.id).of_team(@team.id).of_level(@level.id).order_by_time
   end
 
   def show_game_log
-    @logs = Log.of_game(@game).of_team(@team)
+    @logs = Log.of_game(@game.id).of_team(@team.id)
   end
 
   def show_full_log
     require 'ee_strings.rb'
-    @logs = Log.of_game(@game).order_by_time.preload(:user)
-    @levels = Level.of_game(@game).includes(questions: :answers, bonuses: :bonus_answers)
+    @logs = Log.of_game(@game.id).order_by_time.preload(:user)
+    @levels = Level.of_game(@game.id).includes(questions: :answers, bonuses: :bonus_answers)
     @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
   end
 
   def show_short_log
     if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0)
-      logs = Log.of_game(@game).order_by_time.preload(:user).to_a
+      logs = Log.of_game(@game.id).order_by_time.preload(:user).to_a
       logs = logs.group_by { |log| [log.team_id, log.level_id]}
-      @levels = Level.of_game(@game).to_a
-      game_passings = GamePassing.of_game(@game).preload(:team).to_a
-      game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
+      @levels = Level.of_game(@game.id).to_a
+      game_passings = GamePassing.of_game(@game.id).preload(:team).to_a
+      game_bonuses = GameBonus.of_game(@game.id).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
       @teams = game_passings.map(&:team)
       @level_logs = []
       @levels.each do |level|
@@ -178,9 +178,9 @@ class LogsController < ApplicationController
       @level_logs << results
     else
       @level_logs = []
-      @levels = Level.of_game(@game).to_a
-      game_passings = GamePassing.of_game(@game).preload(:team).to_a
-      game_bonuses = GameBonus.of_game(@game).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
+      @levels = Level.of_game(@game.id).to_a
+      game_passings = GamePassing.of_game(@game.id).preload(:team).to_a
+      game_bonuses = GameBonus.of_game(@game.id).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
       @teams = game_passings.map(&:team)
       all_closed_levels = ClosedLevel.of_game(@game.id).order(:closed_at).preload(:user).to_a.group_by { |level| level.level_id }
       @levels.each do |level|

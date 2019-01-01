@@ -2,9 +2,9 @@
   Ви <%= current_user.nickname %>
 </p>
 <br>
-<%= render 'my_team' %>
+<%= render 'my_team', invitations: invitations %>
 <br>
-<%= render 'my_games' %>
+<%= render 'my_games', my_games: my_games %>
 <!--<br>-->
 <%#= render 'shared/current_games' %>
 <!--<br>-->

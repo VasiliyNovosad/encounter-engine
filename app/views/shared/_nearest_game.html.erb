@@ -48,7 +48,7 @@
 <% if current_user && (current_user.captain? || game.team_type == 'single') %>
     <p>
       <% team = game.team_type == 'multy' ? current_user.team : current_user.single_team %>
-      <% game_entry = GameEntry.of(team, game)%>
+      <% game_entry = GameEntry.of(team.id, game.id)%>
       <%= render 'shared/game_entry_controls', game_entry: game_entry, game: game, team: team %>
     </p>
 <% end %>
@@ -72,7 +72,7 @@
 
 <br>
 
-<%= render 'games/game_entries', game_entries: GameEntry.of_game(game).with_status('new')  %>
+<%= render 'games/game_entries', game_entries: GameEntry.of_game(game.id).with_status('new')  %>
 <br>
-<%= render 'games/teams', accepted_game_entries: GameEntry.of_game(game).with_status('accepted'), game: game %>
+<%= render 'games/teams', accepted_game_entries: GameEntry.of_game(game.id).with_status('accepted'), game: game %>
 <br>

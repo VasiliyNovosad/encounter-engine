@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :find_level
   before_action :find_game
-  before_action :ensure_game_was_not_finished, except: [:show]
+  before_action :ensure_game_was_not_finished
   before_action :find_teams, only: [:new, :edit, :create, :update]
   before_action :find_task, only: [:edit, :update, :destroy]
 
@@ -53,7 +53,7 @@ class TasksController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
   end
 
   def find_task

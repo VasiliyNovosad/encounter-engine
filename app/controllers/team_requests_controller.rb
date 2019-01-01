@@ -44,7 +44,7 @@ class TeamRequestsController < ApplicationController
   end
 
   def reject_rest_of_invitations
-    Invitation.for(current_user).each do |invitation|
+    Invitation.of(current_user.id).each do |invitation|
       invitation.delete
       InvitationsMailer.invitation_reject(invitation).deliver_now
     end

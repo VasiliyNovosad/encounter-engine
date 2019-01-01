@@ -5,17 +5,19 @@
 </h2>
 <br>
 
-<%= render partial: game.game_type == 'panic' ? 'panic' : 'linear', locals: { game_passing: game_passing,
-                                        game: game,
-                                        team_id: team_id,
-                                        level: level,
-                                        entered_all_answers: entered_all_answers,
-                                        bonuses: bonuses,
-                                        sectors: sectors,
-                                        penalty_hints: penalty_hints,
-                                        upcoming_hints: upcoming_hints,
-                                        hints_to_show: hints_to_show,
-                                        answer: answer } %>
+<%= render game.game_type == 'panic' ? 'panic' : 'linear',
+           game_passing: game_passing,
+           game: game,
+           team_id: team_id,
+           level: level,
+           entered_all_answers: entered_all_answers,
+           bonuses: bonuses,
+           sectors: sectors,
+           penalty_hints: penalty_hints,
+           upcoming_hints: upcoming_hints,
+           hints_to_show: hints_to_show,
+           answer: answer
+%>
 
 <!--
 <% if current_user.captain? %>

@@ -6,7 +6,7 @@ class GameBonusesController < ApplicationController
   before_action :ensure_author, only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @game_bonuses = GameBonus.of_game(@game)
+    @game_bonuses = GameBonus.of_game(@game.id)
     @game_bonuses = @game_bonuses.where(team_id: params[:team_id]) unless params[:team_id].nil?
     @game_bonuses = @game_bonuses.where(level_id: params[:level_id]) unless params[:level_id].nil?
     @game_bonuses = @game_bonuses.where('award > 0') unless params[:type].nil? || params[:type] != 'bonus'
@@ -59,7 +59,7 @@ class GameBonusesController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
   end
 
 end

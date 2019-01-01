@@ -47,7 +47,7 @@ class Game < ActiveRecord::Base
     end
   end
 
-  scope :by, -> (author) { where(author_id: author.id) }
+  scope :by, -> (author_id) { where(author_id: author_id) }
   scope :non_drafts, -> { where(is_draft: false) }
   scope :finished, -> { where('author_finished_at IS NOT NULL') }
 
@@ -79,19 +79,19 @@ class Game < ActiveRecord::Base
   end
 
   def finished_teams
-    GamePassing.of_game(self).finished.map(&:team)
+    GamePassing.of_game(id).finished.map(&:team)
   end
 
   def place_of(team)
-    game_passing = GamePassing.of(team, self)
+    game_passing = GamePassing.of(team.id, id)
     return nil unless game_passing && (game_passing.finished? || self.game_type == 'panic')
     if self.game_type == 'linear' || game_passing.finished_at
       count_of_finished_before =
-        GamePassing.of_game(self).finished_before(game_passing.finished_at).count
+        GamePassing.of_game(id).finished_before(game_passing.finished_at).count
     else
       count_of_finished = GamePassing.finished.count
       count_of_finished_before = count_of_finished +
-        GamePassing.of_game(self).select do |game_pass|
+        GamePassing.of_game(id).select do |game_pass|
           !game_passing.finished_at &&
           game_pass.closed_levels.count > game_passing.closed_levels.count ||
           game_pass.closed_levels.count == game_passing.closed_levels.count &&
@@ -156,10 +156,10 @@ class Game < ActiveRecord::Base
     self.tested_team_id = nil
     self.save!
 
-    game_passing = GamePassing.of_game(self)
-    logs = Log.of_game(self)
-    game_bonuses = GameBonus.of_game(self)
-    closed_levels = ClosedLevel.of_game(self.id)
+    game_passing = GamePassing.of_game(id)
+    logs = Log.of_game(id)
+    game_bonuses = GameBonus.of_game(id)
+    closed_levels = ClosedLevel.of_game(id)
 
     game_passing.delete_all
     logs.delete_all

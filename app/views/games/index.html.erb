@@ -1,6 +1,6 @@
-<%= render 'shared/current_games' %>
-<%= render 'dashboard/coming_games' %>
+<%= render 'shared/current_games', current_games: current_games %>
+<%= render 'shared/coming_games', coming_games: coming_games %>
 <br>
-<%= render 'dashboard/finished_games' %>
+<%= render 'shared/finished_games', finished_games: finished_games %>
 
 <%#= render 'events_seo' %>

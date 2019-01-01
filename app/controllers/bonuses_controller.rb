@@ -9,6 +9,7 @@ class BonusesController < ApplicationController
   def new
     @bonus = @game.bonuses.build(name: "Бонус #{@level.bonuses.count + 1}")
     @bonus.bonus_answers.build
+    render :new, locals: {teams: @teams, game: @game, bonus: @bonus, level: @level}
   end
 
   def create
@@ -17,11 +18,12 @@ class BonusesController < ApplicationController
     if @bonus.save
       redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
     else
-      render :new
+      render :new,  locals: {teams: @teams, game: @game, bonus: @bonus, level: @level}
     end
   end
 
   def edit
+    render :edit, locals: {teams: @teams, game: @game, bonus: @bonus, level: @level}
   end
 
   def show
@@ -33,7 +35,7 @@ class BonusesController < ApplicationController
     if @bonus.update_attributes(bonus_params)
       redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
     else
-      render :edit
+      render :edit,  locals: {teams: @teams, game: @game, bonus: @bonus, level: @level}
     end
   end
 
@@ -110,6 +112,9 @@ class BonusesController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
+      team = game_entry.team
+      [team.name, team.id]
+    end
   end
 end

@@ -16,8 +16,8 @@ class GamePassing < ActiveRecord::Base
   belongs_to :game
   belongs_to :current_level, class_name: 'Level'
 
-  scope :of_game, ->(game) { where(game_id: game.id) }
-  scope :of_team, ->(team) { where(team_id: team.id) }
+  scope :of_game, ->(game_id) { where(game_id: game_id) }
+  scope :of_team, ->(team_id) { where(team_id: team_id) }
   scope :ended_by_author, -> { where(status: 'ended').order('current_level_id DESC') }
   scope :exited, -> { where(status: 'exited').order('finished_at DESC') }
   scope :finished, -> { where('finished_at IS NOT NULL') } # .order("(finished_at - sum_bonuses * interval '1 second') ASC") }
@@ -25,8 +25,8 @@ class GamePassing < ActiveRecord::Base
 
   before_create :update_current_level_entered_at
 
-  def self.of(team, game)
-    game_passings = of_team(team).of_game(game)
+  def self.of(team_id, game_id)
+    game_passings = of_team(team_id).of_game(game_id)
     if game_passings.count == 1
       game_passings.first
     elsif game_passings.count > 1
@@ -39,7 +39,10 @@ class GamePassing < ActiveRecord::Base
     answer.strip!
     is_correct_answer = false
     is_correct_bonus_answer = false
+    needed = 0
+    closed = 0
     lock!
+    answered_bonus = []
     if correct_bonus_answer?(answer, level, team_id)
       answered_bonus = level.find_bonuses_by_answer(answer, team_id).map do |q|
         {
@@ -58,6 +61,7 @@ class GamePassing < ActiveRecord::Base
       is_correct_bonus_answer = true
     end
     save!
+    answered_question = []
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id).map do |q|
         {
@@ -166,17 +170,17 @@ class GamePassing < ActiveRecord::Base
 
   def hints_to_show(team_id, level = self.current_level)
     if level.position == 1 || game.game_type == 'panic'
-      level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| hint.ready_to_show?(level.game.starts_at) }
+      level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(level.game.starts_at) }
     else
-      level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| hint.ready_to_show?(current_level_entered_at) }
+      level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(current_level_entered_at) }
     end
   end
 
   def upcoming_hints(team_id, level = self.current_level)
     if level.position == 1 || game.game_type == 'panic'
-      level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| !hint.ready_to_show?(level.game.starts_at) }
+      level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(level.game.starts_at) }
     else
-      level.hints.where("team_id IS NULL OR team_id = #{team_id}").select { |hint| !hint.ready_to_show?(current_level_entered_at) }
+      level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(current_level_entered_at) }
     end
   end
 
@@ -266,7 +270,7 @@ class GamePassing < ActiveRecord::Base
           reason: 'штраф за автоперехід',
           description: ''
       }
-      if level.is_autocomplete_penalty && !level.autocomplete_penalty.zero? &&
+      if level.is_autocomplete_penalty? && !level.autocomplete_penalty.zero? &&
           GameBonus.where(game_bonus_options).count.zero?
         GameBonus.create!(game_bonus_options)
       end
@@ -305,16 +309,16 @@ class GamePassing < ActiveRecord::Base
   end
 
   def current_level_position(team_id)
-    LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: current_level.id).first.position
+    LevelOrder.of(game_id, team_id).where(level_id: current_level.id).first.position
   end
 
   def get_team_answer(level, team, correct_answers)
-    log = Log.of_game(game).of_level(level).of_team(team).where('lower(answer) IN (?)', correct_answers).first
+    log = Log.of_game(game_id).of_level(level_id).of_team(team_id).where('lower(answer) IN (?)', correct_answers).first
     log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
   end
 
   def get_team_bonus_answer(bonus, team, correct_answers)
-    log = Log.of_game(game).of_team(team).where(level_id: bonus.levels.pluck(:id)).where('lower(answer) IN (?)', correct_answers).first
+    log = Log.of_game(game_id).of_team(team_id).where(level_id: bonus.levels.pluck(:id)).where('lower(answer) IN (?)', correct_answers).first
     log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
   end
 
@@ -325,13 +329,13 @@ class GamePassing < ActiveRecord::Base
   end
 
   def last_level_selected?(team_id)
-    level_position = LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: current_level.id).first.position
-    LevelOrder.of(game, Team.find_by_id(team_id)).where(position: level_position + 1).first.nil?
+    level_position = LevelOrder.of(game_id, team_id).where(level_id: current_level.id).first.position
+    LevelOrder.of(game_id, team_id).where(position: level_position + 1).first.nil?
   end
 
   def next_selected_level(level, team_id)
-    level_position = LevelOrder.of(game, Team.find_by_id(team_id)).where(level_id: level.id).first.position
-    Level.find_by_id(LevelOrder.of(game, Team.find_by_id(team_id)).where(position: level_position + 1).first.level_id)
+    level_position = LevelOrder.of(game_id, team_id).where(level_id: level.id).first.position
+    Level.find_by_id(LevelOrder.of(game_id, team_id).where(position: level_position + 1).first.level_id)
   end
 
   def update_current_level_entered_at(time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time)

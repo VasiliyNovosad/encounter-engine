@@ -32,8 +32,8 @@
           return;
         <% end %>
         <% unless @team.nil? %>
-          <% unless @game.game_passings.of_team(@team).first.nil? %>
-            <% if @game.game_passings.of_team(@team).first.finished? %>
+          <% unless @game.game_passings.of_team(@team.id).first.nil? %>
+            <% if @game.game_passings.of_team(@team.id).first.finished? %>
               countdown_element.css('display', 'none');
               return;
             <% end %>
@@ -44,7 +44,7 @@
           return;
         <% end %>
         <% unless @team.nil? || @game.nil? %>
-          <% @game_entry = GameEntry.of(@team, @game) %>
+          <% @game_entry = GameEntry.of(@team.id, @game.id) %>
           countdown_element.css('display', 'none');
           <% if @game_entry && @game_entry.status == "accepted" %>
             $('#playButton').css('display', 'inline-block');

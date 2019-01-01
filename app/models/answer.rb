@@ -9,7 +9,9 @@ class Answer < ActiveRecord::Base
 
   validates_uniqueness_of :value, scope: [:question_id], message: 'Такий код вже є на рівні'
 
-  scope :of_question, ->(question) { where(question_id: question.id) }
+  scope :of_question, ->(question_id) { where(question_id: question_id) }
+
+  scope :of_team, ->(team_id) { where('team_id IS NULL OR team_id = ?', team_id) }
 
   protected
 

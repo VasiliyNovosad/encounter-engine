@@ -39,7 +39,13 @@
 <div id="main-game-container">
 
 <h3>
-  <%= game.levels.map { |game_level| game_level == level ? "#{game_level.position}. #{game_level.name}" : "<a class=\"#{(game_passing.closed?(game_level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{game.id}?level=#{game_level.position}\">#{game_level.position}. #{game_level.name}</a>"}.join(', ').html_safe %>
+  <%= game.levels.map do |game_level|
+    if game_level == level
+      "#{game_level.position}. #{game_level.name}"
+    else
+      "<a class=\"#{(game_passing.closed?(game_level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{game.id}?level=#{game_level.position}\">#{game_level.position}. #{game_level.name}</a>"
+    end
+  end.join(', ').html_safe %>
 </h3>
 
 <fieldset>
@@ -64,9 +70,9 @@
   <% end %>
   <br>
 
-  <%= render partial: 'messages', locals: { messages: level.messages } %>
+  <%= render 'messages', messages: level.messages %>
   <br><br>
-  <%= render partial: 'tasks', locals: { tasks: level.team_tasks(team_id) } %>
+  <%= render 'tasks', tasks: level.team_tasks(team_id) %>
   <br>
 
   <% team_questions = level.team_questions(team_id) %>
@@ -82,14 +88,14 @@
   <br>
 
   <% unless game_passing.closed?(level) %>
-    <%= render partial: 'hints', locals: { upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: game.starts_at, game_passing: game_passing, level: level, team_id: team_id } %>
-    <%= render partial: 'penalty_hints', locals: { penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id } %>
+    <%= render 'hints', upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: game.starts_at, game_passing: game_passing, level: level, team_id: team_id %>
+    <%= render 'penalty_hints', penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id %>
   <% end %>
 
-  <%= render partial: level.olymp? ? 'olymp' : 'multy', locals: {sectors: sectors, level: level} if sectors.count > 1 %>
+  <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.count > 1 %>
   <hr>
   <br>
-  <%= render partial: 'bonuses', locals: { level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id } if bonuses.count > 0 %>
+  <%= render 'bonuses', level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id if bonuses.count > 0 %>
 
   <br>
 </fieldset>

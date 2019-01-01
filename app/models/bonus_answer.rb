@@ -8,7 +8,8 @@ class BonusAnswer < ActiveRecord::Base
 
   validates_uniqueness_of :value, scope: [:bonus_id], message: 'Такий код вже є в даному бонусі'
 
-  scope :of_bonus, ->(bonus) { where(bonus_id: bonus.id) }
+  scope :of_bonus, ->(bonus_id) { where(bonus_id: bonus_id) }
+  scope :of_team, ->(team_id) { where('team_id IS NULL OR team_id = ?', team_id) }
 
   protected
 

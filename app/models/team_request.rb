@@ -2,7 +2,7 @@ class TeamRequest < ActiveRecord::Base
   belongs_to :team
   belongs_to :user
 
-  scope :for, ->(team) { where(team_id: team.id) }
+  scope :for, ->(team_id) { where(team_id: team_id) }
 
   attr_accessor :team_name
 
