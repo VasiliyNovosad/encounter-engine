@@ -1,5 +1,5 @@
-<%= render :partial => 'forem/forums/head', :locals => { :forum => @topic.forum } %>
+<%= render 'forem/forums/head', forum: @forum %>
 
 <h2><%= t("forem.topic.new") %></h2>
 
-<%= render "form" %>
+<%= render 'form', forum: @forum, topic: @topic %>

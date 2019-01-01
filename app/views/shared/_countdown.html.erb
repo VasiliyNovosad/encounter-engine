@@ -15,38 +15,38 @@
       prefix: "Лишилось: ",
       finish : function() {
         var countdown_element = $('#start-countdown');
-        <% if user_signed_in? and current_user.author_of?(@game) %>
+        <% if user_signed_in? and current_user.author_of?(game) %>
           countdown_element.css('display', 'none');
           return;
         <% end %>
-        <% unless @game.finished_teams %>
+        <% unless game.finished_teams %>
           countdown_element.css('display', 'none');
           return;
         <% end %>
-        <% unless @game.levels && @game.levels.count > 0 %>
+        <% unless game.levels && game.levels.count > 0 %>
           countdown_element.css('display', 'none');
           return;
         <% end %>
-        <% if @game.draft? %>
+        <% if game.draft? %>
           countdown_element.css('display', 'none');
           return;
         <% end %>
-        <% unless @team.nil? %>
-          <% unless @game.game_passings.of_team(@team.id).first.nil? %>
-            <% if @game.game_passings.of_team(@team.id).first.finished? %>
+        <% unless team.nil? %>
+          <% unless game.game_passings.of_team(team.id).first.nil? %>
+            <% if game.game_passings.of_team(team.id).first.finished? %>
               countdown_element.css('display', 'none');
               return;
             <% end %>
           <% end %>
         <% end %>
-        <% if @game.author_finished? %>
+        <% if game.author_finished? %>
           countdown_element.css('display', 'none');
           return;
         <% end %>
-        <% unless @team.nil? || @game.nil? %>
-          <% @game_entry = GameEntry.of(@team.id, @game.id) %>
+        <% unless team.nil? || game.nil? %>
+          <% game_entry = GameEntry.of(team.id, game.id) %>
           countdown_element.css('display', 'none');
-          <% if @game_entry && @game_entry.status == "accepted" %>
+          <% if game_entry && game_entry.status == "accepted" %>
             $('#playButton').css('display', 'inline-block');
           <% end %>
         <% end %>

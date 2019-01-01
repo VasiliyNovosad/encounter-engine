@@ -72,7 +72,10 @@ class AnswersController < ApplicationController
   end
 
   def find_teams
-    @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
+    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
+      team = game_entry.team
+      [team.name, team.id]
+    end
   end
 
 end

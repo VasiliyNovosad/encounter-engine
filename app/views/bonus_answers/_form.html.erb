@@ -1,2 +1,2 @@
-<p><%= f.label "Команда" %><%= f.select(:team_id, [['Для всіх', nil]] + @teams.map{ |team| [team.name, team.id] }) %></p>
+<p><%= f.label "Команда" %><%= f.select(:team_id, teams) %></p>
 <p><%= f.label "Відповідь" %><%= f.text_field :value %></p>

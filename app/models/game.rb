@@ -2,6 +2,8 @@ class Game < ActiveRecord::Base
   extend FriendlyId
   friendly_id :slug_candidates, use: :slugged
 
+  MAX_TEAMS_COUNT = 10_000
+
   belongs_to :author, class_name: 'User'
   has_and_belongs_to_many :authors, class_name: 'User', join_table: 'games_authors', foreign_key: 'game_id', association_foreign_key: 'author_id'
   has_many :levels, -> { order(:position) }
@@ -27,7 +29,7 @@ class Game < ActiveRecord::Base
 
   validates_numericality_of :max_team_number,
                             greater_than_or_equal_to: 0,
-                            less_than_or_equal_to: 10_000, allow_nil: true,
+                            less_than_or_equal_to: MAX_TEAMS_COUNT, allow_nil: true,
                             message: 'Не коректно вказано обмеження на кількість команд у грі'
 
   validates_presence_of :author

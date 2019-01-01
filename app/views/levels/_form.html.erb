@@ -33,7 +33,7 @@
     <div class="custom-control custom-radio custom-control-inline">
       <%= radio_button_tag(:condition, "selected", true, class: "custom-control-input") %>
       <%= label_tag(:condition_selected, "Закрити", class: "custom-control-label") %>
-      <%= f.number_field :sectors_for_close, min: 0, max: @level.questions.count, class: 'form-control form-control-sm' %>
+      <%= f.number_field :sectors_for_close, min: 0, max: questions_count, class: 'form-control form-control-sm' %>
       <div class="col-sm-6">
         <label class="col-form-label">секторів</label>
       </div>
@@ -142,7 +142,7 @@
             } else {
                 sectors_for_close.prop('readonly', false);
                 sectors_for_close.select();
-                sectors_for_close.val(<%= @level.questions.count %>);
+                sectors_for_close.val(<%= questions_count %>);
             }
         });
 

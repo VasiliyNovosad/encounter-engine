@@ -7,7 +7,7 @@
 <%= form_for @task, url: game_level_task_path(@game, @level, @task) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
-    <%= render 'form', f: f %>
+    <%= render 'form', f: f, teams: @teams %>
 
     <%= f.submit "Редагувати", class: 'btn btn-light' %>
     <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "task-#{@task.id}") %></em>

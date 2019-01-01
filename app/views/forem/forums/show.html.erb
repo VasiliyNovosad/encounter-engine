@@ -1,5 +1,5 @@
 <div class='forum'>
-  <%= render :partial => 'forem/forums/head', :locals => { :forum => @forum } %>
+  <%= render 'forem/forums/head', forum: @forum, topic: @topic %>
 
   <%= forem_pages_widget(@topics) %>
   <table class='topics table-striped table' cellspacing='0'>

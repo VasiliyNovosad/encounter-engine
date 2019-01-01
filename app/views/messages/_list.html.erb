@@ -4,10 +4,10 @@
   <% messages.each do |message| %>
     <fieldset id="messages-<%= message.id %>">
       <legend>
-        <% unless @game.author_finished? %>
+        <% unless game.author_finished? %>
           <em>
-            <%= link_to "(редагувати)", edit_game_level_message_path(message.game, @level, message) %>
-            <%= link_to "(видалити)", game_level_message_path(message.game, @level, message), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+            <%= link_to "(редагувати)", edit_game_level_message_path(game, level, message) %>
+            <%= link_to "(видалити)", game_level_message_path(game, level, message), method: :delete, data: { confirm: 'Ви впевнені?' } %>
           </em>
         <% end %>
       </legend>

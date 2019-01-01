@@ -3,7 +3,7 @@
 
 <%= form_for @level, url: game_levels_path(@level.game) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
-  <%= render 'form', f: f %>
+  <%= render 'form', f: f, questions_count: @level.questions.count %>
   <%= f.submit "Додати рівень", class: 'btn btn-light' %>
   <em><%= link_to "(відмінити)", game_path(@level.game) %></em>
 <% end %>

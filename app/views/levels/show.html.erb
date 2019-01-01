@@ -82,7 +82,7 @@
     <br>
   <% end %>
   <p>
-    <%= render 'tasks/list', tasks: @level.tasks %>
+    <%= render 'tasks/list', tasks: @level.tasks, game: @game, level: @level %>
   </p>
 </fieldset>
 <br>
@@ -97,7 +97,7 @@
     <br>
   <% end %>
   <p>
-    <%= render 'messages/list', messages: @level.messages %>
+    <%= render 'messages/list', messages: @level.messages, game: @game, level: @level %>
   </p>
 </fieldset>
 <br>
@@ -112,7 +112,7 @@
     <br>
   <% end %>
   <p>
-    <%= render 'hints/list', hints: @level.hints %>
+    <%= render 'hints/list', hints: @level.hints, game: @game, level: @level %>
   </p>
 </fieldset>
 <br>
@@ -127,7 +127,7 @@
     <br>
   <% end %>
   <p>
-    <%= render 'penalty_hints/list', penalty_hints: @level.penalty_hints %>
+    <%= render 'penalty_hints/list', penalty_hints: @level.penalty_hints, game: @game, level: @level %>
   </p>
 </fieldset>
 <br>
@@ -150,7 +150,7 @@
     <% end %>
   <% end %>
   <p>
-    <%= render 'questions/list', questions: @level.questions %>
+    <%= render 'questions/list', questions: @level.questions, game: @game, level: @level %>
   </p>
   <% if !@game.author_finished? && @level.questions.count > 5 %>
     <p>
@@ -178,7 +178,7 @@
     <% end %>
   <% end %>
   <p>
-    <%= render 'bonuses/list', bonuses: @level.bonuses %>
+    <%= render 'bonuses/list', bonuses: @level.bonuses, game: @game, level: @level %>
   </p>
   <% if !@game.author_finished? && @level.bonuses.count > 5 %>
     <br>

@@ -39,13 +39,7 @@
 <div id="main-game-container">
 
 <h3>
-  <%= game.levels.map do |game_level|
-    if game_level == level
-      "#{game_level.position}. #{game_level.name}"
-    else
-      "<a class=\"#{(game_passing.closed?(game_level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{game.id}?level=#{game_level.position}\">#{game_level.position}. #{game_level.name}</a>"
-    end
-  end.join(', ').html_safe %>
+  <%= game_levels_list(game).html_safe %>
 </h3>
 
 <fieldset>

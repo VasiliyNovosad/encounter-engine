@@ -10,7 +10,7 @@
 
 <%= form_for @question, url: game_level_question_path(@game, @level, @question) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
-    <%= render 'form', f: f %>
+    <%= render 'form', f: f, teams: @teams %>
     <%= f.submit "Змінити", class: 'btn btn-light' %>
     <em><%= link_to "(відмінити)", game_level_path(@game, @level, anchor: "question-#{@question.id}") %></em>
 <% end %>

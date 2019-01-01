@@ -1,13 +1,13 @@
 <div class="form-group row">
   <%= f.label :level_id, "Рівень:", class: 'col-sm-2 col-4 col-form-label' %>
   <div class="col-sm-4 col-8">
-    <%= f.select(:level_id, @game.levels.map{ |level| ["#{level.position}. #{level.name}", level.id] }, {}, { class: 'form-control form-control-sm' }) %>
+    <%= f.select(:level_id, levels.map{ |level| ["#{level.position}. #{level.name}", level.id] }, {}, { class: 'form-control form-control-sm' }) %>
   </div>
 </div>
 <div class="form-group row">
   <%= f.label :team_id, "Команда:", class: 'col-sm-2 col-4 col-form-label' %>
   <div class="col-sm-4 col-8">
-    <%= f.select(:team_id, @teams.map{ |team| [team.name, team.id] }, {}, { class: 'form-control form-control-sm' }) %>
+    <%= f.select(:team_id, teams, {}, { class: 'form-control form-control-sm' }) %>
   </div>
 </div>
 <div class="form-group row">

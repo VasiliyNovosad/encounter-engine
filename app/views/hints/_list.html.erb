@@ -7,11 +7,11 @@
             <% else %>
                 <em>Для </em> <strong><%= link_to hint.team.name, team_path(hint.team) %></strong>:
             <% end %>
-            <% unless @game.author_finished? %>
+            <% unless game.author_finished? %>
               <em>
-                <%= link_to "(редагувати)", edit_game_level_hint_path(hint.level.game, hint.level, hint) %>
-                <%= link_to "(видалити)", game_level_hint_path(hint.level.game, hint.level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-                <%= link_to "(скопіювати)", copy_game_level_hint_path(hint.level.game, hint.level, hint), method: :post %>
+                <%= link_to "(редагувати)", edit_game_level_hint_path(game, level, hint) %>
+                <%= link_to "(видалити)", game_level_hint_path(game, level, hint), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+                <%= link_to "(скопіювати)", copy_game_level_hint_path(game, level, hint), method: :post %>
               </em>
             <% end %>
           </legend>

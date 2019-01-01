@@ -7,7 +7,7 @@
 <%= form_for @bonus_answer, url: game_level_bonus_bonus_answer_path(@game, @level, @bonus, @bonus_answer) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
-    <%= render 'form', f: f %>
+    <%= render 'form', f: f, teams: @teams %>
 
     <%= f.submit "Редагувати", style: "width:170px" %>
     <em><%= link_to "(відмінити)", game_level_path(@game, @level) %></em>
