@@ -315,12 +315,12 @@ class GamePassing < ActiveRecord::Base
     LevelOrder.of(game_id, team_id).where(level_id: current_level.id).first.position
   end
 
-  def get_team_answer(level, team, correct_answers)
+  def get_team_answer(level_id, team_id, correct_answers)
     log = Log.of_game(game_id).of_level(level_id).of_team(team_id).where('lower(answer) IN (?)', correct_answers).first
     log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
   end
 
-  def get_team_bonus_answer(bonus, team, correct_answers)
+  def get_team_bonus_answer(bonus, team_id, correct_answers)
     log = Log.of_game(game_id).of_team(team_id).where(level_id: bonus.levels.pluck(:id)).where('lower(answer) IN (?)', correct_answers).first
     log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
   end
