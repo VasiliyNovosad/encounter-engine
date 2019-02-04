@@ -3,6 +3,8 @@ class Bonus < ActiveRecord::Base
   belongs_to :team
   belongs_to :game
   has_many :bonus_answers, dependent: :destroy
+  has_and_belongs_to_many :game_passings, join_table: 'game_passings_bonuses'
+
   acts_as_list scope: :game_id
 
   accepts_nested_attributes_for :bonus_answers, reject_if: :all_blank, allow_destroy: true

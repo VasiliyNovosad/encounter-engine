@@ -1,0 +1,12 @@
+<h1>Лог відповідей команди "<%= @team.name %>" по грі "<%= link_to @game.name, game_path(@game) %>"</h1>
+
+<% @game.levels.each do |level| %>
+  <h2><%= level.name %></h2>
+  <strong>Вірний код:</strong>&nbsp;<%= level.questions.first.correct_answer %>
+  <ul>
+    <% logs = @logs.of_level(level.id).of_team(@team.id) %>
+    <% logs.each do |log| %>
+      <li><%= log.time.strftime("%Y-%m-%d %H:%M:%S.%L") %>&nbsp;<%= "#{log.answer} (#{log.user.nil? ? '' : log.user.nickname})" %></li>
+    <% end %>
+  </ul>
+<% end %>

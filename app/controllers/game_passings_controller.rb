@@ -71,7 +71,7 @@ class GamePassingsController < ApplicationController
                   left_time: level_time == 0 ? 0 : (level_start - time).to_i + level_time,
                   sectors_count: sectors_count,
                   sectors_need: @level.sectors_for_close.zero? ? sectors_count : @level.sectors_for_close,
-                  sectors_closed: @game.game_type == 'panic' ? @game_passing.answered_questions.count : (@game_passing.answered_questions.to_set & all_sectors.map(&:id).to_set).count,
+                  sectors_closed: @game.game_type == 'panic' ? @game_passing.questions.count : (@game_passing.question_ids.to_set & all_sectors.map(&:id).to_set).count,
                   tasks: @level.team_tasks(@team_id).map { |task| {id: task.id, text: task.text} },
                   messages: @level.messages.map { |message| { user: message.user.nickname, text: message.text} },
                   hints: @hints_to_show.map do |hint|
@@ -503,7 +503,7 @@ class GamePassingsController < ApplicationController
 
   def get_answered_questions(level)
     team_questions = level.team_questions(@team_id)
-    answered_questions = team_questions.where(id: @game_passing.answered_questions)
+    answered_questions = team_questions.where(id: @game_passing.question_ids)
     team_questions.includes(:answers).map do |question|
       correct_answers = question.answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       value = level.olymp? ? question.name : '-'
@@ -539,7 +539,7 @@ class GamePassingsController < ApplicationController
 
   def get_answered_bonuses(level)
     return [] unless level.has_bonuses?(@team_id)
-    answered_bonuses = level.bonuses.where(id: @game_passing.answered_bonuses)
+    answered_bonuses = level.bonuses.where(id: @game_passing.bonus_ids)
     level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
       current_level_entered_at = (level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)

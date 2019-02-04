@@ -1,12 +1,16 @@
 class LogsController < ApplicationController
   before_action :authenticate_user!, except: [:show_short_log]
   before_action :find_game
-  before_action :ensure_author, only: [:show_level_log, :show_game_log]
+  before_action :ensure_author, only: [:show_level_log, :show_game_log, :show_special_results]
   before_action :ensure_game_finished, only: [:show_live_channel, :show_full_log]
   before_action :find_team, only: [:show_level_log, :show_game_log]
   before_action :find_level, only: [:show_level_log, :show_game_log]
 
   def index
+  end
+
+  def show_special_results
+
   end
 
   def show_live_channel

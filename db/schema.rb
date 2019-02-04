@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180817140212) do
+ActiveRecord::Schema.define(version: 20190204191331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -215,6 +215,22 @@ ActiveRecord::Schema.define(version: 20180817140212) do
     t.text     "penalty_hints"
     t.text     "missed_bonuses"
   end
+
+  create_table "game_passings_bonuses", force: :cascade do |t|
+    t.integer "game_passing_id"
+    t.integer "bonus_id"
+  end
+
+  add_index "game_passings_bonuses", ["bonus_id"], name: "index_game_passings_bonuses_on_bonus_id", using: :btree
+  add_index "game_passings_bonuses", ["game_passing_id"], name: "index_game_passings_bonuses_on_game_passing_id", using: :btree
+
+  create_table "game_passings_questions", force: :cascade do |t|
+    t.integer "game_passing_id"
+    t.integer "question_id"
+  end
+
+  add_index "game_passings_questions", ["game_passing_id"], name: "index_game_passings_questions_on_game_passing_id", using: :btree
+  add_index "game_passings_questions", ["question_id"], name: "index_game_passings_questions_on_question_id", using: :btree
 
   create_table "games", force: :cascade do |t|
     t.string   "name",                   limit: 255

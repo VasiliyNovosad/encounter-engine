@@ -15,6 +15,8 @@ class GamePassing < ActiveRecord::Base
   belongs_to :team
   belongs_to :game
   belongs_to :current_level, class_name: 'Level'
+  has_and_belongs_to_many :questions, join_table: 'game_passings_questions'
+  has_and_belongs_to_many :bonuses, join_table: 'game_passings_bonuses'
 
   scope :of_game, ->(game_id) { where(game_id: game_id) }
   scope :of_team, ->(team_id) { where(team_id: team_id) }
@@ -55,7 +57,7 @@ class GamePassing < ActiveRecord::Base
           value: "#{answer} (#{user.nickname})",
           level_id: level.id,
           user_id: user.id
-        } unless answered_bonuses.include?(q.id)
+        } unless bonus_ids.include?(q.id)
       end.compact
       pass_bonus!(answered_bonus)
       is_correct_bonus_answer = true
@@ -69,13 +71,13 @@ class GamePassing < ActiveRecord::Base
           name: q.name,
           position: q.position,
           value: "<span class=\"right_code\">#{answer} (#{user.nickname})</span>"
-        } unless answered_questions.include?(q.id)
+        } unless question_ids.include?(q.id)
       end.compact
       changed = pass_question!(answered_question)
       is_correct_answer = true
       save! if changed
       needed = level.team_questions(team_id).count
-      closed = (answered_questions.to_set & level.team_questions(team_id).map(&:id).to_set).count
+      closed = (question_ids.to_set & level.team_questions(team_id).map(&:id).to_set).count
       start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
       pass_level!(level, team_id, time, start_time, user.id) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
     end
@@ -104,7 +106,8 @@ class GamePassing < ActiveRecord::Base
     changed = false
     unless questions.empty?
       changed = true
-      self.answered_questions += questions.map { |q| q[:id] }
+      self.question_ids = question_ids + questions.map { |q| q[:id] }
+      # self.answered_questions += questions.map { |q| q[:id] }
     end
     changed
   end
@@ -113,8 +116,8 @@ class GamePassing < ActiveRecord::Base
     changed = false
     unless bonuses.empty?
       bonuses.each do |bonus|
-        unless self.answered_bonuses.include?(bonus[:id])
-          self.answered_bonuses.push(bonus[:id])
+        unless bonus_ids.include?(bonus[:id])
+          self.bonus_ids = bonus_ids + [bonus[:id]]
           game_bonus_options = {
             game_id: game.id,
             level_id: bonus[:level_id],
@@ -146,7 +149,7 @@ class GamePassing < ActiveRecord::Base
       else
         update_current_level_entered_at(time)
         closed_levels << level.id unless closed?(level)
-        reset_answered_questions unless game.game_type == 'panic'
+        # reset_answered_questions unless game.game_type == 'panic'
         # reset_answered_bonuses unless game.game_type == 'panic'
         if game.game_type == 'linear'
           self.current_level = level.next
@@ -199,7 +202,7 @@ class GamePassing < ActiveRecord::Base
     # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
     level.team_bonuses(team_id).includes(:bonus_answers).any? do |bonus|
       # bonus.matches_any_answer(answer, team_id)
-      (!missed_bonuses.include?(bonus.id) || answered_bonuses.include?(bonus.id) ) && !bonus.is_delayed_now?(level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
+      (!missed_bonuses.include?(bonus.id) || bonus_ids.include?(bonus.id) ) && !bonus.is_delayed_now?(level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
         bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
           ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
         end
@@ -213,15 +216,15 @@ class GamePassing < ActiveRecord::Base
   end
 
   def unanswered_questions(level, team_id)
-    level.team_questions(team_id) - Question.where(id: answered_questions)
+    level.team_questions(team_id) - Question.where(id: question_ids)
   end
 
   def all_questions_answered?(level, team_id)
-    (level.team_questions(team_id) - Question.where(id: answered_questions)).empty?
+    (level.team_questions(team_id) - Question.where(id: question_ids)).empty?
   end
 
   def unanswered_bonuses(level, team_id)
-    level.team_bonuses(team_id) - Bonus.where(id: answered_bonuses)
+    level.team_bonuses(team_id) - Bonus.where(id: bonus_ids)
   end
 
   def exit!
@@ -253,7 +256,7 @@ class GamePassing < ActiveRecord::Base
       else
         update_current_level_entered_at(time_finish)
         closed_levels << level.id
-        reset_answered_questions unless game.game_type == 'panic'
+        # reset_answered_questions unless game.game_type == 'panic'
         # reset_answered_bonuses unless game.game_type == 'panic'
         if game.game_type == 'linear'
           self.current_level = level.next
@@ -362,6 +365,14 @@ class GamePassing < ActiveRecord::Base
 
   def reset_answered_bonuses
     answered_bonuses.clear
+  end
+
+  def reset_questions
+    questions.clear
+  end
+
+  def reset_bonuses
+    bonuses.clear
   end
 
   # TODO: keep SRP, extract this to a separate helper

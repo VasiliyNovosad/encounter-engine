@@ -2,6 +2,8 @@ class Question < ActiveRecord::Base
   belongs_to :level
   belongs_to :team
   has_many :answers, dependent: :destroy
+  has_and_belongs_to_many :game_passings, join_table: 'game_passings_questions'
+
   acts_as_list scope: [:level_id, :team_id]
 
   accepts_nested_attributes_for :answers, reject_if: :all_blank, allow_destroy: true

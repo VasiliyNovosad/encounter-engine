@@ -162,6 +162,10 @@ class Game < ActiveRecord::Base
     logs = Log.of_game(id)
     game_bonuses = GameBonus.of_game(id)
     closed_levels = ClosedLevel.of_game(id)
+    game_passing.each do |elem|
+      elem.questions.clear
+      elem.bonuses.clear
+    end
 
     game_passing.delete_all
     logs.delete_all
