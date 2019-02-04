@@ -513,7 +513,7 @@ class GamePassingsController < ApplicationController
         position: question.position,
         name: question.name,
         answered: answered,
-        answer: answered ? @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers) : '',
+        answer: answered ? @game_passing.get_team_answer(level.id, @team_id, correct_answers) : '',
         value: answered ? "<span class=\"right_code\">#{correct_answers.count == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value
       }
     end
@@ -549,7 +549,7 @@ class GamePassingsController < ApplicationController
         id: bonus.id,
         name: bonus.name,
         answered: answered_bonuses.include?(bonus),
-        value: answered_bonuses.include?(bonus) ? @game_passing.get_team_bonus_answer(bonus, Team.find(@team_id), correct_answers) : '',
+        value: answered_bonuses.include?(bonus) ? @game_passing.get_team_bonus_answer(bonus, @team_id, correct_answers) : '',
         task: bonus.task,
         help: answered_bonuses.include?(bonus) ? bonus.help : nil,
         award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil,
