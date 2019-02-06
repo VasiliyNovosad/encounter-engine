@@ -323,8 +323,8 @@ class GamesController < ApplicationController
   #{!game.image.nil? || (images.length > 0) ? "\"image\": \"#{game.image.nil? || game.image == '' ? images[0] : game.image}\"," : ''}
   "performer": {
     "@type":"Person",
-    "name":"#{game.author.nickname}",
-    "sameAs":"https://t.me/#{telegram_user(game.author.telegram) || 'questwtf'}"
+    "name":"#{game.author_nickname}",
+    "sameAs":"https://t.me/#{telegram_user(game.author_telegram) || 'questwtf'}"
     },
   "startDate":"#{game.starts_at}",
   "endDate":"2018",

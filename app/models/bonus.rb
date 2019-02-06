@@ -17,7 +17,7 @@ class Bonus < ActiveRecord::Base
 
   def correct_answer=(answer)
     if bonus_answers.empty?
-      bonus_answers.build(value: answer, team_id: team.nil? ? nil : team.id)
+      bonus_answers.build(value: answer, team_id: team_id)
     else
       bonus_answers.first.value = answer
     end

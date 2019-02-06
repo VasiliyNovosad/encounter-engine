@@ -9,7 +9,7 @@
   <div class="col-sm-12">
     <%#= hidden_field_tag("message[level_ids][]", nil) %>
     <% game.levels.each do |level| %>
-      <label class="checkbox-inline level-checkbox"><%= check_box_tag("message[level_ids][]", level.id, level.id.in?(message.levels.collect(&:id))) %> <%= level.position %></label>
+      <label class="checkbox-inline level-checkbox"><%= check_box_tag("message[level_ids][]", level.id, level.id.in?(message.level_ids)) %> <%= level.position %></label>
     <% end %>
   </div>
 </div>

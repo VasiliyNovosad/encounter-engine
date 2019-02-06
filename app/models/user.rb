@@ -35,15 +35,15 @@ class User < ActiveRecord::Base
   end
 
   def captain?
-    member_of_any_team? && team.captain.id == id
+    member_of_any_team? && team.captain_id == id
   end
 
   def captain_of_team?(team)
-    team.captain.id == id
+    team.captain_id == id
   end
 
   def author_of?(game)
-    game.author.id == id || game.authors.map(&:id).include?(id)
+    game.author_id == id || game.author_ids.include?(id)
   end
 
   def forem_name

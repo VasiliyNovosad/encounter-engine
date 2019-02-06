@@ -17,7 +17,7 @@ class Question < ActiveRecord::Base
 
   def correct_answer=(answer)
     if answers.empty?
-      answers.build(value: answer, team_id: team.nil? ? nil : team.id)
+      answers.build(value: answer, team_id: team_id)
     else
       answers.first.value = answer
     end

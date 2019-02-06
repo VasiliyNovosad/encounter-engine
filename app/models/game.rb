@@ -15,6 +15,8 @@ class Game < ActiveRecord::Base
   has_many :messages, dependent: :destroy
   has_many :bonuses, -> { order(:position) }, dependent: :destroy
 
+  delegate :nickname, :telegram, to: :author, prefix: true
+
   validates_presence_of :name,
                         message: 'Не введено назву гри'
 

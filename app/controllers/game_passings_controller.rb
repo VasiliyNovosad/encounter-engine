@@ -73,7 +73,7 @@ class GamePassingsController < ApplicationController
                   sectors_need: @level.sectors_for_close.zero? ? sectors_count : @level.sectors_for_close,
                   sectors_closed: @game.game_type == 'panic' ? @game_passing.questions.count : (@game_passing.question_ids.to_set & all_sectors.map(&:id).to_set).count,
                   tasks: @level.team_tasks(@team_id).map { |task| {id: task.id, text: task.text} },
-                  messages: @level.messages.map { |message| { user: message.user.nickname, text: message.text} },
+                  messages: @level.messages.map { |message| { user: message.user_nickname, text: message.text} },
                   hints: @hints_to_show.map do |hint|
                     hint_num += 1
                     {
@@ -162,7 +162,7 @@ class GamePassingsController < ApplicationController
     level = Level.find(level_id)
     bonus_id = params[:bonus_id]
     bonus = level.bonuses.find(bonus_id)
-    current_level_entered_at = level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at
+    current_level_entered_at = level.position == 1 || @game_passing.game_type == 'panic' ? level.game_starts_at : @game_passing.current_level_entered_at
     current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     if !bonus.nil? && !bonus.is_delayed_now?(current_level_entered_at, current_time)
       render json: {
@@ -234,7 +234,7 @@ class GamePassingsController < ApplicationController
         answered = []
         if @answer_was_correct
           if answer_was_correct[:correct]
-            save_log(@level, time, 1) if @game_passing.current_level.id || @game.game_type == 'panic'
+            save_log(@level, time, 1) if @game_passing.current_level_id || @game.game_type == 'panic'
             answered.push(
               {
                   time: time.strftime("%H:%M:%S"),
@@ -243,7 +243,7 @@ class GamePassingsController < ApplicationController
               })
           end
           if answer_was_correct[:bonus]
-            save_log(@level, time, 2) if @game_passing.current_level.id || @game.game_type == 'panic'
+            save_log(@level, time, 2) if @game_passing.current_level_id || @game.game_type == 'panic'
             answered.push(
                 {
                     time: time.strftime("%H:%M:%S"),
@@ -253,7 +253,7 @@ class GamePassingsController < ApplicationController
             )
           end
         else
-          save_log(@level, time, 0) if @game_passing.current_level.id || @game.game_type == 'panic'
+          save_log(@level, time, 0) if @game_passing.current_level_id || @game.game_type == 'panic'
           answered.push(
               {
                   time: time.strftime("%H:%M:%S"),
@@ -314,8 +314,8 @@ class GamePassingsController < ApplicationController
       @game_passings = game_passings.map do |game_passing|
         team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
         {
-            team_id: game_passing.team.id,
-            team_name: game_passing.team.name,
+            team_id: game_passing.team_id,
+            team_name: game_passing.team_name,
             finished_at: game_passing.finished_at || game_finished_at,
             closed_levels: game_passing.closed_levels.count,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
@@ -328,8 +328,8 @@ class GamePassingsController < ApplicationController
       @game_passings = game_passings.map do |game_passing|
         team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
         {
-            team_id: game_passing.team.id,
-            team_name: game_passing.team.name,
+            team_id: game_passing.team_id,
+            team_name: game_passing.team_name,
             finished_at: game_passing.finished_at,
             closed_levels: game_passing.closed_levels.count,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
@@ -382,7 +382,7 @@ class GamePassingsController < ApplicationController
     level = Level.find(level_id)
     penalty_hint_id = params[:hint_id]
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
-    current_level_entered_at = level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at
+    current_level_entered_at = level.position == 1 || @game_passing.game_type == 'panic' ? level.game_starts_at : @game_passing.current_level_entered_at
     current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     if !penalty_hint.nil? && (!penalty_hint.is_delayed? || (penalty_hint.time_to_delay(current_level_entered_at, current_time) || 0) <= 0)
       render json: {
@@ -469,7 +469,7 @@ class GamePassingsController < ApplicationController
   end
 
   def ensure_team_is_accepted
-    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team.id : current_user.single_team.id).first.nil? || GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team.id : current_user.single_team.id).first.status != 'accepted') && !@game.is_testing?
+    redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id).first.nil? || GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id).first.status != 'accepted') && !@game.is_testing?
   end
 
   def ensure_not_finished
@@ -482,19 +482,19 @@ class GamePassingsController < ApplicationController
       if log.answer_type == 1
         {
             time: log.time,
-            user: log.user.nickname,
+            user: log.user_nickname,
             answer: "<span class=\"right_code\">#{log.answer}</span>"
         }
       elsif log.answer_type == 2
         {
                   time: log.time,
-                  user: log.user.nickname,
+                  user: log.user_nickname,
                   answer: "<span class=\"bonus\">#{log.answer}</span>"
                }
       else
         {
                 time: log.time,
-                user: log.user.nickname,
+                user: log.user_nickname,
                 answer: log.answer
             }
       end
@@ -522,7 +522,7 @@ class GamePassingsController < ApplicationController
   def get_penalty_hints(level)
     level.team_penalty_hints(@team_id).map do |hint|
       is_got_hint = @game_passing.penalty_hints.include?(hint.id)
-      current_level_entered_at = (level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
+      current_level_entered_at = (level.position == 1 || @game_passing.game_type == 'panic' ? level.game_starts_at : @game_passing.current_level_entered_at)
       current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       time_to_show = hint.time_to_delay(current_level_entered_at, current_time) || 0
       {
@@ -542,7 +542,7 @@ class GamePassingsController < ApplicationController
     answered_bonuses = level.bonuses.where(id: @game_passing.bonus_ids)
     level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
       correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.downcase_utf8_cyr }
-      current_level_entered_at = (level.position == 1 || @game_passing.game.game_type == 'panic' ? level.game.starts_at : @game_passing.current_level_entered_at)
+      current_level_entered_at = (level.position == 1 || @game_passing.game_type == 'panic' ? level.game_starts_at : @game_passing.current_level_entered_at)
       current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
       {
         position: bonus.position,

@@ -25,6 +25,9 @@ class GamePassing < ActiveRecord::Base
   scope :finished, -> { where('finished_at IS NOT NULL') } # .order("(finished_at - sum_bonuses * interval '1 second') ASC") }
   scope :finished_before, ->(time) { where('finished_at < ?', time) }
 
+  delegate :name, to: :team, prefix: true
+  delegate :game_type, to: :game, prefix: false
+
   before_create :update_current_level_entered_at
 
   def self.of(team_id, game_id)
@@ -43,7 +46,6 @@ class GamePassing < ActiveRecord::Base
     is_correct_bonus_answer = false
     needed = 0
     closed = 0
-    lock!
     answered_bonus = []
     if correct_bonus_answer?(answer, level, team_id)
       answered_bonus = level.find_bonuses_by_answer(answer, team_id).map do |q|
@@ -62,7 +64,6 @@ class GamePassing < ActiveRecord::Base
       pass_bonus!(answered_bonus)
       is_correct_bonus_answer = true
     end
-    save!
     answered_question = []
     if correct_answer?(answer, level, team_id)
       answered_question = level.find_questions_by_answer(answer, team_id).map do |q|
@@ -75,7 +76,6 @@ class GamePassing < ActiveRecord::Base
       end.compact
       changed = pass_question!(answered_question)
       is_correct_answer = true
-      save! if changed
       needed = level.team_questions(team_id).count
       closed = (question_ids.to_set & level.team_questions(team_id).map(&:id).to_set).count
       start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
@@ -83,9 +83,9 @@ class GamePassing < ActiveRecord::Base
     end
     if level[:is_wrong_code_penalty] && !is_correct_bonus_answer && !is_correct_answer && !level[:wrong_code_penalty].zero?
       GameBonus.create!(
-        game_id: game.id,
+        game_id: game_id,
         level_id: level.id,
-        team_id: team.id,
+        team_id: team_id,
         award: -level[:wrong_code_penalty],
         user_id: user.id,
         reason: 'штраф за неіснуючий код ' + answer,
@@ -119,9 +119,9 @@ class GamePassing < ActiveRecord::Base
         unless bonus_ids.include?(bonus[:id])
           self.bonus_ids = bonus_ids + [bonus[:id]]
           game_bonus_options = {
-            game_id: game.id,
+            game_id: game_id,
             level_id: bonus[:level_id],
-            team_id: team.id,
+            team_id: team_id,
             award: bonus[:bonus],
             user_id: bonus[:user_id],
             reason: "за бонус: #{bonus[:name]}",
@@ -157,8 +157,8 @@ class GamePassing < ActiveRecord::Base
           self.current_level = next_selected_level(level, team_id)
         end
       end
-      ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time)
-      PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{self.game_id}?level=#{level.position}" : "/play/#{self.game_id}"
+      ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time)
+      PrivatePub.publish_to "/game_passings/#{id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{game_id}?level=#{level.position}" : "/play/#{game_id}"
     end
     save!
   end
@@ -171,17 +171,17 @@ class GamePassing < ActiveRecord::Base
     !!finished_at
   end
 
-  def hints_to_show(team_id, level = self.current_level)
+  def hints_to_show(team_id, level = current_level)
     if level.position == 1 || game.game_type == 'panic'
-      level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(level.game.starts_at) }
+      level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(game.starts_at) }
     else
       level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(current_level_entered_at) }
     end
   end
 
-  def upcoming_hints(team_id, level = self.current_level)
+  def upcoming_hints(team_id, level = current_level)
     if level.position == 1 || game.game_type == 'panic'
-      level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(level.game.starts_at) }
+      level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(game.starts_at) }
     else
       level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(current_level_entered_at) }
     end
@@ -202,7 +202,7 @@ class GamePassing < ActiveRecord::Base
     # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
     level.team_bonuses(team_id).includes(:bonus_answers).any? do |bonus|
       # bonus.matches_any_answer(answer, team_id)
-      (!missed_bonuses.include?(bonus.id) || bonus_ids.include?(bonus.id) ) && !bonus.is_delayed_now?(level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
+      (!missed_bonuses.include?(bonus.id) || bonus_ids.include?(bonus.id) ) && !bonus.is_delayed_now?(level.position == 1 || game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
         bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
           ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
         end
@@ -265,9 +265,9 @@ class GamePassing < ActiveRecord::Base
         end
       end
       game_bonus_options = {
-          game_id: game.id,
+          game_id: game_id,
           level_id: level.id,
-          team_id: team.id,
+          team_id: team_id,
           award: - (level.autocomplete_penalty || 0),
           user_id: user_id,
           reason: 'штраф за автоперехід',
@@ -277,7 +277,7 @@ class GamePassing < ActiveRecord::Base
           GameBonus.where(game_bonus_options).count.zero?
         GameBonus.create!(game_bonus_options)
       end
-      ClosedLevel.close_level!(game.id, level.id, team_id, user_id, time_start, time_finish, true)
+      ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time_finish, true)
     end
     save!
   end
@@ -287,7 +287,7 @@ class GamePassing < ActiveRecord::Base
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
     unless self.penalty_hints.include?(penalty_hint.id)
       unless penalty_hint.nil?
-        GameBonus.create!(game_id: game.id, level_id: level_id, team_id: team.id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '') unless penalty_hint.penalty.zero?
+        GameBonus.create!(game_id: game_id, level_id: level_id, team_id: team_id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '') unless penalty_hint.penalty.zero?
         # self.sum_bonuses -= penalty_hint.penalty
         penalty_hints << penalty_hint.id
         save!
@@ -317,12 +317,12 @@ class GamePassing < ActiveRecord::Base
 
   def get_team_answer(level_id, team_id, correct_answers)
     log = Log.of_game(game_id).of_level(level_id).of_team(team_id).where('lower(answer) IN (?)', correct_answers).first
-    log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
+    log.nil? ? '' : "#{log.answer} (#{log.user_nickname})"
   end
 
   def get_team_bonus_answer(bonus, team_id, correct_answers)
     log = Log.of_game(game_id).of_team(team_id).where(level_id: bonus.levels.pluck(:id)).where('lower(answer) IN (?)', correct_answers).first
-    log.nil? ? '' : "#{log.answer} (#{log.user.nickname})"
+    log.nil? ? '' : "#{log.answer} (#{log.user_nickname})"
   end
 
   protected

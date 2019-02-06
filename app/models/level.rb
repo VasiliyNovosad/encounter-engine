@@ -19,6 +19,8 @@ class Level < ActiveRecord::Base
 
   scope :of_game, ->(game_id) { where(game_id: game_id).order(:position) }
 
+  delegate :starts_at, to: :game, prefix: true
+
   before_save :check_sectors_for_close
 
   def next

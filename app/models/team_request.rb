@@ -21,9 +21,6 @@ class TeamRequest < ActiveRecord::Base
 
   before_validation :find_team
 
-  scope :for_user, ->(user) { where(user_id: user.id) }
-  scope :to_team, ->(team) { where(team_id: team.id) }
-
   protected
 
   def find_team
