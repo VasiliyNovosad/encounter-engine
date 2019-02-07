@@ -1,5 +1,5 @@
 <div id='topic' class='<%= 'un' unless @topic.locked? %>locked'>
-  <%= render 'forem/topics/head', topic: @topic %>
+  <%= render partial: 'forem/topics/head', locals: { topic: @topic } %>
 
   <div id='menu'>
     <div class='btn-group'>
@@ -30,8 +30,8 @@
   <% if @topic.pending_review? %>
     <div class="moderation alert" id='topic_moderation'>
       <%= t(".pending_review") %>
-      <% if forem_admin_or_moderator?(@forum) %>
-        <%= form_for @topic, url: forem.moderate_forum_topic_path(@forum, @topic), method: :put do |f| %>
+      <% if forem_admin_or_moderator?(@topic.forum) %>
+        <%= form_for @topic, url: forem.moderate_forum_topic_path(@topic.forum, @topic), method: :put do |f| %>
           <%= render "/forem/moderation/options", f: f %>
         <% end %>
       <% end %>
@@ -41,8 +41,9 @@
   <%= forem_pages_widget(@posts) %>
 
   <div id='posts'>
-    <%= render 'forem/posts/post', collection: @posts %>
+    <%= render partial: "forem/posts/post", collection: @posts %>
   </div>
 
   <%= forem_pages_widget(@posts) %>
 </div>
+
