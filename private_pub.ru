@@ -5,7 +5,7 @@ require "faye"
 require "private_pub"
 
 Faye::WebSocket.load_adapter('thin')
-Faye.logger = Logger.new('log/faye.log')
+Faye.logger = Logger.new("#{Rails.root}/log/faye.log")
 
 PrivatePub.load_config(File.expand_path("../config/private_pub.yml", __FILE__), ENV["RAILS_ENV"] || "development")
 
