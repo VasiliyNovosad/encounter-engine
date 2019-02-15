@@ -10,7 +10,130 @@ class LogsController < ApplicationController
   end
 
   def show_special_results
+    ships = {
+      'A1' => { id: 1185, ship: 'white' },
+      'A2' => { id: 1186, ship: 'red' },
+      'A3' => { id: 1187, ship: 'red' },
+      'A4' => { id: 1188, ship: 'white' },
+      'A5' => { id: 1189, ship: 'white' },
+      'A6' => { id: 1190, ship: 'white' },
+      'A7' => { id: 1191, ship: 'red' },
+      'A8' => { id: 1192, ship: 'white' },
+      'A9' => { id: 1193, ship: 'white' },
+      'A10' => { id: 1194, ship: 'white' },
+      'B1' => { id: 1195, ship: 'white' },
+      'B2' => { id: 1196, ship: 'white' },
+      'B3' => { id: 1197, ship: 'white' },
+      'B4' => { id: 1198, ship: 'white' },
+      'B5' => { id: 1199, ship: 'white' },
+      'B6' => { id: 1200, ship: 'white' },
+      'B7' => { id: 1201, ship: 'red' },
+      'B8' => { id: 1202, ship: 'white' },
+      'B9' => { id: 1203, ship: 'white' },
+      'B10' => { id: 1204, ship: 'white' },
+      'C1' => { id: 1205, ship: 'white' },
+      'C2' => { id: 1206, ship: 'white' },
+      'C3' => { id: 1207, ship: 'white' },
+      'C4' => { id: 1208, ship: 'red' },
+      'C5' => { id: 1209, ship: 'white' },
+      'C6' => { id: 1210, ship: 'white' },
+      'C7' => { id: 1211, ship: 'white' },
+      'C8' => { id: 1212, ship: 'white' },
+      'C9' => { id: 1213, ship: 'red' },
+      'C10' => { id: 1214, ship: 'white' },
+      'D1' => { id: 1215, ship: 'white' },
+      'D2' => { id: 1216, ship: 'white' },
+      'D3' => { id: 1217, ship: 'white' },
+      'D4' => { id: 1218, ship: 'red' },
+      'D5' => { id: 1219, ship: 'white' },
+      'D6' => { id: 1220, ship: 'white' },
+      'D7' => { id: 1221, ship: 'white' },
+      'D8' => { id: 1222, ship: 'white' },
+      'D9' => { id: 1223, ship: 'white' },
+      'D10' => { id: 1224, ship: 'white' },
+      'E1' => { id: 1225, ship: 'red' },
+      'E2' => { id: 1226, ship: 'white' },
+      'E3' => { id: 1227, ship: 'white' },
+      'E4' => { id: 1228, ship: 'red' },
+      'E5' => { id: 1229, ship: 'white' },
+      'E6' => { id: 1230, ship: 'white' },
+      'E7' => { id: 1231, ship: 'white' },
+      'E8' => { id: 1232, ship: 'white' },
+      'E9' => { id: 1233, ship: 'white' },
+      'E10' => { id: 1234, ship: 'white' },
+      'F1' => { id: 1235, ship: 'white' },
+      'F2' => { id: 1236, ship: 'white' },
+      'F3' => { id: 1237, ship: 'white' },
+      'F4' => { id: 1238, ship: 'white' },
+      'F5' => { id: 1239, ship: 'white' },
+      'F6' => { id: 1240, ship: 'red' },
+      'F7' => { id: 1241, ship: 'red' },
+      'F8' => { id: 1242, ship: 'red' },
+      'F9' => { id: 1243, ship: 'red' },
+      'F10' => { id: 1244, ship: 'white' },
+      'G1' => { id: 1245, ship: 'white' },
+      'G2' => { id: 1246, ship: 'white' },
+      'G3' => { id: 1247, ship: 'white' },
+      'G4' => { id: 1248, ship: 'red' },
+      'G5' => { id: 1249, ship: 'white' },
+      'G6' => { id: 1250, ship: 'white' },
+      'G7' => { id: 1251, ship: 'white' },
+      'G8' => { id: 1252, ship: 'white' },
+      'G9' => { id: 1253, ship: 'white' },
+      'G10' => { id: 1254, ship: 'white' },
+      'H1' => { id: 1255, ship: 'white' },
+      'H2' => { id: 1256, ship: 'red' },
+      'H3' => { id: 1257, ship: 'white' },
+      'H4' => { id: 1258, ship: 'white' },
+      'H5' => { id: 1259, ship: 'white' },
+      'H6' => { id: 1260, ship: 'white' },
+      'H7' => { id: 1261, ship: 'white' },
+      'H8' => { id: 1262, ship: 'white' },
+      'H9' => { id: 1263, ship: 'white' },
+      'H10' => { id: 1264, ship: 'white' },
+      'I1' => { id: 1265, ship: 'white' },
+      'I2' => { id: 1266, ship: 'red' },
+      'I3' => { id: 1267, ship: 'white' },
+      'I4' => { id: 1268, ship: 'white' },
+      'I5' => { id: 1269, ship: 'white' },
+      'I6' => { id: 1270, ship: 'white' },
+      'I7' => { id: 1271, ship: 'white' },
+      'I8' => { id: 1272, ship: 'white' },
+      'I9' => { id: 1273, ship: 'red' },
+      'I10' => { id: 1274, ship: 'red' },
+      'J1' => { id: 1275, ship: 'white' },
+      'J2' => { id: 1276, ship: 'red' },
+      'J3' => { id: 1277, ship: 'white' },
+      'J4' => { id: 1278, ship: 'white' },
+      'J5' => { id: 1279, ship: 'red' },
+      'J6' => { id: 1280, ship: 'white' },
+      'J7' => { id: 1281, ship: 'white' },
+      'J8' => { id: 1282, ship: 'white' },
+      'J9' => { id: 1283, ship: 'white' },
+      'J10' => { id: 1284, ship: 'white' }
+    }
+    game_passings = GamePassing.of_game(@game.id)
+    @results = game_passings.map do |game_passing|
+      bonuses = game_passing.bonus_ids
+      team_field = {}
+      ships.keys.each do |cell_name|
+        if bonuses.include?(ships[cell_name][:id])
+          team_field[cell_name] = ships[cell_name][:ship]
+        else
+          team_field[cell_name] = 'transparent'
+        end
+      end
+      {
+        team_name: game_passing.team_name,
+        team_field: team_field
+      }
+    end
 
+    team_field = {}
+    ships.keys.each do |cell_name|
+      team_field[cell_name] = ships[cell_name][:ship]
+    end
+    @results = [{ team_name: 'ORIGINAL', team_field: team_field }] + @results
   end
 
   def show_live_channel

@@ -1,0 +1,128 @@
+<style type="text/css">
+  .team_result {
+    height: 250px;
+    width: 220px;
+    float: left;
+  }
+
+  .team_result p {
+    text-align: center;
+  }
+
+  .battlefield {
+    height: 180px;
+    width: 180px;
+    border-collapse: collapse;
+    border-style: double;
+  }
+
+  .battlefield td div {
+    width: 15px;
+    height: 15px;
+    text-align: center;
+  }
+</style>
+<h1>Стан проходження гри "<%= link_to @game.name, game_path(@game) %>"</h1>
+<div>
+<% @results.each do |team_result| %>
+  <div class="team_result">
+    <p><%= team_result[:team_name] %></p>
+
+    <table class="battlefield" border="1" cellpadding="15px">
+      <tbody>
+      <tr>
+        <td>
+          <div>&nbsp;</div>
+        </td>
+        <td>
+          <div>A</div>
+        </td>
+        <td>
+          <div>B</div>
+        </td>
+        <td>
+          <div>C</div>
+        </td>
+        <td>
+          <div>D</div>
+        </td>
+        <td>
+          <div>E</div>
+        </td>
+        <td>
+          <div>F</div>
+        </td>
+        <td>
+          <div>G</div>
+        </td>
+        <td>
+          <div>H</div>
+        </td>
+        <td>
+          <div>I</div>
+        </td>
+        <td>
+          <div>J</div>
+        </td>
+        <td>
+          <div>&nbsp;</div>
+        </td>
+      </tr>
+      <% (1..10).each do |row| %>
+        <tr>
+          <td>
+            <div><%= row %></div>
+          </td>
+          <% ('A'..'J').each do |col| %>
+            <td>
+              <div style="background-color: <%= team_result[:team_field]["#{col}#{row}"] %>">&nbsp;</div>
+            </td>
+          <% end %>
+          <td>
+            <div><%= row %></div>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>
+          <div>&nbsp;</div>
+        </td>
+        <td>
+          <div>A</div>
+        </td>
+        <td>
+          <div>B</div>
+        </td>
+        <td>
+          <div>C</div>
+        </td>
+        <td>
+          <div>D</div>
+        </td>
+        <td>
+          <div>E</div>
+        </td>
+        <td>
+          <div>F</div>
+        </td>
+        <td>
+          <div>G</div>
+        </td>
+        <td>
+          <div>H</div>
+        </td>
+        <td>
+          <div>I</div>
+        </td>
+        <td>
+          <div>J</div>
+        </td>
+        <td>
+          <div>&nbsp;</div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+</div>
