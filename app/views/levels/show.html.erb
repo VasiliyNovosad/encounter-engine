@@ -127,7 +127,7 @@
     <br>
   <% end %>
   <p>
-    <%= render 'penalty_hints/list', penalty_hints: @level.penalty_hints, game: @game, level: @level %>
+    <%= render 'penalty_hints/list', penalty_hints: @level.penalty_hints.order(:created_at), game: @game, level: @level %>
   </p>
 </fieldset>
 <br>

@@ -520,7 +520,7 @@ class GamePassingsController < ApplicationController
   end
 
   def get_penalty_hints(level)
-    level.team_penalty_hints(@team_id).map do |hint|
+    level.team_penalty_hints(@team_id).order(:created_at).map do |hint|
       is_got_hint = @game_passing.penalty_hints.include?(hint.id)
       current_level_entered_at = (level.position == 1 || @game_passing.game_type == 'panic' ? level.game_starts_at : @game_passing.current_level_entered_at)
       current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
