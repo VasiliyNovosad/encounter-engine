@@ -8,6 +8,7 @@ class GamesController < ApplicationController
   before_action :ensure_author, only: [:edit, :update]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
+  before_action :ensure_has_access, only: [:show_scenario]
   before_action :find_teams, only: [:show, :new_level_order]
 
   def index
@@ -150,7 +151,8 @@ class GamesController < ApplicationController
       :name, :description, :game_type, :duration, :starts_at,
       :registration_deadline, :max_team_number, :is_draft,
       :is_testing, :author, :test_date, :tested_team_id, :game_size,
-      :price, :place, :city, :small_description, :image, :team_type
+      :price, :place, :city, :small_description, :image, :team_type,
+      :show_scenario_for
     )
   end
 
@@ -188,6 +190,15 @@ class GamesController < ApplicationController
 
   def ensure_author_if_no_finish_time
     ensure_author if no_finish_time?
+  end
+
+  def ensure_has_access
+    unless @game.show_scenario_for == 'all'
+      users = Log.of_game(@game.id).pluck(:user_id)
+      unless users.include?(current_user.id)
+        redirect_to root_path, alert: 'Ви повинні бути учасником гри, щоб бачити цю сторінку'
+      end
+    end
   end
 
   def max_team_number_from_nz

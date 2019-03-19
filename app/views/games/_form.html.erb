@@ -88,6 +88,12 @@
   </div>
 </div>
 <div class="form-group row">
+  <%= f.label 'Сценарій доступний для', class: 'col-sm-2 col-form-label' %>
+  <div class="col-sm-10">
+    <%= f.select(:show_scenario_for, [['всіх', 'all'], ['учасників', 'competitors']], {}, { class: 'form-control form-control-sm' }) %>
+  </div>
+</div>
+<div class="form-group row">
   <%= f.label :city, class: 'col-sm-2 col-form-label' %>
   <div class="col-sm-10">
     <%= f.text_field :city, class: 'form-control form-control-sm' %>
