@@ -195,7 +195,7 @@ class GamesController < ApplicationController
   def ensure_has_access
     unless @game.show_scenario_for == 'all'
       users = Log.of_game(@game.id).pluck(:user_id)
-      unless users.include?(current_user.id)
+      unless users.include?(current_user.id) || current_user.author_of?(@game)
         redirect_to root_path, alert: 'Ви повинні бути учасником гри, щоб бачити цю сторінку'
       end
     end
