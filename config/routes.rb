@@ -107,4 +107,5 @@ Rails.application.routes.draw do
   match '/teams/edit/captain', to: 'teams#make_member_captain', via: 'post'
   match '/teams/edit/leave_team', to: 'teams#leave_team', via: 'post'
   match '/tinymce_assets', to: 'tinymce_assets#create', via: 'post'
+  match '/help', to: 'help#index', via: 'get'
 end

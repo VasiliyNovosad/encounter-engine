@@ -32,6 +32,10 @@
     </p>
 
     <p>
+      <%= link_to "Допомога", help_path %>
+    </p>
+
+    <p>
       <%= link_to "Вийти", destroy_user_session_path, method: :delete %>
     </p>
   <% else %>
@@ -51,7 +55,11 @@
       <%= link_to "Форуми", "/forums" %>
     </p>
 
-  <% end %>
+    <p>
+      <%= link_to "Допомога", help_path %>
+    </p>
+
+<% end %>
 </fieldset>
 <br>
 <fieldset class="partner-block">
