@@ -39,6 +39,7 @@ class TeamsController < ApplicationController
   def show
     @team = Team.find(params[:id])
     @team_requests = TeamRequest.for(@team.id)
+    @results = @team.results.joins(:game).order('games.starts_at DESC').to_a
   end
 
   def delete_member

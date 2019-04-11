@@ -39,3 +39,12 @@
   <% end %>
   <br>
 </fieldset>
+
+<fieldset>
+  <legend>
+    Результати
+  </legend>
+  <% @results.each_with_index do |result, index| %>
+    <p><%= index + 1 %>. Гра <%= link_to result.game.name, game_path(result.game) %> від <%= result.game.starts_at.strftime('%d.%m.%Y') %> : <%= result.place < 0 ? 'Не дійшли до фінішу' : "#{result.place} місце" %></p>
+  <% end %>
+</fieldset>

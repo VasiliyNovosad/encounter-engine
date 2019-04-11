@@ -13,6 +13,7 @@ class Game < ActiveRecord::Base
   has_many :game_passings, class_name: 'GamePassing'
   has_many :game_bonuses, class_name: 'GameBonus', dependent: :destroy
   has_many :messages, dependent: :destroy
+  has_many :results, dependent: :destroy
   has_many :bonuses, -> { order(:position) }, dependent: :destroy
 
   delegate :nickname, :telegram, to: :author, prefix: true
@@ -127,6 +128,7 @@ class Game < ActiveRecord::Base
   end
 
   def finish_game!
+    self.create_results
     self.author_finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     self.save!
   end
@@ -175,6 +177,45 @@ class Game < ActiveRecord::Base
     closed_levels.delete_all
   end
 
+  def create_results
+    game_bonuses = GameBonus.of_game(id).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
+    game_passings = GamePassing.of_game(id).includes(:team)
+    if game_type == 'panic'
+      game_finished_at = starts_at + duration * 60
+      game_results = game_passings.map do |game_passing|
+        team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+        {
+            team_id: game_passing.team_id,
+            team_name: game_passing.team_name,
+            finished_at: game_passing.finished_at || game_finished_at,
+            closed_levels: game_passing.closed_levels.count,
+            sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
+        }
+      end.sort do |a, b|
+        (a[:finished_at] - a[:sum_bonuses]) <=> (b[:finished_at] - b[:sum_bonuses])
+      end
+    else
+      current_time = Time.now
+      game_results = game_passings.map do |game_passing|
+        team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+        {
+            team_id: game_passing.team_id,
+            team_name: game_passing.team_name,
+            finished_at: game_passing.finished_at,
+            closed_levels: game_passing.closed_levels.count,
+            sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
+            exited: game_passing.exited?
+        }
+      end.sort_by do |v|
+        [-v[:closed_levels], (v[:finished_at] || current_time) - v[:sum_bonuses]]
+      end
+    end
+    Result.delete_all(game_id: id)
+    game_results.each_with_index do |result, index|
+      Result.create!(game_id: id, team_id: result[:team_id], place: result[:finished_at].nil? && !game_type == 'panic' ? -1 : (index + 1))
+    end
+  end
+
   protected
 
   def game_starts_in_the_future
@@ -204,4 +245,6 @@ class Game < ActiveRecord::Base
       errors.add(:registration_deadline, 'Вказано кінцевий термін реєстрації пізніший дати початку гри')
     end
   end
+
+
 end
