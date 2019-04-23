@@ -1,5 +1,5 @@
-<div id="updateButton"><%= link_to "Оновити", url_for("/play/#{game.id}") %></div>
-<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{game.id}"), target: :_blank%></div>
+<div id="updateButton"><%= link_to "Оновити", url_for("/play/#{game.id}?rnd=#{rand}") %></div>
+<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{game.id}?rnd=#{rand}"), target: :_blank%></div>
 <br>
 <br>
 <div id="left-game-container">

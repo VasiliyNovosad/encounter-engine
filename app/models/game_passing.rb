@@ -158,7 +158,7 @@ class GamePassing < ActiveRecord::Base
         end
       end
       ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time)
-      PrivatePub.publish_to "/game_passings/#{id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{game_id}?level=#{level.position}" : "/play/#{game_id}"
+      PrivatePub.publish_to "/game_passings/#{id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{game_id}?level=#{level.position}&rnd=#{rand}" : "/play/#{game_id}?rnd=#{rand}"
     end
     save!
   end
