@@ -2,6 +2,7 @@ class GameEntriesController < ApplicationController
   before_action :authenticate_user!
   before_action :find_game, only: :new
   before_action :find_team, only: :new
+  before_action :ensure_game_entry_not_created, only: :new
   before_action :find_entry, except: :new
   before_action :ensure_game_was_not_finished
   before_action :ensure_author, only: [:accept, :reject, :reaccept]
@@ -12,7 +13,7 @@ class GameEntriesController < ApplicationController
       @game_entry = GameEntry.create! status: 'new', game: @game, team: @team
       @game.reserve_place_for_team!
     end
-    redirect_to dashboard_path
+    redirect_to game_path(@game)
   end
 
   def reopen
@@ -20,7 +21,7 @@ class GameEntriesController < ApplicationController
       @entry.reopen! if @entry.status != 'accepted'
       @game.reserve_place_for_team!
     end
-    redirect_to dashboard_path
+    redirect_to game_path(@game)
   end
 
   def accept
@@ -66,5 +67,10 @@ class GameEntriesController < ApplicationController
   def find_entry
     @entry = GameEntry.find(params[:id])
     @game = Game.find(@entry.game.id) if @entry
+  end
+
+  def ensure_game_entry_not_created
+    entry_is_empty = GameEntry.where(game_id: @game.id, team_id: @team.id).empty?
+    redirect_to game_path(@game), alert: 'Заявку на цю гру уже подано' unless entry_is_empty
   end
 end

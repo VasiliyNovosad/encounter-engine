@@ -25,17 +25,25 @@ class InvitationsController < ApplicationController
   end
 
   def accept
-    add_user_to_team_members
-    @invitation.delete
-    # reject_rest_of_invitations
-    redirect_to dashboard_path
-    InvitationsMailer.invitation_accept(@invitation).deliver_now
+    if @invitation.nil?
+      redirect_to dashboard_path, alert: 'Заявка уже прийнята або відхилена'
+    else
+      add_user_to_team_members
+      @invitation.delete
+      # reject_rest_of_invitations
+      redirect_to dashboard_path
+      InvitationsMailer.invitation_accept(@invitation).deliver_now
+    end
   end
 
   def reject
-    @invitation.delete
-    redirect_to dashboard_path
-    InvitationsMailer.invitation_reject(@invitation).deliver_now
+    if @invitation.nil?
+      redirect_to dashboard_path, alert: 'Заявка уже прийнята або відхилена'
+    else
+      @invitation.delete
+      redirect_to dashboard_path
+      InvitationsMailer.invitation_reject(@invitation).deliver_now
+    end
   end
 
   protected
