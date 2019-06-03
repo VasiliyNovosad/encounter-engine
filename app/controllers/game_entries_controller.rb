@@ -70,7 +70,7 @@ class GameEntriesController < ApplicationController
   end
 
   def ensure_game_entry_not_created
-    entry_is_empty = GameEntry.where(game_id: @game.id, team_id: @team.id).empty?
-    redirect_to game_path(@game), alert: 'Заявку на цю гру уже подано' unless entry_is_empty
+    entry_exists = GameEntry.where(game_id: @game.id, team_id: @team.id).exists?
+    redirect_to game_path(@game), alert: 'Заявку на цю гру уже подано' if entry_exists
   end
 end
