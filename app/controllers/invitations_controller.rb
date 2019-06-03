@@ -70,7 +70,13 @@ class InvitationsController < ApplicationController
   end
 
   def find_invitation
-    @invitation = Invitation.find(params[:id])
+    begin
+      @invitation = Invitation.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      puts e.message
+      puts e.backtrace.inspect
+      @invitation = nil
+    end
   end
 
   def ensure_recepient

@@ -63,7 +63,13 @@ class TeamRequestsController < ApplicationController
   end
 
   def find_team_request
-    @team_request = TeamRequest.find(params[:id])
+    begin
+      @team_request = TeamRequest.find(params[:id])
+    rescue ActiveRecord::RecordNotFound => e
+      puts e.message
+      puts e.backtrace.inspect
+      @team_request = nil
+    end
   end
 
   def ensure_recepient
