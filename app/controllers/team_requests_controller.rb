@@ -23,17 +23,25 @@ class TeamRequestsController < ApplicationController
   end
 
   def accept
-    add_user_to_team_members
-    @team_request.delete
-    # reject_rest_of_invitations
-    redirect_to team_path(current_user.team)
-    TeamRequestsMailer.team_request_accept(@team_request).deliver_now
+    if @team_request.nil?
+      redirect_to dashboard_path, alert: 'Заявка уже прийнята або відхилена'
+    else
+      add_user_to_team_members
+      @team_request.delete
+      # reject_rest_of_invitations
+      redirect_to team_path(current_user.team)
+      TeamRequestsMailer.team_request_accept(@team_request).deliver_now
+    end
   end
 
   def reject
-    @team_request.delete
-    redirect_to team_path(current_user.team)
-    TeamRequestsMailer.team_request_reject(@team_request).deliver_now
+    if @team_request.nil?
+      redirect_to dashboard_path, alert: 'Заявка уже прийнята або відхилена'
+    else
+      @team_request.delete
+      redirect_to team_path(current_user.team)
+      TeamRequestsMailer.team_request_reject(@team_request).deliver_now
+    end
   end
 
   protected
