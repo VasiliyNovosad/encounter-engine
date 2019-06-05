@@ -80,7 +80,7 @@ class InvitationsController < ApplicationController
   end
 
   def ensure_recepient
-    unless !@invitation.nil? && current_user.id == @invitation.for_user.id
+    unless @invitation.nil? || current_user.id == @invitation.for_user.id
       fail 'Ви повинні бути отримувачем запрошення для виконання цієї дії'
     end
   end

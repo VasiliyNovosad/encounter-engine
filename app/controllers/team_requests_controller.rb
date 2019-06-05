@@ -73,7 +73,7 @@ class TeamRequestsController < ApplicationController
   end
 
   def ensure_recepient
-    unless !@team_request.nil? && current_user.captain_of_team?(@team_request.team)
+    unless @team_request.nil? || current_user.captain_of_team?(@team_request.team)
       fail 'Ви повинні бути капітаном команди для виконання цієї дії'
     end
   end
