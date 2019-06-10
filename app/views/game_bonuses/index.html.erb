@@ -22,7 +22,7 @@
     <tr>
       <td><%= bonus.created_at.strftime('%d.%m.%Y %H:%M:%S') %></td>
       <td><%= bonus.team.name %></td>
-      <td><%= "#{bonus.level.position}. #{bonus.level.name}" %></td>
+      <td><%= bonus.level.nil? ? '' : "#{bonus.level.position}. #{bonus.level.name}" %></td>
       <td><%= bonus.reason %></td>
       <td><%= "#{bonus.award > 0 ? 'бонус' : 'штраф'} #{seconds_to_string((bonus.award || 0).abs)}" %></td>
       <td><%= bonus.description %> </td>
