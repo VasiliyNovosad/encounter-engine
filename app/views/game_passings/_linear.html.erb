@@ -56,7 +56,7 @@
     <% if team_questions.count > 1 %>
       <div>
         <br>
-        <b id="codes-closed">Вірних кодів <%= game_passing.questions.size %> із <%= team_questions.count %>:</b>
+        <b id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).count %> із <%= team_questions.count %>:</b>
         <hr>
         <hr>
       </div>
