@@ -4,6 +4,7 @@ class GameBonus < ActiveRecord::Base
   belongs_to :level
   belongs_to :user
 
+  validates :reason, uniqueness: { scope: [:game, :team, :level, :description] }
 
   scope :of_game, ->(game_id) { where(game_id: game_id) }
   scope :of_team, ->(team_id) { where(team_id: team_id) }

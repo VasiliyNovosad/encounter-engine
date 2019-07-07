@@ -113,7 +113,7 @@ class Level < ActiveRecord::Base
     closed_levels = ClosedLevel.where(game_id: game_id, level_id: id)
     team_bonuses = GameBonus.select('team_id, SUM(award) AS sum_award').where(game_id: game_id, level_id: id).group(:team_id).to_a.group_by { |bonus| bonus.team_id}
     closed_levels.each do |closed_level|
-      GameBonus.create!(
+      GameBonus.create(
           game_id: closed_level.game_id,
           level_id: closed_level.level_id,
           team_id: closed_level.team_id,

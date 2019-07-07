@@ -128,7 +128,7 @@ class GamePassing < ActiveRecord::Base
             description: ''
           }
           unless bonus[:bonus].zero? || GameBonus.where(game_bonus_options).count > 0
-            GameBonus.create!(game_bonus_options)
+            GameBonus.create(game_bonus_options)
           end
           changed = true
         end
@@ -275,7 +275,7 @@ class GamePassing < ActiveRecord::Base
       }
       if level.is_autocomplete_penalty? && !level.autocomplete_penalty.zero? &&
           GameBonus.where(game_bonus_options).count.zero?
-        GameBonus.create!(game_bonus_options)
+        GameBonus.create(game_bonus_options)
       end
       ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time_finish, true)
     end
@@ -287,7 +287,7 @@ class GamePassing < ActiveRecord::Base
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
     unless self.penalty_hints.include?(penalty_hint.id)
       unless penalty_hint.nil?
-        GameBonus.create!(game_id: game_id, level_id: level_id, team_id: team_id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '') unless penalty_hint.penalty.zero?
+        GameBonus.create(game_id: game_id, level_id: level_id, team_id: team_id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '') unless penalty_hint.penalty.zero?
         # self.sum_bonuses -= penalty_hint.penalty
         penalty_hints << penalty_hint.id
         save!
