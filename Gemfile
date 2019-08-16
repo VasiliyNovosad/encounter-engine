@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 ruby '2.6.2'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails'
+gem 'rails', '5.2.3'
 gem 'pg'
 
 # Use sqlite3 as the database for Active Record
@@ -52,7 +52,7 @@ gem 'sdoc', group: :doc
 # gem 'bcrypt', platforms: :ruby
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
-gem 'default_value_for', '~> 3.0.0'
+gem 'default_value_for'
 gem 'devise'
 gem 'devise-security'
 gem 'tinymce-rails'
