@@ -31,7 +31,7 @@
 
 <% if game.game_type == 'panic' %>
     <p>
-      <em>Тривалiсть гри:</em> <%= " #{game.duration} хвилин" %>
+      <em>Тривалiсть гри: </em> <%= seconds_to_string((game.duration || 0) * 60) %>
     </p>
 <% end %>
 
