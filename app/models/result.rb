@@ -1,4 +1,4 @@
-class Result < ActiveRecord::Base
+class Result < ApplicationRecord
   belongs_to :game
   belongs_to :team
   scope :of_game, ->(game_id) { where(game_id: game_id) }

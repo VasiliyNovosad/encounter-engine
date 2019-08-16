@@ -56,11 +56,11 @@
   <em>Місце старту:</em> <%= " #{@game.place}" %>
 </p>
 
-<% unless @topic.nil? %>
-  <p>
-    <em>Обговорення:</em> <%= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>
-  </p>
-<% end %>
+<%# unless @topic.nil? %>
+<!--  <p>-->
+<!--    <em>Обговорення:</em> <%#= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>-->
+<!--  </p>-->
+<%# end %>
 
 <% if current_user && (current_user.captain? || @game.team_type == 'single') %>
     <p><% game_entry = GameEntry.of(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id, @game.id)%>

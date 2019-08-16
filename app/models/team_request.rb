@@ -1,4 +1,4 @@
-class TeamRequest < ActiveRecord::Base
+class TeamRequest < ApplicationRecord
   belongs_to :team
   belongs_to :user
 

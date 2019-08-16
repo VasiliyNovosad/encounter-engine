@@ -1,4 +1,4 @@
-class GamePassing < ActiveRecord::Base
+class GamePassing < ApplicationRecord
   require 'ee_strings.rb'
 
   serialize :answered_questions

@@ -1,4 +1,4 @@
-class LevelOrder < ActiveRecord::Base
+class LevelOrder < ApplicationRecord
   belongs_to :game
   belongs_to :team
 

@@ -1,4 +1,4 @@
-class Hint < ActiveRecord::Base
+class Hint < ApplicationRecord
   belongs_to :level
   belongs_to :team
 

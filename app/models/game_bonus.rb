@@ -1,4 +1,4 @@
-class GameBonus < ActiveRecord::Base
+class GameBonus < ApplicationRecord
   belongs_to :game
   belongs_to :team
   belongs_to :level
