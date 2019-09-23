@@ -5,7 +5,7 @@ class GamesController < ApplicationController
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
   before_action :ensure_author_if_no_start_time, only: [:show]
-  before_action :ensure_author, only: [:edit, :update]
+  before_action :ensure_author, only: [:edit, :update, :new_level_order, :create_level_order, :open_game, :end_game, :start_test, :finish_test, :destroy]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
   before_action :ensure_has_access, only: [:show_scenario]
