@@ -4,6 +4,7 @@ class Bonus < ActiveRecord::Base
   belongs_to :game
   has_many :bonus_answers, dependent: :destroy
   has_and_belongs_to_many :game_passings, join_table: 'game_passings_bonuses'
+  attr_accessor :answers_list
 
   acts_as_list scope: :game_id
 

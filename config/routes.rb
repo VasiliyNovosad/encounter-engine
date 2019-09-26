@@ -49,6 +49,10 @@ Rails.application.routes.draw do
       end
       resources :bonuses do
         resources :bonus_answers
+        collection do
+          get  :new_batch
+          post :create_batch
+        end
         post 'move_up', on: :member
         post 'move_down', on: :member
         post 'copy', on: :member

@@ -54,12 +54,14 @@
 
 <br>
 
-<p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
-<a href="#messages-block"><span class="purple">повідомлення</span></a>,
-<a href="#hints-block"><span class="hint-timer">підказки</span></a>,
-<a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
-<a href="#sectors-block"><span class="right_code">відповіді</span></a>,
-<a href="#bonuses-block"><span class="bonus">бонуси</span></a></p>
+<p>
+  <a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
+  <a href="#messages-block"><span class="purple">повідомлення</span></a>,
+  <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
+  <a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
+  <a href="#sectors-block"><span class="right_code">відповіді</span></a>,
+  <a href="#bonuses-block"><span class="bonus">бонуси</span></a>
+</p>
 
 
 <!--
@@ -155,7 +157,8 @@
   </p>
   <% if !@game.author_finished? && @level.questions.count > 5 %>
     <p>
-      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
+      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level), class: 'btn btn-sm btn-success' %>
+      <%= link_to "Додати групу секторів", { controller: 'questions', action: 'new_batch', game_id: @game.id, level_id: @level.id }, class: 'btn btn-sm btn-success' %>
     </p>
   <% end %>
 </fieldset>
@@ -166,7 +169,8 @@
   </legend>
   <% unless @game.author_finished? %>
     <p>
-      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
+      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level), class: 'btn btn-sm btn-primary' %>
+      <%= link_to "Додати групу бонусів", { controller: 'bonuses', action: 'new_batch', game_id: @game.id, level_id: @level.id }, class: 'btn btn-sm btn-primary' %>
     </p>
     <% if @level.bonuses.exists? %>
       <%= form_tag({controller: :levels, action: :add_answer_to_bonuses}, method: "post") do %>
@@ -184,7 +188,8 @@
   <% if !@game.author_finished? && @level.bonuses.count > 5 %>
     <br>
     <p>
-      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level) %>
+      <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level), class: 'btn btn-sm btn-primary' %>
+      <%= link_to "Додати групу бонусів", { controller: 'bonuses', action: 'new_batch', game_id: @game.id, level_id: @level.id }, class: 'btn btn-sm btn-primary' %>
     </p>
   <% end %>
 </fieldset>

@@ -4,7 +4,7 @@ class BonusesController < ApplicationController
   before_action :ensure_author
   before_action :find_level
   before_action :find_bonus, only: [:edit, :update, :move_up, :move_down, :destroy, :copy, :copy_to_sector]
-  before_action :find_teams, only: [:new, :edit, :create, :update]
+  before_action :find_teams, only: [:new, :edit, :create, :update, :new_batch, :create_batch]
 
   def new
     @bonus = @game.bonuses.build(name: "Бонус #{@level.bonuses.count + 1}")
@@ -20,6 +20,25 @@ class BonusesController < ApplicationController
     else
       render :new,  locals: {teams: @teams, game: @game, bonus: @bonus, level: @level}
     end
+  end
+
+  def new_batch
+    @bonus = @game.bonuses.build(name: "Бонус")
+    render :new_batch, locals: {teams: @teams, game: @game, bonus: @bonus, level: @level}
+  end
+
+  def create_batch
+    params[:bonus][:level_ids] ||= [@level.id]
+    answers_list = bonus_params[:answers_list].split(/\n+/)
+    answers_list.each do |answers|
+      all_answers = answers.split(';')
+      bonus = @game.bonuses.build(bonus_params.to_hash.merge({ name: "#{bonus_params[:name]} #{@level.bonuses.count + 1}" }))
+      all_answers.each do |answer|
+        bonus.bonus_answers.build(value: answer, team_id: bonus_params[:team_id])
+      end
+      bonus.save!
+    end
+    redirect_to game_level_path(@level.game, @level, anchor: "bonuses-block")
   end
 
   def edit
@@ -95,7 +114,8 @@ class BonusesController < ApplicationController
     params.require(:bonus).permit(
         :name, :task, :help, :award_time, :correct_answer, :team_id,
         :is_absolute_limited, :valid_from, :valid_to, :is_delayed,
-        :delay_for, :is_relative_limited, :valid_for, level_ids: [],
+        :delay_for, :is_relative_limited, :valid_for,
+        :answers_list, level_ids: [],
         bonus_answers_attributes: [:id, :value, :team_id, :_destroy])
   end
 

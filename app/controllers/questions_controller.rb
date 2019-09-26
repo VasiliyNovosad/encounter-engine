@@ -54,11 +54,10 @@ class QuestionsController < ApplicationController
   end
 
   def new_batch
-    @question = @level.questions.build(name: "Сектор #{@level.questions.count + 1}")
+    @question = @level.questions.build(name: "Сектор")
   end
 
   def create_batch
-    puts question_params
     answers_list = question_params[:answers_list].split(/\n+/)
     sector_name = question_params[:name]
     team_id = question_params[:team_id]
