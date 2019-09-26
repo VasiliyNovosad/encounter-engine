@@ -137,7 +137,8 @@
   </legend>
   <% unless @game.author_finished? %>
     <p>
-      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level) %>
+      <%= link_to "Додати сектор", new_game_level_question_path(@game, @level), class: 'btn btn-sm btn-success' %>
+      <%= link_to "Додати групу секторів", { controller: 'questions', action: 'new_batch', game_id: @game.id, level_id: @level.id }, class: 'btn btn-sm btn-success' %>
     </p>
     <% if @level.questions.exists? %>
       <%= form_tag({controller: :levels, action: :add_answer_to_sectors}, method: "post") do %>

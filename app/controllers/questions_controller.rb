@@ -4,7 +4,7 @@ class QuestionsController < ApplicationController
   before_action :ensure_author
   before_action :find_level
   before_action :find_question, only: [:edit, :update, :move_up, :move_down, :destroy, :copy, :copy_to_bonus]
-  before_action :find_teams, only: [:new, :edit, :create, :update]
+  before_action :find_teams, only: [:new, :edit, :create, :update, :new_batch, :create_batch]
 
   def new
     @question = @level.questions.build(name: "Сектор #{@level.questions.count + 1}")
@@ -53,7 +53,25 @@ class QuestionsController < ApplicationController
     redirect_to game_level_path(@level.game, @level, anchor: "question-#{@question.id}")
   end
 
+  def new_batch
+    @question = @level.questions.build(name: "Сектор #{@level.questions.count + 1}")
+  end
 
+  def create_batch
+    puts question_params
+    answers_list = question_params[:answers_list].split(/\n+/)
+    sector_name = question_params[:name]
+    team_id = question_params[:team_id]
+    answers_list.each do |answers|
+      all_answers = answers.split(';')
+      question = @level.questions.build({name: "#{sector_name} #{@level.questions.count + 1}", team_id: team_id})
+      all_answers.each do |answer|
+        question.answers.build(value: answer, team_id: team_id)
+      end
+      question.save!
+    end
+    redirect_to game_level_path(@level.game, @level)
+  end
 
   def copy
     @new_question = @question.dup
@@ -91,7 +109,7 @@ class QuestionsController < ApplicationController
   protected
 
   def question_params
-    params.require(:question).permit(:name, :team_id, answers_attributes: [:id, :value, :team_id, :_destroy])
+    params.require(:question).permit(:name, :team_id, :answers_list, answers_attributes: [:id, :value, :team_id, :_destroy])
   end
 
   def find_game

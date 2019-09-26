@@ -3,6 +3,7 @@ class Question < ActiveRecord::Base
   belongs_to :team
   has_many :answers, dependent: :destroy
   has_and_belongs_to_many :game_passings, join_table: 'game_passings_questions'
+  attr_accessor :answers_list
 
   acts_as_list scope: [:level_id, :team_id]
 
