@@ -426,9 +426,9 @@ td {
     margin: 0 10px;
 }
 
-.level-move {
-    margin: 0 10px;
-}
+/*.level-move {*/
+/*    margin: 0 10px;*/
+/*}*/
 
 .finished-game {
     text-decoration: line-through;
@@ -580,4 +580,10 @@ div.dismissed-level {
 
 .level_description {
     color: orange;
+}
+
+#levels .list-group-item {
+    background-color: #222;
+    border: solid 1px #777;
+    margin: 1px 0;
 }

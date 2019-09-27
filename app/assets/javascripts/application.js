@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery-ui/widgets/sortable
 //= require jquery_ujs
 //= require tinymce-jquery
 //= require private_pub

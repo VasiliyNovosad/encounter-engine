@@ -2,7 +2,7 @@ class LevelsController < ApplicationController
   before_action :find_game
   before_action :ensure_game_was_not_finished, except: [:show, :dismiss, :undismiss]
   before_action :ensure_author
-  before_action :find_level, except: [:new, :create]
+  before_action :find_level, except: [:new, :create, :sort]
 
   def new
     @level = @game.levels.build
@@ -53,6 +53,14 @@ class LevelsController < ApplicationController
   def change_position
     @level.insert_at(params[:position])
     redirect_to game_path(@game, anchor: "level-#{@level.position}")
+  end
+
+  def sort
+    params[:level].each_with_index do |id, index|
+      Level.where(id: id).update_all(position: index + 1)
+    end
+
+    head :ok
   end
 
   def copy
