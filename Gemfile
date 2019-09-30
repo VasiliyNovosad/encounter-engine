@@ -5,7 +5,7 @@ ruby '2.6.2'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails', '4.2.11.1'
 gem 'pg', '0.21.0'
-gem 'logdna-rails', require: true
+gem 'logdna-rails', '>=1.3.0'
 
 # Use sqlite3 as the database for Active Record
 group :development do
@@ -45,7 +45,7 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'sdoc', group: :doc
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '3.1.2'
