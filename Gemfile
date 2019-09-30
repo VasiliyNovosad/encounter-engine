@@ -26,7 +26,7 @@ group :development, :test do
 end
 
 group :production do
-  gem 'logdna-rails'
+  gem 'logdna-rails', require: true
   gem 'passenger_monit'
 end
 
