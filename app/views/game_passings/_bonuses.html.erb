@@ -56,7 +56,7 @@
             <% end %>
           <% else %>
             <p class="bonus"><b><%= bonus[:name] %></b></p>
-            <%= bonus[:task].html_safe %>
+            <%= bonus[:task].html_safe unless bonus[:task].nil? %>
           <% end %>
         </li>
         <br>
