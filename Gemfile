@@ -5,6 +5,7 @@ ruby '2.6.2'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails', '4.2.11.1'
 gem 'pg', '0.21.0'
+gem 'logdna-rails', require: true
 
 # Use sqlite3 as the database for Active Record
 group :development do
@@ -25,10 +26,7 @@ group :development, :test do
   gem 'factory_bot_rails'
 end
 
-group :production do
-  gem 'logdna-rails', require: true
-  gem 'passenger_monit'
-end
+gem 'passenger_monit', group: :production
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
