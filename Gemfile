@@ -25,7 +25,10 @@ group :development, :test do
   gem 'factory_bot_rails'
 end
 
-gem 'passenger_monit', group: :production
+group :production do
+  gem 'logdna-rails'
+  gem 'passenger_monit'
+end
 
 # Use SCSS for stylesheets
 gem 'sass-rails'

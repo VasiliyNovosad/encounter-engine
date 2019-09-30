@@ -49,6 +49,11 @@ Rails.application.configure do
 
   # Use a different logger for distributed setups.
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
+  config.logger = Logdna::RailsLogger.new(ENV['LOGDNA_KEY'] || Rails.application.secrets.LOGDNA_KEY, {
+    hostname: 'quest.wtf',
+    level: 'DEBUG',
+    env: 'PRODUCTION'
+  })
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
