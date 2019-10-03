@@ -1,7 +1,7 @@
 var LevelCompleter = function() {
     var countdownValue = 0, gameId = 0, levelId = 0, intervalId = null, gameType = 'linear', levelNumber = 0;
 
-    var $countdownContainer, $countdownTimerText;
+    var $countdownTimerText;
 
     var start = function(initialCountdownValue) {
         if (initialCountdownValue < 0) {
@@ -23,16 +23,6 @@ var LevelCompleter = function() {
     };
 
     var updateCountdown = function() {
-        // var minutes = countdownValue / 60
-        // ,seconds = 0;
-        //
-        // if ( minutes > 0 && Math.floor(minutes) !== minutes ) {
-        //     minutes = Math.floor(minutes);
-        //     seconds = countdownValue % 60;
-        // } else {
-        //     seconds = countdownValue % 60;
-        // }
-
         var hours = Math.floor(countdownValue / 3600);
         var minutes = Math.floor((countdownValue) / 60)  - 60 * hours;
         var seconds = countdownValue % 60;
@@ -42,7 +32,6 @@ var LevelCompleter = function() {
         if (minutes > 0) text = text + minutes + ' хв ';
         if (seconds > 0) text = text + seconds + ' сек';
 
-        // $countdownTimerText.text(minutes + ' хв ' + seconds + ' сек');
         $countdownTimerText.text(text);
         countdownValue--;
     };
@@ -52,7 +41,7 @@ var LevelCompleter = function() {
             url: '/play/' + gameId + '/autocomplete_level?level=' + levelId,
             method: 'GET',
             success: function() {
-                if (gameType == 'panic') {
+                if (gameType === 'panic') {
                     window.location = '/play/' + gameId + '?level=' + levelNumber;
                 } else {
                     window.location = '/play/' + gameId;
@@ -64,7 +53,6 @@ var LevelCompleter = function() {
     return {
         setup: function(config) {
             $(document).ready(function() {
-                $countdownContainer = $('#LevelCompleteCountdownContainer');
                 $countdownTimerText = $('#LevelCompleteCountdownTimerText');
                 
                 gameId = config.gameId;

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190411192335) do
+ActiveRecord::Schema.define(version: 20191003121348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -294,6 +294,16 @@ ActiveRecord::Schema.define(version: 20190411192335) do
     t.string   "image"
   end
 
+  create_table "input_locks", force: :cascade do |t|
+    t.integer  "game_id"
+    t.integer  "level_id"
+    t.integer  "team_id"
+    t.integer  "user_id"
+    t.datetime "lock_ends_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
   create_table "invitations", force: :cascade do |t|
     t.integer  "to_team_id"
     t.integer  "for_user_id"
@@ -327,6 +337,10 @@ ActiveRecord::Schema.define(version: 20190411192335) do
     t.integer  "wrong_code_penalty",                  default: 0
     t.boolean  "dismissed",                           default: false
     t.text     "description"
+    t.boolean  "input_lock",                          default: false
+    t.integer  "inputs_count",                        default: 0
+    t.integer  "input_lock_duration",                 default: 0
+    t.string   "input_lock_type",                     default: "team"
   end
 
   add_index "levels", ["game_id"], name: "index_levels_on_game_id", using: :btree

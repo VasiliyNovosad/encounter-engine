@@ -24,8 +24,7 @@ class TeamRequest < ActiveRecord::Base
   protected
 
   def find_team
-    require 'ee_strings.rb'
-    team = Team.by_name(team_name.downcase_utf8_cyr).where(team_type: 'multy')
+    team = Team.by_name(team_name.mb_chars.downcase.to_s).where(team_type: 'multy')
     self.team = team.first if team && team.count > 0
   end
 
@@ -34,6 +33,6 @@ class TeamRequest < ActiveRecord::Base
   end
 
   def recepient_is_not_member_of_team
-    errors.add(:base, 'Ви уже є членом даної команди') if user && user.team == team
+    errors.add(:base, 'Ви уже є членом даної команди') if user&.team == team
   end
 end

@@ -1,6 +1,6 @@
 <div id="LevelHintsContainer">
   <% hints_to_show.each_with_index do |hint, index| %>
-    <div id="hint-<%= index + 1 %>">
+    <div id="hint-<%= hint.id %>">
       <fieldset>
         <legend>
           Підказка <%= index + 1 %> із <%= hints_to_show.count + upcoming_hints.count %>
@@ -12,7 +12,7 @@
   <% end %>
 
   <% upcoming_hints.each_with_index do |hint, index|  %>
-    <div id="hint-<%= hints_to_show.count + index + 1 %>">
+    <div id="hint-<%= hints_to_show.count + hint.id %>">
       <div id="<%= "LevelHintCountdownContainer#{hint.id}" %>" class="hint-timer">
         До підказки <%= hints_to_show.count + index + 1 %> лишилось <span id="<%= "LevelHintCountdownTimerText#{hint.id}" %>">3 хвилини</span>
       </div>

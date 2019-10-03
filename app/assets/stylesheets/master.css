@@ -587,3 +587,8 @@ div.dismissed-level {
     border: solid 1px #777;
     margin: 1px 0;
 }
+
+#level_inputs_count {
+    width: 80px;
+    margin-right: 10px;
+}

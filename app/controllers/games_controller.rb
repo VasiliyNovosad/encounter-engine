@@ -275,7 +275,6 @@ class GamesController < ApplicationController
   end
 
   def create_show_seo_block
-    images = get_images(@game.description)
     %{
 <script type="application/ld+json">
   {

@@ -52,13 +52,6 @@ class TasksController < ApplicationController
     @game = @level.game
   end
 
-  def find_teams
-    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
-      team = game_entry.team
-      [team.name, team.id]
-    end
-  end
-
   def find_task
     @task = Task.find(params[:id])
   end

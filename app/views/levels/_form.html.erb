@@ -25,7 +25,7 @@
 </div>
 <div class="form-group row">
   <%= f.label 'Умова для проходження', class: 'col-sm-2 col-form-label' %>
-  <div class="col-sm-10">
+  <div class="col-sm-10" id="level-condition-form">
     <div class="custom-control custom-radio custom-control-inline">
       <%= radio_button_tag(:condition, "all", true, class: "custom-control-input") %>
       <%= label_tag(:condition_all, "Закрити всі сектори", class: "custom-control-label") %>
@@ -61,6 +61,29 @@
   </div>
 </div>
 <div class="form-group row">
+  <%= f.label :input_lock, class: 'col-sm-2 col-form-label' %>
+  <div id="level-input-lock-form" class="col-sm-10 form-inline">
+    <div class="form-check">
+      <%= f.check_box :input_lock %>
+    </div>
+    <div id="input_lock_block" class="form-inline">
+      <%= f.number_field :inputs_count, min: 0, class: 'form-control form-control-sm' %>
+      <%= f.label :inputs_count, class: "col-form-label" %>
+      <%= f.number_field :input_lock_duration, hidden: true %>
+      <%= render 'shared/time_form' %>
+      <%= f.text_field :input_lock_type, hidden: true %>
+      <div class="custom-control custom-radio custom-control-inline">
+        <%= radio_button_tag(:input_lock_type, "team", true, class: "custom-control-input") %>
+        <%= label_tag(:input_lock_type_team, "на команду", class: "custom-control-label") %>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <%= radio_button_tag(:input_lock_type, "member", true, class: "custom-control-input") %>
+        <%= label_tag(:input_lock_type_member, "на гравця", class: "custom-control-label") %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="form-group row">
   <%= f.label :description, class: 'col-sm-2 col-form-label' %>
   <div class="col-sm-10">
     <%= f.text_area :description, rows: 5, class: 'form-control form-control-sm' %>
@@ -71,6 +94,10 @@
     $( document ).ready(function() {
         if (!$('#level_olymp').prop("checked")) {
             $('#olymp_base_block').addClass('invisible');
+        }
+
+        if (!$('#level_input_lock').prop("checked")) {
+            $('#input_lock_block').addClass('invisible');
         }
 
         if (!$('#level_is_autocomplete_penalty').prop("checked")) {
@@ -90,9 +117,19 @@
             sectors_for_close.prop('readonly', false);
         }
 
+        var input_lock_type_field = $('#level_input_lock_type');
+        if (input_lock_type_field.val() == 'team') {
+            $("#input_lock_type_team").prop("checked", true);
+            $("#input_lock_type_member").prop("checked", false);
+        } else {
+            $("#input_lock_type_team").prop("checked", false);
+            $("#input_lock_type_member").prop("checked", true);
+        }
+
         set_time_form(parseInt($('#level_complete_later').val()), '#level-complete-later-form');
         set_time_form(parseInt($('#level_autocomplete_penalty').val()), '#level-autocomplete-penalty-form');
         set_time_form(parseInt($('#level_wrong_code_penalty').val()), '#level-wrong-code-penalty-form');
+        set_time_form(parseInt($('#level_input_lock_duration').val()), '#level-input-lock-form');
 
         $('#level-complete-later-form .time-hours').on('change', function () {
             set_field_time('#level_complete_later', '#level-complete-later-form', 1);
@@ -130,11 +167,23 @@
             set_field_time('#level_wrong_code_penalty', '#level-wrong-code-penalty-form', 1);
         });
 
+        $('#level-input-lock-form .time-hours').on('change', function () {
+            set_field_time('#level_input_lock_duration', '#level-input-lock-form', 1);
+        });
+
+        $('#level-input-lock-form .time-minutes').on('change', function () {
+            set_field_time('#level_input_lock_duration', '#level-input-lock-form', 1);
+        });
+
+        $('#level-input-lock-form .time-seconds').on('change', function () {
+            set_field_time('#level_input_lock_duration', '#level-input-lock-form', 1);
+        });
+
         $('#level_olymp').on("click", function () {
             toggle($('#level_olymp'));
         });
 
-        $('input[type="radio"]').on('change', function () {
+        $('#level-condition-form input[type="radio"]').on('change', function () {
             var sectors_for_close = $('#level_sectors_for_close');
             if ($("#condition_all").prop("checked")) {
                 sectors_for_close.prop('readonly', true);
@@ -143,6 +192,15 @@
                 sectors_for_close.prop('readonly', false);
                 sectors_for_close.select();
                 sectors_for_close.val(<%= questions_count %>);
+            }
+        });
+
+        $('#input_lock_block input[type="radio"]').on('change', function () {
+            var input_lock_type_field = $('#level_input_lock_type');
+            if ($("#input_lock_type_team").prop("checked")) {
+                input_lock_type_field.val('team');
+            } else {
+                input_lock_type_field.val('member');
             }
         });
 
@@ -163,6 +221,14 @@
                 set_time_form(0, '#level-wrong-code-penalty-form');
                 $('#level_wrong_code_penalty').val(0);
                 $('#level-wrong-code-penalty-form .my-time-form').addClass('invisible');
+            }
+        });
+
+        $('#level_input_lock').on('click', function () {
+            if ($('#level_input_lock').prop("checked")) {
+                $('#input_lock_block').removeClass('invisible');
+            } else {
+                $('#input_lock_block').addClass('invisible');
             }
         });
     });

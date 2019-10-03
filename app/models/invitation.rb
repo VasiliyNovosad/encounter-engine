@@ -26,8 +26,7 @@ class Invitation < ActiveRecord::Base
   protected
 
   def find_user
-    require 'ee_strings.rb'
-    user = User.by_nickname(recepient_nickname.downcase_utf8_cyr)
+    user = User.by_nickname(recepient_nickname.mb_chars.downcase.to_s)
     self.for_user = user.first if user && user.count > 0
   end
 

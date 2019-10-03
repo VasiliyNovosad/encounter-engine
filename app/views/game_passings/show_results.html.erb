@@ -25,9 +25,9 @@
             <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
             <td>
               <% if game_passing[:exited] %>
-                <b>Зійшли з дистанції</b>(<%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %><%= ' ' + game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>)
+                <strong>Зійшли з дистанції</strong>(<%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %><%= ' ' + game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>)
               <% elsif game_passing[:finished_at].nil? %>
-                <b>Не фінішували</b>
+                <strong>Не фінішували</strong>
               <% else %>
                 <%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %> <%= game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>
               <% end %>

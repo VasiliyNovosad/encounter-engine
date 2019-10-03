@@ -63,8 +63,7 @@ class Game < ActiveRecord::Base
   end
 
   def transliterated_name
-    require 'ee_strings.rb'
-    I18n.transliterate(self.name.downcase_utf8_cyr)
+    I18n.transliterate(self.name.mb_chars.downcase.to_s)
   end
 
   def self.started
@@ -164,6 +163,7 @@ class Game < ActiveRecord::Base
 
     game_passing = GamePassing.of_game(id)
     logs = Log.of_game(id)
+    input_locks = InputLock.of_game(id)
     game_bonuses = GameBonus.of_game(id)
     closed_levels = ClosedLevel.of_game(id)
     game_passing.each do |elem|
@@ -173,6 +173,7 @@ class Game < ActiveRecord::Base
 
     game_passing.delete_all
     logs.delete_all
+    input_locks.delete_all
     game_bonuses.delete_all
     closed_levels.delete_all
   end

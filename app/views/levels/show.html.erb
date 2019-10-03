@@ -25,7 +25,7 @@
 <% end %>
 <br>
 <p>
-  Умова для проходження: <%= (@level.sectors_for_close || 0) > 0 ? " закрити #{@level.sectors_for_close} секторів" : ' закрити всі сектори' %>
+  <strong>Умова для проходження:</strong> <%= (@level.sectors_for_close || 0) > 0 ? " закрити #{@level.sectors_for_close} секторів" : ' закрити всі сектори' %>
 </p>
 <br>
 <% if @level.is_autocomplete_penalty? %>
@@ -38,6 +38,13 @@
 <% if @level.is_wrong_code_penalty? %>
   <p>
     <strong>Штраф за неіснуючий код: </strong> <%= seconds_to_string(@level.wrong_code_penalty || 0) %>
+  </p>
+  <br>
+<% end %>
+<% if @level.input_lock? %>
+  <p>
+    <strong>Блокування вводу: </strong>
+    <%= "#{@level.inputs_count} спроб за #{seconds_to_string(@level.input_lock_duration || 0)} на #{@level.input_lock_type == 'team' ? 'команду' : 'гравця'}" %>
   </p>
   <br>
 <% end %>

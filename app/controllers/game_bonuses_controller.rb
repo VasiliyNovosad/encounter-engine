@@ -1,9 +1,9 @@
 class GameBonusesController < ApplicationController
   before_action :find_game
-  before_action :find_game_bonus, only: [:show, :edit, :update, :destroy]
-  before_action :find_teams, only: [:new, :edit, :create, :update]
+  before_action :find_game_bonus, only: %i[edit update destroy]
+  before_action :find_teams, only: %i[new edit create update]
 
-  before_action :ensure_author, only: [:new, :create, :edit, :update, :destroy]
+  before_action :ensure_author, only: %i[new create edit update destroy]
 
   def index
     @game_bonuses = GameBonus.of_game(@game.id)
@@ -29,6 +29,7 @@ class GameBonusesController < ApplicationController
   end
 
   def edit
+    render
   end
 
   def update
@@ -47,7 +48,10 @@ class GameBonusesController < ApplicationController
   protected
 
   def game_bonus_params
-    params.require(:game_bonus).permit(:game_id, :team_id, :level_id, :award, :description, :user_id, :reason)
+    params.require(:game_bonus).permit(
+      :game_id, :team_id, :level_id, :award,
+      :description, :user_id, :reason
+    )
   end
 
   def find_game
@@ -56,13 +60,6 @@ class GameBonusesController < ApplicationController
 
   def find_game_bonus
     @game_bonus = GameBonus.find(params[:id])
-  end
-
-  def find_teams
-    @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
-      team = game_entry.team
-      [team.name, team.id]
-    end
   end
 
 end

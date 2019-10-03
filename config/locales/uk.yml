@@ -31,6 +31,8 @@ uk:
         correct_answer: "Код"
         is_autocomplete_penalty: "Штраф при автозавершенні"
         is_wrong_code_penalty: "Штраф за неіснуючий код"
+        inputs_count: " спроб за "
+        input_lock: "Блокування вводу"
       hint:
         text: "Текст"
         delay: "Через"
@@ -268,59 +270,59 @@ uk:
       month: Місяць
       second: Секунда
       year: Рік
-  errors:
-    format: "%{attribute} %{message}"
-    messages:
-      accepted: має бути прийнятий
-      blank: не може бути пустим
-      present: має бути пустим
-      confirmation: не збігається з підтвердженням
-      empty: не може бути порожнім
-      equal_to: має дорівнювати %{count}
-      even: має бути парним
-      exclusion: зарезервовано
-      greater_than: має бути більше ніж %{count}
-      greater_than_or_equal_to: має бути більше ніж або дорівнювати %{count}
-      inclusion: не включено до переліку
-      invalid: недійсний
-      less_than: має бути менше ніж %{count}
-      less_than_or_equal_to: має бути менше ніж або дорівнювати %{count}
-      model_invalid: 'Виникли помилки: %{errors}'
-      not_a_number: не число
-      not_an_integer: не э цілим числом
-      odd: має бути непарним
-      required: не може бути порожнім
-      taken: вже зайнятий
-      too_long:
-        few: занадто довгий (максимум %{count} знаки)
-        many: занадто довгий (максимум %{count} знаків)
-        one: занадто довгий (максимум %{count} знак)
-        other: занадто довгий (максимум %{count} знаку)
-      too_short:
-        few: занадто короткий (мінімум %{count} знаки)
-        many: занадто короткий (мінімум %{count} знаків)
-        one: занадто короткий (мінімум %{count} знак)
-        other: занадто короткий (мінімум %{count} знаку)
-      wrong_length:
-        few: неправильна довжина (має бути %{count} знаки)
-        many: неправильна довжина (має бути %{count} знаків)
-        one: неправильна довжина (має бути %{count} знак)
-        other: неправильна довжина (має бути %{count} знаку)
-      other_than: має відрізнятись від %{count}
-    template:
-      body: 'Помилки виявлено в таких полях:'
-      header:
-        few: "%{model} не збережено через %{count} помилки"
-        many: "%{model} не збережено через %{count} помилок"
-        one: "%{model} не збережено через %{count} помилку"
-        other: "%{model} не збережено через %{count} помилки"
-  helpers:
-    select:
-      prompt: 'Оберіть: '
-    submit:
-      create: Створити %{model}
-      submit: Зберегти %{model}
-      update: Зберегти %{model}
+#  errors:
+#    format: "%{attribute} %{message}"
+#    messages:
+#      accepted: має бути прийнятий
+#      blank: не може бути пустим
+#      present: має бути пустим
+#      confirmation: не збігається з підтвердженням
+#      empty: не може бути порожнім
+#      equal_to: має дорівнювати %{count}
+#      even: має бути парним
+#      exclusion: зарезервовано
+#      greater_than: має бути більше ніж %{count}
+#      greater_than_or_equal_to: має бути більше ніж або дорівнювати %{count}
+#      inclusion: не включено до переліку
+#      invalid: недійсний
+#      less_than: має бути менше ніж %{count}
+#      less_than_or_equal_to: має бути менше ніж або дорівнювати %{count}
+#      model_invalid: 'Виникли помилки: %{errors}'
+#      not_a_number: не число
+#      not_an_integer: не э цілим числом
+#      odd: має бути непарним
+#      required: не може бути порожнім
+#      taken: вже зайнятий
+#      too_long:
+#        few: занадто довгий (максимум %{count} знаки)
+#        many: занадто довгий (максимум %{count} знаків)
+#        one: занадто довгий (максимум %{count} знак)
+#        other: занадто довгий (максимум %{count} знаку)
+#      too_short:
+#        few: занадто короткий (мінімум %{count} знаки)
+#        many: занадто короткий (мінімум %{count} знаків)
+#        one: занадто короткий (мінімум %{count} знак)
+#        other: занадто короткий (мінімум %{count} знаку)
+#      wrong_length:
+#        few: неправильна довжина (має бути %{count} знаки)
+#        many: неправильна довжина (має бути %{count} знаків)
+#        one: неправильна довжина (має бути %{count} знак)
+#        other: неправильна довжина (має бути %{count} знаку)
+#      other_than: має відрізнятись від %{count}
+#    template:
+#      body: 'Помилки виявлено в таких полях:'
+#      header:
+#        few: "%{model} не збережено через %{count} помилки"
+#        many: "%{model} не збережено через %{count} помилок"
+#        one: "%{model} не збережено через %{count} помилку"
+#        other: "%{model} не збережено через %{count} помилки"
+#  helpers:
+#    select:
+#      prompt: 'Оберіть: '
+#    submit:
+#      create: Створити %{model}
+#      submit: Зберегти %{model}
+#      update: Зберегти %{model}
   number:
     currency:
       format:
@@ -402,45 +404,45 @@ uk:
       long: "%d %B %Y, %H:%M"
       short: "%d %b, %H:%M"
     pm: по полудні
-  i18n:
-    transliterate:
-      rule:
-        зг: "zgh"
-        а: "a"
-        б: "b"
-        в: "v"
-        г: "h"
-        ґ: "g"
-        д: "d"
-        е: "e"
-        є: "je"
-        ж: "zh"
-        з: "z"
-        и: "y"
-        і: "i"
-        ї: "yi"
-        й: "y"
-        к: "k"
-        л: "l"
-        м: "m"
-        н: "n"
-        о: "o"
-        п: "p"
-        р: "r"
-        с: "s"
-        т: "t"
-        у: "u"
-        ф: "f"
-        х: "kh"
-        ц: "ts"
-        ч: "ch"
-        ш: "sh"
-        щ: "shch"
-        ю: "yu"
-        я: "ya"
-        ь: ""
-        э: "e"
-        ы: "y"
-        ё: "ye"
-        ъ: ""
-        "'": ""
+#  i18n:
+#    transliterate:
+#      rule:
+#        зг: "zgh"
+#        а: "a"
+#        б: "b"
+#        в: "v"
+#        г: "h"
+#        ґ: "g"
+#        д: "d"
+#        е: "e"
+#        є: "je"
+#        ж: "zh"
+#        з: "z"
+#        и: "y"
+#        і: "i"
+#        ї: "yi"
+#        й: "y"
+#        к: "k"
+#        л: "l"
+#        м: "m"
+#        н: "n"
+#        о: "o"
+#        п: "p"
+#        р: "r"
+#        с: "s"
+#        т: "t"
+#        у: "u"
+#        ф: "f"
+#        х: "kh"
+#        ц: "ts"
+#        ч: "ch"
+#        ш: "sh"
+#        щ: "shch"
+#        ю: "yu"
+#        я: "ya"
+#        ь: ""
+#        э: "e"
+#        ы: "y"
+#        ё: "ye"
+#        ъ: ""
+#        "'": ""

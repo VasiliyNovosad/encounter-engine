@@ -7,8 +7,10 @@
         <em> (для <%= bonus.team.name %>)</em>
     <% end %>
   </p>
-  <p><%= bonus.task.html_safe %></p>
-  <% unless bonus.help.empty? %>
+  <% unless bonus.task.nil? || bonus.task.empty? %>
+    <p><%= bonus.task.html_safe %></p>
+  <% end %>
+  <% unless bonus.help.nil? || bonus.help.empty? %>
     <p>Підказка: <%= bonus.help.html_safe %></p>
   <% end %>
 

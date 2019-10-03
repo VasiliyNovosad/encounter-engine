@@ -29,8 +29,7 @@ class Bonus < ActiveRecord::Base
   end
 
   def matches_any_answer(answer_value, team_id)
-    require 'ee_strings.rb'
-    team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    team_answers(team_id).any? { |answer| answer.value.mb_chars.downcase.to_s == answer_value.mb_chars.downcase.to_s }
   end
 
   def set_name

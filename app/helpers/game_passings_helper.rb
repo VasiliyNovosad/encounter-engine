@@ -1,6 +1,6 @@
 module GamePassingsHelper
   def answer_posted?
-    !@answer.nil?
+    !!@answer
   end
 
   def answer_was_correct?
@@ -9,10 +9,12 @@ module GamePassingsHelper
 
   def game_levels_list(game)
     game.levels.map do |game_level|
+      level_position = game_level.position
+      level_name = game_level.name
       if game_level == @level
-        "#{game_level.position}. #{game_level.name}"
+        "#{level_position}. #{level_name}"
       else
-        "<a class=\"#{(@game_passing.closed?(game_level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{game.id}?level=#{game_level.position}\">#{game_level.position}. #{game_level.name}</a>"
+        "<a class=\"#{(@game_passing.closed?(game_level) ? 'closedlevel' : 'openedlevel')}\" href=\"/play/#{game.id}?level=#{level_position}\">#{level_position}. #{level_name}</a>"
       end
     end.join(', ')
   end

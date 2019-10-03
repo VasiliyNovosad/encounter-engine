@@ -6,10 +6,10 @@
       <% correct_answers = [] %>
       <% correct_bonus_answers = [] %>
       <% level.questions.each do |question| %>
-          <% question.answers.each { |answer| correct_answers << answer.value.strip.downcase_utf8_cyr unless correct_answers.include? answer.value.downcase_utf8_cyr.strip} %>
+          <% question.answers.each { |answer| correct_answers << answer.value.strip.mb_chars.downcase.to_s unless correct_answers.include? answer.value.strip.mb_chars.downcase.to_s} %>
       <% end %>
       <% level.bonuses.each do |bonus| %>
-        <% bonus.bonus_answers.each { |answer| correct_bonus_answers << answer.value.strip.downcase_utf8_cyr unless correct_bonus_answers.include? answer.value.downcase_utf8_cyr.strip} %>
+        <% bonus.bonus_answers.each { |answer| correct_bonus_answers << answer.value.strip.mb_chars.downcase.to_s unless correct_bonus_answers.include? answer.value.strip.mb_chars.downcase.to_s} %>
       <% end %>
 
       <tr align="center">
@@ -37,7 +37,7 @@
           <% team_logs.each do |team_log| %>
             <li>
               <%= team_log.time.strftime("%d.%m.%Y %H:%M:%S.%L") %>
-              <% if correct_answers.include?(team_log.answer.strip.downcase_utf8_cyr) || correct_bonus_answers.include?(team_log.answer.strip.downcase_utf8_cyr) || team_log.answer == 'timeout' %>
+              <% if correct_answers.include?(team_log.answer.strip.mb_chars.downcase.to_s) || correct_bonus_answers.include?(team_log.answer.strip.mb_chars.downcase.to_s) || team_log.answer == 'timeout' %>
                   <span class="right_code"><%= team_log.answer %></span>
               <% else %>
                   <span class="wrong_code"><%= team_log.answer %></span>

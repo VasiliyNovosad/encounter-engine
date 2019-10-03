@@ -73,7 +73,7 @@
   <% if team_questions.count > 1 %>
     <div>
       <br>
-      <b id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).count %> із <%= team_questions.count %>:</b>
+      <strong id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).count %> із <%= team_questions.count %>:</strong>
       <hr>
       <hr>
     </div>
@@ -123,7 +123,7 @@
         for (let i = 0; i < bonuses.length; i++) {
             // let bonus = $('#bonus-' + bonuses[i].id).get(0);
             let elem = '<li id="bonus-' + bonuses[i].id + '">';
-            elem += '<p class="bonus-answered"><b>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</b></p>';
+            elem += '<p class="bonus-answered"><strong>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</strong></p>';
             if (bonuses[i].help) elem += bonuses[i].help;
             elem += '</li>';
             // bonus.innerHTML = elem;

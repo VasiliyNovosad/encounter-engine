@@ -1,7 +1,7 @@
 class HintsController < ApplicationController
   before_action :find_level
   before_action :find_game
-  before_action :ensure_game_was_not_finished, except: [:show]
+  before_action :ensure_game_was_not_finished
   before_action :find_hint, only: [:edit, :update, :destroy, :copy]
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
@@ -17,7 +17,7 @@ class HintsController < ApplicationController
     if @hint.save
       redirect_to game_level_path(@game, @level, anchor: "hint-#{@hint.id}")
     else
-      render 'new'
+      render :new
     end
   end
 
@@ -27,21 +27,21 @@ class HintsController < ApplicationController
 
   def update
     if @hint.update_attributes(hint_params)
-      redirect_to game_level_path(@level.game, @level, anchor: "hint-#{@hint.id}")
+      redirect_to game_level_path(@game, @level, anchor: "hint-#{@hint.id}")
     else
-      render 'edit'
+      render :edit
     end
   end
 
   def destroy
     @hint.destroy
-    redirect_to game_level_path(@level.game, @level, anchor: "hints-block")
+    redirect_to game_level_path(@game, @level, anchor: "hints-block")
   end
 
   def copy
-    @new_hint = @hint.dup
-    if @new_hint.save
-      redirect_to game_level_path(@game, @level, anchor: "hint-#{@new_hint.id}")
+    new_hint = @hint.dup
+    if new_hint.save
+      redirect_to game_level_path(@game, @level, anchor: "hint-#{new_hint.id}")
     else
       redirect_to game_level_path(@game, @level, anchor: "hint-#{@hint.id}")
     end
@@ -63,13 +63,6 @@ class HintsController < ApplicationController
 
   def find_hint
     @hint = Hint.find(params[:id])
-  end
-
-  def find_teams
-    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
-      team = game_entry.team
-      [team.name, team.id]
-    end
   end
 
 end

@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.6.2'
-
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails', '4.2.11.1'
 gem 'pg', '0.21.0'
