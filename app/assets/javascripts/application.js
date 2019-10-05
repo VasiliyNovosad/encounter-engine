@@ -16,7 +16,6 @@
 //= require jquery.ui.touch-punch
 //= require jquery_ujs
 //= require tinymce-jquery
-//= require private_pub
 //= require datetimepicker
 //= require cocoon
 //= require_tree .
