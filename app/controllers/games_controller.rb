@@ -17,7 +17,7 @@ class GamesController < ApplicationController
     coming_games = Game.notstarted
     finished_games = Game.finished.order(starts_at: :desc)
     current_games = Game.started - finished_games
-    render :index, locals: {current_games: current_games, coming_games: coming_games, finished_games: finished_games}
+    render :index, locals: { current_games: current_games, coming_games: coming_games, finished_games: finished_games }
   end
 
   def new
@@ -102,20 +102,22 @@ class GamesController < ApplicationController
   end
 
   def show_scenario
+    render
   end
 
   def new_level_order
     @levels = @game.levels
     @level_orders = {}
     @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
-    (1..@levels.count).each do |index|
-      levels = {}
-      @teams.each do |team|
-        ordered_level = LevelOrder.of(@game.id, team.id).where(position: index).first
-        new_level = @levels.where(position: index).first
-        levels[team.id] = (ordered_level.nil? ? new_level.id : ordered_level.level_id)
+    @teams.each do |team|
+      ordered_levels = LevelOrder.of(@game.id, team.id).pluck(:level_id)
+      last_levels = Level.of_game(@game.id).where.not(id: ordered_levels).order(:position).to_a
+      @level_orders[team] = ordered_levels.map { |level_id| Level.find(level_id) } + last_levels
+
+      LevelOrder.delete_all(game_id: @game.id, team_id: team.id)
+      @level_orders[team].each_with_index do |level, index|
+        LevelOrder.create!(game_id: @game.id, team_id: team.id, level_id: level.id, position: index + 1)
       end
-      @level_orders[index] = levels
     end
     render
   end

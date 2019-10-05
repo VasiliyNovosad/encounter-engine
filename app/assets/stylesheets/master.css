@@ -582,7 +582,7 @@ div.dismissed-level {
     color: orange;
 }
 
-#levels .list-group-item {
+#levels .list-group-item, .levels .list-group-item, .numbers .list-group-item {
     background-color: #222;
     border: solid 1px #777;
     margin: 1px 0;
