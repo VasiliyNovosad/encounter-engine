@@ -2,7 +2,7 @@
   <% levels.each do |level| %>
     <div class="list-group-item row" id="<%= dom_id(level) %>">
       <div class="col-lg-3 col-md-3 col-sm-3 .col-12">
-        <%= level.position %>. <%= link_to level.name, game_level_path(level.game, level) %>
+        <span class="level-position"><%= level.position %></span>. <%= link_to level.name, game_level_path(level.game, level) %>
       </div>
       <div class="col-lg-9 col-md-9 col-sm-9 .col-12 btn-toolbar">
         <% unless level.game.author_finished? %>
@@ -32,6 +32,9 @@
 <script>
   $("#levels").sortable({
     update: function(e, ui) {
+      $('.level-position').each(function( index ) {
+          $( this ).text(index + 1);
+      });
       $.ajax({
         url: $(this).data("url"),
         type: "PATCH",
