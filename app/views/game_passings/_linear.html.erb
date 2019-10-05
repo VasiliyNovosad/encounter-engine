@@ -89,8 +89,7 @@
 
           var x = setInterval(function() {
 
-              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + timer + ' c</span>';
-              timer = timer - 1;
+              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + (--timer) + ' c</span>';
 
               if (timer <= 0) {
                   clearInterval(x);
