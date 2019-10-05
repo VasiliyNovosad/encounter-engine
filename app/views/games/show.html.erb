@@ -90,9 +90,9 @@
 
 <% if user_signed_in? %>
   <% if (@game.is_testing? ? @game.test_date : @game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !@game.author_finished? %>
-    <div id="playButton"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+    <div id="playButton" class="btn btn-lg btn-success"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% else %>
-    <div id="playButton" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+    <div id="playButton" class="btn btn-lg btn-success" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% end %>
   <br>
 <% end %>

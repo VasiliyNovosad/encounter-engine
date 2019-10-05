@@ -418,7 +418,7 @@ td {
     background-color: #272727;
 }
 
-#updateButton, #statButton, #playButton {
+#updateButton, #statButton {
     padding: 10px 20px;
     border: solid 1px #ccc;
     border-radius: 8px;
@@ -599,4 +599,13 @@ div.dismissed-level {
 
 .resort-block {
     width: 60px;
+}
+
+.level-down {
+    float: right;
+    margin-right: 5px;
+}
+
+.btn a, a.btn {
+    text-decoration: none;
 }
