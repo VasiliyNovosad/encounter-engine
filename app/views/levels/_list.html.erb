@@ -6,14 +6,14 @@
       </div>
       <div class="col-lg-9 col-md-9 col-sm-9 .col-12 btn-toolbar">
         <% unless level.game.author_finished? %>
-          <div class="resort-block">
-            <% unless level.first? %>
-              <span class="level-move level-up btn btn-sm btn-success"><%= link_to "&#8679;".html_safe, move_up_game_level_path(level.game, level), method: :post %></span>
-            <% end %>
-            <% unless level.last? %>
-              <span class="level-move level-down btn btn-sm btn-success"><%= link_to "&#8681;".html_safe, move_down_game_level_path(level.game, level), method: :post %></span>
-            <% end %>
-          </div>
+<!--          <div class="resort-block">-->
+            <%# unless level.first? %>
+<!--              <span class="level-move level-up btn btn-sm btn-success"><%#= link_to "&#8679;".html_safe, move_up_game_level_path(level.game, level), method: :post %></span>-->
+            <%# end %>
+            <%# unless level.last? %>
+<!--              <span class="level-move level-down btn btn-sm btn-success"><%#= link_to "&#8681;".html_safe, move_down_game_level_path(level.game, level), method: :post %></span>-->
+            <%# end %>
+<!--          </div>-->
           <div class="edit-block">
             <span class="level-copy btn btn-sm btn-primary"><%= link_to "скопіювати", copy_game_level_path(level.game, level), method: :post %></span>
             <% unless level.dismissed? %>
