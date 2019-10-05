@@ -592,3 +592,11 @@ div.dismissed-level {
     width: 80px;
     margin-right: 10px;
 }
+
+.list-group-item {
+    display: flex;
+}
+
+.resort-block {
+    width: 60px;
+}

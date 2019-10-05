@@ -81,7 +81,7 @@
 <% if user_signed_in? && current_user.author_of?(@game) && !@game.author_finished? %>
   <br>
   <p>
-    <%= link_to "Редагувати гру", edit_game_path(@game), class: 'btn btn-primary' %>
+    <%= link_to "Редагувати гру", edit_game_path(@game), class: 'btn btn-primary btn-sm' %>
   </p>
   <br>
 <% end %>
@@ -133,7 +133,7 @@
     <br>
 
     <p>
-      <%= link_to "Додати нове завдання", new_game_level_path(@game), class: 'btn btn-primary' unless @game.author_finished?%>
+      <%= link_to "Додати нове завдання", new_game_level_path(@game), class: 'btn btn-primary btn-sm' unless @game.author_finished?%>
     </p>
   </fieldset>
   <br>
@@ -145,7 +145,7 @@
 <br>
 
 <% if @game.game_type == 'selected' && @teams_for_test.count > 0 && !@game.author_finished? %>
-  <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary' %></p>
+  <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
 <% end %>
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
@@ -169,14 +169,14 @@
             <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
         <% end %>
     <% else %>
-        <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post, class: 'btn btn-success' %>
+        <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
     <% end %>
 
 <% end %>
 
 <% if user_signed_in? && current_user.author_of?(@game) && @game.is_testing? %>
-   <%= link_to "Старт", url_for("/play/#{@game.id}"), class: 'btn btn-success' %>
-   <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post, class: 'btn btn-success' %>
+   <%= link_to "Старт", url_for("/play/#{@game.id}"), class: 'btn btn-success btn-sm' %>
+   <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
 <% end %>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
@@ -185,8 +185,8 @@
   <br>
   <br>
   <br>
-  <%= link_to "ЗАКРИТИ ГРУ", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success' if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
-  <%= link_to "ВІДКРИТИ ГРУ", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success' if @game.author_finished? %>
+  <%= link_to "ЗАКРИТИ ГРУ", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
+  <%= link_to "ВІДКРИТИ ГРУ", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if @game.author_finished? %>
   <br>
   <br>
   <br>
