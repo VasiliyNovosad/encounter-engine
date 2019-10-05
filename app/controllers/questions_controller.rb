@@ -42,17 +42,17 @@ class QuestionsController < ApplicationController
 
   def destroy
     @question.destroy
-    redirect_to game_level_path(@level, @level, anchor: "sectors-block")
+    redirect_to game_level_path(@game, @level, anchor: "sectors-block")
   end
 
   def move_up
     @question.move_higher
-    redirect_to game_level_path(@level, @level, anchor: "question-#{@question.id}")
+    redirect_to game_level_path(@game, @level, anchor: "question-#{@question.id}")
   end
 
   def move_down
     @question.move_lower
-    redirect_to game_level_path(@level, @level, anchor: "question-#{@question.id}")
+    redirect_to game_level_path(@game, @level, anchor: "question-#{@question.id}")
   end
 
   def new_batch

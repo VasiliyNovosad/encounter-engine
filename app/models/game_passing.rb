@@ -46,7 +46,7 @@ class GamePassing < ActiveRecord::Base
     answered_bonus, is_correct_bonus_answer = pass_bonuses!(answer, level, team_id, user)
     answered_question, is_correct_answer, needed, closed = pass_questions!(answer, level, team_id, user)
     start_time = level_started_at(level)
-    if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
+    if level.questions.count.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
       pass_level!(level, team_id, time, start_time, user.id)
     end
     if level[:is_wrong_code_penalty] && !level[:wrong_code_penalty].zero? && !is_correct_bonus_answer && !is_correct_answer
