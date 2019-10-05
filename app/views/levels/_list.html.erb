@@ -1,10 +1,10 @@
 <div id="levels" class="list-group container-fluid" data-url="<%= sort_game_levels_path(game) %>">
   <% levels.each do |level| %>
     <div class="list-group-item row" id="<%= dom_id(level) %>">
-      <div class="col-lg-3 col-md-4 col-sm-5">
+      <div class="col-lg-3 col-md-3 col-sm-3 .col-12">
         <%= level.position %>. <%= link_to level.name, game_level_path(level.game, level) %>
       </div>
-      <div class="col-lg-9 col-md-8 col-sm-7 btn-toolbar">
+      <div class="col-lg-9 col-md-9 col-sm-9 .col-12 btn-toolbar">
         <% unless level.game.author_finished? %>
           <div class="resort-block">
             <% unless level.first? %>
