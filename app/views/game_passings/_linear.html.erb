@@ -89,9 +89,10 @@
 
           var x = setInterval(function() {
 
-              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + --timer + ' c</span>';
+              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + timer + ' c</span>';
+              timer = timer - 1;
 
-              if (timer < 0) {
+              if (timer <= 0) {
                   clearInterval(x);
                   $('#answer').prop('readonly', false);
                   $("#code_submit").attr("disabled", false);
