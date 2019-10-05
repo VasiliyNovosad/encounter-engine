@@ -30,6 +30,13 @@ GIT
       tinymce-rails (~> 4.0)
 
 GIT
+  remote: git://github.com/mateuszgorniak/touchpunch-rails.git
+  revision: 8b68a75c931fb831a01f6f6aff4797c8a4663a5e
+  specs:
+    touchpunch-rails (1.0.3)
+      railties (>= 3.1)
+
+GIT
   remote: git://github.com/swanandp/acts_as_list.git
   revision: fea13271697b7393421046801e0e30b6873a59c6
   specs:
@@ -429,6 +436,7 @@ DEPENDENCIES
   tinymce-rails
   tinymce-rails-imageupload!
   tinymce-rails-langs
+  touchpunch-rails!
   turbolinks
   tzinfo-data
   uglifier
