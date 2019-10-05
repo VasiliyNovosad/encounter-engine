@@ -5,17 +5,19 @@
         <fieldset id="task-<%= task.id %>">
           <legend>
             <% if task.team.nil? %>
-                <em>Для всіх</em>:
+                <em>Для всіх</em>
             <% else %>
                 <em>Для </em> <strong><%= link_to task.team.name, team_path(task.team) %></strong>:
             <% end %>
-            <% unless game.author_finished? %>
-              <em>
-                <%= link_to "(редагувати)", edit_game_level_task_path(game, level, task) %>
-                <%= link_to "(видалити)", game_level_task_path(game, level, task), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-              </em>
-            <% end %>
           </legend>
+          <% unless game.author_finished? %>
+            <p>
+              <%= link_to "Редагувати", edit_game_level_task_path(game, level, task), class: 'btn btn-sm btn-primary' %>
+              <%= link_to "Видалити", game_level_task_path(game, level, task), method: :delete, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-sm btn-danger' %>
+            </p>
+            <br>
+          <% end %>
+
           <p>
             <%= task.text.html_safe %>
           </p>

@@ -62,22 +62,14 @@
 <br>
 
 <p>
-  <a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
-  <a href="#messages-block"><span class="purple">повідомлення</span></a>,
-  <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
-  <a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
-  <a href="#sectors-block"><span class="right_code">відповіді</span></a>,
-  <a href="#bonuses-block"><span class="bonus">бонуси</span></a>
+  <a href="#tasks-block" class="btn btn-sm btn-dark btn-level-block"><span class="openedlevel">Завдання</span></a>
+  <a href="#messages-block" class="btn btn-sm btn-dark btn-level-block"><span class="purple">Повідомлення</span></a>
+  <a href="#hints-block" class="btn btn-sm btn-dark btn-level-block"><span class="hint-timer">Підказки</span></a>
+  <a href="#penalty-hints-block" class="btn btn-sm btn-dark btn-level-block"><span class="yellow">Штрафні підказки</span></a>
+  <a href="#sectors-block" class="btn btn-sm btn-dark btn-level-block"><span class="right_code">Сектори</span></a>
+  <a href="#bonuses-block" class="btn btn-sm btn-dark btn-level-block"><span class="bonus">Бонуси</span></a>
 </p>
 
-
-<!--
-<% if false && @level.olymp? %>
-  <%= render 'olymp', level: @level, olymp_base: (@level.olymp_base || 2), levels: Math.log(@level.questions.count, (@level.olymp_base || 2)).to_i + 1 %>
-<% end %>
-
-<br><br><br>
--->
 <br>
 
 <fieldset id="tasks-block">
@@ -86,7 +78,7 @@
   </legend>
   <% unless @game.author_finished? %>
     <p>
-      <%= link_to "Додати завдання", new_game_level_task_path(@game, @level) %>
+      <%= link_to '<span class="openedlevel">Додати завдання</span>'.html_safe, new_game_level_task_path(@game, @level), class: 'btn btn-sm btn-dark btn-level-block' %>
     </p>
     <br>
   <% end %>
@@ -101,7 +93,7 @@
   </legend>
   <% unless @game.author_finished? %>
     <p>
-      <%= link_to "Додати повідомлення", new_game_level_message_path(@game, @level) %>
+      <%= link_to '<span class="purple">Додати повідомлення</span>'.html_safe, new_game_level_message_path(@game, @level), class: 'btn btn-sm btn-dark btn-level-block' %>
     </p>
     <br>
   <% end %>
@@ -116,7 +108,7 @@
   </legend>
   <% unless @game.author_finished? %>
     <p>
-      <%= link_to "Додати підказку", new_game_level_hint_path(@game, @level) %>
+      <%= link_to '<span class="hint-timer">Додати підказку</span>'.html_safe, new_game_level_hint_path(@game, @level), class: 'btn btn-sm btn-dark btn-level-block' %>
     </p>
     <br>
   <% end %>
@@ -131,7 +123,7 @@
   </legend>
   <% unless @game.author_finished? %>
     <p>
-      <%= link_to "Додати штрафну підказку", new_game_level_penalty_hint_path(@game, @level) %>
+      <%= link_to '<span class="yellow">Додати штрафну підказку</span>'.html_safe, new_game_level_penalty_hint_path(@game, @level), class: 'btn btn-sm btn-dark btn-level-block' %>
     </p>
     <br>
   <% end %>
@@ -201,13 +193,14 @@
   <% end %>
 </fieldset>
 <br>
-<p><a href="#tasks-block"><span class="openedlevel">Завдання</span></a>,
-  <a href="#messages-block"><span class="purple">повідомлення</span></a>,
-  <a href="#hints-block"><span class="hint-timer">підказки</span></a>,
-  <a href="#penalty-hints-block"><span class="yellow">штрафні підказки</span></a>,
-  <a href="#sectors-block"><span class="right_code">відповіді</span></a>,
-  <a href="#bonuses-block"><span class="bonus">бонуси</span></a></p>
-<br>
+<p>
+  <a href="#tasks-block" class="btn btn-sm btn-dark btn-level-block"><span class="openedlevel">Завдання</span></a>
+  <a href="#messages-block" class="btn btn-sm btn-dark btn-level-block"><span class="purple">Повідомлення</span></a>
+  <a href="#hints-block" class="btn btn-sm btn-dark btn-level-block"><span class="hint-timer">Підказки</span></a>
+  <a href="#penalty-hints-block" class="btn btn-sm btn-dark btn-level-block"><span class="yellow">Штрафні підказки</span></a>
+  <a href="#sectors-block" class="btn btn-sm btn-dark btn-level-block"><span class="right_code">Сектори</span></a>
+  <a href="#bonuses-block" class="btn btn-sm btn-dark btn-level-block"><span class="bonus">Бонуси</span></a>
+</p>
 <br>
 <p>
   <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>

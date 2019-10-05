@@ -133,7 +133,7 @@
     <br>
 
     <p>
-      <%= link_to "Додати нове завдання", new_game_level_path(@game), class: 'btn btn-primary btn-sm' unless @game.author_finished?%>
+      <%= link_to "Додати завдання", new_game_level_path(@game), class: 'btn btn-primary btn-sm' unless @game.author_finished?%>
     </p>
   </fieldset>
   <br>
@@ -164,7 +164,7 @@
 
     <% if game_with_personal? || @game.game_type == 'selected' %>
         <%= form_tag start_test_game_path(@game), method: :post do %>
-            <%= submit_tag "Почати тестування", class: 'btn btn-success' %>
+            <%= submit_tag "Почати тестування", class: 'btn btn-success btn-sm' %>
             <%= label_tag " для команди " %>
             <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
         <% end %>
@@ -185,13 +185,13 @@
   <br>
   <br>
   <br>
-  <%= link_to "ЗАКРИТИ ГРУ", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
-  <%= link_to "ВІДКРИТИ ГРУ", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if @game.author_finished? %>
+  <%= link_to "Закрити гру", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
+  <%= link_to "Відкрити гру", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if @game.author_finished? %>
   <br>
   <br>
   <br>
   <br>
   <p>
-    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-danger' unless @game.started? || @game.author_finished? %>
+    <%= link_to "Видалити гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-sm btn-danger' unless @game.started? || @game.author_finished? %>
   </p>
 <% end %>

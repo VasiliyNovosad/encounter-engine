@@ -598,7 +598,7 @@ div.dismissed-level {
 }
 
 .resort-block {
-    width: 60px;
+    width: 70px;
 }
 
 .level-down {
@@ -608,4 +608,20 @@ div.dismissed-level {
 
 .btn a, a.btn {
     text-decoration: none;
+}
+
+.btn-level-block, .level-move a {
+    font-weight: bold;
+}
+
+.btn-dark {
+    color: #fff;
+    background-color: #262729;
+    border-color: #262729;
+}
+
+.btn-dark:hover {
+    color: #fff;
+    background-color: #212121;
+    border-color: #1d2124;
 }
