@@ -81,7 +81,6 @@
 <script>
   $(document).ready(function() {
       var input_lock = { input_lock: <%= input_lock[:input_lock] || false %>, duration: <%= input_lock[:duration] || 0 %>};
-      console.log('input_lock', input_lock);
       if (input_lock.input_lock) {
           $('#answer').prop('readonly', true);
           $("#code_submit").attr("disabled", true);
@@ -90,7 +89,7 @@
 
           var x = setInterval(function() {
 
-              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + timer-- + ' c</span>';
+              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + --timer + ' c</span>';
 
               if (timer < 0) {
                   clearInterval(x);
