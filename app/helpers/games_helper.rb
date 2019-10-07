@@ -49,13 +49,13 @@ module GamesHelper
   end
 
   def hide_stat?(game, team)
-    return true if game.hide_stat? && game.hide_stat_type == 'all'
+    return false unless game.hide_stat?
 
     game_passing = GamePassing.of(team.id, game.id)
     return true if game_passing.nil?
 
     return false unless game_passing.finished_at.nil?
 
-    game_passing.current_level.position <= game.hide_stat_level
+    game.hide_stat_type == 'all' || game_passing.current_level.position <= game.hide_stat_level
   end
 end
