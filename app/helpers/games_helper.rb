@@ -54,6 +54,8 @@ module GamesHelper
     game_passing = GamePassing.of(team.id, game.id)
     return true if game_passing.nil?
 
-    game_passing.current_level.position <= game.hide_stat_level && !game_passing.finished_at.nil?
+    return false unless game_passing.finished_at.nil?
+
+    game_passing.current_level.position <= game.hide_stat_level
   end
 end
