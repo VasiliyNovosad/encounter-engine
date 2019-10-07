@@ -70,6 +70,22 @@
     <%= @game.max_team_number %>
   <% end %>
 </p>
+<p>
+  <em>Ховати назви рівнів: </em>
+  <% if @game.hide_levels_names? %>
+    Так
+  <% else %>
+    Ні
+  <% end %>
+</p>
+<p>
+  <em>Ховати статистику: </em>
+  <% if @game.hide_stat? %>
+    <%= @game.hide_stat_type == 'all' ? 'До закінчення гри' : "До закінчення #{@game.hide_stat_level} рівня" %>
+  <% else %>
+    Ні
+  <% end %>
+</p>
 
 <% if current_user && (current_user.captain? || @game.team_type == 'single') %>
   <br>

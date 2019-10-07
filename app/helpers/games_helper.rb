@@ -47,4 +47,13 @@ module GamesHelper
       "<em>Початок гри</em>: #{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}".html_safe
     end
   end
+
+  def hide_stat?(game, team)
+    return true if game.hide_stat? && game.hide_stat_type == 'all'
+
+    game_passing = GamePassing.of(team.id, game.id)
+    return true if game_passing.nil?
+
+    game_passing.current_level.position <= game.hide_stat_level
+  end
 end

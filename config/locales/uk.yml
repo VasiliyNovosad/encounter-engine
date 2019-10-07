@@ -23,6 +23,10 @@ uk:
         city: "Місто проведення"
         small_description: "Короткий опис"
         image: "Лінк на картинку"
+        team_type: "Тип команди"
+        authors: "Автори"
+        hide_levels_names: "Ховати назви рівнів"
+        hide_stat: "Ховати статистику"
       level:
         name: "Назва"
         text: "Текст завдання"

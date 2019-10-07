@@ -32,7 +32,7 @@
 <div id="main-game-container">
   <fieldset>
     <legend>
-      <%= level.name %>
+      <%= game.hide_levels_names? ? "Рівень #{level.position}" : level.name %>
     </legend>
 
     <% if (level.complete_later || 0) > 0 %>

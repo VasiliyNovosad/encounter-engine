@@ -118,7 +118,7 @@
         }
 
         var input_lock_type_field = $('#level_input_lock_type');
-        if (input_lock_type_field.val() == 'team') {
+        if (input_lock_type_field.val() === 'team') {
             $("#input_lock_type_team").prop("checked", true);
             $("#input_lock_type_member").prop("checked", false);
         } else {

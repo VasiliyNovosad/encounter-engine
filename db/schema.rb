@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191003121348) do
+ActiveRecord::Schema.define(version: 20191007185025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -259,6 +259,10 @@ ActiveRecord::Schema.define(version: 20191003121348) do
     t.string   "image"
     t.string   "team_type",                          default: "multy"
     t.text     "show_scenario_for"
+    t.boolean  "hide_levels_names",                  default: false
+    t.boolean  "hide_stat",                          default: false
+    t.string   "hide_stat_type",                     default: "all"
+    t.integer  "hide_stat_level",                    default: 0
   end
 
   add_index "games", ["slug"], name: "index_games_on_slug", using: :btree

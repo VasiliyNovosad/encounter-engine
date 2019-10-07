@@ -154,7 +154,8 @@ class GamesController < ApplicationController
       :registration_deadline, :max_team_number, :is_draft,
       :is_testing, :author, :test_date, :tested_team_id, :game_size,
       :price, :place, :city, :small_description, :image, :team_type,
-      :show_scenario_for
+      :show_scenario_for, :hide_levels_names, :hide_stat,
+      :hide_stat_type, :hide_stat_level
     )
   end
 
