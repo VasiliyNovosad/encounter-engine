@@ -70,23 +70,24 @@
     <%= @game.max_team_number %>
   <% end %>
 </p>
-<p>
-  <em>Ховати назви рівнів: </em>
-  <% if @game.hide_levels_names? %>
-    Так
-  <% else %>
-    Ні
-  <% end %>
-</p>
-<p>
-  <em>Ховати статистику: </em>
-  <% if @game.hide_stat? %>
-    <%= @game.hide_stat_type == 'all' ? 'До закінчення гри' : "До закінчення #{@game.hide_stat_level} рівня" %>
-  <% else %>
-    Ні
-  <% end %>
-</p>
-
+<% if user_signed_in? && current_user.author_of?(@game) %>
+  <p>
+    <em>Ховати назви рівнів: </em>
+    <% if @game.hide_levels_names? %>
+      Так
+    <% else %>
+      Ні
+    <% end %>
+  </p>
+  <p>
+    <em>Ховати статистику: </em>
+    <% if @game.hide_stat? %>
+      <%= @game.hide_stat_type == 'all' ? 'До закінчення гри' : "До закінчення #{@game.hide_stat_level} рівня" %>
+    <% else %>
+      Ні
+    <% end %>
+  </p>
+<% end %>
 <% if current_user && (current_user.captain? || @game.team_type == 'single') %>
   <br>
   <p><% game_entry = GameEntry.of(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id, @game.id)%>
