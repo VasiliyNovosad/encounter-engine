@@ -8,7 +8,7 @@ class BonusesController < ApplicationController
 
   def new
     bonuses = @game.bonuses
-    @bonus = bonuses.build(name: "Бонус #{bonuses.count + 1}")
+    @bonus = bonuses.build(name: "Бонус #{bonuses.size + 1}")
     @bonus.bonus_answers.build
     render :new, locals: { teams: @teams, game: @game, bonus: @bonus, level: @level }
   end
@@ -33,7 +33,7 @@ class BonusesController < ApplicationController
     answers_list = bonus_params[:answers_list].split(/\n+/)
     answers_list.each do |answers|
       all_answers = answers.split(';')
-      bonus = @game.bonuses.build(bonus_params.to_hash.merge(name: "#{bonus_params[:name]} #{@level.bonuses.count + 1}"))
+      bonus = @game.bonuses.build(bonus_params.to_hash.merge(name: "#{bonus_params[:name]} #{@level.bonuses.size + 1}"))
       all_answers.each do |answer|
         bonus.bonus_answers.build(value: answer, team_id: bonus_params[:team_id])
       end
@@ -76,8 +76,8 @@ class BonusesController < ApplicationController
 
   def copy
     new_bonus = @bonus.dup
-    new_bonus.name = "Бонус #{@level.bonuses.count + 1}"
-    new_bonus.set_list_position(@game.bonuses.count + 1)
+    new_bonus.name = "Бонус #{@level.bonuses.size + 1}"
+    new_bonus.set_list_position(@game.bonuses.size + 1)
     @bonus.bonus_answers.each do |answer|
       new_answer = answer.dup
       new_answer.bonus_id = nil
@@ -96,8 +96,8 @@ class BonusesController < ApplicationController
 
   def copy_to_sector
     questions = @level.questions
-    new_question = questions.build(name: "Сектор #{questions.count + 1}")
-    new_question.set_list_position(questions.count + 1)
+    new_question = questions.build(name: "Сектор #{questions.size + 1}")
+    new_question.set_list_position(questions.size + 1)
     @bonus.bonus_answers.each do |answer|
       new_question.answers.build(value: answer.value, team_id: answer.team_id)
     end

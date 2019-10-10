@@ -154,7 +154,7 @@
   <p>
     <%= render 'questions/list', questions: @level.questions, game: @game, level: @level %>
   </p>
-  <% if !@game.author_finished? && @level.questions.count > 5 %>
+  <% if !@game.author_finished? && @level.questions.size > 5 %>
     <p>
       <%= link_to "Додати сектор", new_game_level_question_path(@game, @level), class: 'btn btn-sm btn-success' %>
       <%= link_to "Додати групу секторів", { controller: 'questions', action: 'new_batch', game_id: @game.id, level_id: @level.id }, class: 'btn btn-sm btn-success' %>
@@ -184,7 +184,7 @@
   <p>
     <%= render 'bonuses/list', bonuses: @level.bonuses, game: @game, level: @level %>
   </p>
-  <% if !@game.author_finished? && @level.bonuses.count > 5 %>
+  <% if !@game.author_finished? && @level.bonuses.size > 5 %>
     <br>
     <p>
       <%= link_to "Додати бонус", new_game_level_bonus_path(@game, @level), class: 'btn btn-sm btn-primary' %>

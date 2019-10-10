@@ -25,7 +25,7 @@ class TeamRequest < ActiveRecord::Base
 
   def find_team
     team = Team.by_name(team_name.mb_chars.downcase.to_s).where(team_type: 'multy')
-    self.team = team.first if team && team.count > 0
+    self.team = team.first if team && team.size.positive?
   end
 
   def recepient_is_not_captain_of_any_team

@@ -1,11 +1,11 @@
 <% olymp_base = level.olymp_base || 2 %>
-<% levels = Math.log(sectors.count, olymp_base).to_i + 1 %>
+<% levels = Math.log(sectors.size, olymp_base).to_i + 1 %>
 <div id="LevelSectorsOlympContainer">
   <table class="olymp" border="1">
     <tbody>
       <% (1..(olymp_base**(levels - 1))).each do |i| %>
         <tr>
-          <% if i <= sectors.count %>
+          <% if i <= sectors.size %>
             <td id="sector-<%= sectors[i-1][:position] %>">
               <%= sectors[i-1][:value].html_safe %>
             </td>
@@ -17,7 +17,7 @@
 
           <% (1..(levels - 1)).each do |j| %>
             <% if i % olymp_base ** j == 1 %>
-              <% if sum + i / olymp_base**j < sectors.count %>
+              <% if sum + i / olymp_base**j < sectors.size %>
                 <td rowspan="<%= olymp_base**j %>" id="sector-<%= sectors[sum + i / olymp_base**j][:position] %>">
                   <%= sectors[sum + i / olymp_base**j][:value].html_safe %>
                 </td>

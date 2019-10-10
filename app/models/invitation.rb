@@ -27,7 +27,7 @@ class Invitation < ActiveRecord::Base
 
   def find_user
     user = User.by_nickname(recepient_nickname.mb_chars.downcase.to_s)
-    self.for_user = user.first if user && user.count > 0
+    self.for_user = user.first if user && user.size.positive?
   end
 
   def recepient_is_not_member_of_team

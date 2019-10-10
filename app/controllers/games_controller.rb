@@ -1,23 +1,32 @@
 class GamesController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
-  before_action :find_game, except: [:index, :new, :create]
-  before_action :ensure_game_was_not_finished, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!, except: %i[index show]
+  before_action :find_game, except: %i[index new create show_scenario]
+  before_action :find_game_with_associations, only: :show_scenario
+  before_action :ensure_game_was_not_finished, only: %i[edit update destroy]
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
   before_action :ensure_author_if_no_start_time, only: [:show]
-  before_action :ensure_author, only: [:edit, :update, :new_level_order, :create_level_order, :open_game, :end_game, :start_test, :finish_test, :destroy]
+  before_action :ensure_author, only: %i[
+    edit update new_level_order
+    create_level_order open_game
+    end_game start_test finish_test destroy
+  ]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
   before_action :ensure_has_access, only: [:show_scenario]
-  before_action :find_teams, only: [:show, :new_level_order]
+  before_action :find_teams, only: %i[show new_level_order]
 
   def index
-    @page_content = "index,follow"
+    @page_content = 'index,follow'
     @seo_block = create_index_seo_block
     coming_games = Game.notstarted
     finished_games = Game.finished.order(starts_at: :desc)
     current_games = Game.started - finished_games
-    render :index, locals: { current_games: current_games, coming_games: coming_games, finished_games: finished_games }
+    render :index, locals: {
+      current_games: current_games,
+      coming_games: coming_games,
+      finished_games: finished_games
+    }
   end
 
   def new
@@ -38,11 +47,11 @@ class GamesController < ApplicationController
 
   def show
     if request.path != game_path(@game)
-      return redirect_to @game, :status => :moved_permanently
+      return redirect_to @game, status: :moved_permanently
     end
     @page_title = "#{@game.name} ᐈ【 Квести Луцьк 】"
     @page_description = "❰❰❰ #{@game.name} ❱❱❱ #{ @game.small_description.blank? ? "це: ➔ цікаві логічні завдання від кращих авторів Луцька, ➔ захоплюючі пошуки, ➔ драйв та адреналін, ➔ неймовірні пригоди та яскраві емоції, ➔ новий формат інтелектуально-активного відпочинку! ➤ Якщо ти рухаєш мізками та дупою швидше ніж твоя бабуся, ПРИЄДНУЙСЯ" : @game.small_description } ➤【 Квест 🔍 Луцьк 】"
-    @page_content = "index,follow"
+    @page_content = 'index,follow'
     @teams_for_test = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
     @game_entries = GameEntry.of_game(@game.id).with_status('new')
     @levels = @game.levels
@@ -125,7 +134,7 @@ class GamesController < ApplicationController
   def create_level_order
     @levels = @game.levels
     @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
-    (1..@levels.count).each do |index|
+    (1..@levels.size).each do |index|
       @teams.each do |team|
         selected_level = params["level_id_#{index}_#{team.id}"]
         level_order = LevelOrder.where(game_id: @game.id, team_id: team.id, position: index).first
@@ -163,6 +172,10 @@ class GamesController < ApplicationController
     @game = Game.friendly.find(params[:id])
   end
 
+  def find_game_with_associations
+    @game = Game.includes(levels: [{questions: [:answers]}, :hints, :tasks, :penalty_hints, {bonuses: [:bonus_answers]}]).friendly.find(params[:id])
+  end
+
   def game_is_draft?
     @game.draft?
   end
@@ -172,7 +185,7 @@ class GamesController < ApplicationController
   end
 
   def find_teams
-    @accepted_game_entries = GameEntry.of_game(@game.id).with_status('accepted')
+    @accepted_game_entries = GameEntry.of_game(@game.id).includes(:team).with_status('accepted')
   end
 
   def no_start_time?
@@ -314,7 +327,7 @@ class GamesController < ApplicationController
   def get_images(game_description)
     require 'nokogiri'
     doc = Nokogiri::HTML(game_description)
-    doc.xpath("//img").map { |img| img['src'] }
+    doc.xpath('//img').map { |img| img['src'] }
   end
 
   def telegram_user(telegram)

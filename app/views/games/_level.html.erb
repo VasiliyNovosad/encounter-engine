@@ -17,7 +17,7 @@
     </p>
     <br>
   <% end %>
-  <% if level.questions.count > 1 %>
+  <% if level.questions.size > 1 %>
     <p>
       <strong>Умова для проходження:</strong> <%= (level.sectors_for_close || 0) > 0 ? " закрити #{level.sectors_for_close} секторів" : ' закрити всі сектори' %>
     </p>
@@ -48,28 +48,28 @@
     <%= render 'tasks', tasks: level.tasks %>
   </p>
   <br>
-  <% if level.hints.count > 0 %>
+  <% if level.hints.size > 0 %>
     <span class="hint-timer">Підказки:</span>
     <p>
       <%= render 'hints', hints: level.hints %>
     </p>
     <br>
   <% end %>
-  <% if level.penalty_hints.count > 0 %>
+  <% if level.penalty_hints.size > 0 %>
     <span class="yellow">Штрафні підказки:</span>
     <p>
       <%= render 'penalty_hints', penalty_hints: level.penalty_hints %>
     </p>
     <br>
   <% end %>
-  <% if level.bonuses.count > 0 %>
+  <% if level.bonuses.size > 0 %>
     <span class="bonus">Бонуси:</span>
     <p>
       <%= render 'bonuses', bonuses: level.bonuses %>
     </p>
     <br>
   <% end %>
-  <% if level.questions.count > 0 %>
+  <% if level.questions.size > 0 %>
     <span class="right_code">Відповіді:</span>
     <p>
       <%= render 'answers', level: level %>

@@ -44,11 +44,11 @@ class Level < ActiveRecord::Base
   end
 
   def multi_question?(team_id)
-    team_questions(team_id).count > 1
+    team_questions(team_id).size > 1
   end
 
   def has_bonuses?(team_id)
-    team_bonuses(team_id).count > 0
+    team_bonuses(team_id).size > 0
   end
 
   def find_questions_by_answer(answer_value, team_id)
@@ -76,7 +76,7 @@ class Level < ActiveRecord::Base
   end
 
   def tasks_not_presence?
-    tasks.nil? || tasks.count == 0
+    tasks.nil? || tasks.size == 0
   end
 
   def team_questions(team_id)
@@ -96,7 +96,7 @@ class Level < ActiveRecord::Base
   end
 
   def check_sectors_for_close
-    self.sectors_for_close = questions.count if sectors_for_close > questions.count
+    self.sectors_for_close = questions.size if sectors_for_close > questions.size
   end
 
   def dismiss!(user_id)

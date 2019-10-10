@@ -1,6 +1,6 @@
 <h2><%= t('.title', :forum => forum) %></h2>
 
-<h3><%= t('posts_count', :count => @posts.count, :scope => 'forem.general') %></h3>
+<h3><%= t('posts_count', :count => @posts.size, :scope => 'forem.general') %></h3>
 
 <%= form_tag forem.forum_moderate_posts_url(forum), :method => :put do %>
   <div id='posts'>
@@ -11,7 +11,7 @@
   </div>
 <% end %>
 
-<h3><%= t('topics_count', :count => @topics.count, :scope => 'forem.forum') %></h3>
+<h3><%= t('topics_count', :count => @topics.size, :scope => 'forem.forum') %></h3>
 
 <div id='topics'>
   <% @topics.limit(25).each_with_index do |topic, topic_counter| %>

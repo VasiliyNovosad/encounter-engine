@@ -1,13 +1,10 @@
 <fieldset>
   <legend>
-    Заявки на реєстрацію (<%= game_entries.count %>):
+    Заявки на реєстрацію (<%= game_entries.size %>):
   </legend>
 
 <% game_entries.each do |entry| %>
-  <%
-    team = Team.find(entry.team_id)
-    game = Game.find(entry.game_id)
-  %>
+  <% team = entry.team %>
   <p>
     <strong><%= game_entries.index(entry) + 1 %>. <%= link_to team.name, team_path(team)  if user_signed_in? %> <%= team.name  unless user_signed_in? %> </strong>
     <% unless game.author_finished? %>

@@ -91,16 +91,16 @@ class Game < ActiveRecord::Base
     return nil unless game_passing && (game_passing.finished? || self.game_type == 'panic')
     if self.game_type == 'linear' || game_passing.finished_at
       count_of_finished_before =
-        GamePassing.of_game(id).finished_before(game_passing.finished_at).count
+        GamePassing.of_game(id).finished_before(game_passing.finished_at).size
     else
-      count_of_finished = GamePassing.finished.count
+      count_of_finished = GamePassing.finished.size
       count_of_finished_before = count_of_finished +
         GamePassing.of_game(id).select do |game_pass|
           !game_passing.finished_at &&
-          game_pass.closed_levels.count > game_passing.closed_levels.count ||
-          game_pass.closed_levels.count == game_passing.closed_levels.count &&
+          game_pass.closed_levels.size > game_passing.closed_levels.size ||
+          game_pass.closed_levels.size == game_passing.closed_levels.size &&
           game_pass.current_level_entered_at < game_passing.current_level_entered_at
-        end.count
+        end.size
     end
     count_of_finished_before + 1
   end
@@ -189,7 +189,7 @@ class Game < ActiveRecord::Base
             team_id: game_passing.team_id,
             team_name: game_passing.team_name,
             finished_at: game_passing.finished_at || game_finished_at,
-            closed_levels: game_passing.closed_levels.count,
+            closed_levels: game_passing.closed_levels.size,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
         }
       end.sort do |a, b|
@@ -203,7 +203,7 @@ class Game < ActiveRecord::Base
             team_id: game_passing.team_id,
             team_name: game_passing.team_name,
             finished_at: game_passing.finished_at,
-            closed_levels: game_passing.closed_levels.count,
+            closed_levels: game_passing.closed_levels.size,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
             exited: game_passing.exited?
         }

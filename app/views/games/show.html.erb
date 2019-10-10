@@ -58,7 +58,7 @@
 
 <% unless @topic.nil? %>
   <p>
-    <em>Обговорення:</em> <%= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>
+    <em>Обговорення:</em> <%= link_to " #{@topic.posts.size} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>
   </p>
 <% end %>
 <p>
@@ -134,10 +134,35 @@
 <p>
   <%= @game.description.html_safe %>
 </p>
+<br>
 
+<%= render 'game_entries', game_entries: @game_entries, game: @game  %>
+<br>
+<%= render 'teams', accepted_game_entries: @accepted_game_entries, game: @game %>
 <br>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
+
+  <% if !@game.started? && !@game.is_testing? && @game.levels && @game.levels.size > 0 %>
+
+    <% if game_with_personal? || @game.game_type == 'selected' %>
+      <%= form_tag start_test_game_path(@game), method: :post, id: "start-test-form" do %>
+        <%= submit_tag "Почати тестування", class: 'btn btn-success btn-sm' %>
+        <%= label_tag " для команди " %>
+        <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
+      <% end %>
+    <% else %>
+      <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
+    <% end %>
+  <% end %>
+
+  <% if @game.is_testing? %>
+    <%= link_to "Старт", url_for("/play/#{@game.id}"), class: 'btn btn-success btn-sm' %>
+    <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
+  <% end %>
+
+  <br>
+  <br>
 
   <fieldset>
     <legend>
@@ -156,12 +181,7 @@
   <br>
 <% end %>      
 
-<%= render 'game_entries', game_entries: @game_entries  %>
-<br>
-<%= render 'teams', accepted_game_entries: @accepted_game_entries, game: @game %>
-<br>
-
-<% if @game.game_type == 'selected' && @teams_for_test.count > 0 && !@game.author_finished? %>
+<% if @game.game_type == 'selected' && @teams_for_test.size > 0 && !@game.author_finished? %>
   <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
 <% end %>
 <script type="text/javascript">
@@ -172,29 +192,10 @@
     var date = new Date(dateObj);
   <% end %>
 
-  $("#start-countdown").countdown(date, {
+  $("#start-countdown").sizedown(date, {
     prefix:'До початку лишилось: '
   });
 </script>
-
-<% if user_signed_in? && current_user.author_of?(@game) && !@game.started? && !@game.is_testing? && @game.levels && @game.levels.count > 0 %>
-
-    <% if game_with_personal? || @game.game_type == 'selected' %>
-        <%= form_tag start_test_game_path(@game), method: :post do %>
-            <%= submit_tag "Почати тестування", class: 'btn btn-success btn-sm' %>
-            <%= label_tag " для команди " %>
-            <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
-        <% end %>
-    <% else %>
-        <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
-    <% end %>
-
-<% end %>
-
-<% if user_signed_in? && current_user.author_of?(@game) && @game.is_testing? %>
-   <%= link_to "Старт", url_for("/play/#{@game.id}"), class: 'btn btn-success btn-sm' %>
-   <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
-<% end %>
 
 <% if user_signed_in? && current_user.author_of?(@game) %>
   <br>

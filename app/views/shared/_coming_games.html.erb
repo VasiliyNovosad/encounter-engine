@@ -1,4 +1,4 @@
-<% if coming_games.count > 0 %>
+<% if coming_games.size > 0 %>
   <% nearest_game = coming_games.first %>
   <fieldset id="nearest" class="game-fieldset">
     <legend>
@@ -9,7 +9,7 @@
   <br><br>
 
   <% coming_games = coming_games[1..-1] %>
-  <% if coming_games.count > 0 %>
+  <% if coming_games.size > 0 %>
     <% coming_games.each do |game | %>
       <fieldset class="game-fieldset">
         <legend>

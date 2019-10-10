@@ -374,7 +374,7 @@ class LogsController < ApplicationController
         @level_logs << @teams.map do |team|
           game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
           team_logs = logs[[team.id, level.id]]
-          previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
+          previous_time = @level_logs.size == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
           team_log = (!team_logs.nil? && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
           {
               team: team,
@@ -390,7 +390,7 @@ class LogsController < ApplicationController
         game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
         {
           team: result.team,
-          levels: result.closed_levels.count,
+          levels: result.closed_levels.size,
           bonuses: (result.sum_bonuses || 0) + game_bonus,
           time: result.finished_at || result.current_level_entered_at
         }
@@ -437,7 +437,7 @@ class LogsController < ApplicationController
         game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
         {
             team: result.team,
-            levels: result.closed_levels.count,
+            levels: result.closed_levels.size,
             bonuses: (result.sum_bonuses || 0) + game_bonus,
             time: result.finished_at || result.current_level_entered_at
         }

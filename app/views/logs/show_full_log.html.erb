@@ -13,17 +13,17 @@
       <% end %>
 
       <tr align="center">
-        <td colspan="<%=@teams.count%>">
+        <td colspan="<%=@teams.size%>">
           <h2><%= level.name %></h2>
 
-          <% if correct_answers.count == 1 %>
+          <% if correct_answers.size == 1 %>
             <p><strong>Вірний код: </strong><%= correct_answers.first %></p>
-          <% elsif correct_answers.count >= 1%>
+          <% elsif correct_answers.size >= 1%>
             <p><strong>Вірні коди: </strong><%= correct_answers.join(', ') %></p>
           <% end %>
-          <% if correct_bonus_answers.count == 1 %>
+          <% if correct_bonus_answers.size == 1 %>
             <p><strong>Вірний бонусний код: </strong><%= correct_bonus_answers.first %></p>
-          <% elsif correct_bonus_answers.count >= 1%>
+          <% elsif correct_bonus_answers.size >= 1%>
             <p><strong>Вірні бонусні коди: </strong><%= correct_bonus_answers.join(', ') %></p>
           <% end %>
         </td>

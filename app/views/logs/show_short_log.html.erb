@@ -1,4 +1,4 @@
-<% levels_count = @levels.count %>
+<% levels_count = @levels.size %>
 <h1>Статистика гри "<%= link_to @game.name, game_path(@game) %>"</h1>
 <% if !current_user.author_of?(@game) && !@game.author_finished? && hide_stat?(@game, @game.team_type == 'multy' ? current_user.team : current_user.single_team) %>
   <h2>Статистику закрито</h2>
@@ -18,7 +18,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @teams.count.times do |pos| %>
+    <% @teams.size.times do |pos| %>
       <tr valign="top">
         <td align="center" valign="middle" class="stat-std"><%= pos + 1 %></td>
         <% @levels.each do |level| %>
@@ -62,7 +62,7 @@
           </td>
         <% end %>
         <% log = @level_logs[levels_count][pos] %>
-        <!--{ team: result.team, levels: result.closed_levels.count, bonuses: result.sum_bonuses, time: result.finished_at || result.current_level_entered_at }-->
+        <!--{ team: result.team, levels: result.closed_levels.size, bonuses: result.sum_bonuses, time: result.finished_at || result.current_level_entered_at }-->
         <td align="center" class="stat-std">
           <div class="team-stat" data-id=<%= log[:team].id %> onclick="toggle(<%= log[:team].id %>)">
             <p class="team-name"><%= log[:team].name %>(<%= log[:levels] %>)</p>

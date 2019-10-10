@@ -63,7 +63,7 @@ class LevelsController < ApplicationController
 
   def copy
     new_level = @level.dup
-    new_level.set_list_position(@game.levels.count + 1)
+    new_level.set_list_position(@game.levels.size + 1)
     @level.tasks.each do |task|
       new_task = task.dup
       new_task.level_id = nil

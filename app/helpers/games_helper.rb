@@ -6,7 +6,7 @@ module GamesHelper
     questions = 0
     answers = 0
     levels.each do |level|
-      unless level.tasks.count == 0
+      unless level.tasks.size == 0
         level.tasks.each do |task|
           tasks += 1 unless task.team.nil?
         end
@@ -15,7 +15,7 @@ module GamesHelper
         end
         level.questions.each do |question|
           questions += 1 unless question.team.nil?
-          unless question.answers.count == 0
+          unless question.answers.size == 0
             question.answers.each do |answer|
               answers += 1 unless answer.team.nil?
             end
