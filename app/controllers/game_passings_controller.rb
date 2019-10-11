@@ -147,8 +147,8 @@ class GamePassingsController < ApplicationController
 
     render json: {
       hint_num: hint_to_show_count,
-      hint_text: (hint_to_show_count.zero? ? '' : last_hint.text.html_safe),
-      hint_id: (hint_to_show_count.zero? ? nil : last_hint.id),
+      hint_text: (hint_to_show_count.zero? || last_hint.nil? ? '' : last_hint.text.html_safe),
+      hint_id: (hint_to_show_count.zero? || last_hint.nil? ? nil : last_hint.id),
       hint_count: hint_to_show_count + upcoming_hints_count
     }
   end
