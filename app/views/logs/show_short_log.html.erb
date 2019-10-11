@@ -1,6 +1,6 @@
 <% levels_count = @levels.size %>
 <h1>Статистика гри "<%= link_to @game.name, game_path(@game) %>"</h1>
-<% if !current_user.author_of?(@game) && !@game.author_finished? && hide_stat?(@game, @game.team_type == 'multy' ? current_user.team : current_user.single_team) %>
+<% if current_user && !current_user.author_of?(@game) && !@game.author_finished? && hide_stat?(@game, @game.team_type == 'multy' ? current_user.team : current_user.single_team) %>
   <h2>Статистику закрито</h2>
 <% else %>
 <table id="stats" border="1">
