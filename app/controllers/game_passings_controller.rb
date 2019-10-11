@@ -48,12 +48,12 @@ class GamePassingsController < ApplicationController
         format.json do
           level_position = @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position
           all_sectors = @level.team_questions(@team_id)
-          sectors_count = all_sectors.size
+          sectors_count = all_sectors.count
           level_time = level_duration
           level_start = @game_passing.level_started_at(@level)
           hint_num = 0
           current_level_json = {
-              game: {id: @game.id, name: @game.name, levels_count: @game.levels.size, game_type: @game.game_type},
+              game: {id: @game.id, name: @game.name, levels_count: @game.levels.count, game_type: @game.game_type},
               team: {id: @team.id, name: @team.name},
               level: {
                   id: @level.id,
@@ -63,7 +63,7 @@ class GamePassingsController < ApplicationController
                   left_time: level_time == 0 ? 0 : (level_start - time).to_i + level_time,
                   sectors_count: sectors_count,
                   sectors_need: @level.sectors_for_close.zero? ? sectors_count : @level.sectors_for_close,
-                  sectors_closed: @game.game_type == 'panic' ? @game_passing.questions.size : (@game_passing.question_ids.to_set & all_sectors.map(&:id).to_set).size,
+                  sectors_closed: @game.game_type == 'panic' ? @game_passing.questions.count : (@game_passing.question_ids.to_set & all_sectors.map(&:id).to_set).size,
                   tasks: @level.team_tasks(@team_id).map { |task| {id: task.id, text: task.text} },
                   messages: @level.messages.map { |message| { user: message.user_nickname, text: message.text} },
                   hints: @hints_to_show.map do |hint|
@@ -137,9 +137,9 @@ class GamePassingsController < ApplicationController
   def get_current_level_tip
     level_id = params[:level_id]
     level = Level.find(level_id)
-    upcoming_hints_count = @game_passing.upcoming_hints(@team_id, level).size
+    upcoming_hints_count = @game_passing.upcoming_hints(@team_id, level).count
     hints_to_show = @game_passing.hints_to_show(@team_id, level)
-    hint_to_show_count = hints_to_show.size
+    hint_to_show_count = hints_to_show.count
     hints_to_show.select! do |hint|
       hint.id == params[:hint].to_i
     end
@@ -293,7 +293,7 @@ class GamePassingsController < ApplicationController
             team_id: game_passing.team_id,
             team_name: game_passing.team_name,
             finished_at: game_passing.finished_at || game_finished_at,
-            closed_levels: game_passing.closed_levels.size,
+            closed_levels: game_passing.closed_levels.count,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
         }
       end.sort do |a, b|
@@ -307,7 +307,7 @@ class GamePassingsController < ApplicationController
             team_id: game_passing.team_id,
             team_name: game_passing.team_name,
             finished_at: game_passing.finished_at,
-            closed_levels: game_passing.closed_levels.size,
+            closed_levels: game_passing.closed_levels.count,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
             exited: game_passing.exited?
         }
@@ -589,9 +589,9 @@ class GamePassingsController < ApplicationController
 
   def count_wrong_answers(time, level_id, game_id, team_id, user_id, input_lock_type)
     if input_lock_type == 'team'
-      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(answer_type: 0).where('time >= ?', time).size
+      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(answer_type: 0).where('time >= ?', time).count
     else
-      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(user_id: user_id, answer_type: 0).where('time >= ?', time).size
+      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(user_id: user_id, answer_type: 0).where('time >= ?', time).count
     end
   end
 

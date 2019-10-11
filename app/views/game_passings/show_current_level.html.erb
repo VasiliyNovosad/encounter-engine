@@ -1,7 +1,7 @@
 <h2>
   "<strong><%= game.name %></strong>"
   <br>
-  Завдання <%= game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %> із <%= game.levels.size %>
+  Завдання <%= game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %> із <%= game.levels.count %>
 </h2>
 <br>
 

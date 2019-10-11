@@ -31,9 +31,9 @@ class GamePassing < ActiveRecord::Base
 
   def self.of(team_id, game_id)
     game_passings = of_team(team_id).of_game(game_id)
-    if game_passings.size == 1
+    if game_passings.count == 1
       game_passings.first
-    elsif game_passings.size > 1
+    elsif game_passings.count > 1
       game_passings.last.delete
       game_passings.first
     end
@@ -46,7 +46,7 @@ class GamePassing < ActiveRecord::Base
     answered_bonus, is_correct_bonus_answer = pass_bonuses!(answer, level, team_id, user)
     answered_question, is_correct_answer, needed, closed = pass_questions!(answer, level, team_id, user)
     start_time = level_started_at(level)
-    if level.questions.size.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
+    if level.questions.count.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
       pass_level!(level, team_id, time, start_time, user.id)
     end
     if level[:is_wrong_code_penalty] && !level[:wrong_code_penalty].zero? && !is_correct_bonus_answer && !is_correct_answer
@@ -376,7 +376,7 @@ class GamePassing < ActiveRecord::Base
   def last_level?(level, team_id)
     game.game_type == 'linear' && current_level.next.nil? ||
       game.game_type == 'panic' && !closed?(level) &&
-        closed_levels.size == game.levels.size - 1 ||
+        closed_levels.count == game.levels.count - 1 ||
       game.game_type == 'selected' && last_level_selected?(team_id)
   end
 
@@ -418,7 +418,7 @@ class GamePassing < ActiveRecord::Base
       }
     end
     pass_question!(answered_question)
-    needed = level.team_questions(team_id).size
+    needed = level.team_questions(team_id).count
     closed = (question_ids.to_set & level.team_questions(team_id).map(&:id).to_set).size
     [answered_question, true, needed, closed]
   end
