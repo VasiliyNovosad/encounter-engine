@@ -1,45 +1,57 @@
-<div id="levels" class="list-group container-fluid" data-url="<%= sort_game_levels_path(game) %>">
-  <% levels.each do |level| %>
-    <div class="list-group-item row col-10" id="<%= dom_id(level) %>">
-      <div class="col-lg-3 col-md-5 col-sm-3 col-12">
-        <span class="level-position"><%= level.position %></span>. <%= link_to level.name, game_level_path(level.game, level) %>
+<% if game.author_finished? %>
+  <div id="levels" class="list-group container-fluid">
+    <% levels.each do |level| %>
+      <div class="list-group-item row col-10" id="<%= dom_id(level) %>">
+        <div class="col-lg-3 col-md-5 col-sm-3 col-12">
+          <span class="level-position"><%= level.position %></span>. <%= link_to level.name, game_level_path(level.game, level) %>
+        </div>
       </div>
-      <div class="col-lg-9 col-md-7 col-sm-9 col-12 btn-toolbar">
-        <% unless level.game.author_finished? %>
-<!--          <div class="resort-block">-->
+    <% end %>
+  </div>
+<% else %>
+  <div id="levels" class="list-group container-fluid" data-url="<%= sort_game_levels_path(game) %>">
+    <% levels.each do |level| %>
+      <div class="list-group-item row col-10" id="<%= dom_id(level) %>">
+        <div class="col-lg-3 col-md-5 col-sm-3 col-12">
+          <span class="level-position"><%= level.position %></span>. <%= link_to level.name, game_level_path(level.game, level) %>
+        </div>
+        <div class="col-lg-9 col-md-7 col-sm-9 col-12 btn-toolbar">
+          <% unless level.game.author_finished? %>
+            <!--          <div class="resort-block">-->
             <%# unless level.first? %>
-<!--              <span class="level-move level-up btn btn-sm btn-success"><%#= link_to "&#8679;".html_safe, move_up_game_level_path(level.game, level), method: :post %></span>-->
+            <!--              <span class="level-move level-up btn btn-sm btn-success"><%#= link_to "&#8679;".html_safe, move_up_game_level_path(level.game, level), method: :post %></span>-->
             <%# end %>
             <%# unless level.last? %>
-<!--              <span class="level-move level-down btn btn-sm btn-success"><%#= link_to "&#8681;".html_safe, move_down_game_level_path(level.game, level), method: :post %></span>-->
+            <!--              <span class="level-move level-down btn btn-sm btn-success"><%#= link_to "&#8681;".html_safe, move_down_game_level_path(level.game, level), method: :post %></span>-->
             <%# end %>
-<!--          </div>-->
-          <div class="edit-block">
-            <span class="level-copy btn btn-sm btn-primary"><%= link_to "скопіювати", copy_game_level_path(level.game, level), method: :post %></span>
-            <% unless level.dismissed? %>
-              <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "зняти", dismiss_game_level_path(level.game, level), method: :post %></span>
-            <% end %>
-            <% if level.dismissed? %>
-              <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "відмінити зняття", undismiss_game_level_path(level.game, level), method: :post %></span>
-            <% end %>
-            <span class="level-dismiss btn btn-sm btn-danger"><%= link_to "видалити", game_level_path(level.game, level), method: :delete, data: { confirm: 'Ви впевнені?' } %></span>
-          </div>
-        <% end %>
+            <!--          </div>-->
+            <div class="edit-block">
+              <span class="level-copy btn btn-sm btn-primary"><%= link_to "скопіювати", copy_game_level_path(level.game, level), method: :post %></span>
+              <% unless level.dismissed? %>
+                <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "зняти", dismiss_game_level_path(level.game, level), method: :post %></span>
+              <% end %>
+              <% if level.dismissed? %>
+                <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "відмінити зняття", undismiss_game_level_path(level.game, level), method: :post %></span>
+              <% end %>
+              <span class="level-dismiss btn btn-sm btn-danger"><%= link_to "видалити", game_level_path(level.game, level), method: :delete, data: { confirm: 'Ви впевнені?' } %></span>
+            </div>
+          <% end %>
+        </div>
       </div>
-    </div>
-  <% end %>
-</div>
-<script>
-  $("#levels").sortable({
-    update: function(e, ui) {
-      $('.level-position').each(function( index ) {
-          $( this ).text(index + 1);
+    <% end %>
+  </div>
+  <script>
+      $("#levels").sortable({
+          update: function(e, ui) {
+              $('.level-position').each(function( index ) {
+                  $( this ).text(index + 1);
+              });
+              $.ajax({
+                  url: $(this).data("url"),
+                  type: "PATCH",
+                  data: $(this).sortable('serialize'),
+              });
+          }
       });
-      $.ajax({
-        url: $(this).data("url"),
-        type: "PATCH",
-        data: $(this).sortable('serialize'),
-      });
-    }
-  });
-</script>
+  </script>
+<% end %>
