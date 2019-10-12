@@ -166,17 +166,17 @@
 
   <fieldset>
     <legend>
-      Завдання:
+      Завдання: <button id="toggleLevelListButton" class="btn btn-sm btn-primary">Сховати</button>
     </legend>
 
-    <p>
+    <div id="levels-list">
       <%= render 'levels/list', levels: @game.levels, game: @game  %>
-    </p>
-    <br>
+      <br>
 
-    <p>
-      <%= link_to "Додати завдання", new_game_level_path(@game), class: 'btn btn-primary btn-sm' unless @game.author_finished?%>
-    </p>
+      <p>
+        <%= link_to "Додати завдання", new_game_level_path(@game), class: 'btn btn-primary btn-sm' unless @game.author_finished?%>
+      </p>
+    </div>
   </fieldset>
   <br>
 <% end %>      
@@ -213,3 +213,16 @@
     <%= link_to "Видалити гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-sm btn-danger' unless @game.started? || @game.author_finished? %>
   </p>
 <% end %>
+
+<script>
+  $(document).load(
+      $('#toggleLevelListButton').click(function() {
+          $('#levels-list').toggleClass('d-none');
+          if ($(this).text() === 'Сховати') {
+              $(this).text('Показати');
+          } else {
+              $(this).text('Сховати');
+          }
+      })
+  )
+</script>
