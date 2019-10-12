@@ -1,10 +1,10 @@
 <% if current_games.size > 0 %>
-  <% unless Game.started.empty? %>
+  <%# unless Game.started.empty? %>
     <% current_games.each do |game| %>
       <% unless game.is_testing? || game.draft? %>
         <fieldset class="game-fieldset">
           <legend>
-            Поточна гра
+<!--            Поточна гра-->
           </legend>
           <div id="game-<%= game.id %>">
             <%= render 'shared/current_game', game: game %>
@@ -28,6 +28,6 @@
       <% end %>
     <% end %>
 
-  <% end %>
+  <%# end %>
   <br>
 <% end %>

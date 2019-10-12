@@ -19,12 +19,8 @@ class GamesController < ApplicationController
   def index
     @page_content = 'index,follow'
     @seo_block = create_index_seo_block
-    coming_games = Game.notstarted
-    finished_games = Game.finished.order(starts_at: :desc)
-    current_games = Game.started - finished_games
+    finished_games = Game.finished.order(starts_at: :desc).page(params[:page]).per(5)
     render :index, locals: {
-      current_games: current_games,
-      coming_games: coming_games,
       finished_games: finished_games
     }
   end

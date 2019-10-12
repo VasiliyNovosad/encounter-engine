@@ -1,21 +1,10 @@
-<fieldset class="game-fieldset">
-  <legend>
-    Завершені ігри
-  </legend>
+<% if finished_games.size > 0 %>
   <% finished_games.each do |game | %>
-    <p>
-      <%= link_to game.name, game_path(game), class: "finished-game" %>
-      <%=  " (#{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}) " %> |
-      <% if user_signed_in? %>
-        <em><%= link_to "(статистика)", url_for("/logs/short/#{game.id}") %></em>
-        <em><%= link_to "(моніторинг)", url_for("/logs/livechannel/#{game.id}") %></em>
-        <em><%= link_to "(лог відповідей)", url_for("/logs/full/#{game.id}") %></em>
-        <em><%= link_to "(результати)", url_for("/game_passings/show_results?game_id=#{game.id}") %></em>
-      <% else %>
-        <em><%= link_to "(cтатистика)", url_for("/logs/short/#{game.id}") %></em>
-        <em><%= link_to "(результати)", url_for("/game_passings/show_results?game_id=#{game.id}") %></em>
-      <% end %>
-    </p>
-    <br>
+    <fieldset class="game-fieldset">
+      <legend>
+      </legend>
+      <%= render 'shared/finished_game', game: game %>
+    </fieldset>
+    <br><br>
   <% end %>
-</fieldset>
+<% end %>

@@ -55,6 +55,7 @@ class Game < ActiveRecord::Base
   scope :by, -> (author_id) { where(author_id: author_id) }
   scope :non_drafts, -> { where(is_draft: false) }
   scope :finished, -> { where('author_finished_at IS NOT NULL') }
+  scope :not_finished, -> { where('author_finished_at IS NULL') }
 
   def slug_candidates
     [

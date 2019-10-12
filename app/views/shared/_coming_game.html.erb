@@ -41,7 +41,6 @@
     <%= render 'shared/game_entry_controls', game_entry: game_entry, game: game, team: game.team_type == 'multy' ? current_user.team : current_user.single_team %>
   </p>
 <% end %>
-<br>
 
 <p>
   <em>Максимальна кількість команд:</em>
@@ -54,6 +53,9 @@
     <%= game.max_team_number %>
   <% end %>
 </p>
+<br>
+
+<%= game.description.html_safe %>
 
 <br>
 

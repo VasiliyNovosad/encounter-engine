@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  root 'games#index'
+  root 'index#index'
 
   resources :teams
 

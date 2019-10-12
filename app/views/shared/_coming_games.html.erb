@@ -1,23 +1,11 @@
 <% if coming_games.size > 0 %>
-  <% nearest_game = coming_games.first %>
-  <fieldset id="nearest" class="game-fieldset">
-    <legend>
-      Найближча гра
-    </legend>
-    <%= render 'shared/nearest_game', game: nearest_game %>
-  </fieldset>
-  <br><br>
-
-  <% coming_games = coming_games[1..-1] %>
-  <% if coming_games.size > 0 %>
-    <% coming_games.each do |game | %>
-      <fieldset class="game-fieldset">
-        <legend>
-          Майбутня гра
-        </legend>
-        <%= render 'shared/coming_game', game: game %>
-      </fieldset>
-      <br><br>
-    <% end %>
+  <% coming_games.each do |game | %>
+    <fieldset class="game-fieldset">
+      <legend>
+        Майбутня гра
+      </legend>
+      <%= render 'shared/coming_game', game: game %>
+    </fieldset>
+    <br><br>
   <% end %>
 <% end %>

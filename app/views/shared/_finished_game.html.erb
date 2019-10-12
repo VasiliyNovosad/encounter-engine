@@ -1,0 +1,52 @@
+<h2>
+  <%= link_to game.name, game_path(game), class: "coming-game" %>
+</h2>
+
+<p>
+  <em>Автори</em> - <strong><%= (game.authors.map(&:nickname) + [game.author.nickname]).uniq.join(', ') %></strong>
+</p>
+
+<p>
+  <%= game_start_date(game) %>
+</p>
+
+<p>
+  <em>Тип команди:</em> <%= {'single' => ' Одиночна', 'multy' => ' Командна' }[game.team_type] %>
+</p>
+
+<p>
+  <em>Тип гри:</em> <%= game.game_size || 'Лайт' %>
+</p>
+
+<p>
+  <em>Послiдовнiсть проходження:</em> <%= {'linear' => ' Лiнiйна', 'panic' => ' Штурм', 'selected' => ' Лінійна (вказана)' }[game.game_type] %>
+</p>
+
+<% if game.game_type == 'panic' %>
+  <p>
+    <em>Тривалiсть гри: </em> <%= seconds_to_string((game.duration || 0) * 60) %>
+  </p>
+<% end %>
+
+<br>
+
+<p>
+  <em>Опис:</em>
+</p>
+<p>
+  <%= game.description.html_safe %>
+</p>
+
+<p>
+  <em>Максимальна кількість команд:</em>
+  <% if game.max_team_number.equal?(10000) || game.max_team_number.equal?(0) || game.max_team_number.nil? %>
+    <%= " Необмежено" %>
+  <% else %>
+    <%= " #{game.max_team_number}" %>
+  <% end %>
+</p>
+
+<br>
+
+<%= render 'games/teams', accepted_game_entries: GameEntry.of_game(game.id).with_status('accepted'), game: game %>
+<br>
