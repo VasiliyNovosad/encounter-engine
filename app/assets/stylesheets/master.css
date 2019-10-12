@@ -301,6 +301,7 @@ textarea {
 
     .partner-block {
         display: block;
+        text-align: center;
     }
 
     .partner-block > div {
@@ -309,9 +310,9 @@ textarea {
     }
 
     .partner-logo {
-        width: 40%;
-        float: left;
-        margin: 0 5%;
+        /*width: 40%;*/
+        /*float: left;*/
+        /*margin: 0 5%;*/
     }
 
     .partner-logo img {
