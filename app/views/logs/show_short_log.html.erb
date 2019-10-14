@@ -9,7 +9,7 @@
       <th></th>
       <% @levels.each do |level| %>
         <th>
-          <%= "#{level.position}: #{@game.hide_levels_names? ? level.position : level.name} #{level.dismissed? ? '(рівень знято)' : ''}" %>
+          <%= "#{level.position}: #{@game.hide_levels_names? && !(current_user && current_user.author_of?(@game) || @game.author_finished?) ? level.position : level.name} #{level.dismissed? ? '(рівень знято)' : ''}" %>
         </th>
       <% end %>
       <th>Фінішний час</th>

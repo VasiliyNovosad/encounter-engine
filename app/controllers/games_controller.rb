@@ -48,11 +48,50 @@ class GamesController < ApplicationController
     @page_title = "#{@game.name} ᐈ【 Квести Луцьк 】"
     @page_description = "❰❰❰ #{@game.name} ❱❱❱ #{ @game.small_description.blank? ? "це: ➔ цікаві логічні завдання від кращих авторів Луцька, ➔ захоплюючі пошуки, ➔ драйв та адреналін, ➔ неймовірні пригоди та яскраві емоції, ➔ новий формат інтелектуально-активного відпочинку! ➤ Якщо ти рухаєш мізками та дупою швидше ніж твоя бабуся, ПРИЄДНУЙСЯ" : @game.small_description } ➤【 Квест 🔍 Луцьк 】"
     @page_content = 'index,follow'
-    @teams_for_test = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
-    @game_entries = GameEntry.of_game(@game.id).with_status('new')
+    @teams_for_test = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map{ |game_entry| game_entry.team }
+    @game_entries = GameEntry.of_game(@game.id).with_status('new').includes(:team)
     @levels = @game.levels
     @topic = Forem::Topic.find(@game.topic_id) unless @game.topic_id.nil?
     @seo_block = create_show_seo_block
+
+    if @game.author_finished?
+      game_bonuses = GameBonus.of_game(@game.id).select("team_id, sum(award) as sum_bonuses").group(:team_id).to_a
+      game_passings = GamePassing.of_game(@game.id).includes(:team)
+
+      if @game.game_type == 'panic'
+        game_finished_at = @game.starts_at + @game.duration * 60
+        @game_passings = game_passings.map do |game_passing|
+          team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+          {
+              team_id: game_passing.team_id,
+              team_name: game_passing.team_name,
+              finished_at: game_passing.finished_at || game_finished_at,
+              closed_levels: game_passing.closed_levels.count,
+              sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
+          }
+        end.sort do |a, b|
+          (a[:finished_at] - a[:sum_bonuses]) <=> (b[:finished_at] - b[:sum_bonuses])
+        end
+      else
+        current_time = Time.now
+        @game_passings = game_passings.map do |game_passing|
+          team_bonus = game_bonuses.select{ |bonus| bonus.team_id == game_passing.team_id}
+          {
+              team_id: game_passing.team_id,
+              team_name: game_passing.team_name,
+              finished_at: game_passing.finished_at,
+              closed_levels: game_passing.closed_levels.count,
+              sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
+              exited: game_passing.exited?
+          }
+        end.sort_by do |v|
+          [-v[:closed_levels], (v[:finished_at] || current_time) - v[:sum_bonuses]]
+        end
+      end
+    else
+      @game_passings = []
+    end
+
     render
   end
 
@@ -181,7 +220,7 @@ class GamesController < ApplicationController
   end
 
   def find_teams
-    @accepted_game_entries = GameEntry.of_game(@game.id).includes(:team).with_status('accepted')
+    @accepted_game_entries = GameEntry.of_game(@game.id).with_status('accepted').includes(:team)
   end
 
   def no_start_time?
