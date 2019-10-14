@@ -250,7 +250,7 @@ class LogsController < ApplicationController
     filter[:level_id] = params[:level_id].to_i unless params[:level_id].nil? || params[:level_id] == '' || params[:level_id].to_i == 0
     filter[:team_id] = params[:team_id].to_i unless params[:team_id].nil? || params[:team_id] == '' || params[:team_id].to_i == 0
     filter[:user_id] = params[:user_id].to_i unless params[:user_id].nil? || params[:user_id] == '' || params[:user_id].to_i == 0
-    logs = Log.of_game(@game.id)
+    logs = Log.of_game(@game.id).includes(:team)
     @log_levels = Level.where(id: logs.map(&:level_id).uniq).order(:position)
     @level_id = params[:level_id].to_i
     @log_teams = Team.where(id: logs.map(&:team_id).uniq).order(:name).map{ |team| [team.name, team.id] }
@@ -261,7 +261,7 @@ class LogsController < ApplicationController
     levels = {}
     @log_levels.each { |level| levels[level.id] = "#{level.position}. #{level.name}" }
     @user_id = params[:user_id].to_i
-    @logs = Log.of_game(@game.id).where(filter).order(time: :desc).page(params[:page] || 1)
+    @logs = Log.of_game(@game.id).includes(:team).where(filter).order(time: :desc).page(params[:page] || 1)
     @all_logs = []
 
     if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0)

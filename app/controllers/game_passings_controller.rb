@@ -4,9 +4,9 @@ class GamePassingsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show_results]
   before_action :find_game, except: [:exit_game]
   before_action :find_game_by_id, only: [:exit_game]
-  before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :penalty_hint, :get_current_level_bonus, :miss_current_level_bonus]
+  before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :show_penalty_hint, :get_current_level_bonus, :miss_current_level_bonus]
   before_action :find_team, except: [:show_results, :index]
-  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :penalty_hint, :get_current_level_bonus, :miss_current_level_bonus]
+  before_action :find_team_id, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :show_penalty_hint, :get_current_level_bonus, :miss_current_level_bonus]
   before_action :ensure_team_is_accepted, except: [:show_results, :index]
   before_action :ensure_game_is_started
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
@@ -185,61 +185,54 @@ class GamePassingsController < ApplicationController
   end
 
   def post_answer
-    time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
-    return if game_finished?(time)
-
-    level = current_level(params[:level])
-    return if input_lock_exists?(time, level, @game.id, @team_id, current_user.id)
-
-    if (@game.game_type == 'panic' || level == @game_passing.current_level) && !level.complete_later.nil? && level.complete_later.positive?
-      time_start = @game_passing.level_started_at(level)
-      time_finish = time_start + level.complete_later
-      if time > time_finish
-        save_log(level, time_finish, 3)
-        @game_passing.autocomplete_level!(
-          level,
-          @team_id,
-          time_start,
-          time_finish,
-          current_user.id
-        )
-        return
-      end
-    end
-
     @answer = params[:answer].strip
     return if @answer == ''
 
+    time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
+    time_str = time.strftime("%H:%M:%S")
+    return if game_finished?(time)
+
+    level = current_level(params[:level])
+    return if input_lock_exists?(time, level, @game.id, @team.id, current_user.id)
+
+    if (@game.game_type == 'panic' || level == @game_passing.current_level) && need_autocomplete_level?(level, time)
+      time_start = @game_passing.level_started_at(level)
+      time_finish = time_start + level.complete_later
+      Log.add(@game.id, level.id, @team.id, current_user.id, time_finish)
+      @game_passing.autocomplete_level!(level, @team.id, time_start, time_finish, current_user.id)
+      return
+    end
+
     @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-    answer_was_correct = @game_passing.check_answer!(@answer, @level, @team_id, time, current_user)
+    answer_was_correct = @game_passing.check_answer!(@answer, @level, @team.id, time, current_user)
     @answer_was_correct = answer_was_correct[:correct] || answer_was_correct[:bonus]
     answered = []
     input_lock = nil
     if @answer_was_correct
       if answer_was_correct[:correct]
-        save_log(@level, time, 1) if @game_passing.current_level_id || @game.game_type == 'panic'
+        Log.add(@game.id, @level.id, @team.id, current_user.id, time, @answer, 1)
         answered.push(
-          time: time.strftime("%H:%M:%S"),
+          time: time_str,
           user: current_user.nickname,
           answer: "<span class=\"right_code\">#{@answer}</span>"
         )
       end
       if answer_was_correct[:bonus]
-        save_log(@level, time, 2) if @game_passing.current_level_id || @game.game_type == 'panic'
+        Log.add(@game.id, @level.id, @team.id, current_user.id, time, @answer, 2)
         answered.push(
-          time: time.strftime("%H:%M:%S"),
+          time: time_str,
           user: current_user.nickname,
           answer: "<span class=\"bonus\">#{@answer}</span>"
         )
       end
     else
-      save_log(@level, time, 0) if @game_passing.current_level_id || @game.game_type == 'panic'
+      Log.add(@game.id, @level.id, @team.id, current_user.id, time, @answer, 0)
       answered.push(
-        time: time.strftime("%H:%M:%S"),
+        time: time_str,
         user: current_user.nickname,
         answer: @answer
       )
-      input_lock = set_input_lock(time, @level, @game.id, @team_id, current_user.id) if @level.input_lock
+      input_lock = set_input_lock(time, @level, @game.id, @team.id, current_user.id) if @level.input_lock
     end
     if @game_passing.finished?
       PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}", url: '/game_passings/show_results'
@@ -261,23 +254,7 @@ class GamePassingsController < ApplicationController
       )
     end
     if @game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
-      levels = Hash.new { |h, k| h[k] = [] }
-      answer_was_correct[:bonuses].each do |bonus|
-        Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
-          levels[level_id].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
-        end
-      end
-      levels.each do |k, v|
-        PrivatePub.publish_to(
-          "/game_passings/#{@game_passing.id}/#{k}/answers",
-          answers: [],
-          sectors: [],
-          bonuses: v,
-          needed: [],
-          closed: [],
-          input_lock: input_lock.nil? ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time }
-        )
-      end
+      send_bonuses_to_panic(answer_was_correct[:bonuses])
     end
   end
 
@@ -333,7 +310,7 @@ class GamePassingsController < ApplicationController
           time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
           time_finish = time_start + level.complete_later
           if time_finish < time
-            save_log(level, time_finish, 3)
+            Log.add(@game.id, level.id, @team.id, current_user.id, time_finish)
             @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
           end
         rescue => e
@@ -372,20 +349,6 @@ class GamePassingsController < ApplicationController
   end
 
   protected
-
-  def save_log(level = @game_passing.current_level, time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time, answer_type = 0)
-    Log.create!(
-      game_id: @game.id,
-      level: level.name,
-      level_id: level.id,
-      team: @team.name,
-      team_id: @team.id,
-      time: time,
-      answer: @answer || 'timeout',
-      user: current_user,
-      answer_type: answer_type
-    )
-  end
 
   def find_game
     @game = Game.find(params[:game_id])
@@ -540,6 +503,26 @@ class GamePassingsController < ApplicationController
 
   private
 
+  def send_bonuses_to_panic(bonuses)
+    levels = Hash.new { |h, k| h[k] = [] }
+    bonuses.each do |bonus|
+      Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
+        levels[level_id].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
+      end
+    end
+    levels.each do |k, v|
+      PrivatePub.publish_to(
+          "/game_passings/#{@game_passing.id}/#{k}/answers",
+          answers: [],
+          sectors: [],
+          bonuses: v,
+          needed: [],
+          closed: [],
+          input_lock: {input_lock: false, duration: 0}
+      )
+    end
+  end
+
   def game_finished?(time)
     @game_passing.finished? || @game.game_type == 'panic' && @game.starts_at + 60 * @game.duration < time
   end
@@ -606,5 +589,13 @@ class GamePassingsController < ApplicationController
     return { input_lock: false, duration: 0 } if input_lock.nil?
 
     { input_lock: true, duration: input_lock.lock_ends_at - time }
+  end
+
+  def need_autocomplete_level?(level, time)
+    return false if level.complete_later.nil? || level.complete_later.zero?
+
+    time_start = @game_passing.level_started_at(level)
+    time_finish = time_start + level.complete_later
+    time > time_finish
   end
 end
