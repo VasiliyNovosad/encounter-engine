@@ -27,7 +27,7 @@
             <% unless log[:log].nil? %>
               <% if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0) %>
                 <div class="team-stat <%= level.dismissed? ? 'dismissed-level' : '' %>" data-id=<%= log[:log].team_id %> onclick="toggle(<%= log[:log].team_id %>)">
-                  <p class="team-name"><%= log[:log].team %></p>
+                  <p class="team-name"><%= log[:log].team.name %></p>
                   <p>(<%= log[:log].user.nil? ? '' : log[:log].user.nickname %>)</p>
                   <p><%= log[:log].time.strftime('%d.%m.%Y') %></p>
                   <p><%= log[:log].time.strftime('%H:%M:%S.%L') %></p>
