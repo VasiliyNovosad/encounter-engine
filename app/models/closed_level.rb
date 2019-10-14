@@ -6,7 +6,7 @@ class ClosedLevel < ActiveRecord::Base
 
 
   def self.close_level!(game_id, level_id, team_id, user_id, start_time, finish_time, timeout = false)
-    closed_levels = of_game(game_id).of_level(level_id).of_team(team_id).size
+    closed_levels = of_game(game_id).of_level(level_id).of_team(team_id).count
     return unless closed_levels.zero?
 
     create!(

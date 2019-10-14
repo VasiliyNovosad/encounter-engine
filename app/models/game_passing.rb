@@ -39,16 +39,11 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
-  def check_answer!(answer, level, team_id, time, user)
-    answer.strip!
-    return if answer.empty?
-
+  def check_answer!(answer, level, time, user)
+    time_str = time.strftime("%H:%M:%S")
     answered_bonus, is_correct_bonus_answer = pass_bonuses!(answer, level, team_id, user)
     answered_question, is_correct_answer, needed, closed = pass_questions!(answer, level, team_id, user)
     start_time = level_started_at(level)
-    if level.questions.count.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
-      pass_level!(level, team_id, time, start_time, user.id)
-    end
     if level[:is_wrong_code_penalty] && !level[:wrong_code_penalty].zero? && !is_correct_bonus_answer && !is_correct_answer
       GameBonus.create!(
         game_id: game_id,
@@ -60,7 +55,7 @@ class GamePassing < ActiveRecord::Base
         description: ''
       )
     end
-    {
+    answer_was_correct = {
       correct: is_correct_answer,
       bonus: is_correct_bonus_answer,
       sectors: answered_question,
@@ -68,6 +63,60 @@ class GamePassing < ActiveRecord::Base
       needed: needed,
       closed: closed
     }
+
+    answered = []
+    input_lock = nil
+    if answer_was_correct[:correct] || answer_was_correct[:bonus]
+      if answer_was_correct[:correct]
+        Log.add(game_id, level.id, team_id, user.id, time, answer, 1)
+        answered.push(
+            time: time_str,
+            user: user.nickname,
+            answer: "<span class=\"right_code\">#{answer}</span>"
+        )
+      end
+      if answer_was_correct[:bonus]
+        Log.add(game_id, level.id, team_id, user.id, time, answer, 2)
+        answered.push(
+            time: time_str,
+            user: user.nickname,
+            answer: "<span class=\"bonus\">#{answer}</span>"
+        )
+      end
+    else
+      Log.add(game_id, level.id, team_id, user.id, time, answer, 0)
+      answered.push(
+          time: time_str,
+          user: user.nickname,
+          answer: answer
+      )
+      input_lock = set_input_lock(time, level, game_id, team_id, user.id) if level.input_lock
+    end
+
+    if level.questions.count.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
+      pass_level!(level, team_id, time, start_time, user.id)
+      return answer_was_correct[:correct] || answer_was_correct[:bonus]
+    end
+
+    PrivatePub.publish_to(
+        "/game_passings/#{id}/#{level.id}/answers",
+        answers: answered,
+        sectors: answer_was_correct[:sectors],
+        bonuses: answer_was_correct[:bonuses],
+        needed: answer_was_correct[:needed],
+        closed: answer_was_correct[:closed],
+        input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time }
+    )
+    unless input_lock.nil? || level.input_lock_type == 'team'
+      PrivatePub.publish_to(
+          "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
+          input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+      )
+    end
+    if game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
+      send_bonuses_to_panic(answer_was_correct[:bonuses])
+    end
+    answer_was_correct[:correct] || answer_was_correct[:bonus]
   end
 
   def pass_question!(questions)
@@ -111,7 +160,7 @@ class GamePassing < ActiveRecord::Base
     save!
     PrivatePub.publish_to(
       "/game_passings/#{id}/#{level.id}",
-      url: game_url(level)
+      url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
     )
   end
 
@@ -421,5 +470,50 @@ class GamePassing < ActiveRecord::Base
     needed = level.team_questions(team_id).count
     closed = (question_ids.to_set & level.team_questions(team_id).map(&:id).to_set).size
     [answered_question, true, needed, closed]
+  end
+
+  def set_input_lock(time, level, game_id, team_id, user_id)
+    input_lock_type = level.input_lock_type
+    input_lock_duration = level.input_lock_duration
+    inputs_count = level.inputs_count
+    input_lock = nil
+    if count_wrong_answers(time - input_lock_duration, level.id, game_id, team_id, user_id, input_lock_type) >= inputs_count
+      input_lock = InputLock.create!(
+          game_id: game_id,
+          level_id: level.id,
+          team_id: team_id,
+          user_id: user_id,
+          lock_ends_at: time + input_lock_duration
+      )
+    end
+    input_lock
+  end
+
+  def count_wrong_answers(time, level_id, game_id, team_id, user_id, input_lock_type)
+    if input_lock_type == 'team'
+      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(answer_type: 0).where('time >= ?', time).count
+    else
+      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(user_id: user_id, answer_type: 0).where('time >= ?', time).count
+    end
+  end
+
+  def send_bonuses_to_panic(bonuses)
+    levels = Hash.new { |h, k| h[k] = [] }
+    bonuses.each do |bonus|
+      Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
+        levels[level_id].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
+      end
+    end
+    levels.each do |k, v|
+      PrivatePub.publish_to(
+          "/game_passings/#{@game_passing.id}/#{k}/answers",
+          answers: [],
+          sectors: [],
+          bonuses: v,
+          needed: [],
+          closed: [],
+          input_lock: {input_lock: false, duration: 0}
+      )
+    end
   end
 end

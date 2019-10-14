@@ -189,7 +189,6 @@ class GamePassingsController < ApplicationController
     return if @answer == ''
 
     time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
-    time_str = time.strftime("%H:%M:%S")
     return if game_finished?(time)
 
     level = current_level(params[:level])
@@ -204,58 +203,7 @@ class GamePassingsController < ApplicationController
     end
 
     @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
-    answer_was_correct = @game_passing.check_answer!(@answer, @level, @team.id, time, current_user)
-    @answer_was_correct = answer_was_correct[:correct] || answer_was_correct[:bonus]
-    answered = []
-    input_lock = nil
-    if @answer_was_correct
-      if answer_was_correct[:correct]
-        Log.add(@game.id, @level.id, @team.id, current_user.id, time, @answer, 1)
-        answered.push(
-          time: time_str,
-          user: current_user.nickname,
-          answer: "<span class=\"right_code\">#{@answer}</span>"
-        )
-      end
-      if answer_was_correct[:bonus]
-        Log.add(@game.id, @level.id, @team.id, current_user.id, time, @answer, 2)
-        answered.push(
-          time: time_str,
-          user: current_user.nickname,
-          answer: "<span class=\"bonus\">#{@answer}</span>"
-        )
-      end
-    else
-      Log.add(@game.id, @level.id, @team.id, current_user.id, time, @answer, 0)
-      answered.push(
-        time: time_str,
-        user: current_user.nickname,
-        answer: @answer
-      )
-      input_lock = set_input_lock(time, @level, @game.id, @team.id, current_user.id) if @level.input_lock
-    end
-    if @game_passing.finished?
-      PrivatePub.publish_to "/game_passings/#{@game_passing.id}/#{@level.id}", url: '/game_passings/show_results'
-      return
-    end
-    PrivatePub.publish_to(
-      "/game_passings/#{@game_passing.id}/#{@level.id}/answers",
-      answers: answered,
-      sectors: answer_was_correct[:sectors],
-      bonuses: answer_was_correct[:bonuses],
-      needed: answer_was_correct[:needed],
-      closed: answer_was_correct[:closed],
-      input_lock: input_lock.nil? || @level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time }
-    )
-    unless input_lock.nil? || @level.input_lock_type == 'team'
-      PrivatePub.publish_to(
-        "/game_passings/#{@game_passing.id}/#{@level.id}/answers/#{current_user.id}",
-        input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
-      )
-    end
-    if @game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
-      send_bonuses_to_panic(answer_was_correct[:bonuses])
-    end
+    @answer_was_correct = @game_passing.check_answer!(@answer, @level, time, current_user)
   end
 
   def show_results
@@ -314,7 +262,7 @@ class GamePassingsController < ApplicationController
             @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
           end
         rescue => e
-          raise e
+          p e
         end
       end
     end
@@ -503,26 +451,6 @@ class GamePassingsController < ApplicationController
 
   private
 
-  def send_bonuses_to_panic(bonuses)
-    levels = Hash.new { |h, k| h[k] = [] }
-    bonuses.each do |bonus|
-      Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
-        levels[level_id].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
-      end
-    end
-    levels.each do |k, v|
-      PrivatePub.publish_to(
-          "/game_passings/#{@game_passing.id}/#{k}/answers",
-          answers: [],
-          sectors: [],
-          bonuses: v,
-          needed: [],
-          closed: [],
-          input_lock: {input_lock: false, duration: 0}
-      )
-    end
-  end
-
   def game_finished?(time)
     @game_passing.finished? || @game.game_type == 'panic' && @game.starts_at + 60 * @game.duration < time
   end
@@ -550,31 +478,6 @@ class GamePassingsController < ApplicationController
       InputLock.of_game(game_id).of_level(level.id).of_team(team_id).where('lock_ends_at >= ?', time).exists?
     else
       InputLock.of_game(game_id).of_level(level.id).of_team(team_id).of_user(user_id).where('lock_ends_at >= ?', time).exists?
-    end
-  end
-
-  def set_input_lock(time, level, game_id, team_id, user_id)
-    input_lock_type = level.input_lock_type
-    input_lock_duration = level.input_lock_duration
-    inputs_count = level.inputs_count
-    input_lock = nil
-    if count_wrong_answers(time - input_lock_duration, level.id, game_id, team_id, user_id, input_lock_type) >= inputs_count
-      input_lock = InputLock.create!(
-        game_id: game_id,
-        level_id: level.id,
-        team_id: team_id,
-        user_id: user_id,
-        lock_ends_at: time + input_lock_duration
-      )
-    end
-    input_lock
-  end
-
-  def count_wrong_answers(time, level_id, game_id, team_id, user_id, input_lock_type)
-    if input_lock_type == 'team'
-      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(answer_type: 0).where('time >= ?', time).count
-    else
-      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(user_id: user_id, answer_type: 0).where('time >= ?', time).count
     end
   end
 
