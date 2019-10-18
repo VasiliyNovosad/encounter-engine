@@ -248,11 +248,11 @@
     </div>
   </fieldset>
   <br>
-<% end %>      
-
-<% if @game.game_type == 'selected' && @teams_for_test.size > 0 && !@game.author_finished? %>
-  <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
+  <% if @game.game_type == 'selected' && @teams_for_test.size > 0 && !@game.author_finished? %>
+    <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
+  <% end %>
 <% end %>
+
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
     var seconds_to_game = <%= ((@game.is_testing? ? @game.test_date : @game.starts_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time + 1) %>;
