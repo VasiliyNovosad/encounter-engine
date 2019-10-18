@@ -4,6 +4,7 @@ var LevelCompleter = function() {
     var $countdownTimerText;
 
     var start = function(initialCountdownValue) {
+        clearInterval(intervalId);
         if (initialCountdownValue < 0) {
             autocompleteLevel();
         } else {

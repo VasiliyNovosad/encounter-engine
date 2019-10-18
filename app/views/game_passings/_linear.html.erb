@@ -1,3 +1,4 @@
+<% level_number = game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %>
 <div id="updateButton"><%= link_to "Оновити", url_for("/play/#{game.id}?rnd=#{rand}") %></div>
 <div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{game.id}?rnd=#{rand}"), target: '_blank' %></div>
 <br>
@@ -36,14 +37,17 @@
     </legend>
 
     <% if (level.complete_later || 0) > 0 %>
-        <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
+      <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
 
-        <script>
-            LevelCompleter.setup({
-                initialCountdownValue: <%= (((game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position) == 1 ? game.starts_at : game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level.complete_later %>
-                ,gameId: <%= game.id %>, levelId: <%= level.id %>, gameType: '<%= game.game_type %>', levelNumber: <%= game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %>
-            })
-        </script>
+      <script>
+        LevelCompleter.setup({
+          initialCountdownValue: <%= ((level_number == 1 ? game.starts_at : game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level.complete_later %>,
+          gameId: <%= game.id %>,
+          levelId: <%= level.id %>,
+          gameType: '<%= game.game_type %>',
+          levelNumber: <%= level_number %>
+        })
+      </script>
     <% end %>
     <br>
 
@@ -63,7 +67,7 @@
     <% end %>
     <br>
 
-    <%= render 'hints', upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: ((game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position) == 1 ? game.starts_at : game_passing.current_level_entered_at), game_passing: game_passing, level: level, team_id: team_id %>
+    <%= render 'hints', upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: (level_number == 1 ? game.starts_at : game_passing.current_level_entered_at), game_passing: game_passing, level: level, team_id: team_id %>
     <%= render 'penalty_hints', penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id %>
 
     <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.size > 1 %>
@@ -160,8 +164,7 @@
       if (needed > 0 && closed > 0) {
           $('#codes-closed').get(0).innerHTML = 'Вірних кодів ' + closed + ' із ' + needed + ':';
       }
-      var input_lock = data.input_lock || {};
-      console.log(input_lock);
+      let input_lock = data.input_lock || {};
       if (input_lock.input_lock) {
           $('#answer').prop('readonly', true);
           $("#code_submit").attr("disabled", true);
@@ -181,6 +184,17 @@
           }, 1000);
       } else {
           $('#answer').prop('readonly', false);
+      }
+
+      let timer_left = data.timer_left || 0;
+      if (timer_left !== 0) {
+          LevelCompleter.setup({
+              initialCountdownValue: timer_left,
+              gameId: <%= game.id %>,
+              levelId: <%= level.id %>,
+              gameType: '<%= game.game_type %>',
+              levelNumber: <%= level_number %>
+          })
       }
   });
 
