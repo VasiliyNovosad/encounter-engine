@@ -116,6 +116,7 @@ class BonusesController < ApplicationController
       :name, :task, :help, :award_time, :correct_answer, :team_id,
       :is_absolute_limited, :valid_from, :valid_to, :is_delayed,
       :delay_for, :is_relative_limited, :valid_for,
+      :change_level_autocomplete, :change_level_autocomplete_by,
       :answers_list, level_ids: [],
       bonus_answers_attributes: %i[id value team_id _destroy]
     )

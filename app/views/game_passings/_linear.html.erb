@@ -41,7 +41,7 @@
 
       <script>
         LevelCompleter.setup({
-          initialCountdownValue: <%= ((level_number == 1 ? game.starts_at : game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level.complete_later %>,
+          initialCountdownValue: <%= autocomplete_after %>,
           gameId: <%= game.id %>,
           levelId: <%= level.id %>,
           gameType: '<%= game.game_type %>',

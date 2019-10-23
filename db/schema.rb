@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191007185025) do
+ActiveRecord::Schema.define(version: 20191023185909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,14 +47,16 @@ ActiveRecord::Schema.define(version: 20191007185025) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_absolute_limited", default: false
+    t.boolean  "is_absolute_limited",          default: false
     t.datetime "valid_from"
     t.datetime "valid_to"
-    t.boolean  "is_delayed",          default: false
+    t.boolean  "is_delayed",                   default: false
     t.integer  "delay_for"
-    t.boolean  "is_relative_limited", default: false
+    t.boolean  "is_relative_limited",          default: false
     t.integer  "valid_for"
     t.integer  "game_id"
+    t.boolean  "change_level_autocomplete",    default: false
+    t.integer  "change_level_autocomplete_by", default: 0
   end
 
   create_table "closed_levels", force: :cascade do |t|
@@ -404,12 +406,14 @@ ActiveRecord::Schema.define(version: 20191007185025) do
   add_index "penalty_hints", ["level_id"], name: "index_penalty_hints_on_level_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name",                         limit: 255
     t.integer  "level_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position"
     t.integer  "team_id"
+    t.boolean  "change_level_autocomplete",                default: false
+    t.integer  "change_level_autocomplete_by",             default: 0
   end
 
   create_table "results", force: :cascade do |t|

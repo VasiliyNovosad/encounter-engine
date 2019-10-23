@@ -98,14 +98,16 @@ class GamePassing < ActiveRecord::Base
       return answer_was_correct[:correct] || answer_was_correct[:bonus]
     end
 
+    finish_time = level.complete_later&.positive? ? level_start_finish(level) : nil
     PrivatePub.publish_to(
-        "/game_passings/#{id}/#{level.id}/answers",
-        answers: answered,
-        sectors: answer_was_correct[:sectors],
-        bonuses: answer_was_correct[:bonuses],
-        needed: answer_was_correct[:needed],
-        closed: answer_was_correct[:closed],
-        input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time }
+      "/game_passings/#{id}/#{level.id}/answers",
+      answers: answered,
+      sectors: answer_was_correct[:sectors],
+      bonuses: answer_was_correct[:bonuses],
+      needed: answer_was_correct[:needed],
+      closed: answer_was_correct[:closed],
+      input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
+      timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil
     )
     unless input_lock.nil? || level.input_lock_type == 'team'
       PrivatePub.publish_to(
@@ -506,7 +508,7 @@ class GamePassing < ActiveRecord::Base
     end
     levels.each do |k, v|
       PrivatePub.publish_to(
-          "/game_passings/#{@game_passing.id}/#{k}/answers",
+          "/game_passings/#{id}/#{k}/answers",
           answers: [],
           sectors: [],
           bonuses: v,
@@ -515,5 +517,25 @@ class GamePassing < ActiveRecord::Base
           input_lock: {input_lock: false, duration: 0}
       )
     end
+  end
+
+  def level_start_finish(level)
+    level_started_at(level) + get_answered_questions(level) + get_answered_bonuses(level)
+  end
+
+  def get_answered_bonuses(level)
+    sum = 0
+    level.bonuses.where(id: bonus_ids).each do |bonus|
+      sum += bonus.change_level_autocomplete? ? bonus.change_level_autocomplete_by : 0
+    end
+    sum
+  end
+
+  def get_answered_questions(level)
+    sum = 0
+    level.questions.where(id: question_ids).each do |question|
+      sum += question.change_level_autocomplete? ? question.change_level_autocomplete_by : 0
+    end
+    sum
   end
 end

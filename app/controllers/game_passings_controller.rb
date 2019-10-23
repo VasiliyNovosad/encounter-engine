@@ -29,6 +29,13 @@ class GamePassingsController < ApplicationController
         @upcoming_hints = @game_passing.upcoming_hints(@team_id, @level)
         @hints_to_show = @game_passing.hints_to_show(@team_id, @level)
         input_lock = get_level_input_lock(time, @level, @level.game_id, @team_id, current_user.id)
+        autocomplete_after = 0
+        if (@level.complete_later || 0) > 0
+          level_number = @game.game_type == 'selected' ? @game_passing.current_level_position(@team_id) : @level.position
+          autocomplete_after = ((level_number == 1 ? @game.starts_at : @game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + @level.complete_later
+          @sectors.each { |sector| autocomplete_after += sector[:change_level_autocomplete_by] }
+          @bonuses.each { |bonus| autocomplete_after += bonus[:change_level_autocomplete_by] }
+        end
         format.html do
           render layout: 'in_game', locals: {
               game_passing: @game_passing,
@@ -42,7 +49,8 @@ class GamePassingsController < ApplicationController
               upcoming_hints: @upcoming_hints,
               hints_to_show: @hints_to_show,
               answer: @answer,
-              input_lock: input_lock
+              input_lock: input_lock,
+              autocomplete_after: autocomplete_after
           }
         end
         format.json do
@@ -194,9 +202,8 @@ class GamePassingsController < ApplicationController
     level = current_level(params[:level])
     return if input_lock_exists?(time, level, @game.id, @team.id, current_user.id)
 
-    if (@game.game_type == 'panic' || level == @game_passing.current_level) && need_autocomplete_level?(level, time)
-      time_start = @game_passing.level_started_at(level)
-      time_finish = time_start + level.complete_later
+    time_start, time_finish = level_start_finish(level)
+    if (@game.game_type == 'panic' || level == @game_passing.current_level) && need_autocomplete_level?(level, time, time_finish)
       Log.add(@game.id, level.id, @team.id, current_user.id, time_finish)
       @game_passing.autocomplete_level!(level, @team.id, time_start, time_finish, current_user.id)
       return
@@ -255,8 +262,7 @@ class GamePassingsController < ApplicationController
       @game_passing = GamePassing.of(@team.id, @game.id)
       if level == @game_passing.current_level || @game.game_type == 'panic'
         begin
-          time_start = level.position == 1 || @game.game_type == 'panic' ? @game.starts_at : @game_passing.current_level_entered_at
-          time_finish = time_start + level.complete_later
+          time_start, time_finish = level_start_finish(level)
           if time_finish < time
             Log.add(@game.id, level.id, @team.id, current_user.id, time_finish)
             @game_passing.autocomplete_level!(level, @team_id, time_start, time_finish, current_user.id)
@@ -401,7 +407,8 @@ class GamePassingsController < ApplicationController
         name: question.name,
         answered: answered,
         answer: answered ? @game_passing.get_team_answer(level.id, @team_id, correct_answers) : '',
-        value: answered ? "<span class=\"right_code\">#{correct_answers.size == 0 ? nil : @game_passing.get_team_answer(level, Team.find(@team_id), correct_answers)}</span>" : value
+        value: answered ? "<span class=\"right_code\">#{correct_answers.size == 0 ? nil : @game_passing.get_team_answer(level, @team_id, correct_answers)}</span>" : value,
+        change_level_autocomplete_by: answered && question.change_level_autocomplete? ? question.change_level_autocomplete_by : 0
       }
     end
   end
@@ -425,26 +432,28 @@ class GamePassingsController < ApplicationController
   end
 
   def get_answered_bonuses(level)
-    return [] unless level.has_bonuses?(@team_id)
+    return [] unless level.has_bonuses?(@team.id)
     answered_bonuses = level.bonuses.where(id: @game_passing.bonus_ids)
-    level.team_bonuses(@team_id).includes(:bonus_answers).map do |bonus|
-      correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team_id }.map { |answer| answer.value.mb_chars.downcase.to_s }
+    level.team_bonuses(@team.id).includes(:bonus_answers).map do |bonus|
+      correct_answers = bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == @team.id }.map { |answer| answer.value.mb_chars.downcase.to_s }
       current_level_entered_at = @game_passing.level_started_at(level)
       current_time = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
+      answered = answered_bonuses.include?(bonus)
       {
         position: bonus.position,
         id: bonus.id,
         name: bonus.name,
-        answered: answered_bonuses.include?(bonus),
-        value: answered_bonuses.include?(bonus) ? @game_passing.get_team_bonus_answer(bonus, @team_id, correct_answers) : '',
+        answered: answered,
+        value: answered ? @game_passing.get_team_bonus_answer(bonus, @team.id, correct_answers) : '',
         task: bonus.task,
-        help: answered_bonuses.include?(bonus) ? bonus.help : nil,
-        award: answered_bonuses.include?(bonus) ? (bonus.award_time || 0) : nil,
+        help: answered ? bonus.help : nil,
+        award: answered ? (bonus.award_time || 0) : nil,
         delayed: bonus.is_delayed_now?(current_level_entered_at, current_time),
         delay_for: bonus.time_to_delay(current_level_entered_at, current_time),
         limited: bonus.is_limited_now?(current_level_entered_at, current_time),
         valid_for: bonus.time_to_miss(current_level_entered_at, current_time),
-        missed: @game_passing.missed_bonuses.include?(bonus.id)
+        missed: @game_passing.missed_bonuses.include?(bonus.id),
+        change_level_autocomplete_by: answered && bonus.change_level_autocomplete? ? bonus.change_level_autocomplete_by : 0
       }
     end
   end
@@ -494,11 +503,23 @@ class GamePassingsController < ApplicationController
     { input_lock: true, duration: input_lock.lock_ends_at - time }
   end
 
-  def need_autocomplete_level?(level, time)
+  def need_autocomplete_level?(level, time, time_finish)
     return false if level.complete_later.nil? || level.complete_later.zero?
 
+    time_finish < time
+  end
+
+  def level_start_finish(level)
     time_start = @game_passing.level_started_at(level)
-    time_finish = time_start + level.complete_later
-    time > time_finish
+    bonuses = get_answered_bonuses(level)
+    sectors = get_answered_questions(level)
+    change_by_sectors = 0
+    sectors.each { |sector| change_by_sectors += sector[:change_level_autocomplete_by] }
+    change_by_bonuses = 0
+    bonuses.each { |bonus| change_by_bonuses += bonus[:change_level_autocomplete_by] }
+
+    time_finish = time_start + level.complete_later + change_by_sectors + change_by_bonuses
+
+    [time_start, time_finish]
   end
 end

@@ -111,6 +111,7 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(
       :name, :team_id, :answers_list,
+      :change_level_autocomplete, :change_level_autocomplete_by,
       answers_attributes: %i[
         id value team_id _destroy
       ]
