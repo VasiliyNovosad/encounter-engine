@@ -70,25 +70,25 @@ class GamePassing < ActiveRecord::Base
       if answer_was_correct[:correct]
         Log.add(game_id, level.id, team_id, user.id, time, answer, 1)
         answered.push(
-            time: time_str,
-            user: user.nickname,
-            answer: "<span class=\"right_code\">#{answer}</span>"
+          time: time_str,
+          user: user.nickname,
+          answer: "<span class=\"right_code\">#{answer}</span>"
         )
       end
       if answer_was_correct[:bonus]
         Log.add(game_id, level.id, team_id, user.id, time, answer, 2)
         answered.push(
-            time: time_str,
-            user: user.nickname,
-            answer: "<span class=\"bonus\">#{answer}</span>"
+          time: time_str,
+          user: user.nickname,
+          answer: "<span class=\"bonus\">#{answer}</span>"
         )
       end
     else
       Log.add(game_id, level.id, team_id, user.id, time, answer, 0)
       answered.push(
-          time: time_str,
-          user: user.nickname,
-          answer: answer
+        time: time_str,
+        user: user.nickname,
+        answer: answer
       )
       input_lock = set_input_lock(time, level, game_id, team_id, user.id) if level.input_lock
     end
@@ -98,7 +98,7 @@ class GamePassing < ActiveRecord::Base
       return answer_was_correct[:correct] || answer_was_correct[:bonus]
     end
 
-    finish_time = level.complete_later&.positive? ? level_start_finish(level) : nil
+    finish_time = level.complete_later&.positive? ? level_finished_at(level) : nil
     PrivatePub.publish_to(
       "/game_passings/#{id}/#{level.id}/answers",
       answers: answered,
@@ -111,8 +111,8 @@ class GamePassing < ActiveRecord::Base
     )
     unless input_lock.nil? || level.input_lock_type == 'team'
       PrivatePub.publish_to(
-          "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
-          input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+        "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
+        input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
       )
     end
     if game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
@@ -309,6 +309,10 @@ class GamePassing < ActiveRecord::Base
     end
   end
 
+  def level_finished_at(level)
+    level_started_at(level) + level.complete_later + get_answered_questions(level) + get_answered_bonuses(level)
+  end
+
   protected
 
   def last_level_selected?(team_id)
@@ -481,11 +485,11 @@ class GamePassing < ActiveRecord::Base
     input_lock = nil
     if count_wrong_answers(time - input_lock_duration, level.id, game_id, team_id, user_id, input_lock_type) >= inputs_count
       input_lock = InputLock.create!(
-          game_id: game_id,
-          level_id: level.id,
-          team_id: team_id,
-          user_id: user_id,
-          lock_ends_at: time + input_lock_duration
+        game_id: game_id,
+        level_id: level.id,
+        team_id: team_id,
+        user_id: user_id,
+        lock_ends_at: time + input_lock_duration
       )
     end
     input_lock
@@ -508,19 +512,15 @@ class GamePassing < ActiveRecord::Base
     end
     levels.each do |k, v|
       PrivatePub.publish_to(
-          "/game_passings/#{id}/#{k}/answers",
-          answers: [],
-          sectors: [],
-          bonuses: v,
-          needed: [],
-          closed: [],
-          input_lock: {input_lock: false, duration: 0}
+        "/game_passings/#{id}/#{k}/answers",
+        answers: [],
+        sectors: [],
+        bonuses: v,
+        needed: [],
+        closed: [],
+        input_lock: {input_lock: false, duration: 0}
       )
     end
-  end
-
-  def level_start_finish(level)
-    level_started_at(level) + get_answered_questions(level) + get_answered_bonuses(level)
   end
 
   def get_answered_bonuses(level)
