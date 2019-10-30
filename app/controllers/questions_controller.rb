@@ -63,8 +63,18 @@ class QuestionsController < ApplicationController
     team_id = question_params[:team_id]
     questions = @level.questions
     question_params[:answers_list].split(/\n+/).each do |answers|
-      all_answers = answers.split(';')
-      question = questions.build(name: "#{question_params[:name]} #{questions.count + 1}", team_id: team_id)
+      name_with_answers = answers.split('|')
+      all_answers = if name_with_answers.count == 1
+                      answers.split(';')
+                    else
+                      name_with_answers[1].split(';')
+                    end
+      sector_name = if name_with_answers.count == 1
+                      "#{question_params[:name]} #{questions.count + 1}"
+                    else
+                      name_with_answers[0]
+                    end
+      question = questions.build(name: sector_name, team_id: team_id)
       all_answers.each do |answer|
         question.answers.build(value: answer, team_id: team_id)
       end

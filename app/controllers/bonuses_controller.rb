@@ -32,8 +32,18 @@ class BonusesController < ApplicationController
     params[:bonus][:level_ids] ||= [@level.id]
     answers_list = bonus_params[:answers_list].split(/\n+/)
     answers_list.each do |answers|
-      all_answers = answers.split(';')
-      bonus = @game.bonuses.build(bonus_params.to_hash.merge(name: "#{bonus_params[:name]} #{@level.bonuses.count + 1}"))
+      name_with_answers = answers.split('|')
+      all_answers = if name_with_answers.count == 1
+                      answers.split(';')
+                    else
+                      name_with_answers[1].split(';')
+                    end
+      bonus_name = if name_with_answers.count == 1
+                     "#{bonus_params[:name]} #{@level.bonuses.count + 1}"
+                   else
+                     name_with_answers[0]
+                   end
+      bonus = @game.bonuses.build(bonus_params.to_hash.merge(name: bonus_name))
       all_answers.each do |answer|
         bonus.bonus_answers.build(value: answer, team_id: bonus_params[:team_id])
       end
