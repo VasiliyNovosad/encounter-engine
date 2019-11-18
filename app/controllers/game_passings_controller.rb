@@ -228,7 +228,7 @@ class GamePassingsController < ApplicationController
           team_name: game_passing.team_name,
           finished_at: game_passing.finished_at || game_finished_at,
           closed_levels: game_passing.closed_levels.count,
-          sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
+          sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : (team_bonus[0].sum_bonuses || 0))
         }
       end.sort do |a, b|
         (a[:finished_at] - a[:sum_bonuses]) <=> (b[:finished_at] - b[:sum_bonuses])

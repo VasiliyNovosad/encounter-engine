@@ -434,7 +434,7 @@ class LogsController < ApplicationController
         end.sort_by { |a| a[:time] }
       end
       results = game_passings.map do |result|
-        game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
+        game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + (bonus.award || 0) }
         {
             team: result.team,
             levels: result.closed_levels.size,
