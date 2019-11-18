@@ -430,8 +430,8 @@ class GamePassing < ActiveRecord::Base
 
   def last_level?(level, team_id)
     game.game_type == 'linear' && current_level.next.nil? ||
-      game.game_type == 'panic' && !closed?(level) &&
-        closed_levels.count == game.levels.count - 1 ||
+      game.game_type == 'panic' &&
+        closed_levels.count == game.levels.count ||
       game.game_type == 'selected' && last_level_selected?(team_id)
   end
 
