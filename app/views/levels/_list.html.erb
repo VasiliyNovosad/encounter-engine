@@ -26,14 +26,14 @@
             <%# end %>
             <!--          </div>-->
             <div class="edit-block">
-              <span class="level-copy btn btn-sm btn-primary"><%= link_to "скопіювати", copy_game_level_path(game, level), method: :post %></span>
+              <span class="level-copy btn btn-sm btn-primary"><%= link_to "скопіювати", copy_game_level_path(game, level), method: :post, data: { confirm: 'Ви впевнені, що хочете зробити копію даного рівня?' } %></span>
               <% unless level.dismissed? %>
-                <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "зняти", dismiss_game_level_path(game, level), method: :post %></span>
+                <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "зняти", dismiss_game_level_path(game, level), method: :post, data: { confirm: 'Ви впевнені, що хочете зняти даний рівень?' } %></span>
               <% end %>
               <% if level.dismissed? %>
-                <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "відмінити зняття", undismiss_game_level_path(game, level), method: :post %></span>
+                <span class="level-dismiss btn btn-sm btn-warning"><%= link_to "відмінити зняття", undismiss_game_level_path(game, level), method: :post, data: { confirm: 'Ви впевнені, що хочете звідмінити зняття даного рівня?' } %></span>
               <% end %>
-              <span class="level-dismiss btn btn-sm btn-danger"><%= link_to "видалити", game_level_path(game, level), method: :delete, data: { confirm: 'Ви впевнені?' } %></span>
+              <span class="level-dismiss btn btn-sm btn-danger"><%= link_to "видалити", game_level_path(game, level), method: :delete, data: { confirm: 'Ви впевнені, що хочете видалити даний рівень?' } %></span>
             </div>
           <% end %>
         </div>
