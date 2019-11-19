@@ -310,7 +310,7 @@ class GamePassing < ActiveRecord::Base
   end
 
   def level_finished_at(level)
-    level_started_at(level) + level.complete_later + get_answered_questions(level) + get_answered_bonuses(level)
+    level_started_at(level) + (level.complete_later || 1_000_000_000_000) + get_answered_questions(level) + get_answered_bonuses(level)
   end
 
   protected
