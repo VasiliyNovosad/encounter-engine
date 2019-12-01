@@ -74,7 +74,12 @@ class QuestionsController < ApplicationController
                     else
                       name_with_answers[0]
                     end
-      question = questions.build(name: sector_name, team_id: team_id)
+      question = questions.build(
+        name: sector_name,
+        team_id: team_id,
+        change_level_autocomplete: params[:change_level_autocomplete],
+        change_level_autocomplete_by: params[:change_level_autocomplete_by]
+      )
       all_answers.each do |answer|
         question.answers.build(value: answer, team_id: team_id)
       end
