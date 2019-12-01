@@ -51,6 +51,8 @@ module GamesHelper
   def hide_stat?(game, team)
     return false unless game.hide_stat?
 
+    return true if team.nil?
+
     game_passing = GamePassing.of(team.id, game.id)
     return true if game_passing.nil?
 
