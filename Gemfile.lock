@@ -30,7 +30,7 @@ GIT
       tinymce-rails (~> 4.0)
 
 GIT
-  remote: git://github.com/mateuszgorniak/touchpunch-rails.git
+  remote: git://github.com/VasiliyNovosad/touchpunch-rails.git
   revision: 8b68a75c931fb831a01f6f6aff4797c8a4663a5e
   specs:
     touchpunch-rails (1.0.3)
