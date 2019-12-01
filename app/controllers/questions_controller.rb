@@ -77,8 +77,8 @@ class QuestionsController < ApplicationController
       question = questions.build(
         name: sector_name,
         team_id: team_id,
-        change_level_autocomplete: params[:change_level_autocomplete],
-        change_level_autocomplete_by: params[:change_level_autocomplete_by]
+        change_level_autocomplete: question_params[:change_level_autocomplete],
+        change_level_autocomplete_by: question_params[:change_level_autocomplete_by]
       )
       all_answers.each do |answer|
         question.answers.build(value: answer, team_id: team_id)
