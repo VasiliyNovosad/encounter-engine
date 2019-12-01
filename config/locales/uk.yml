@@ -37,6 +37,7 @@ uk:
         is_wrong_code_penalty: "Штраф за неіснуючий код"
         inputs_count: " спроб за "
         input_lock: "Блокування вводу"
+        description: "Коментар"
       hint:
         text: "Текст"
         delay: "Через"
