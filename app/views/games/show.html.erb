@@ -56,11 +56,12 @@
   <em>Місце старту:</em> <%= " #{@game.place}" %>
 </p>
 
-<% unless @topic.nil? %>
-  <p>
-    <em>Обговорення:</em> <%= link_to " #{@topic.posts.size} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>
-  </p>
-<% end %>
+<%# unless @topic.nil? %>
+<!--  <p>-->
+<!--    <em>Обговорення:</em> <%#= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>-->
+<!--  </p>-->
+<%# end %>
+
 <p>
   <em>Максимальна кількість команд: </em>
   <% if @game.max_team_number.equal?(10000) || @game.max_team_number.equal?(0) || @game.max_team_number.nil? %>

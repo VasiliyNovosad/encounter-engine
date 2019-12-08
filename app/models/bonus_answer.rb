@@ -1,4 +1,4 @@
-class BonusAnswer < ActiveRecord::Base
+class BonusAnswer < ApplicationRecord
   belongs_to :bonus
   belongs_to :team
 

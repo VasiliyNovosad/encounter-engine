@@ -1,4 +1,4 @@
-class Game < ActiveRecord::Base
+class Game < ApplicationRecord
   extend FriendlyId
   friendly_id :slug_candidates, use: :slugged
 
@@ -44,12 +44,12 @@ class Game < ActiveRecord::Base
   # validate :deadline_is_before_game_start
 
   before_save do
-    if !draft? && topic_id.nil?
-      topic_name = "#{name} (#{starts_at.strftime('%H:%M %d.%m.%Y')})"
-      topic = Forem::Forum.where(name: "#{game_size || 'Лайт'}и").first.topics.build(subject: topic_name, user: author, posts_attributes: [text: topic_name])
-      topic.save!
-      self.topic_id = topic.id
-    end
+    # if !draft? && topic_id.nil?
+    #   topic_name = "#{name} (#{starts_at.strftime('%H:%M %d.%m.%Y')})"
+    #   topic = Forem::Forum.where(name: "#{game_size || 'Лайт'}и").first.topics.build(subject: topic_name, user: author, posts_attributes: [text: topic_name])
+    #   topic.save!
+    #   self.topic_id = topic.id
+    # end
   end
 
   scope :by, -> (author_id) { where(author_id: author_id) }
@@ -76,7 +76,7 @@ class Game < ActiveRecord::Base
   end
 
   def started?
-    (self.starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time) > (self.is_testing? ? self.test_date : self.starts_at)
+    (starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time) > (is_testing? ? test_date : starts_at)
   end
 
   def created_by?(user)

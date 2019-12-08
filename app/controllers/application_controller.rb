@@ -4,9 +4,9 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_devise_permitted_parameters, if: :devise_controller?
 
-  def forem_user
-    current_user
-  end
+  # def forem_user
+  #   current_user
+  # end
 
   def seconds_to_string(seconds)
     sign = seconds.negative? ? '-' : ''
@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
     output
   end
 
-  helper_method :forem_user
+  # helper_method :forem_user
   helper_method :seconds_to_string
 
   protected

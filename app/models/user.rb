@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :session_limitable,
@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
     game.author_id == id || game.author_ids.include?(id)
   end
 
-  def forem_name
-    nickname
-  end
+  # def forem_name
+  #   nickname
+  # end
 end

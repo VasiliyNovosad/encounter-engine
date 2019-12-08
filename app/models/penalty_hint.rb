@@ -1,4 +1,4 @@
-class PenaltyHint < ActiveRecord::Base
+class PenaltyHint < ApplicationRecord
   belongs_to :level
   belongs_to :team
 

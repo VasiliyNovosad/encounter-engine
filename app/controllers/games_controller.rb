@@ -51,7 +51,7 @@ class GamesController < ApplicationController
     @teams_for_test = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map{ |game_entry| game_entry.team }
     @game_entries = GameEntry.of_game(@game.id).with_status('new').includes(:team)
     @levels = @game.levels
-    @topic = Forem::Topic.find(@game.topic_id) unless @game.topic_id.nil?
+    # @topic = Forem::Topic.find(@game.topic_id) unless @game.topic_id.nil?
     @seo_block = create_show_seo_block
 
     if @game.author_finished?
