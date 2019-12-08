@@ -76,7 +76,7 @@ class Game < ApplicationRecord
   end
 
   def started?
-    (self.starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time) > (self.is_testing? ? self.test_date : self.starts_at)
+    (starts_at.nil? ? false : Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time) > (is_testing? ? test_date : starts_at)
   end
 
   def created_by?(user)
