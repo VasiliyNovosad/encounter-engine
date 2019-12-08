@@ -1,13 +1,11 @@
 source 'https://rubygems.org'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '5.2.3'
+gem 'rails', '5.2.4'
 gem 'pg'
 
 # Use sqlite3 as the database for Active Record
 group :development do
-  # gem 'sqlite3', '~> 1.3', '>=1.3.10'
-  # gem 'puma'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
@@ -45,10 +43,6 @@ gem 'jbuilder'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', group: :doc
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '3.1.2'
-# gem 'bcrypt', platforms: :ruby
-
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'default_value_for'
 gem 'devise'
@@ -56,30 +50,17 @@ gem 'devise-security'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
 gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageupload'
-# gem 'paperclip'
-# gem 'carrierwave'
 gem 'cloudinary'
 gem 'jquery-ui-rails'
 gem 'touchpunch-rails', github: 'VasiliyNovosad/touchpunch-rails'
-# gem 'rails-jquery-autocomplete'
 gem 'sentry-raven'
 source 'https://rails-assets.org' do
   gem 'rails-assets-datetimepicker'
 end
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
 
-# gem 'forem', github: 'VasiliyNovosad/forem', branch: 'rails4'
-# gem 'forem-bootstrap', github: 'VasiliyNovosad/forem-bootstrap'
 gem 'kaminari'
 gem 'private_pub'
 gem 'thin'
