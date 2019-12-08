@@ -15,15 +15,19 @@
   <br>
   <hr class="short-line" />
 
-  <p>
-    <%= link_to "Запросити учасників", new_invitation_path if @team.members.include?(current_user) && current_user.captain? %>
-  </p>
-  <p>
-    <%= link_to "Редагувати команду", edit_team_path(@team) if @team.members.include?(current_user) && current_user.captain? %>
-  </p>
+  <% if @team.members.include?(current_user) && current_user.captain? %>
+    <p>
+    <span class="btn btn-primary"><%= link_to "Запросити учасників", new_invitation_path if @team.members.include?(current_user) && current_user.captain? %></span>
+    <span class="btn btn-success"><%= link_to "Редагувати команду", edit_team_path(@team) if @team.members.include?(current_user) && current_user.captain? %></span>
+    </p>
+  <% end %>
   <% if @team.members.include?(current_user) && !current_user.captain? %>
     <br>
-    <p><%= link_to "Вийти з команди", url_for("/teams/edit/leave_team"), method: :post %></p>
+    <p><span class="btn btn-primary"><%= link_to "Вийти з команди", url_for("/teams/edit/leave_team"), method: :post, data: { confirm: 'Ви впевнені, що хочете вийти зі складу команди?' } %></span></p>
+  <% end %>
+  <% unless @team.members.include?(current_user)%>
+    <br>
+    <p><span class="btn btn-primary"><%= link_to "Приєднатись", url_for("/teams/#{@team.id}/join_team"), method: :post %></span></p>
   <% end %>
 
   <% if @team.members.include?(current_user) && current_user.captain? %>

@@ -75,7 +75,17 @@ class TeamsController < ApplicationController
     end
   end
 
-
+  def join_team
+    @team = Team.find(params[:team_id])
+    team_request = TeamRequest.new(team_id: @team.id, team_name: @team.name)
+    team_request.user = current_user
+    if team_request.save
+      redirect_to team_path(@team), notice: "Капітану команди #{@team.name} надіслано запит на вступ"
+      TeamRequestsMailer.team_request_create(team_request).deliver_now
+    else
+      redirect_to team_path(@team), alert: "#{team_request.errors.to_a.join(', ')}"
+    end
+  end
 
   protected
 
