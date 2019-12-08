@@ -1,5 +1,4 @@
-class GamePassing < ApplicationRecord
-  require 'ee_strings.rb'
+class GamePassing < ActiveRecord::Base
 
   serialize :answered_questions
   default_value_for :answered_questions, []
@@ -22,7 +21,7 @@ class GamePassing < ApplicationRecord
   scope :of_team, ->(team_id) { where(team_id: team_id) }
   scope :ended_by_author, -> { where(status: 'ended').order('current_level_id DESC') }
   scope :exited, -> { where(status: 'exited').order('finished_at DESC') }
-  scope :finished, -> { where('finished_at IS NOT NULL') } # .order("(finished_at - sum_bonuses * interval '1 second') ASC") }
+  scope :finished, -> { where('finished_at IS NOT NULL') }
   scope :finished_before, ->(time) { where('finished_at < ?', time) }
 
   delegate :name, to: :team, prefix: true
@@ -40,48 +39,12 @@ class GamePassing < ApplicationRecord
     end
   end
 
-  def check_answer!(answer, level, team_id, time, user)
-    answer.strip!
-    is_correct_answer = false
-    is_correct_bonus_answer = false
-    needed = 0
-    closed = 0
-    answered_bonus = []
-    if correct_bonus_answer?(answer, level, team_id)
-      answered_bonus = level.find_bonuses_by_answer(answer, team_id).map do |q|
-        {
-          id: q.id,
-          position: q.position,
-          bonus: q.award_time || 0,
-          award: seconds_to_string(q.award_time || 0),
-          help: q.help,
-          name: q.name,
-          value: "#{answer} (#{user.nickname})",
-          level_id: level.id,
-          user_id: user.id
-        } unless bonus_ids.include?(q.id)
-      end.compact
-      pass_bonus!(answered_bonus)
-      is_correct_bonus_answer = true
-    end
-    answered_question = []
-    if correct_answer?(answer, level, team_id)
-      answered_question = level.find_questions_by_answer(answer, team_id).map do |q|
-        {
-          id: q.id,
-          name: q.name,
-          position: q.position,
-          value: "<span class=\"right_code\">#{answer} (#{user.nickname})</span>"
-        } unless question_ids.include?(q.id)
-      end.compact
-      changed = pass_question!(answered_question)
-      is_correct_answer = true
-      needed = level.team_questions(team_id).count
-      closed = (question_ids.to_set & level.team_questions(team_id).map(&:id).to_set).count
-      start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
-      pass_level!(level, team_id, time, start_time, user.id) if all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close)
-    end
-    if level[:is_wrong_code_penalty] && !is_correct_bonus_answer && !is_correct_answer && !level[:wrong_code_penalty].zero?
+  def check_answer!(answer, level, time, user)
+    time_str = time.strftime("%H:%M:%S")
+    answered_bonus, is_correct_bonus_answer = pass_bonuses!(answer, level, team_id, user)
+    answered_question, is_correct_answer, needed, closed = pass_questions!(answer, level, team_id, user)
+    start_time = level_started_at(level)
+    if level[:is_wrong_code_penalty] && !level[:wrong_code_penalty].zero? && !is_correct_bonus_answer && !is_correct_answer
       GameBonus.create!(
         game_id: game_id,
         level_id: level.id,
@@ -92,7 +55,7 @@ class GamePassing < ApplicationRecord
         description: ''
       )
     end
-    {
+    answer_was_correct = {
       correct: is_correct_answer,
       bonus: is_correct_bonus_answer,
       sectors: answered_question,
@@ -100,67 +63,107 @@ class GamePassing < ApplicationRecord
       needed: needed,
       closed: closed
     }
+
+    answered = []
+    input_lock = nil
+    if answer_was_correct[:correct] || answer_was_correct[:bonus]
+      if answer_was_correct[:correct]
+        Log.add(game_id, level.id, team_id, user.id, time, answer, 1)
+        answered.push(
+          time: time_str,
+          user: user.nickname,
+          answer: "<span class=\"right_code\">#{answer}</span>"
+        )
+      end
+      if answer_was_correct[:bonus]
+        Log.add(game_id, level.id, team_id, user.id, time, answer, 2)
+        answered.push(
+          time: time_str,
+          user: user.nickname,
+          answer: "<span class=\"bonus\">#{answer}</span>"
+        )
+      end
+    else
+      Log.add(game_id, level.id, team_id, user.id, time, answer, 0)
+      answered.push(
+        time: time_str,
+        user: user.nickname,
+        answer: answer
+      )
+      input_lock = set_input_lock(time, level, game_id, team_id, user.id) if level.input_lock
+    end
+
+    if level.questions.count.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
+      pass_level!(level, team_id, time, start_time, user.id)
+      return answer_was_correct[:correct] || answer_was_correct[:bonus]
+    end
+
+    finish_time = level.complete_later&.positive? ? level_finished_at(level) : nil
+    PrivatePub.publish_to(
+      "/game_passings/#{id}/#{level.id}/answers",
+      answers: answered,
+      sectors: answer_was_correct[:sectors],
+      bonuses: answer_was_correct[:bonuses],
+      needed: answer_was_correct[:needed],
+      closed: answer_was_correct[:closed],
+      input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
+      timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil
+    )
+    unless input_lock.nil? || level.input_lock_type == 'team'
+      PrivatePub.publish_to(
+        "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
+        input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+      )
+    end
+    if game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
+      send_bonuses_to_panic(answer_was_correct[:bonuses])
+    end
+    answer_was_correct[:correct] || answer_was_correct[:bonus]
   end
 
   def pass_question!(questions)
-    changed = false
-    unless questions.empty?
-      changed = true
-      self.question_ids = question_ids + questions.map { |q| q[:id] }
-      # self.answered_questions += questions.map { |q| q[:id] }
-    end
-    changed
+    return false if questions.empty?
+
+    self.question_ids = question_ids + questions.map { |q| q[:id] }
+    true
   end
 
   def pass_bonus!(bonuses)
+    return false if bonuses.empty?
+
     changed = false
-    unless bonuses.empty?
-      bonuses.each do |bonus|
-        unless bonus_ids.include?(bonus[:id])
-          self.bonus_ids = bonus_ids + [bonus[:id]]
-          game_bonus_options = {
-            game_id: game_id,
-            level_id: bonus[:level_id],
-            team_id: team_id,
-            award: bonus[:bonus],
-            user_id: bonus[:user_id],
-            reason: "за бонус: #{bonus[:name]}",
-            description: ''
-          }
-          unless bonus[:bonus].zero? || GameBonus.where(game_bonus_options).count > 0
-            GameBonus.create(game_bonus_options)
-          end
-          changed = true
-        end
+    bonuses.each do |bonus|
+      next if bonus_ids.include?(bonus[:id])
+
+      self.bonus_ids = bonus_ids + [bonus[:id]]
+      game_bonus_options = {
+        game_id: game_id,
+        level_id: bonus[:level_id],
+        team_id: team_id,
+        award: bonus[:bonus],
+        user_id: bonus[:user_id],
+        reason: "за бонус: #{bonus[:name]}",
+        description: ''
+      }
+      unless bonus[:bonus].zero? || GameBonus.exists?(game_bonus_options)
+        GameBonus.create(game_bonus_options)
       end
+      changed = true
     end
     changed
   end
 
   def pass_level!(level, team_id, time, time_start, user_id)
     lock!
-    unless closed?(level)
-      if game.game_type == 'linear' && last_level? ||
-        game.game_type == 'panic' && !closed?(level) &&
-        closed_levels.count == game.levels.count - 1 ||
-        game.game_type == 'selected' && last_level_selected?(team_id)
-        closed_levels << level.id unless closed?(level)
-        set_finish_time(time)
-      else
-        update_current_level_entered_at(time)
-        closed_levels << level.id unless closed?(level)
-        # reset_answered_questions unless game.game_type == 'panic'
-        # reset_answered_bonuses unless game.game_type == 'panic'
-        if game.game_type == 'linear'
-          self.current_level = level.next
-        elsif game.game_type == 'selected'
-          self.current_level = next_selected_level(level, team_id)
-        end
-      end
-      ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time)
-      PrivatePub.publish_to "/game_passings/#{id}/#{level.id}", url: game.game_type == 'panic'? "/play/#{game_id}?level=#{level.position}&rnd=#{rand}" : "/play/#{game_id}?rnd=#{rand}"
-    end
+    return save! if closed?(level)
+
+    set_level_finish_time(level, team_id, time)
+    ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time)
     save!
+    PrivatePub.publish_to(
+      "/game_passings/#{id}/#{level.id}",
+      url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
+    )
   end
 
   def closed?(level)
@@ -172,39 +175,28 @@ class GamePassing < ApplicationRecord
   end
 
   def hints_to_show(team_id, level = current_level)
-    if level.position == 1 || game.game_type == 'panic'
-      level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(game.starts_at) }
-    else
-      level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(current_level_entered_at) }
-    end
+    level_start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
+    level.hints.of_team(team_id).select { |hint| hint.ready_to_show?(level_start_time) }
   end
 
   def upcoming_hints(team_id, level = current_level)
-    if level.position == 1 || game.game_type == 'panic'
-      level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(game.starts_at) }
-    else
-      level.hints.of_team(team_id).select { |hint| !hint.ready_to_show?(current_level_entered_at) }
-    end
+    level_start_time = level.position == 1 || game.game_type == 'panic' ? game.starts_at : current_level_entered_at
+    level.hints.of_team(team_id).reject { |hint| hint.ready_to_show?(level_start_time) }
   end
 
   def correct_answer?(answer, level, team_id)
-    # unanswered_questions(level, team_id).any? { |question| question.matches_any_answer(answer, team_id) }
-    # level.team_questions(team_id).any? { |question| question.matches_any_answer(answer, team_id) }
     level.team_questions(team_id).includes(:answers).any? do |question|
-      # bonus.matches_any_answer(answer, team_id)
-      question.answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
-        ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
+      question.team_answers(team_id).any? do |ans|
+        ans.value.mb_chars.downcase.to_s == answer.mb_chars.downcase.to_s
       end
     end
   end
 
   def correct_bonus_answer?(answer, level, team_id)
-    # unanswered_bonuses(level, team_id).any? { |bonus| bonus.matches_any_answer(answer, team_id) }
     level.team_bonuses(team_id).includes(:bonus_answers).any? do |bonus|
-      # bonus.matches_any_answer(answer, team_id)
-      (!missed_bonuses.include?(bonus.id) || bonus_ids.include?(bonus.id) ) && !bonus.is_delayed_now?(level.position == 1 || game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
+      (!missed_bonuses.include?(bonus.id) || bonus_ids.include?(bonus.id)) && !bonus.is_delayed_now?(level.position == 1 || game_type == 'panic' ? game.starts_at : current_level_entered_at) &&
         bonus.bonus_answers.select { |ans| ans.team_id.nil? || ans.team_id == team_id }.any? do |ans|
-          ans.value.to_s.downcase_utf8_cyr == answer.to_s.downcase_utf8_cyr
+          ans.value.mb_chars.downcase.to_s == answer.mb_chars.downcase.to_s
         end
     end
   end
@@ -230,7 +222,7 @@ class GamePassing < ApplicationRecord
   def exit!
     self.finished_at = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time
     self.status = 'exited'
-    self.save!
+    save!
   end
 
   def exited?
@@ -238,76 +230,60 @@ class GamePassing < ApplicationRecord
   end
 
   def end!
-    unless self.exited?
-      self.status = 'ended'
-      self.save!
-    end
+    return if exited?
+
+    self.status = 'ended'
+    save!
   end
 
   def autocomplete_level!(level, team_id, time_start, time_finish, user_id)
     lock!
-    unless closed?(level)
-      if game.game_type == 'linear' && last_level? ||
-          game.game_type == 'panic' && !closed?(level) &&
-              closed_levels.count == game.levels.count - 1 ||
-          game.game_type == 'selected' && last_level_selected?(team_id)
-        closed_levels << level.id
-        set_finish_time(get_finish_time(time_finish))
-      else
-        update_current_level_entered_at(time_finish)
-        closed_levels << level.id
-        # reset_answered_questions unless game.game_type == 'panic'
-        # reset_answered_bonuses unless game.game_type == 'panic'
-        if game.game_type == 'linear'
-          self.current_level = level.next
-        elsif game.game_type == 'selected'
-          self.current_level = next_selected_level(level, team_id)
-        end
-      end
-      game_bonus_options = {
-          game_id: game_id,
-          level_id: level.id,
-          team_id: team_id,
-          award: - (level.autocomplete_penalty || 0),
-          user_id: user_id,
-          reason: 'штраф за автоперехід',
-          description: ''
-      }
-      if level.is_autocomplete_penalty? && !level.autocomplete_penalty.zero? &&
-          GameBonus.where(game_bonus_options).count.zero?
-        GameBonus.create(game_bonus_options)
-      end
-      ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time_finish, true)
-    end
+    return save! if closed?(level)
+
+    set_level_finish_time(level, team_id, time_finish)
+    add_autocomplete_penalty(level, team_id, user_id)
+    ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time_finish, true)
     save!
   end
 
   def use_penalty_hint!(level_id, penalty_hint_id, user_id)
     level = Level.find(level_id)
     penalty_hint = level.penalty_hints.find(penalty_hint_id)
-    unless self.penalty_hints.include?(penalty_hint.id)
-      unless penalty_hint.nil?
-        GameBonus.create(game_id: game_id, level_id: level_id, team_id: team_id, award: - penalty_hint.penalty, user_id: user_id, reason: 'за штрафну підказку', description: '') unless penalty_hint.penalty.zero?
-        # self.sum_bonuses -= penalty_hint.penalty
-        penalty_hints << penalty_hint.id
-        save!
-        PrivatePub.publish_to "/game_passings/#{self.id}/#{level.id}/penalty_hints", hint: {
-            id: penalty_hint.id,
-            name: penalty_hint.name,
-            text: penalty_hint.text,
-            used: true,
-            penalty: penalty_hint.penalty
-        }
-      end
-    end
+    return if penalty_hint.nil? || penalty_hints.include?(penalty_hint.id)
 
+    penalty_hints << penalty_hint.id
+    save!
+
+    unless penalty_hint.penalty.zero?
+      GameBonus.create(
+        game_id: game_id,
+        level_id: level_id,
+        team_id: team_id,
+        award: - penalty_hint.penalty,
+        user_id: user_id,
+        reason: 'за штрафну підказку',
+        description: ''
+      )
+    end
+    PrivatePub.publish_to(
+      "/game_passings/#{id}/#{level.id}/penalty_hints",
+      hint: {
+        id: penalty_hint.id,
+        name: penalty_hint.name,
+        text: penalty_hint.text,
+        used: true,
+        penalty: penalty_hint.penalty
+      }
+    )
   end
 
   def miss_bonus!(level_id, bonus_id)
     lock!
     level = Level.find(level_id)
     bonus = level.bonuses.find(bonus_id)
-    missed_bonuses << bonus_id unless self.missed_bonuses.include?(bonus_id) || bonus.nil?
+    unless missed_bonuses.include?(bonus_id) || bonus.nil?
+      missed_bonuses << bonus_id
+    end
     save!
   end
 
@@ -325,11 +301,19 @@ class GamePassing < ApplicationRecord
     log.nil? ? '' : "#{log.answer} (#{log.user_nickname})"
   end
 
-  protected
-
-  def last_level?
-    self.current_level.next.nil?
+  def level_started_at(level)
+    if level.position == 1 || game.game_type == 'panic'
+      level.game_starts_at
+    else
+      current_level_entered_at
+    end
   end
+
+  def level_finished_at(level)
+    level_started_at(level) + (level.complete_later || 1_000_000_000_000) + get_answered_questions(level) + get_answered_bonuses(level)
+  end
+
+  protected
 
   def last_level_selected?(team_id)
     level_position = LevelOrder.of(game_id, team_id).where(level_id: current_level.id).first.position
@@ -390,23 +374,168 @@ class GamePassing < ApplicationRecord
     [hours, minutes, seconds]
   end
 
-  def seconds_to_string(s)
-    sign = s < 0 ? '-' : ''
+  def seconds_to_string(seconds)
+    sign = seconds < 0 ? '-' : ''
 
-    # d = days, h = hours, m = minutes, s = seconds
-    m = (s.abs / 60).floor
-    s = s.abs % 60
-    h = (m / 60).floor
-    m = m % 60
-    d = (h / 24).floor
-    h = h % 24
+    minutes = (seconds.abs / 60).floor
+    seconds = seconds.abs % 60
+    hours = (minutes / 60).floor
+    minutes = minutes % 60
+    days = (hours / 24).floor
+    hours = hours % 24
 
     output = sign
-    output << "#{d} дн " if (d > 0)
-    output << "#{h} г " if (h > 0)
-    output << "#{m} хв " if (m > 0)
-    output << "#{s} с" if (s > 0)
+    output << "#{days} дн " if days > 0
+    output << "#{hours} г " if hours > 0
+    output << "#{minutes} хв " if minutes > 0
+    output << "#{seconds} с" if seconds > 0
 
     output
+  end
+
+  private
+
+  def set_level_finish_time(level, team_id, time_finish)
+    closed_levels << level.id unless closed?(level)
+    if last_level?(level, team_id)
+      set_finish_time(time_finish)
+    else
+      update_current_level_entered_at(time_finish)
+      if game.game_type == 'linear'
+        self.current_level = level.next
+      elsif game.game_type == 'selected'
+        self.current_level = next_selected_level(level, team_id)
+      end
+    end
+  end
+
+  def game_url(level)
+    game.game_type == 'panic' ? "/play/#{game_id}?level=#{level.position}&rnd=#{rand}" : "/play/#{game_id}?rnd=#{rand}"
+  end
+
+  def add_autocomplete_penalty(level, team_id, user_id)
+    game_bonus_options = {
+      game_id: game_id,
+      level_id: level.id,
+      team_id: team_id,
+      award: -(level.autocomplete_penalty || 0),
+      user_id: user_id,
+      reason: 'штраф за автоперехід',
+      description: ''
+    }
+    if level.is_autocomplete_penalty? && !level.autocomplete_penalty.zero? && !GameBonus.exists?(game_bonus_options)
+      GameBonus.create(game_bonus_options)
+    end
+  end
+
+  def last_level?(level, team_id)
+    game.game_type == 'linear' && current_level.next.nil? ||
+      game.game_type == 'panic' &&
+        closed_levels.count == game.levels.count ||
+      game.game_type == 'selected' && last_level_selected?(team_id)
+  end
+
+  def pass_bonuses!(answer, level, team_id, user)
+    return [[], false] unless correct_bonus_answer?(answer, level, team_id)
+
+    answered_bonus = []
+    level.find_bonuses_by_answer(answer, team_id).each do |q|
+      next if bonus_ids.include?(q.id)
+
+      answered_bonus << {
+        id: q.id,
+        position: q.position,
+        bonus: q.award_time || 0,
+        award: seconds_to_string(q.award_time || 0),
+        help: q.help,
+        name: q.name,
+        value: "#{answer} (#{user.nickname})",
+        level_id: level.id,
+        user_id: user.id
+      }
+    end
+    pass_bonus!(answered_bonus) unless answered_bonus.size.zero?
+    [answered_bonus, true]
+  end
+
+  def pass_questions!(answer, level, team_id, user)
+    return [[], false, 0, 0] unless correct_answer?(answer, level, team_id)
+
+    answered_question = []
+    level.find_questions_by_answer(answer, team_id).each do |q|
+      next if question_ids.include?(q.id)
+
+      answered_question << {
+        id: q.id,
+        name: q.name,
+        position: q.position,
+        value: "<span class=\"right_code\">#{answer} (#{user.nickname})</span>"
+      }
+    end
+    pass_question!(answered_question)
+    needed = level.team_questions(team_id).count
+    closed = (question_ids.to_set & level.team_questions(team_id).map(&:id).to_set).size
+    [answered_question, true, needed, closed]
+  end
+
+  def set_input_lock(time, level, game_id, team_id, user_id)
+    input_lock_type = level.input_lock_type
+    input_lock_duration = level.input_lock_duration
+    inputs_count = level.inputs_count
+    input_lock = nil
+    if count_wrong_answers(time - input_lock_duration, level.id, game_id, team_id, user_id, input_lock_type) >= inputs_count
+      input_lock = InputLock.create!(
+        game_id: game_id,
+        level_id: level.id,
+        team_id: team_id,
+        user_id: user_id,
+        lock_ends_at: time + input_lock_duration
+      )
+    end
+    input_lock
+  end
+
+  def count_wrong_answers(time, level_id, game_id, team_id, user_id, input_lock_type)
+    if input_lock_type == 'team'
+      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(answer_type: 0).where('time >= ?', time).count
+    else
+      Log.of_game(game_id).of_level(level_id).of_team(team_id).where(user_id: user_id, answer_type: 0).where('time >= ?', time).count
+    end
+  end
+
+  def send_bonuses_to_panic(bonuses)
+    levels = Hash.new { |h, k| h[k] = [] }
+    bonuses.each do |bonus|
+      Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
+        levels[level_id].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
+      end
+    end
+    levels.each do |k, v|
+      PrivatePub.publish_to(
+        "/game_passings/#{id}/#{k}/answers",
+        answers: [],
+        sectors: [],
+        bonuses: v,
+        needed: [],
+        closed: [],
+        input_lock: {input_lock: false, duration: 0}
+      )
+    end
+  end
+
+  def get_answered_bonuses(level)
+    sum = 0
+    level.bonuses.where(id: bonus_ids).each do |bonus|
+      sum += bonus.change_level_autocomplete? ? bonus.change_level_autocomplete_by : 0
+    end
+    sum
+  end
+
+  def get_answered_questions(level)
+    sum = 0
+    level.questions.where(id: question_ids).each do |question|
+      sum += question.change_level_autocomplete? ? question.change_level_autocomplete_by : 0
+    end
+    sum
   end
 end

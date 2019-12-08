@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-ruby '2.6.2'
-
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails', '5.2.3'
 gem 'pg'
@@ -62,6 +60,7 @@ gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageuplo
 # gem 'carrierwave'
 gem 'cloudinary'
 gem 'jquery-ui-rails'
+gem 'touchpunch-rails', github: 'VasiliyNovosad/touchpunch-rails'
 # gem 'rails-jquery-autocomplete'
 gem 'sentry-raven'
 source 'https://rails-assets.org' do

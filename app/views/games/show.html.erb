@@ -62,30 +62,67 @@
 <!--  </p>-->
 <%# end %>
 
-<% if current_user && (current_user.captain? || @game.team_type == 'single') %>
-    <p><% game_entry = GameEntry.of(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id, @game.id)%>
-      <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: @game.team_type == 'multy' ? current_user.team : current_user.single_team %></p>
+<p>
+  <em>Максимальна кількість команд: </em>
+  <% if @game.max_team_number.equal?(10000) || @game.max_team_number.equal?(0) || @game.max_team_number.nil? %>
+    Необмежено
+    <% @game.max_team_number = 10000 %>
+  <% else %>
+    <%= @game.max_team_number %>
+  <% end %>
+</p>
+<% if user_signed_in? && current_user.author_of?(@game) %>
+  <p>
+    <em>Ховати назви рівнів: </em>
+    <% if @game.hide_levels_names? %>
+      Так
+    <% else %>
+      Ні
+    <% end %>
+  </p>
+  <p>
+    <em>Ховати статистику: </em>
+    <% if @game.hide_stat? %>
+      <%= @game.hide_stat_type == 'all' ? 'До закінчення гри' : "До закінчення #{@game.hide_stat_level} рівня" %>
+    <% else %>
+      Ні
+    <% end %>
+  </p>
 <% end %>
-<br>
+<% if current_user && (current_user.captain? || @game.team_type == 'single') %>
+  <br>
+  <p><% game_entry = GameEntry.of(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id, @game.id)%>
+    <%= render 'shared/game_entry_controls', game_entry: game_entry, game: @game, team: @game.team_type == 'multy' ? current_user.team : current_user.single_team %></p>
+  <br>
+<% end %>
 
-<br>
+<% if user_signed_in? && current_user.author_of?(@game) && !@game.author_finished? %>
+  <br>
+  <p>
+    <%= link_to "Редагувати гру", edit_game_path(@game), class: 'btn btn-primary btn-sm' %>
+  </p>
+  <br>
+<% end %>
+
+
+
 <% if user_signed_in? %>
   <% if (@game.is_testing? ? @game.test_date : @game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !@game.author_finished? %>
-    <div id="playButton"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+    <div id="playButton" class="btn btn-lg btn-success"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% else %>
-    <div id="playButton" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+    <div id="playButton" class="btn btn-lg btn-success" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% end %>
+  <br>
 <% end %>
-<br>
 <%= render 'shared/countdown', game: @game, team: @team %>
 <div id="start-countdown"></div>
 <br>
 
 <p><%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></p>
 <% if @game.started? && !@game.is_testing? %>
-  <% if user_signed_in? && current_user.author_of?(@game) %>
+  <% if user_signed_in? && (current_user.author_of?(@game) || @game.author_finished?) %>
     <p><%= link_to "Моніторинг", url_for("/logs/livechannel/#{@game.id}")%></p>
-    <p><%= link_to "Лог відповідей", url_for("/logs/full/#{@game.id}")%></p>
+<!--    <p><%#= link_to "Лог відповідей", url_for("/logs/full/#{@game.id}")%></p>-->
     <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}") %></p>
   <% else %>
     <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}") %></p>
@@ -98,54 +135,125 @@
 <p>
   <%= @game.description.html_safe %>
 </p>
-
-<p>
-  <em>Максимальна кількість команд:</em>
-</p>
-<p>
-  <% if @game.max_team_number.equal?(10000) || @game.max_team_number.equal?(0) || @game.max_team_number.nil? %>
-    Необмежено
-    <% @game.max_team_number = 10000 %>
-  <% else %>
-    <%= @game.max_team_number %>
-  <% end %>
-</p>
-
 <br>
 
-<% if user_signed_in? && current_user.author_of?(@game) %>
-
-  <fieldset>
-    <legend>
-      Завдання:
-    </legend>
-
-    <p>
-      <%= render 'levels/list', levels: @game.levels  %>
-    </p>
-
-    <p>
-      <%= link_to "Додати нове завдання", new_game_level_path(@game) unless @game.author_finished?%>
-    </p>
-  </fieldset>
-  <br>
-<% end %>      
-
-<%= render 'game_entries', game_entries: @game_entries  %>
+<%= render 'game_entries', game_entries: @game_entries, game: @game  %>
 <br>
 <%= render 'teams', accepted_game_entries: @accepted_game_entries, game: @game %>
 <br>
 
-<% if user_signed_in? && current_user.author_of?(@game) && !@game.author_finished? %>
-  <p>
-    <%= link_to "Редагувати дану гру", edit_game_path(@game) %>
-  </p>
+<% if @game.author_finished? %>
+  <h2>Результати</h2>
+  <% if @game.game_type == 'linear' || @game.game_type == 'selected' %>
+    <table id="results" border="1">
+      <thead>
+      <tr>
+        <th>Місце</th>
+        <th>Команда</th>
+        <th>Час старту</th>
+        <th>Час фінішу</th>
+        <th>Сума бонусів</th>
+        <th>Час гри</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @game_passings.each_with_index do |game_passing, index| %>
+        <% unless !@game.author_finished? && game_passing[:finished_at].nil? %>
+          <tr>
+            <td><%= game_passing[:finished_at].nil? ? '-' : (index + 1) %></td>
+            <td><%= game_passing[:team_name] %></td>
+            <td><%= @game.starts_at.strftime('%H:%M:%S') + ' ' + @game.starts_at.strftime('(%d.%m)') %></td>
+            <td>
+              <% if game_passing[:exited] %>
+                <strong>Зійшли з дистанції</strong>(<%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %><%= ' ' + game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>)
+              <% elsif game_passing[:finished_at].nil? %>
+                <strong>Не фінішували</strong>
+              <% else %>
+                <%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %> <%= game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>
+              <% end %>
+            </td>
+            <td><%= link_to seconds_to_string((game_passing[:sum_bonuses] || 0)), game_game_bonuses_path(@game, team_id: game_passing[:team_id]) %></td>
+            <td><%= game_passing[:finished_at].nil? ? '-' : Time.at(game_passing[:finished_at] - @game.starts_at - game_passing[:sum_bonuses]).utc.strftime("%H:%M:%S.%L") %> </td>
+          </tr>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <table id="results" border="1">
+      <thead>
+      <tr>
+        <th>Місце</th>
+        <th>Команда</th>
+        <th>Час фінішу</th>
+        <th>Пройдено рівнів</th>
+        <th>Сума бонусів</th>
+        <th>Час гри</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @game_passings.each_with_index do |game_passing, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= game_passing[:team_name] %></td>
+          <td>
+            <%= game_passing[:finished_at].strftime('%H:%M:%S.%L') %> <%= game_passing[:finished_at].strftime('(%d.%m)') if game_passing[:finished_at].day != @game.starts_at.day %>
+          </td>
+          <td><%= game_passing[:closed_levels] %></td>
+          <td><%= link_to seconds_to_string(game_passing[:sum_bonuses]), game_game_bonuses_path(@game, team_id: game_passing[:team_id]) %></td>
+          <td><%= Time.at(game_passing[:finished_at] - game_passing[:sum_bonuses]).utc.strftime("%H:%M:%S.%L") %> </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+  <br>
   <br>
 <% end %>
 
-<% if @game.game_type == 'selected' && @teams_for_test.count > 0 && !@game.author_finished? %>
-  <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order") %></p>
+<% if user_signed_in? && current_user.author_of?(@game) %>
+
+  <% if !@game.started? && !@game.is_testing? && @game.levels && @game.levels.size > 0 %>
+
+    <% if game_with_personal? || @game.game_type == 'selected' %>
+      <%= form_tag start_test_game_path(@game), method: :post, id: "start-test-form" do %>
+        <%= submit_tag "Почати тестування", class: 'btn btn-success btn-sm' %>
+        <%= label_tag " для команди " %>
+        <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
+      <% end %>
+    <% else %>
+      <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
+    <% end %>
+  <% end %>
+
+  <% if @game.is_testing? %>
+    <%= link_to "Старт", url_for("/play/#{@game.id}"), class: 'btn btn-success btn-sm' %>
+    <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post, class: 'btn btn-success btn-sm' %>
+  <% end %>
+
+  <br>
+  <br>
+
+  <fieldset>
+    <legend>
+      Завдання: <button id="toggleLevelListButton" class="btn btn-sm btn-primary">Сховати</button>
+    </legend>
+
+    <div id="levels-list">
+      <%= render 'levels/list', levels: @game.levels, game: @game  %>
+      <br>
+
+      <p>
+        <%= link_to "Додати завдання", new_game_level_path(@game), class: 'btn btn-primary btn-sm' unless @game.author_finished?%>
+      </p>
+    </div>
+  </fieldset>
+  <br>
+  <% if @game.game_type == 'selected' && @teams_for_test.size > 0 && !@game.author_finished? %>
+    <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
+  <% end %>
 <% end %>
+
 <script type="text/javascript">
   <% unless @game.starts_at.nil? %>
     var seconds_to_game = <%= ((@game.is_testing? ? @game.test_date : @game.starts_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time + 1) %>;
@@ -154,44 +262,35 @@
     var date = new Date(dateObj);
   <% end %>
 
-  $("#start-countdown").countdown(date, {
+  $("#start-countdown").sizedown(date, {
     prefix:'До початку лишилось: '
   });
 </script>
 
-<% if user_signed_in? && current_user.author_of?(@game) && !@game.started? && !@game.is_testing? && @game.levels && @game.levels.count > 0 %>
-
-    <% if game_with_personal? || @game.game_type == 'selected' %>
-        <%= form_tag start_test_game_path(@game), method: :post do %>
-            <%= label_tag "Почати тестування для команди" %>
-            <%= select_tag(:team_id, options_for_select(@teams_for_test.map{ |team| [team.name, team.id] })) %>
-            <%= submit_tag "Старт" %>
-        <% end %>
-    <% else %>
-        <%= link_to 'Почати тестування', start_test_game_path(@game), method: :post %>
-    <% end %>
-
-<% end %>
-
-<% if user_signed_in? && current_user.author_of?(@game) && @game.is_testing? %>
-   <%= link_to "Старт", url_for("/play/#{@game.id}") %>
-   <br>
-   <%= link_to "Завершити тестування", finish_test_game_path(@game), method: :post %>
-<% end %>
-
 <% if user_signed_in? && current_user.author_of?(@game) %>
   <br>
-  <%= "Ви завершили гру" if (@game.started? && !@game.is_testing? && @game.author_finished?) %>
   <br>
   <br>
-  <br>
-  <%= link_to "ЗАКРИТИ ГРУ", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' } if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
-  <%= link_to "ВІДКРИТИ ГРУ", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' } if @game.author_finished? %>
+  <%= link_to "Закрити гру", end_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if (@game.started? && !@game.is_testing? && !@game.author_finished?) %>
+  <%= link_to "Відкрити гру", open_game_game_path(@game), method: :post, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-success btn-sm' if @game.author_finished? %>
   <br>
   <br>
   <br>
   <br>
   <p>
-    <%= link_to "Видалити дану гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' } unless @game.started? || @game.author_finished? %>
+    <%= link_to "Видалити гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-sm btn-danger' unless @game.started? || @game.author_finished? %>
   </p>
 <% end %>
+
+<script>
+  $(document).load(
+      $('#toggleLevelListButton').click(function() {
+          $('#levels-list').toggleClass('d-none');
+          if ($(this).text() === 'Сховати') {
+              $(this).text('Показати');
+          } else {
+              $(this).text('Сховати');
+          }
+      })
+  )
+</script>

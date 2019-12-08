@@ -6,7 +6,7 @@ module GamesHelper
     questions = 0
     answers = 0
     levels.each do |level|
-      unless level.tasks.count == 0
+      unless level.tasks.size == 0
         level.tasks.each do |task|
           tasks += 1 unless task.team.nil?
         end
@@ -15,7 +15,7 @@ module GamesHelper
         end
         level.questions.each do |question|
           questions += 1 unless question.team.nil?
-          unless question.answers.count == 0
+          unless question.answers.size == 0
             question.answers.each do |answer|
               answers += 1 unless answer.team.nil?
             end
@@ -46,5 +46,18 @@ module GamesHelper
     else
       "<em>Початок гри</em>: #{(game.is_testing? ? game.test_date : game.starts_at).strftime('%H:%M %d.%m.%Y')}".html_safe
     end
+  end
+
+  def hide_stat?(game, team)
+    return false unless game.hide_stat?
+
+    return true if team.nil?
+
+    game_passing = GamePassing.of(team.id, game.id)
+    return true if game_passing.nil?
+
+    return false unless game_passing.finished_at.nil?
+
+    game.hide_stat_type == 'all' || game_passing.current_level.position <= game.hide_stat_level
   end
 end

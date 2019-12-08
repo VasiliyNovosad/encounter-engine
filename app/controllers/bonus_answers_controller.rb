@@ -67,11 +67,4 @@ class BonusAnswersController < ApplicationController
   def bonus_answer_params
     params.require(:bonus_answer).permit(:value, :team_id)
   end
-
-  def find_teams
-    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
-      team = game_entry.team
-      [team.name, team.id]
-    end
-  end
 end

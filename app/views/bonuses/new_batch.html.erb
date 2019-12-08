@@ -1,0 +1,249 @@
+<h2>
+  Завдання "<strong><%= link_to level.name, game_level_path(game, level) %></strong>"
+</h2>
+
+<p>
+  <em>(гра "<%= link_to game.name, game_path(game) %>")</em>
+</p>
+
+<br>
+
+<%= form_for bonus, url: url_for(controller: 'bonuses', action: 'create_batch') do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <div class="form-group row">
+    <%= f.label "Команда", class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10">
+      <%= f.select(:team_id, teams, {}, { class: 'form-control' }) %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :name, class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10">
+      <%= f.text_field :name, class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12 col-form-label">Доступно на рівнях:</div>
+    <div class="col-sm-12">
+      <%#= hidden_field_tag("message[level_ids][]", nil) %>
+      <% game.levels.each do |level| %>
+        <label class="checkbox-inline level-checkbox"><%= check_box_tag("bonus[level_ids][]", level.id, level.id.in?(bonus.level_ids)) %> <%= level.position %></label>
+      <% end %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label 'Винагорода', class: 'col-sm-2 col-form-label' %>
+    <div id="bonus-award-time-form" class="col-sm-10 form-inline">
+      <div class="form-check form-check-inline">
+        <%= radio_button_tag(:award_type, "bonus") %>
+        <%= label_tag(:bonus_type, "Бонус", class: 'time-form-label control-label') %>
+        <%= radio_button_tag(:award_type, "penalty") %>
+        <%= label_tag(:penalty_type, "Штраф", class: 'time-form-label control-label') %>
+      </div>
+      <%= render 'shared/time_form' %>
+      <%= f.hidden_field :award_time %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :is_absolute_limited, class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-9 form-inline">
+      <div class="form-check">
+        <%= f.check_box :is_absolute_limited %>
+      </div>
+      <div id="bonus-absolute-limit-form" class="form-inline">
+        <%= f.label 'з', class: 'col-form-label time-form-label' %>
+        <%= f.text_field :valid_from, value: bonus.valid_from.nil? ? '' : bonus.valid_from.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
+        <%= f.label 'по', class: 'col-form-label time-form-label' %>
+        <%= f.text_field :valid_to, value: bonus.valid_to.nil? ? '' : bonus.valid_to.strftime("%d.%m.%Y %H:%M"), class: 'form-control form-control-sm' %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :is_delayed, class: 'col-sm-2 col-form-label' %>
+    <div id="bonus-delay-time-form" class="col-sm-9 col-9 form-inline">
+      <div class="form-check">
+        <%= f.check_box :is_delayed %>
+      </div>
+      <%= render 'shared/time_form' %>
+      <%= f.number_field :delay_for, hidden: true %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label :is_relative_limited, class: 'col-sm-2 col-form-label' %>
+    <div id="bonus-valid-time-form" class="col-sm-9 col-9 form-inline">
+      <div class="form-check">
+        <%= f.check_box :is_relative_limited %>
+      </div>
+      <%= render 'shared/time_form' %>
+      <%= f.number_field :valid_for, hidden: true %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label 'Змінює час до апу', class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10 form-inline">
+      <div class="form-check">
+        <%= f.check_box :change_level_autocomplete %>
+      </div>
+      <div id="bonus-change-up-form" class="form-inline">
+        <div class="form-check form-check-inline">
+          <%= radio_button_tag(:change_level_autocomplete_type, "plus") %>
+          <%= label_tag(:plus_type, "збільшує", class: 'time-form-label control-label') %>
+          <%= radio_button_tag(:change_level_autocomplete_type, "minus") %>
+          <%= label_tag(:minus_type, "зменшує на", class: 'time-form-label control-label') %>
+        </div>
+        <%= render 'shared/time_form' %>
+        <%= f.hidden_field :change_level_autocomplete_by %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <%= f.label 'Коди (для кожного бонуса з нового рядка, для одного бонуса декілька через ";")', class: 'col-sm-2 col-form-label' %>
+    <div class="col-sm-10">
+      <%= f.text_area :answers_list, rows: 10, class: 'form-control form-control-sm' %>
+    </div>
+  </div>
+  <%= f.submit "Додати бонуси", class: 'btn btn-light' %>
+  <em><%= link_to "(відмінити)", game_level_path(game, level, anchor: "bonuses-block") %></em>
+<% end %>
+
+<script type="text/javascript">
+    $('#bonus_valid_from').datetimepicker({
+        format:'d.m.Y H:i',
+        lang:'uk' });
+    $('#bonus_valid_to').datetimepicker({
+        format:'d.m.Y H:i',
+        lang:'uk' });
+
+    $(document).ready(function() {
+        if (!$('#bonus_is_absolute_limited').prop("checked")) {
+            $('#bonus-absolute-limit-form').addClass('invisible');
+        }
+
+        if (!$('#bonus_is_delayed').prop("checked")) {
+            $('#bonus-delay-time-form .my-time-form').addClass('invisible');
+        }
+
+        if (!$('#bonus_is_relative_limited').prop("checked")) {
+            $('#bonus-valid-time-form .my-time-form').addClass('invisible');
+        }
+
+        set_time_form(parseInt($('#bonus_delay_for').val()), '#bonus-delay-time-form');
+        set_time_form(parseInt($('#bonus_valid_for').val()), '#bonus-valid-time-form');
+
+        var award_time = parseInt($('#bonus_award_time').val());
+        if (award_time < 0) {
+            $("#award_type_penalty").prop("checked", true);
+        } else {
+            $("#award_type_bonus").prop("checked", true);
+        }
+        set_time_form(Math.abs(award_time), '#bonus-award-time-form');
+
+        $('#bonus-delay-time-form .time-hours').on('change', function() {
+            set_field_time('#bonus_delay_for', '#bonus-delay-time-form', 1);
+        });
+
+        $('#bonus-delay-time-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_delay_for', '#bonus-delay-time-form', 1);
+        });
+
+        $('#bonus-delay-time-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_delay_for', '#bonus-delay-time-form', 1);
+        });
+
+        $('#bonus-valid-time-form .time-hours').on('change', function() {
+            set_field_time('#bonus_valid_for', '#bonus-valid-time-form', 1);
+        });
+
+        $('#bonus-valid-time-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_valid_for', '#bonus-valid-time-form', 1);
+        });
+
+        $('#bonus-valid-time-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_valid_for', '#bonus-valid-time-form', 1);
+        });
+
+        $('#bonus-award-time-form .time-hours').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-award-time-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-award-time-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-award-time-form input[type="radio"]').on('change', function() {
+            set_field_time('#bonus_award_time', '#bonus-award-time-form', $("#award_type_bonus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus_is_absolute_limited').on('click', function() {
+            if ($('#bonus_is_absolute_limited').prop("checked")) {
+                $('#bonus-absolute-limit-form').removeClass('invisible');
+            } else {
+                $('#bonus_valid_from').val('');
+                $('#bonus_valid_to').val('');
+                $('#bonus-absolute-limit-form').addClass('invisible');
+            }
+        });
+
+        $('#bonus_is_delayed').on('click', function () {
+            if ($('#bonus_is_delayed').prop("checked")) {
+                $('#bonus-delay-time-form .my-time-form').removeClass('invisible');
+            } else {
+                set_time_form(0, '#bonus-delay-time-form');
+                $('#bonus_delay_for').val(0);
+                $('#bonus-delay-time-form .my-time-form').addClass('invisible');
+            }
+        });
+
+        $('#bonus_is_relative_limited').on('click', function () {
+            if ($('#bonus_is_relative_limited').prop("checked")) {
+                $('#bonus-valid-time-form .my-time-form').removeClass('invisible');
+            } else {
+                set_time_form(0, '#bonus-valid-time-form');
+                $('#bonus_valid_for').val(0);
+                $('#bonus-valid-time-form .my-time-form').addClass('invisible');
+            }
+        });
+
+        if (!$('#bonus_change_level_autocomplete').prop("checked")) {
+            $('#bonus-change-up-form').addClass('invisible');
+        }
+
+        $('#bonus_change_level_autocomplete').on('click', function () {
+            if ($('#bonus_change_level_autocomplete').prop("checked")) {
+                $('#bonus-change-up-form').removeClass('invisible');
+            } else {
+                $('#bonus-change-up-form').addClass('invisible');
+            }
+        });
+
+        var change_level_autocomplete_by = parseInt($('#bonus_change_level_autocomplete_by').val());
+        if (change_level_autocomplete_by < 0) {
+            $("#change_level_autocomplete_type_minus").prop("checked", true);
+        } else {
+            $("#change_level_autocomplete_type_plus").prop("checked", true);
+        }
+        set_time_form(Math.abs(change_level_autocomplete_by), '#bonus-change-up-form');
+
+        $('#bonus-change-up-form .time-hours').on('change', function() {
+            set_field_time('#bonus_change_level_autocomplete_by', '#bonus-change-up-form', $("#change_level_autocomplete_type_plus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-change-up-form .time-minutes').on('change', function() {
+            set_field_time('#bonus_change_level_autocomplete_by', '#bonus-change-up-form', $("#change_level_autocomplete_type_plus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-change-up-form .time-seconds').on('change', function() {
+            set_field_time('#bonus_change_level_autocomplete_by', '#bonus-change-up-form', $("#change_level_autocomplete_type_plus").prop("checked") ? 1 : -1);
+        });
+
+        $('#bonus-change-up-form input[type="radio"]').on('change', function() {
+            set_field_time('#bonus_change_level_autocomplete_by', '#bonus-change-up-form', $("#change_level_autocomplete_type_plus").prop("checked") ? 1 : -1);
+        });
+    });
+
+
+</script>

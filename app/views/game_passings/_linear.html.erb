@@ -1,12 +1,13 @@
+<% level_number = game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %>
 <div id="updateButton"><%= link_to "Оновити", url_for("/play/#{game.id}?rnd=#{rand}") %></div>
-<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{game.id}?rnd=#{rand}"), target: :_blank%></div>
+<div id="statButton"><%= link_to "Cтатистика", url_for("/logs/short/#{game.id}?rnd=#{rand}"), target: '_blank' %></div>
 <br>
 <br>
 <div id="left-game-container">
   <%= form_tag("/play/#{game.id}", method: "post", remote: true, format: :js) do %>
     <br>Код:
     <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: :off) %>
-    <%= submit_tag " надіслати " %>
+    <%= submit_tag " надіслати ", id: 'code_submit' %>
     <br>
   <% end %>
   <br>
@@ -32,18 +33,21 @@
 <div id="main-game-container">
   <fieldset>
     <legend>
-      <%= level.name %>
+      <%= game.hide_levels_names? ? "Рівень #{level.position}" : level.name %>
     </legend>
 
     <% if (level.complete_later || 0) > 0 %>
-        <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
+      <div id="LevelCompleteCountdownContainer" >До завершення рівня <span id="LevelCompleteCountdownTimerText">3 хвилини</span></div>
 
-        <script>
-            LevelCompleter.setup({
-                initialCountdownValue: <%= (((game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position) == 1 ? game.starts_at : game_passing.current_level_entered_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + level.complete_later %>
-                ,gameId: <%= game.id %>, levelId: <%= level.id %>, gameType: '<%= game.game_type %>', levelNumber: <%= game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position %>
-            })
-        </script>
+      <script>
+        LevelCompleter.setup({
+          initialCountdownValue: <%= autocomplete_after %>,
+          gameId: <%= game.id %>,
+          levelId: <%= level.id %>,
+          gameType: '<%= game.game_type %>',
+          levelNumber: <%= level_number %>
+        })
+      </script>
     <% end %>
     <br>
 
@@ -53,76 +57,156 @@
     <br>
 
     <% team_questions = level.team_questions(team_id) %>
-    <% if team_questions.count > 1 %>
+    <% if team_questions.size > 1 %>
       <div>
         <br>
-        <b id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).count %> із <%= team_questions.count %>:</b>
+        <strong id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).size %> із <%= team_questions.size %>:</strong>
         <hr>
         <hr>
       </div>
     <% end %>
     <br>
 
-    <%= render 'hints', upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: ((game.game_type == 'selected' ? game_passing.current_level_position(team_id) : level.position) == 1 ? game.starts_at : game_passing.current_level_entered_at), game_passing: game_passing, level: level, team_id: team_id %>
+    <%= render 'hints', upcoming_hints: upcoming_hints, hints_to_show: hints_to_show, begin_time: (level_number == 1 ? game.starts_at : game_passing.current_level_entered_at), game_passing: game_passing, level: level, team_id: team_id %>
     <%= render 'penalty_hints', penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id %>
 
-    <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.count > 1 %>
+    <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.size > 1 %>
     <hr>
     <br>
-    <%= render 'bonuses', level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id if bonuses.count > 0 %>
+    <%= render 'bonuses', level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id if bonuses.size > 0 %>
     <br>
   </fieldset>
 </div>
 <%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}" %>
+<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/answers/#{current_user.id}" %>
 <%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/answers" %>
 <%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/penalty_hints" %>
 
 <script>
-    PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>", function(data, channel) {
-        window.location.href = data.url;
-    });
+  $(document).ready(function() {
+      var input_lock = { input_lock: <%= input_lock[:input_lock] || false %>, duration: <%= input_lock[:duration] || 0 %>};
+      if (input_lock.input_lock) {
+          $('#answer').prop('readonly', true);
+          $("#code_submit").attr("disabled", true);
 
-    PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/answers", function(data, channel) {
-        let answers = data.answers || [];
-        for (let i = 0; i < answers.length; i++) {
-            $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));
-        }
-        let sectors = data.sectors || [];
-        for (let i = 0; i < sectors.length; i++) {
-            let sector = $('#sector-' + sectors[i].position).get(0);
-            <% if level.olymp? %>
-              sector.innerHTML = sectors[i].value;
-            <% else %>
-              sector.innerHTML = sectors[i].name + ': ' + sectors[i].value;
-            <% end %>
-        }
-        let bonuses = data.bonuses || [];
-        for (let i = 0; i < bonuses.length; i++) {
-            // let bonus = $('#bonus-' + bonuses[i].id).get(0);
-            let elem = '<li id="bonus-' + bonuses[i].id + '">';
-            elem += '<p class="bonus-answered"><b>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</b></p>'
-              + bonuses[i].help;
-            elem += '</li>';
-            // bonus.innerHTML = elem;
-            $('#bonus-' + bonuses[i].id).replaceWith(elem);
-        }
-        let needed = data.needed || 0;
-        let closed = data.closed || 0;
-        if (needed > 0 && closed > 0) {
-            $('#codes-closed').get(0).innerHTML = 'Вірних кодів ' + closed + ' із ' + needed + ':';
-        }
+          var timer = Math.floor(input_lock.duration);
 
-    });
+          var x = setInterval(function() {
 
-    PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/penalty_hints", function(data, channel) {
-        let hint = data.hint || {};
-        let hint_block = $('#penalty-hint-' + hint.id + ' .penalty-hint-body').get(0);
-        hint_block.innerHTML = hint.text;
-    });
+              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + (--timer) + ' c</span>';
 
-    $(document).on("ajax:error", 'body', function(e, data, status) {
-        if (data.status == 0) {
-            $('#entered-code').get(0).innerHTML = '<span class="wrong_code">проблема мережі</span>';
-        }
-    });
+              if (timer <= 0) {
+                  clearInterval(x);
+                  $('#answer').prop('readonly', false);
+                  $("#code_submit").attr("disabled", false);
+                  $('#entered-code').get(0).innerHTML = '';
+              }
+          }, 1000);
+      } else {
+          $('#answer').prop('readonly', false);
+      }
+  });
+
+  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>", function(data, channel) {
+      window.location.href = data.url;
+  });
+
+  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/answers/<%= current_user.id %>", function(data, channel) {
+      var input_lock = data.input_lock || {};
+      if (input_lock.input_lock) {
+          $('#answer').prop('readonly', true);
+          $("#code_submit").attr("disabled", true);
+
+          var timer = Math.floor(input_lock.duration);
+
+          var x = setInterval(function() {
+
+              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + --timer + ' c</span>';
+
+              if (timer <= 0) {
+                  clearInterval(x);
+                  $('#answer').prop('readonly', false);
+                  $("#code_submit").attr("disabled", false);
+                  $('#entered-code').get(0).innerHTML = '';
+              }
+          }, 1000);
+      } else {
+          $('#answer').prop('readonly', false);
+      }
+  });
+
+  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/answers", function(data, channel) {
+      let answers = data.answers || [];
+      for (let i = 0; i < answers.length; i++) {
+          $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));
+      }
+      let sectors = data.sectors || [];
+      for (let i = 0; i < sectors.length; i++) {
+          let sector = $('#sector-' + sectors[i].position).get(0);
+          <% if level.olymp? %>
+            sector.innerHTML = sectors[i].value;
+          <% else %>
+            sector.innerHTML = sectors[i].name + ': ' + sectors[i].value;
+          <% end %>
+      }
+      let bonuses = data.bonuses || [];
+      for (let i = 0; i < bonuses.length; i++) {
+          // let bonus = $('#bonus-' + bonuses[i].id).get(0);
+          let elem = '<li id="bonus-' + bonuses[i].id + '">';
+          elem += '<p class="bonus-answered"><strong>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</strong></p>';
+          if (bonuses[i].help) elem += bonuses[i].help;
+          elem += '</li>';
+          // bonus.innerHTML = elem;
+          $('#bonus-' + bonuses[i].id).replaceWith(elem);
+      }
+      let needed = data.needed || 0;
+      let closed = data.closed || 0;
+      if (needed > 0 && closed > 0) {
+          $('#codes-closed').get(0).innerHTML = 'Вірних кодів ' + closed + ' із ' + needed + ':';
+      }
+      let input_lock = data.input_lock || {};
+      if (input_lock.input_lock) {
+          $('#answer').prop('readonly', true);
+          $("#code_submit").attr("disabled", true);
+
+          var timer = Math.floor(input_lock.duration);
+
+          var x = setInterval(function() {
+
+              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + --timer + ' c</span>';
+
+              if (timer <= 0) {
+                  clearInterval(x);
+                  $('#answer').prop('readonly', false);
+                  $("#code_submit").attr("disabled", false);
+                  $('#entered-code').get(0).innerHTML = '';
+              }
+          }, 1000);
+      } else {
+          $('#answer').prop('readonly', false);
+      }
+
+      let timer_left = data.timer_left || 0;
+      if (timer_left !== 0) {
+          LevelCompleter.setup({
+              initialCountdownValue: timer_left,
+              gameId: <%= game.id %>,
+              levelId: <%= level.id %>,
+              gameType: '<%= game.game_type %>',
+              levelNumber: <%= level_number %>
+          })
+      }
+  });
+
+  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/penalty_hints", function(data, channel) {
+      let hint = data.hint || {};
+      let hint_block = $('#penalty-hint-' + hint.id + ' .penalty-hint-body').get(0);
+      hint_block.innerHTML = hint.text;
+  });
+
+  $(document).on("ajax:error", 'body', function(e, data, status) {
+      if (data.status == 0) {
+          $('#entered-code').get(0).innerHTML = '<span class="wrong_code">проблема мережі</span>';
+      }
+  });
 </script>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190411192335) do
+ActiveRecord::Schema.define(version: 20191023185909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,14 +47,16 @@ ActiveRecord::Schema.define(version: 20190411192335) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_absolute_limited", default: false
+    t.boolean  "is_absolute_limited",          default: false
     t.datetime "valid_from"
     t.datetime "valid_to"
-    t.boolean  "is_delayed",          default: false
+    t.boolean  "is_delayed",                   default: false
     t.integer  "delay_for"
-    t.boolean  "is_relative_limited", default: false
+    t.boolean  "is_relative_limited",          default: false
     t.integer  "valid_for"
     t.integer  "game_id"
+    t.boolean  "change_level_autocomplete",    default: false
+    t.integer  "change_level_autocomplete_by", default: 0
   end
 
   create_table "closed_levels", force: :cascade do |t|
@@ -259,6 +261,10 @@ ActiveRecord::Schema.define(version: 20190411192335) do
     t.string   "image"
     t.string   "team_type",                          default: "multy"
     t.text     "show_scenario_for"
+    t.boolean  "hide_levels_names",                  default: false
+    t.boolean  "hide_stat",                          default: false
+    t.string   "hide_stat_type",                     default: "all"
+    t.integer  "hide_stat_level",                    default: 0
   end
 
   add_index "games", ["slug"], name: "index_games_on_slug", using: :btree
@@ -294,6 +300,16 @@ ActiveRecord::Schema.define(version: 20190411192335) do
     t.string   "image"
   end
 
+  create_table "input_locks", force: :cascade do |t|
+    t.integer  "game_id"
+    t.integer  "level_id"
+    t.integer  "team_id"
+    t.integer  "user_id"
+    t.datetime "lock_ends_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
   create_table "invitations", force: :cascade do |t|
     t.integer  "to_team_id"
     t.integer  "for_user_id"
@@ -327,6 +343,10 @@ ActiveRecord::Schema.define(version: 20190411192335) do
     t.integer  "wrong_code_penalty",                  default: 0
     t.boolean  "dismissed",                           default: false
     t.text     "description"
+    t.boolean  "input_lock",                          default: false
+    t.integer  "inputs_count",                        default: 0
+    t.integer  "input_lock_duration",                 default: 0
+    t.string   "input_lock_type",                     default: "team"
   end
 
   add_index "levels", ["game_id"], name: "index_levels_on_game_id", using: :btree
@@ -386,12 +406,14 @@ ActiveRecord::Schema.define(version: 20190411192335) do
   add_index "penalty_hints", ["level_id"], name: "index_penalty_hints_on_level_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name",                         limit: 255
     t.integer  "level_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "position"
     t.integer  "team_id"
+    t.boolean  "change_level_autocomplete",                default: false
+    t.integer  "change_level_autocomplete_by",             default: 0
   end
 
   create_table "results", force: :cascade do |t|

@@ -5,27 +5,40 @@
 </h2>
 <br>
 
-<%= form_tag("/games/#{@game.id}/create_level_order") do %>
-  <table>
-    <tr>
-      <td><%= label_tag(:q, "№ рівня") %></td>
-      <% @teams.each do |team| %>
-          <td><%= label_tag(:team_id, "#{team.name}") %></td>
-      <% end %>
-    </tr>
-    <% @level_orders.each do |level_index, levels_values| %>
-        <tr>
-          <td><%= label_tag(:q, "#{level_index}") %></td>
-          <% levels_values.each do |index, value| %>
-              <td><%= select_tag("level_id_#{level_index}_#{index}", options_for_select(@levels.map{ |level| [level.name, level.id] }, value)) %></td>
+<div class="container-fluid">
+  <div class="row">
+    <% @teams.each do |team| %>
+      <div class="col-12 col-sm-4 col-md-4 col-lg-3">
+        <div><%= team.name %></div>
+        <div class="levels list-group" data-url="/games/<%= @game.id %>/new_level_order/sort?team_id=<%= team.id %>">
+          <% @level_orders[team].each_with_index do |team_level, index| %>
+            <div class="list-group-item" id="<%= dom_id(team_level) %>">
+              <span class="level-position"><%= index + 1 %></span>. <%= team_level.name %>
+            </div>
           <% end %>
-        </tr>
+        </div>
+      </div>
     <% end %>
-  </table>
-  <%= submit_tag "Зберегти", class: 'btn btn-light' %>
-<% end %>
+  </div>
+</div>
+
 <br>
 <p>
   <%= link_to "Повернутися до гри \"#{@game.name}\"", game_path(@game) %>
 </p>
 <br>
+<script>
+    $(".levels").sortable({
+        update: function(e, ui) {
+
+            $(this).find('.level-position').each(function( index ) {
+                $( this ).text(index + 1);
+            });
+            $.ajax({
+                url: $(this).data("url"),
+                type: "POST",
+                data: $(this).sortable('serialize'),
+            });
+        }
+    });
+</script>

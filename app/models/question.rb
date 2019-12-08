@@ -3,6 +3,7 @@ class Question < ApplicationRecord
   belongs_to :team
   has_many :answers, dependent: :destroy
   has_and_belongs_to_many :game_passings, join_table: 'game_passings_questions'
+  attr_accessor :answers_list
 
   acts_as_list scope: [:level_id, :team_id]
 
@@ -28,8 +29,7 @@ class Question < ApplicationRecord
   end
 
   def matches_any_answer(answer_value, team_id)
-    require 'ee_strings.rb'
-    team_answers(team_id).any? { |answer| answer.value.to_s.downcase_utf8_cyr == answer_value.to_s.downcase_utf8_cyr }
+    team_answers(team_id).any? { |answer| answer.value.mb_chars.downcase.to_s == answer_value.mb_chars.downcase.to_s }
   end
 
   def set_name
@@ -37,7 +37,7 @@ class Question < ApplicationRecord
   end
 
   def team_answers(team_id)
-    answers.where("team_id IS NULL OR team_id = #{team_id}")
+    answers.of_team(team_id)
   end
 
   def team_correct_answer(team_id)

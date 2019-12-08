@@ -23,6 +23,6 @@
   <td class='latest-post text-center'>
     <%= link_to_latest_post(topic) -%>
   </td>
-  <td class='posts-count text-center'><%= relevant_posts(topic).count %></td>
+  <td class='posts-count text-center'><%= relevant_posts(topic).size %></td>
   <td class='views-count text-center'><%= topic.views_count %></td>
 </tr>

@@ -8,22 +8,21 @@ class ApplicationController < ActionController::Base
   #   current_user
   # end
 
-  def seconds_to_string(s)
-    sign = s < 0 ? '-' : ''
+  def seconds_to_string(seconds)
+    sign = seconds.negative? ? '-' : ''
 
-    # d = days, h = hours, m = minutes, s = seconds
-    m = (s.abs / 60).floor
-    s = s.abs % 60
-    h = (m / 60).floor
-    m = m % 60
-    d = (h / 24).floor
-    h = h % 24
+    minutes = (seconds.abs / 60).floor
+    seconds = seconds.abs % 60
+    hours = (minutes / 60).floor
+    minutes = minutes % 60
+    days = (hours / 24).floor
+    hours = hours % 24
 
     output = sign
-    output << "#{d} дн" if (d > 0)
-    output << " #{h} г" if (h > 0)
-    output << " #{m} хв" if (m > 0)
-    output << " #{s} с" if (s > 0)
+    output << "#{days} дн" if days.positive?
+    output << " #{hours} г" if hours.positive?
+    output << " #{minutes} хв" if minutes.positive?
+    output << " #{seconds} с" if seconds.positive?
 
     output
   end
@@ -65,5 +64,12 @@ class ApplicationController < ActionController::Base
 
   def ensure_game_was_not_finished
     redirect_to root_path, alert: 'Заборонено редагувати гру після її закриття' if @game.author_finished?
+  end
+
+  def find_teams
+    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
+      team = game_entry.team
+      [team.name, team.id]
+    end
   end
 end

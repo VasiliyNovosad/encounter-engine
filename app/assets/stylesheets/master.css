@@ -301,6 +301,7 @@ textarea {
 
     .partner-block {
         display: block;
+        text-align: center;
     }
 
     .partner-block > div {
@@ -309,9 +310,9 @@ textarea {
     }
 
     .partner-logo {
-        width: 40%;
-        float: left;
-        margin: 0 5%;
+        /*width: 40%;*/
+        /*float: left;*/
+        /*margin: 0 5%;*/
     }
 
     .partner-logo img {
@@ -418,7 +419,7 @@ td {
     background-color: #272727;
 }
 
-#updateButton, #statButton, #playButton {
+#updateButton, #statButton {
     padding: 10px 20px;
     border: solid 1px #ccc;
     border-radius: 8px;
@@ -426,9 +427,9 @@ td {
     margin: 0 10px;
 }
 
-.level-move {
-    margin: 0 10px;
-}
+/*.level-move {*/
+/*    margin: 0 10px;*/
+/*}*/
 
 .finished-game {
     text-decoration: line-through;
@@ -580,4 +581,48 @@ div.dismissed-level {
 
 .level_description {
     color: orange;
+}
+
+#levels .list-group-item, .levels .list-group-item, .numbers .list-group-item {
+    background-color: #222;
+    border: solid 1px #777;
+    margin: 1px 0;
+}
+
+#level_inputs_count {
+    width: 80px;
+    margin-right: 10px;
+}
+
+.list-group-item {
+    display: flex;
+}
+
+.resort-block {
+    width: 70px;
+}
+
+.level-down {
+    float: right;
+    margin-right: 5px;
+}
+
+.btn a, a.btn {
+    text-decoration: none;
+}
+
+.btn-level-block, .level-move a {
+    font-weight: bold;
+}
+
+.btn-dark {
+    color: #fff;
+    background-color: #262729;
+    border-color: #262729;
+}
+
+.btn-dark:hover {
+    color: #fff;
+    background-color: #212121;
+    border-color: #1d2124;
 }

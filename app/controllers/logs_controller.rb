@@ -226,11 +226,11 @@ class LogsController < ApplicationController
       bonuses = game_passing.bonus_ids
       team_field = {}
       ships.keys.each do |cell_name|
-        if bonuses.include?(ships[cell_name][:id])
-          team_field[cell_name] = ships[cell_name][:ship]
-        else
-          team_field[cell_name] = 'transparent'
-        end
+        team_field[cell_name] = if bonuses.include?(ships[cell_name][:id])
+                                  ships[cell_name][:ship]
+                                else
+                                  'transparent'
+                                end
       end
       {
         team_name: game_passing.team_name,
@@ -246,12 +246,11 @@ class LogsController < ApplicationController
   end
 
   def show_live_channel
-    require 'ee_strings.rb'
     filter = {}
     filter[:level_id] = params[:level_id].to_i unless params[:level_id].nil? || params[:level_id] == '' || params[:level_id].to_i == 0
     filter[:team_id] = params[:team_id].to_i unless params[:team_id].nil? || params[:team_id] == '' || params[:team_id].to_i == 0
     filter[:user_id] = params[:user_id].to_i unless params[:user_id].nil? || params[:user_id] == '' || params[:user_id].to_i == 0
-    logs = Log.of_game(@game.id)
+    logs = Log.of_game(@game.id).includes(:team)
     @log_levels = Level.where(id: logs.map(&:level_id).uniq).order(:position)
     @level_id = params[:level_id].to_i
     @log_teams = Team.where(id: logs.map(&:team_id).uniq).order(:name).map{ |team| [team.name, team.id] }
@@ -262,25 +261,25 @@ class LogsController < ApplicationController
     levels = {}
     @log_levels.each { |level| levels[level.id] = "#{level.position}. #{level.name}" }
     @user_id = params[:user_id].to_i
-    @logs = Log.of_game(@game.id).where(filter).order(time: :desc).page(params[:page] || 1)
+    @logs = Log.of_game(@game.id).includes(:team).where(filter).order(time: :desc).page(params[:page] || 1)
     @all_logs = []
 
-    if @game.starts_at < DateTime.new(2018,7,5,0,0,0)
+    if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0)
       logs_levels = Level.where(id: @logs.map(&:level_id).uniq).includes(questions: :answers, bonuses: :bonus_answers)
       correct_answers = []
       correct_bonus_answers = []
       logs_levels.each do |level|
         level.questions.each do |question|
-          question.answers.each { |answer| correct_answers << { level_id: level.id, team_id: answer.team_id, value: answer.value.strip.downcase_utf8_cyr} }
+          question.answers.each { |answer| correct_answers << { level_id: level.id, team_id: answer.team_id, value: answer.value.strip.mb_chars.downcase.to_s} }
         end
         level.bonuses.each do |bonus|
-          bonus.bonus_answers.each { |answer| correct_bonus_answers << { level_id: level.id, team_id: answer.team_id, value: answer.value.strip.downcase_utf8_cyr} }
+          bonus.bonus_answers.each { |answer| correct_bonus_answers << { level_id: level.id, team_id: answer.team_id, value: answer.value.strip.mb_chars.downcase.to_s} }
         end
       end
 
       @logs.each do |log|
-        correct_team_answers = correct_answers.select { |answer| (answer[:team_id] == log.team_id || answer[:team_id].nil?) && answer[:level_id] == log.level_id && answer[:value] == log.answer.strip.downcase_utf8_cyr }
-        correct_team_bonus_answers = correct_bonus_answers.select { |answer| (answer[:team_id] == log.team_id || answer[:team_id].nil?) && answer[:level_id] == log.level_id && answer[:value] == log.answer.strip.downcase_utf8_cyr }
+        correct_team_answers = correct_answers.select { |answer| (answer[:team_id] == log.team_id || answer[:team_id].nil?) && answer[:level_id] == log.level_id && answer[:value] == log.answer.strip.mb_chars.downcase.to_s }
+        correct_team_bonus_answers = correct_bonus_answers.select { |answer| (answer[:team_id] == log.team_id || answer[:team_id].nil?) && answer[:level_id] == log.level_id && answer[:value] == log.answer.strip.mb_chars.downcase.to_s }
         if correct_team_answers.length > 0 && correct_team_bonus_answers.length > 0
           @all_logs << {
             time: log.time,
@@ -292,56 +291,56 @@ class LogsController < ApplicationController
             user: log.user_id.nil? ? '' : users[log.user_id]
           }
           @all_logs << {
-              time: log.time,
-              team: log.team,
-              level: levels[log.level_id],
-              answer: log.answer,
-              correct_answer: false,
-              correct_bonus_answer: true,
-              user: log.user_id.nil? ? '' : users[log.user_id]
+            time: log.time,
+            team: log.team,
+            level: levels[log.level_id],
+            answer: log.answer,
+            correct_answer: false,
+            correct_bonus_answer: true,
+            user: log.user_id.nil? ? '' : users[log.user_id]
           }
         elsif correct_team_answers.length > 0
           @all_logs << {
-              time: log.time,
-              team: log.team,
-              level: levels[log.level_id],
-              answer: log.answer,
-              correct_answer: true,
-              correct_bonus_answer: false,
-              user: log.user_id.nil? ? '' : users[log.user_id]
+            time: log.time,
+            team: log.team,
+            level: levels[log.level_id],
+            answer: log.answer,
+            correct_answer: true,
+            correct_bonus_answer: false,
+            user: log.user_id.nil? ? '' : users[log.user_id]
           }
         elsif correct_team_bonus_answers.length > 0
           @all_logs << {
-              time: log.time,
-              team: log.team,
-              level: levels[log.level_id],
-              answer: log.answer,
-              correct_answer: false,
-              correct_bonus_answer: true,
-              user: log.user_id.nil? ? '' : users[log.user_id]
+            time: log.time,
+            team: log.team,
+            level: levels[log.level_id],
+            answer: log.answer,
+            correct_answer: false,
+            correct_bonus_answer: true,
+            user: log.user_id.nil? ? '' : users[log.user_id]
           }
         else
           @all_logs << {
-              time: log.time,
-              team: log.team,
-              level: levels[log.level_id],
-              answer: log.answer,
-              correct_answer: false,
-              correct_bonus_answer: false,
-              user: log.user_id.nil? ? '' : users[log.user_id]
+            time: log.time,
+            team: log.team,
+            level: levels[log.level_id],
+            answer: log.answer,
+            correct_answer: false,
+            correct_bonus_answer: false,
+            user: log.user_id.nil? ? '' : users[log.user_id]
           }
         end
       end
     else
       @logs.each do |log|
         @all_logs << {
-            time: log.time,
-            team: log.team,
-            level: levels[log.level_id],
-            answer: log.answer,
-            correct_answer: (log.answer_type == 1 || log.answer_type == 3),
-            correct_bonus_answer: (log.answer_type == 2),
-            user: log.user_id.nil? ? '' : users[log.user_id]
+          time: log.time,
+          team: log.team,
+          level: levels[log.level_id],
+          answer: log.answer,
+          correct_answer: (log.answer_type == 1 || log.answer_type == 3),
+          correct_bonus_answer: (log.answer_type == 2),
+          user: log.user_id.nil? ? '' : users[log.user_id]
         }
       end
     end
@@ -357,7 +356,6 @@ class LogsController < ApplicationController
   end
 
   def show_full_log
-    require 'ee_strings.rb'
     @logs = Log.of_game(@game.id).order_by_time.preload(:user)
     @levels = Level.of_game(@game.id).includes(questions: :answers, bonuses: :bonus_answers)
     @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
@@ -376,7 +374,7 @@ class LogsController < ApplicationController
         @level_logs << @teams.map do |team|
           game_bonus = game_bonuses.select { |bonus| bonus.team_id == team.id && bonus.level_id == level.id }
           team_logs = logs[[team.id, level.id]]
-          previous_time = @level_logs.count == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
+          previous_time = @level_logs.size == 0 ? @game.starts_at : @level_logs.last.select{ |log| log[:team] == team }[0][:time]
           team_log = (!team_logs.nil? && game_passings.select { |gp| gp.team_id == team.id }.first.closed_levels.include?(level.id)) ? team_logs.last : nil
           {
               team: team,
@@ -392,7 +390,7 @@ class LogsController < ApplicationController
         game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
         {
           team: result.team,
-          levels: result.closed_levels.count,
+          levels: result.closed_levels.size,
           bonuses: (result.sum_bonuses || 0) + game_bonus,
           time: result.finished_at || result.current_level_entered_at
         }
@@ -436,10 +434,10 @@ class LogsController < ApplicationController
         end.sort_by { |a| a[:time] }
       end
       results = game_passings.map do |result|
-        game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + bonus.award }
+        game_bonus = game_bonuses.select { |bonus| bonus.team_id == result.team.id }.inject(0) { |sum, bonus| sum + (bonus.award || 0) }
         {
             team: result.team,
-            levels: result.closed_levels.count,
+            levels: result.closed_levels.size,
             bonuses: (result.sum_bonuses || 0) + game_bonus,
             time: result.finished_at || result.current_level_entered_at
         }

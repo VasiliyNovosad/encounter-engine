@@ -55,6 +55,7 @@ class Game < ApplicationRecord
   scope :by, -> (author_id) { where(author_id: author_id) }
   scope :non_drafts, -> { where(is_draft: false) }
   scope :finished, -> { where('author_finished_at IS NOT NULL') }
+  scope :not_finished, -> { where('author_finished_at IS NULL') }
 
   def slug_candidates
     [
@@ -63,8 +64,7 @@ class Game < ApplicationRecord
   end
 
   def transliterated_name
-    require 'ee_strings.rb'
-    I18n.transliterate(self.name.downcase_utf8_cyr)
+    I18n.transliterate(self.name.mb_chars.downcase.to_s)
   end
 
   def self.started
@@ -92,16 +92,16 @@ class Game < ApplicationRecord
     return nil unless game_passing && (game_passing.finished? || self.game_type == 'panic')
     if self.game_type == 'linear' || game_passing.finished_at
       count_of_finished_before =
-        GamePassing.of_game(id).finished_before(game_passing.finished_at).count
+        GamePassing.of_game(id).finished_before(game_passing.finished_at).size
     else
-      count_of_finished = GamePassing.finished.count
+      count_of_finished = GamePassing.finished.size
       count_of_finished_before = count_of_finished +
         GamePassing.of_game(id).select do |game_pass|
           !game_passing.finished_at &&
-          game_pass.closed_levels.count > game_passing.closed_levels.count ||
-          game_pass.closed_levels.count == game_passing.closed_levels.count &&
+          game_pass.closed_levels.size > game_passing.closed_levels.size ||
+          game_pass.closed_levels.size == game_passing.closed_levels.size &&
           game_pass.current_level_entered_at < game_passing.current_level_entered_at
-        end.count
+        end.size
     end
     count_of_finished_before + 1
   end
@@ -164,6 +164,7 @@ class Game < ApplicationRecord
 
     game_passing = GamePassing.of_game(id)
     logs = Log.of_game(id)
+    input_locks = InputLock.of_game(id)
     game_bonuses = GameBonus.of_game(id)
     closed_levels = ClosedLevel.of_game(id)
     game_passing.each do |elem|
@@ -173,6 +174,7 @@ class Game < ApplicationRecord
 
     game_passing.delete_all
     logs.delete_all
+    input_locks.delete_all
     game_bonuses.delete_all
     closed_levels.delete_all
   end
@@ -188,7 +190,7 @@ class Game < ApplicationRecord
             team_id: game_passing.team_id,
             team_name: game_passing.team_name,
             finished_at: game_passing.finished_at || game_finished_at,
-            closed_levels: game_passing.closed_levels.count,
+            closed_levels: game_passing.closed_levels.size,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses)
         }
       end.sort do |a, b|
@@ -202,7 +204,7 @@ class Game < ApplicationRecord
             team_id: game_passing.team_id,
             team_name: game_passing.team_name,
             finished_at: game_passing.finished_at,
-            closed_levels: game_passing.closed_levels.count,
+            closed_levels: game_passing.closed_levels.size,
             sum_bonuses: (game_passing.sum_bonuses || 0) + (team_bonus.empty? ? 0 : team_bonus[0].sum_bonuses),
             exited: game_passing.exited?
         }

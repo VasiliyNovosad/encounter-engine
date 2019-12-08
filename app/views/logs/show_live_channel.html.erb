@@ -37,7 +37,7 @@
     <% @all_logs.each do |log| %>
       <tr>
         <td><%= log[:time].strftime("%Y-%m-%d %H:%M:%S.%L") %></td>
-        <td><%= log[:team] %></td>
+        <td><%= log[:team].name %></td>
         <td><%= log[:level] %></td>
         <td>
           <% if log[:correct_answer] || log[:answer] == 'timeout' %>

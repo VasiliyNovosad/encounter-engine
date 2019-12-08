@@ -11,9 +11,11 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require jquery-ui/widgets/sortable
+//= require jquery-ui/widgets/mouse
+//= require jquery.ui.touch-punch
 //= require jquery_ujs
 //= require tinymce-jquery
-//= require private_pub
 //= require datetimepicker
 //= require cocoon
 //= require_tree .

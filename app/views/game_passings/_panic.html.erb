@@ -10,7 +10,7 @@
       <%= submit_tag " надіслати " %>
       <%= hidden_field_tag(:level_id, level.id) %>
       <%= hidden_field_tag(:closed_level, game_passing.closed?(level)) %>
-      <%= hidden_field_tag(:closed_levels, game_passing.closed_levels.count) %>
+      <%= hidden_field_tag(:closed_levels, game_passing.closed_levels.size) %>
       <%= hidden_field_tag(:team_id, team_id) %>
       <br>
     <% end %>
@@ -70,10 +70,10 @@
   <br>
 
   <% team_questions = level.team_questions(team_id) %>
-  <% if team_questions.count > 1 %>
+  <% if team_questions.size > 1 %>
     <div>
       <br>
-      <b id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).count %> із <%= team_questions.count %>:</b>
+      <strong id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).size %> із <%= team_questions.size %>:</strong>
       <hr>
       <hr>
     </div>
@@ -86,10 +86,10 @@
     <%= render 'penalty_hints', penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id %>
   <% end %>
 
-  <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.count > 1 %>
+  <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.size > 1 %>
   <hr>
   <br>
-  <%= render 'bonuses', level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id if bonuses.count > 0 %>
+  <%= render 'bonuses', level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id if bonuses.size > 0 %>
 
   <br>
 </fieldset>
@@ -123,8 +123,8 @@
         for (let i = 0; i < bonuses.length; i++) {
             // let bonus = $('#bonus-' + bonuses[i].id).get(0);
             let elem = '<li id="bonus-' + bonuses[i].id + '">';
-            elem += '<p class="bonus-answered"><b>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</b></p>'
-                + bonuses[i].help;
+            elem += '<p class="bonus-answered"><strong>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</strong></p>';
+            if (bonuses[i].help) elem += bonuses[i].help;
             elem += '</li>';
             // bonus.innerHTML = elem;
             $('#bonus-' + bonuses[i].id).replaceWith(elem);

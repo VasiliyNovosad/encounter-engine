@@ -7,7 +7,7 @@ class Answer < ApplicationRecord
 
   validates_presence_of :value, message: 'Не введено варіант коду'
 
-  validates_uniqueness_of :value, scope: [:question_id], message: 'Такий код вже є на рівні'
+  validates_uniqueness_of :value, scope: %i[question_id team_id], message: 'Такий код вже є на рівні'
 
   scope :of_question, ->(question_id) { where(question_id: question_id) }
 

@@ -1,7 +1,7 @@
 class PenaltyHintsController < ApplicationController
   before_action :find_level
   before_action :find_game
-  before_action :ensure_game_was_not_finished, except: [:show]
+  before_action :ensure_game_was_not_finished
   before_action :find_penalty_hint, only: [:edit, :update, :destroy, :copy]
   before_action :find_teams, only: [:new, :edit, :create, :update]
 
@@ -17,7 +17,7 @@ class PenaltyHintsController < ApplicationController
     if @penalty_hint.save
       redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
     else
-      render 'new'
+      render :new
     end
   end
 
@@ -27,21 +27,21 @@ class PenaltyHintsController < ApplicationController
 
   def update
     if @penalty_hint.update_attributes(penalty_hint_params)
-      redirect_to game_level_path(@level.game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
+      redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
     else
-      render 'edit'
+      render :edit
     end
   end
 
   def destroy
     @penalty_hint.destroy
-    redirect_to game_level_path(@level.game, @level, anchor: "penalty-hints-block")
+    redirect_to game_level_path(@game, @level, anchor: "penalty-hints-block")
   end
 
   def copy
-    @new_hint = @penalty_hint.dup
-    if @new_hint.save
-      redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@new_hint.id}")
+    new_penalty_hint = @penalty_hint.dup
+    if new_penalty_hint.save
+      redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{new_penalty_hint.id}")
     else
       redirect_to game_level_path(@game, @level, anchor: "penalty-hint-#{@penalty_hint.id}")
     end
@@ -63,13 +63,6 @@ class PenaltyHintsController < ApplicationController
 
   def find_penalty_hint
     @penalty_hint = PenaltyHint.find(params[:id])
-  end
-
-  def find_teams
-    @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
-      team = game_entry.team
-      [team.name, team.id]
-    end
   end
 
 end

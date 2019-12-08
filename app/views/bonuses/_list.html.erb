@@ -19,12 +19,12 @@
       <p>
         <strong><%= bonus.name %>:</strong>
       </p>
-      <% unless bonus.task.nil? %>
+      <% unless bonus.task.nil? || bonus.task.empty? %>
         <p>
           <strong>Завдання: </strong><%= bonus.task.html_safe %>
         </p>
       <% end %>
-      <% unless bonus.help.nil? %>
+      <% unless bonus.help.nil? || bonus.help.empty? %>
         <p>
           <strong>Підказка: </strong><%= bonus.help.html_safe %>
         </p>
@@ -57,6 +57,18 @@
           <strong>Обмежити час виконання: </strong>
           <%= "на #{seconds_to_string(bonus.valid_for || 0)}" %>
         </p>
+      <% end %>
+      <% if bonus.change_level_autocomplete? %>
+        <% if (bonus.change_level_autocomplete_by || 0) > 0 %>
+          <p>
+            <strong>Збільшує час до апу на: </strong><%= seconds_to_string(bonus.change_level_autocomplete_by || 0) %>
+          </p>
+        <% end %>
+        <% if (bonus.change_level_autocomplete_by || 0) < 0 %>
+          <p>
+            <strong>Зменшує час до апу на: </strong><%= seconds_to_string(-(bonus.change_level_autocomplete_by || 0)) %>
+          </p>
+        <% end %>
       <% end %>
       <% bonus.bonus_answers.each do |answer| %>
         <p>

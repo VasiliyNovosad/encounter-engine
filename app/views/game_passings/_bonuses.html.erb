@@ -4,7 +4,7 @@
         <li id="bonus-<%= bonus[:id] %>">
           <% if bonus[:answered] %>
             <p class="bonus-answered">
-              <b>
+              <strong>
                 <% if (bonus[:award] || 0) > 0 %>
                   <%= "#{bonus[:name]}: нагорода #{seconds_to_string(bonus[:award] || 0)}, код: #{bonus[:value]}" %>
                 <% elsif (bonus[:award] || 0) < 0 %>
@@ -12,11 +12,11 @@
                 <% else %>
                   <%= "#{bonus[:name]}: виконано, код: #{bonus[:value]}" %>
                 <% end %>
-              </b>
+              </strong>
             </p>
-            <%= bonus[:help].html_safe %>
+            <%= bonus[:help].html_safe unless bonus[:help].nil? %>
           <% elsif bonus[:missed] %>
-            <p class="bonus-missed"><b><%= "#{bonus[:name]}: не виконано" %></b></p>
+            <p class="bonus-missed"><strong><%= "#{bonus[:name]}: не виконано" %></strong></p>
           <% elsif bonus[:delayed] %>
             <% unless game_passing.closed?(level) %>
               <div id="<%= "LevelBonusDelayCountdownContainer#{bonus[:id]}" %>" class="bonus-delay-timer">
@@ -42,7 +42,7 @@
               </div>
               <div id="<%= "LevelBonusLimitCountdownLoadIndicator#{bonus[:id]}" %>" style="display: none;">Завантаження...</div>
               <br>
-              <%= bonus[:task].html_safe %>
+              <%= bonus[:task].html_safe unless bonus[:task].nil? %>
               <script>
                   LevelBonusLimitUpdater.setup({
                       initialCountdownValue: <%= bonus[:valid_for] %>,
@@ -55,8 +55,8 @@
               </script>
             <% end %>
           <% else %>
-            <p class="bonus"><b><%= bonus[:name] %></b></p>
-            <%= bonus[:task].html_safe %>
+            <p class="bonus"><strong><%= bonus[:name] %></strong></p>
+            <%= bonus[:task].html_safe unless bonus[:task].nil? %>
           <% end %>
         </li>
         <br>

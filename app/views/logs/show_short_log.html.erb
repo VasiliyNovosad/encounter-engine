@@ -1,13 +1,15 @@
-<% levels_count = @levels.count %>
+<% levels_count = @levels.size %>
 <h1>Статистика гри "<%= link_to @game.name, game_path(@game) %>"</h1>
-
+<% if current_user && !current_user.author_of?(@game) && !@game.author_finished? && hide_stat?(@game, @game.team_type == 'multy' ? current_user.team : current_user.single_team) %>
+  <h2>Статистику закрито</h2>
+<% else %>
 <table id="stats" border="1">
   <thead>
     <tr align="center">
       <th></th>
       <% @levels.each do |level| %>
         <th>
-          <%= "#{level.position}: #{level.name} #{level.dismissed? ? '(рівень знято)' : ''}" %>
+          <%= "#{level.position}: #{@game.hide_levels_names? && !(current_user && current_user.author_of?(@game) || @game.author_finished?) ? level.position : level.name} #{level.dismissed? ? '(рівень знято)' : ''}" %>
         </th>
       <% end %>
       <th>Фінішний час</th>
@@ -16,7 +18,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @teams.count.times do |pos| %>
+    <% @teams.size.times do |pos| %>
       <tr valign="top">
         <td align="center" valign="middle" class="stat-std"><%= pos + 1 %></td>
         <% @levels.each do |level| %>
@@ -25,7 +27,7 @@
             <% unless log[:log].nil? %>
               <% if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0) %>
                 <div class="team-stat <%= level.dismissed? ? 'dismissed-level' : '' %>" data-id=<%= log[:log].team_id %> onclick="toggle(<%= log[:log].team_id %>)">
-                  <p class="team-name"><%= log[:log].team %></p>
+                  <p class="team-name"><%= log[:log].team.name %></p>
                   <p>(<%= log[:log].user.nil? ? '' : log[:log].user.nickname %>)</p>
                   <p><%= log[:log].time.strftime('%d.%m.%Y') %></p>
                   <p><%= log[:log].time.strftime('%H:%M:%S.%L') %></p>
@@ -60,7 +62,7 @@
           </td>
         <% end %>
         <% log = @level_logs[levels_count][pos] %>
-        <!--{ team: result.team, levels: result.closed_levels.count, bonuses: result.sum_bonuses, time: result.finished_at || result.current_level_entered_at }-->
+        <!--{ team: result.team, levels: result.closed_levels.size, bonuses: result.sum_bonuses, time: result.finished_at || result.current_level_entered_at }-->
         <td align="center" class="stat-std">
           <div class="team-stat" data-id=<%= log[:team].id %> onclick="toggle(<%= log[:team].id %>)">
             <p class="team-name"><%= log[:team].name %>(<%= log[:levels] %>)</p>
@@ -99,3 +101,4 @@
       }
   }
 </script>
+<% end %>

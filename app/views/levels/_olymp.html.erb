@@ -1,5 +1,5 @@
-<% bonuses = level.bonuses.count %>
-<% questions = level.questions.count %>
+<% bonuses = level.bonuses.size %>
+<% questions = level.questions.size %>
 <table class="olymp" border="1">
   <tbody>
   <% (1..(olymp_base**(levels - 1))).each do |i| %>

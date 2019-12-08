@@ -4,6 +4,7 @@ class Bonus < ApplicationRecord
   belongs_to :game
   has_many :bonus_answers, dependent: :destroy
   has_and_belongs_to_many :game_passings, join_table: 'game_passings_bonuses'
+  attr_accessor :answers_list
 
   acts_as_list scope: :game_id
 
@@ -28,8 +29,7 @@ class Bonus < ApplicationRecord
   end
 
   def matches_any_answer(answer_value, team_id)
-    require 'ee_strings.rb'
-    team_answers(team_id).any? { |answer| answer.value.to_s.upcase_utf8_cyr == answer_value.to_s.upcase_utf8_cyr }
+    team_answers(team_id).any? { |answer| answer.value.mb_chars.downcase.to_s == answer_value.mb_chars.downcase.to_s }
   end
 
   def set_name

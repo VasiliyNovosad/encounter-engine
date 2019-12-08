@@ -34,7 +34,7 @@ uk:
       edit:
         change_caption: "Зміна паролю"
         new_password: "Новий пароль"
-        minimum_password: "символів мінімум"
+        character_minimum: "символів мінімум"
         confirm_new_password: "Підтвердження нового паролю"
         change_password: "Змінити пароль"
       format: "Невірний формат - має складати мінімум 8 символів, у тому числі одну прописну букву, рядкову букву і цифру."

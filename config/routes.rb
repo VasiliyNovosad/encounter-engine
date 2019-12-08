@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   devise_for :users
 
-  root 'games#index'
+  root 'index#index'
 
   resources :teams
 
@@ -38,6 +38,10 @@ Rails.application.routes.draw do
       end
       resources :questions do
         resources :answers
+        collection do
+          get  :new_batch
+          post :create_batch
+        end
         post 'move_up', on: :member
         post 'move_down', on: :member
         post 'copy', on: :member
@@ -45,12 +49,19 @@ Rails.application.routes.draw do
       end
       resources :bonuses do
         resources :bonus_answers
+        collection do
+          get  :new_batch
+          post :create_batch
+        end
         post 'move_up', on: :member
         post 'move_down', on: :member
         post 'copy', on: :member
         post 'copy_to_sector', on: :member
       end
       resources :messages
+      collection do
+        patch :sort
+      end
       post 'move_up', on: :member
       post 'move_down', on: :member
       post 'change_position', on: :member
@@ -87,6 +98,7 @@ Rails.application.routes.draw do
   match '/play/:game_id/penalty_hint', to: 'game_passings#show_penalty_hint', via: 'get'
   match '/play/:game_id/bonus', to: 'game_passings#get_current_level_bonus', via: 'get'
   match '/play/:game_id/miss_bonus', to: 'game_passings#miss_current_level_bonus', via: 'post'
+  match '/games/:game_id/new_level_order/sort', to: 'levels_order#sort', via: 'post'
 
   match '/stats/:action/:game_id', to: 'game_passings#index', via: 'get'
   match '/logs/livechannel/:game_id', to: 'logs#show_live_channel', via: 'get'

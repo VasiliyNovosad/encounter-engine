@@ -1,3 +1,2 @@
-Головна сторінка<br>
-<br>
-<%= link_to "Список ігор", games_path %>
+<%= render 'shared/current_games', current_games: current_games %>
+<%= render 'shared/coming_games', coming_games: coming_games %>

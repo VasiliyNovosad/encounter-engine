@@ -26,9 +26,8 @@ class Invitation < ApplicationRecord
   protected
 
   def find_user
-    require 'ee_strings.rb'
-    user = User.by_nickname(recepient_nickname.downcase_utf8_cyr)
-    self.for_user = user.first if user && user.count > 0
+    user = User.by_nickname(recepient_nickname.mb_chars.downcase.to_s)
+    self.for_user = user.first if user && user.size.positive?
   end
 
   def recepient_is_not_member_of_team

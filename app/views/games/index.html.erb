@@ -1,6 +1,3 @@
-<%= render 'shared/current_games', current_games: current_games %>
-<%= render 'shared/coming_games', coming_games: coming_games %>
-<br>
+<%= paginate finished_games, window: 2 %>
 <%= render 'shared/finished_games', finished_games: finished_games %>
-
-<%#= render 'events_seo' %>
+<%= paginate finished_games, window: 2 %>

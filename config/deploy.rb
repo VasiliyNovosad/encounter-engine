@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.11.1'
+lock '3.11.2'
 
 set :application, 'encounter-engine'
 set :repo_url, 'git@github.com:VasiliyNovosad/encounter-engine.git'
@@ -13,6 +13,8 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', '.env', 
 
 # Default value for linked_dirs is []
 set :linked_dirs, fetch(:linked_dirs, []).push('bin', 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
+
+set :default_env, { path: "/usr/lib/fullstaq-ruby/versions/2.6-jemalloc/bin:$PATH" }
 
 namespace :deploy do
 

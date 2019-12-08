@@ -19,6 +19,18 @@
       <p>
         <strong><%= question.name %>:</strong>
       </p>
+      <% if question.change_level_autocomplete? %>
+        <% if (question.change_level_autocomplete_by || 0) > 0 %>
+          <p>
+            <strong>Збільшує час до апу на: </strong><%= seconds_to_string(question.change_level_autocomplete_by || 0) %>
+          </p>
+        <% end %>
+        <% if (question.change_level_autocomplete_by || 0) < 0 %>
+          <p>
+            <strong>Зменшує час до апу на: </strong><%= seconds_to_string(-(question.change_level_autocomplete_by || 0)) %>
+          </p>
+        <% end %>
+      <% end %>
       <% question.answers.each do |answer| %>
         <p>
           <span class="right_code"><%= answer.value %></span>
