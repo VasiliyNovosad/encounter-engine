@@ -1,2 +1,24 @@
 <%= render 'shared/current_games', current_games: current_games %>
 <%= render 'shared/coming_games', coming_games: coming_games %>
+
+<fieldset class="game-fieldset">
+  <legend>
+    Топ авторів за кількістю проведених ігор
+  </legend>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-6 col-sm-4 col-md-2 text-uppercase border border-secondary p-2">Нік</div>
+      <div class="col-6 col-sm-4 col-md-2 text-uppercase border border-secondary p-2">К-сть</div>
+    </div>
+
+
+    <% authors_top.each do |author| %>
+      <div class="row">
+        <div class="col-6 col-sm-4 col-md-2 border border-secondary p-2"><%= author['nickname'] %></div>
+        <div class="col-6 col-sm-4 col-md-2 border border-secondary p-2"><%= author['games_number'] %></div>
+      </div>
+    <% end %>
+  </div>
+</fieldset>
+
+

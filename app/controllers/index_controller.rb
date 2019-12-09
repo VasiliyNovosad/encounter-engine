@@ -4,9 +4,27 @@ class IndexController < ApplicationController
     @seo_block = create_index_seo_block
     coming_games = Game.notstarted
     current_games = Game.started - Game.finished.order(starts_at: :desc)
+    authors_top = ActiveRecord::Base.connection.execute(
+      %q(
+        SELECT public.users.nickname as nickname, COUNT(game_authors.game_id) as games_number
+          FROM
+        (SELECT game_id, author_id
+           FROM public.games_authors
+          UNION
+         SELECT id, author_id
+           FROM public.games) AS game_authors
+           JOIN public.games
+             ON game_authors.game_id = public.games.id AND public.games.author_finished_at IS NOT NULL
+           JOIN public.users
+             ON game_authors.author_id = public.users.id
+          GROUP BY public.users.nickname
+          ORDER BY games_number DESC
+          LIMIT 5;
+      )).to_a
     render :index, locals: {
         current_games: current_games,
-        coming_games: coming_games
+        coming_games: coming_games,
+        authors_top: authors_top
     }
   end
 
