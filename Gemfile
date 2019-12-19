@@ -62,7 +62,7 @@ end
 gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
 
 gem 'kaminari'
-gem 'private_pub'
+gem 'private_pub', github: 'VasiliyNovosad/private_pub'
 gem 'thin'
 gem 'cocoon'
 gem 'friendly_id'

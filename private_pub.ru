@@ -3,10 +3,15 @@ require "bundler/setup"
 require "yaml"
 require "faye"
 require "private_pub"
-
-Faye::WebSocket.load_adapter('thin')
-Faye.logger = Logger.new(File.expand_path("../log/faye.log", __FILE__))
+require "thin"
 
 PrivatePub.load_config(File.expand_path("../config/private_pub.yml", __FILE__), ENV["RAILS_ENV"] || "development")
+Faye::WebSocket.load_adapter(PrivatePub.config[:adapter])
 
-run PrivatePub.faye_app()
+path = File.expand_path("../config/private_pub_redis.yml", __FILE__)
+if File.exist?(path)
+  require 'faye/redis'
+  PrivatePub.load_redis_config(path, ENV['RAILS_ENV'] || 'development')
+end
+
+run PrivatePub.faye_app
