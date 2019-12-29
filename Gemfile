@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails', '5.2.4.1'
 gem 'pg'
+ 
 
 # Use sqlite3 as the database for Active Record
 group :development do
