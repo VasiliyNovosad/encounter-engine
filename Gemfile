@@ -3,9 +3,7 @@ source 'https://rubygems.org'
 gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails', '5.2.4.1'
 gem 'pg'
- 
 
-# Use sqlite3 as the database for Active Record
 group :development do
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
@@ -29,9 +27,6 @@ gem 'passenger_monit', group: :production
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier'
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
-gem 'coffee-script-source'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
 
@@ -39,10 +34,6 @@ gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder'
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', group: :doc
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'default_value_for'
