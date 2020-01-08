@@ -41,7 +41,9 @@ class GamePassing < ActiveRecord::Base
 
   def check_answer!(answer, level, time, user)
     time_str = time.strftime("%H:%M:%S")
+    logger.info("before pass bonuses: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     answered_bonus, is_correct_bonus_answer = pass_bonuses!(answer, level, team_id, user)
+    logger.info("before pass questions: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     answered_question, is_correct_answer, needed, closed = pass_questions!(answer, level, team_id, user)
     start_time = level_started_at(level)
     if level[:is_wrong_code_penalty] && !level[:wrong_code_penalty].zero? && !is_correct_bonus_answer && !is_correct_answer
@@ -64,6 +66,7 @@ class GamePassing < ActiveRecord::Base
       closed: closed
     }
 
+    logger.info("before log saving: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     answered = []
     input_lock = nil
     if answer_was_correct[:correct] || answer_was_correct[:bonus]
@@ -94,10 +97,13 @@ class GamePassing < ActiveRecord::Base
     end
 
     if level.questions.count.positive? && (all_questions_answered?(level, team_id) || ((level.sectors_for_close || 0) > 0 && closed >= level.sectors_for_close))
+      logger.info("before pass level: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
       pass_level!(level, team_id, time, start_time, user.id)
+      logger.info("after pass level: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
       return answer_was_correct[:correct] || answer_was_correct[:bonus]
     end
 
+    logger.info("before publish updates: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     finish_time = level.complete_later&.positive? ? level_finished_at(level) : nil
     PrivatePub.publish_to(
       "/game_passings/#{id}/#{level.id}/answers",
@@ -115,7 +121,9 @@ class GamePassing < ActiveRecord::Base
         input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
       )
     end
+    logger.info("after publish update: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     if game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
+      logger.info("before send bonuses to panic: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
       send_bonuses_to_panic(answer_was_correct[:bonuses])
     end
     answer_was_correct[:correct] || answer_was_correct[:bonus]

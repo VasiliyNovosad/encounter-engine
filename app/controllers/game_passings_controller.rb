@@ -192,6 +192,7 @@ class GamePassingsController < ApplicationController
   end
 
   def post_answer
+    logger.info("start: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     @answer = params[:answer].strip
     return if @answer == ''
 
@@ -212,7 +213,9 @@ class GamePassingsController < ApplicationController
     end
 
     @level = @game.game_type == 'panic' ? @game.levels.find(params[:level_id]) : @game_passing.current_level
+    logger.info("Before answer check: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     @answer_was_correct = @game_passing.check_answer!(@answer, @level, time, current_user)
+    logger.info("end: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
   end
 
   def show_results
