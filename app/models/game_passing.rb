@@ -105,21 +105,25 @@ class GamePassing < ActiveRecord::Base
 
     logger.info("before publish updates: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     finish_time = level.complete_later&.positive? ? level_finished_at(level) : nil
-    PrivatePub.publish_to(
-      "/game_passings/#{id}/#{level.id}/answers",
-      answers: answered,
-      sectors: answer_was_correct[:sectors],
-      bonuses: answer_was_correct[:bonuses],
-      needed: answer_was_correct[:needed],
-      closed: answer_was_correct[:closed],
-      input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
-      timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil
-    )
-    unless input_lock.nil? || level.input_lock_type == 'team'
+    Concurrent::Future.execute do
       PrivatePub.publish_to(
-        "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
-        input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+        "/game_passings/#{id}/#{level.id}/answers",
+        answers: answered,
+        sectors: answer_was_correct[:sectors],
+        bonuses: answer_was_correct[:bonuses],
+        needed: answer_was_correct[:needed],
+        closed: answer_was_correct[:closed],
+        input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
+        timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil
       )
+    end
+    unless input_lock.nil? || level.input_lock_type == 'team'
+      Concurrent::Future.execute do
+        PrivatePub.publish_to(
+          "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
+          input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+        )
+      end
     end
     logger.info("after publish update: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     if game.game_type == 'panic' && !answer_was_correct[:bonuses].nil?
@@ -168,10 +172,12 @@ class GamePassing < ActiveRecord::Base
     set_level_finish_time(level, team_id, time)
     ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time)
     save!
-    PrivatePub.publish_to(
-      "/game_passings/#{id}/#{level.id}",
-      url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
-    )
+    Concurrent::Future.execute do
+      PrivatePub.publish_to(
+          "/game_passings/#{id}/#{level.id}",
+          url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
+      )
+    end
   end
 
   def closed?(level)
@@ -273,16 +279,18 @@ class GamePassing < ActiveRecord::Base
         description: ''
       )
     end
-    PrivatePub.publish_to(
-      "/game_passings/#{id}/#{level.id}/penalty_hints",
-      hint: {
-        id: penalty_hint.id,
-        name: penalty_hint.name,
-        text: penalty_hint.text,
-        used: true,
-        penalty: penalty_hint.penalty
-      }
-    )
+    Concurrent::Future.execute do
+      PrivatePub.publish_to(
+        "/game_passings/#{id}/#{level.id}/penalty_hints",
+        hint: {
+          id: penalty_hint.id,
+          name: penalty_hint.name,
+          text: penalty_hint.text,
+          used: true,
+          penalty: penalty_hint.penalty
+        }
+      )
+    end
   end
 
   def miss_bonus!(level_id, bonus_id)
@@ -519,15 +527,17 @@ class GamePassing < ActiveRecord::Base
       end
     end
     levels.each do |k, v|
-      PrivatePub.publish_to(
-        "/game_passings/#{id}/#{k}/answers",
-        answers: [],
-        sectors: [],
-        bonuses: v,
-        needed: [],
-        closed: [],
-        input_lock: {input_lock: false, duration: 0}
-      )
+      Concurrent::Future.execute do
+        PrivatePub.publish_to(
+          "/game_passings/#{id}/#{k}/answers",
+          answers: [],
+          sectors: [],
+          bonuses: v,
+          needed: [],
+          closed: [],
+          input_lock: {input_lock: false, duration: 0}
+        )
+      end
     end
   end
 

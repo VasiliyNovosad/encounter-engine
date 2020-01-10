@@ -108,6 +108,8 @@ GEM
       rest-client
     cocoon (1.2.14)
     concurrent-ruby (1.1.5)
+    concurrent-ruby-ext (1.1.5)
+      concurrent-ruby (= 1.1.5)
     cookiejar (0.3.3)
     crass (1.0.5)
     cucumber (3.1.2)
@@ -382,6 +384,8 @@ DEPENDENCIES
   capistrano-rvm
   cloudinary
   cocoon
+  concurrent-ruby
+  concurrent-ruby-ext
   cucumber-rails
   default_value_for
   devise
@@ -412,5 +416,8 @@ DEPENDENCIES
   tzinfo-data
   uglifier
 
+RUBY VERSION
+   ruby 2.6.5p114
+
 BUNDLED WITH
-   1.17.2
+   1.17.3
