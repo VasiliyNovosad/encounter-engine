@@ -106,21 +106,41 @@ class GamePassing < ActiveRecord::Base
     logger.info("before publish updates: #{Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time}")
     finish_time = level.complete_later&.positive? ? level_finished_at(level) : nil
     Concurrent::Future.execute do
-      PrivatePub.publish_to(
-        "/game_passings/#{id}/#{level.id}/answers",
+      #PrivatePub.publish_to(
+      #    "/game_passings/#{id}/#{level.id}/answers",
+      #    answers: answered,
+      #    sectors: answer_was_correct[:sectors],
+      #    bonuses: answer_was_correct[:bonuses],
+      #    needed: answer_was_correct[:needed],
+      #    closed: answer_was_correct[:closed],
+      #    input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
+      #    timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil
+      #)
+      ActionCable.server.broadcast(
+        "game_passings_#{id}_#{level.id}_0",
         answers: answered,
         sectors: answer_was_correct[:sectors],
         bonuses: answer_was_correct[:bonuses],
         needed: answer_was_correct[:needed],
         closed: answer_was_correct[:closed],
         input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
-        timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil
+        timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil,
+        game: { id: game.id, type: game.game_type },
+        level: {
+          id: level.id,
+          olymp: level.olymp?,
+          position: game.game_type == 'selected' ? current_level_position(team_id) : level.position
+        }
       )
     end
     unless input_lock.nil? || level.input_lock_type == 'team'
       Concurrent::Future.execute do
-        PrivatePub.publish_to(
-          "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
+        #PrivatePub.publish_to(
+        #    "/game_passings/#{id}/#{level.id}/answers/#{user.id}",
+        #    input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+        #)
+        ActionCable.server.broadcast(
+          "game_passings_#{id}_#{level.id}_#{user.id}",
           input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
         )
       end
@@ -173,9 +193,13 @@ class GamePassing < ActiveRecord::Base
     ClosedLevel.close_level!(game_id, level.id, team_id, user_id, time_start, time)
     save!
     Concurrent::Future.execute do
-      PrivatePub.publish_to(
-          "/game_passings/#{id}/#{level.id}",
-          url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
+      #PrivatePub.publish_to(
+      #    "/game_passings/#{id}/#{level.id}",
+      #    url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
+      #)
+      ActionCable.server.broadcast(
+        "game_passings_#{id}_#{level.id}_0",
+        url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
       )
     end
   end
@@ -280,8 +304,18 @@ class GamePassing < ActiveRecord::Base
       )
     end
     Concurrent::Future.execute do
-      PrivatePub.publish_to(
-        "/game_passings/#{id}/#{level.id}/penalty_hints",
+      #PrivatePub.publish_to(
+      #  "/game_passings/#{id}/#{level.id}/penalty_hints",
+      #  hint: {
+      #    id: penalty_hint.id,
+      #    name: penalty_hint.name,
+      #    text: penalty_hint.text,
+      #    used: true,
+      #    penalty: penalty_hint.penalty
+      #  }
+      #)
+      ActionCable.server.broadcast(
+        "game_passings_#{id}_#{level.id}_0",
         hint: {
           id: penalty_hint.id,
           name: penalty_hint.name,
@@ -520,22 +554,38 @@ class GamePassing < ActiveRecord::Base
   end
 
   def send_bonuses_to_panic(bonuses)
-    levels = Hash.new { |h, k| h[k] = [] }
+    levels = Hash.new { |h, k| h[k] = { olymp: false, bonuses: [] } }
     bonuses.each do |bonus|
-      Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id').each do |level_id|
-        levels[level_id].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
+      Bonus.joins(:levels).where(id: bonus[:id]).pluck('levels.id, levels.olymp').each do |level_id, level_olymp|
+        levels[level_id][:olymp] = level_olymp
+        levels[level_id][:bonuses].push(bonus.merge(level_id: level_id)) unless level_id == bonus[:level_id]
       end
     end
     levels.each do |k, v|
       Concurrent::Future.execute do
-        PrivatePub.publish_to(
-          "/game_passings/#{id}/#{k}/answers",
+        #PrivatePub.publish_to(
+        #  "/game_passings/#{id}/#{k}/answers",
+        #  answers: [],
+        #  sectors: [],
+        #  bonuses: v,
+        #  needed: [],
+        #  closed: [],
+        #  input_lock: {input_lock: false, duration: 0}
+        #)
+        ActionCable.server.broadcast(
+          "game_passings_#{id}_#{k}_0",
           answers: [],
           sectors: [],
-          bonuses: v,
+          bonuses: v[:bonuses],
           needed: [],
           closed: [],
-          input_lock: {input_lock: false, duration: 0}
+          input_lock: { input_lock: false, duration: 0 },
+          game: { id: game.id, type: game.game_type },
+          level: {
+            id: k,
+            olymp: v[:olymp],
+            position: game.game_type == 'selected' ? current_level_position(team_id) : level.position
+          }
         )
       end
     end

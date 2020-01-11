@@ -31,7 +31,7 @@
   <br>
 </div>
 
-<div id="main-game-container">
+<div id="main-game-container" data-team-id="<%= game_passing.id %>" data-level-id="<%= level.id %>" data-user-id="<%= current_user.id %>">
   <fieldset>
     <legend>
       <%= game.hide_levels_names? ? "Рівень #{level.position}" : level.name %>
@@ -78,136 +78,34 @@
     <br>
   </fieldset>
 </div>
-<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}" %>
-<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/answers/#{current_user.id}" %>
-<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/answers" %>
-<%= subscribe_to "/game_passings/#{game_passing.id}/#{level.id}/penalty_hints" %>
 
 <script>
   $(document).ready(function() {
-      var input_lock = { input_lock: <%= input_lock[:input_lock] || false %>, duration: <%= input_lock[:duration] || 0 %>};
-      if (input_lock.input_lock) {
-          $('#answer').prop('readonly', true);
-          $("#code_submit").attr("disabled", true);
+    var input_lock = { input_lock: <%= input_lock[:input_lock] || false %>, duration: <%= input_lock[:duration] || 0 %>};
+    if (input_lock.input_lock) {
+      $('#answer').prop('readonly', true);
+      $("#code_submit").attr("disabled", true);
 
-          var timer = Math.floor(input_lock.duration);
+      let timer = Math.floor(input_lock.duration);
 
-          var x = setInterval(function() {
+      let x = setInterval(function() {
+        $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + (--timer) + ' c</span>';
 
-              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + (--timer) + ' c</span>';
-
-              if (timer <= 0) {
-                  clearInterval(x);
-                  $('#answer').prop('readonly', false);
-                  $("#code_submit").attr("disabled", false);
-                  $('#entered-code').get(0).innerHTML = '';
-              }
-          }, 1000);
-      } else {
+        if (timer <= 0) {
+          clearInterval(x);
           $('#answer').prop('readonly', false);
-      }
-  });
-
-  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>", function(data, channel) {
-      window.location.href = data.url;
-  });
-
-  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/answers/<%= current_user.id %>", function(data, channel) {
-      var input_lock = data.input_lock || {};
-      if (input_lock.input_lock) {
-          $('#answer').prop('readonly', true);
-          $("#code_submit").attr("disabled", true);
-
-          var timer = Math.floor(input_lock.duration);
-
-          var x = setInterval(function() {
-
-              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + --timer + ' c</span>';
-
-              if (timer <= 0) {
-                  clearInterval(x);
-                  $('#answer').prop('readonly', false);
-                  $("#code_submit").attr("disabled", false);
-                  $('#entered-code').get(0).innerHTML = '';
-              }
-          }, 1000);
-      } else {
-          $('#answer').prop('readonly', false);
-      }
-  });
-
-  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/answers", function(data, channel) {
-      let answers = data.answers || [];
-      for (let i = 0; i < answers.length; i++) {
-          $('#entered-codes').prepend($('<p>' + answers[i].time + ' ' + answers[i].user + ' ' + answers[i].answer + '</p>'));
-      }
-      let sectors = data.sectors || [];
-      for (let i = 0; i < sectors.length; i++) {
-          let sector = $('#sector-' + sectors[i].position).get(0);
-          <% if level.olymp? %>
-            sector.innerHTML = sectors[i].value;
-          <% else %>
-            sector.innerHTML = sectors[i].name + ': ' + sectors[i].value;
-          <% end %>
-      }
-      let bonuses = data.bonuses || [];
-      for (let i = 0; i < bonuses.length; i++) {
-          // let bonus = $('#bonus-' + bonuses[i].id).get(0);
-          let elem = '<li id="bonus-' + bonuses[i].id + '">';
-          elem += '<p class="bonus-answered"><strong>' + (bonuses[i].award != "" ? (bonuses[i].name + ': нагорода ' + bonuses[i].award) : (bonuses[i].name + ': виконано')) + ', код: ' + bonuses[i].value +'</strong></p>';
-          if (bonuses[i].help) elem += bonuses[i].help;
-          elem += '</li>';
-          // bonus.innerHTML = elem;
-          $('#bonus-' + bonuses[i].id).replaceWith(elem);
-      }
-      let needed = data.needed || 0;
-      let closed = data.closed || 0;
-      if (needed > 0 && closed > 0) {
-          $('#codes-closed').get(0).innerHTML = 'Вірних кодів ' + closed + ' із ' + needed + ':';
-      }
-      let input_lock = data.input_lock || {};
-      if (input_lock.input_lock) {
-          $('#answer').prop('readonly', true);
-          $("#code_submit").attr("disabled", true);
-
-          var timer = Math.floor(input_lock.duration);
-
-          var x = setInterval(function() {
-
-              $('#entered-code').get(0).innerHTML = '<span class="wrong_code">блокування вводу: ' + --timer + ' c</span>';
-
-              if (timer <= 0) {
-                  clearInterval(x);
-                  $('#answer').prop('readonly', false);
-                  $("#code_submit").attr("disabled", false);
-                  $('#entered-code').get(0).innerHTML = '';
-              }
-          }, 1000);
-      } else {
-          $('#answer').prop('readonly', false);
-      }
-
-      let timer_left = data.timer_left || 0;
-      if (timer_left !== 0) {
-          LevelCompleter.setup({
-              initialCountdownValue: timer_left,
-              gameId: <%= game.id %>,
-              levelId: <%= level.id %>,
-              gameType: '<%= game.game_type %>',
-              levelNumber: <%= level_number %>
-          })
-      }
-  });
-
-  PrivatePub.subscribe("/game_passings/<%= game_passing.id %>/<%= level.id %>/penalty_hints", function(data, channel) {
-      let hint = data.hint || {};
-      let hint_block = $('#penalty-hint-' + hint.id + ' .penalty-hint-body').get(0);
-      hint_block.innerHTML = hint.text;
+          $("#code_submit").attr("disabled", false);
+          $('#entered-code').get(0).innerHTML = '';
+        }
+      }, 1000);
+    } else {
+      $('#answer').prop('readonly', false);
+    }
   });
 
   $(document).on("ajax:error", 'body', function(e, data, status) {
-      if (data.status == 0) {
-          $('#entered-code').get(0).innerHTML = '<span class="wrong_code">проблема мережі</span>';
-      }
+    if (data.status == 0) {
+      $('#entered-code').get(0).innerHTML = '<span class="wrong_code">проблема мережі</span>';
+    }
   });
 </script>
