@@ -12,5 +12,5 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require private_pub
+//= require action_cable
 //= require_directory .

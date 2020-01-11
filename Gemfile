@@ -11,6 +11,7 @@ group :development do
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false
   gem 'listen'
+  gem 'puma'
 end
 
 group :test do
@@ -55,10 +56,9 @@ end
 gem 'tzinfo-data', platforms: [:x64_mingw, :mingw, :mswin]
 
 gem 'kaminari'
-gem 'private_pub', github: 'VasiliyNovosad/private_pub'
-gem 'thin'
 gem 'cocoon'
 gem 'friendly_id'
 gem 'nokogiri'
 gem 'concurrent-ruby', require: 'concurrent'
 gem 'concurrent-ruby-ext'
+gem 'redis'
