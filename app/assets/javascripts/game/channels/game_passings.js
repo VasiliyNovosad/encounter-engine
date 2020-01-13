@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  App.cable = ActionCable.createConsumer();
+
   var game_info = $('#main-game-container');
   App.game_passings = App.cable.subscriptions.create({
     channel: "GamePassingsChannel",
@@ -82,7 +84,7 @@ $(document).ready(function() {
           levelId: data.level.id,
           gameType: data.game.type,
           levelNumber: data.level.position
-      })
+        })
       }
 
     }

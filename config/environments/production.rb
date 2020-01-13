@@ -108,7 +108,6 @@ Rails.application.configure do
     config.dsn = ENV['SENTRY_DSN'] || Rails.application.secrets.SENTRY_DSN
   end
 
-  config.action_cable.mount_path = '/cable'
   config.action_cable.url = "wss://quest.wtf/cable"
   config.action_cable.allowed_request_origins = ['https://quest.wtf']
 

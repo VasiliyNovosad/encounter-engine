@@ -114,7 +114,7 @@ Rails.application.routes.draw do
   match '/tinymce_assets', to: 'tinymce_assets#create', via: 'post'
   match '/help', to: 'help#index', via: 'get'
 
-  mount ActionCable.server => '/cable'
+  # mount ActionCable.server => '/cable'
 
   get '*path' => redirect('/')
 end
