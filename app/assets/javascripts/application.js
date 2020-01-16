@@ -18,7 +18,7 @@
 //= require tinymce-jquery
 //= require datetimepicker
 //= require cocoon
-//= require_directory .
+//= require_tree .
 
 function set_time_form(seconds_time, form_selector) {
     if (seconds_time >= 0) {
