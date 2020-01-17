@@ -212,7 +212,7 @@ class Game < ApplicationRecord
         [-v[:closed_levels], (v[:finished_at] || current_time) - v[:sum_bonuses]]
       end
     end
-    Result.delete_all(game_id: id)
+    Result.where(game_id: id).destroy_all
     game_results.each_with_index do |result, index|
       Result.create!(game_id: id, team_id: result[:team_id], place: result[:finished_at].nil? && !game_type == 'panic' ? -1 : (index + 1))
     end
