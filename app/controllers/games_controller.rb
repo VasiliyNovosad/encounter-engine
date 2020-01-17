@@ -158,7 +158,7 @@ class GamesController < ApplicationController
       last_levels = Level.of_game(@game.id).where.not(id: ordered_levels).order(:position).to_a
       @level_orders[team] = ordered_levels.map { |level_id| Level.find(level_id) } + last_levels
 
-      LevelOrder.delete_all(game_id: @game.id, team_id: team.id)
+      LevelOrder.where(game_id: @game.id, team_id: team.id).delete_all
       @level_orders[team].each_with_index do |level, index|
         LevelOrder.create!(game_id: @game.id, team_id: team.id, level_id: level.id, position: index + 1)
       end
