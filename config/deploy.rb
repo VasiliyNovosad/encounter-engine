@@ -7,6 +7,7 @@ set :repo_url, 'git@github.com:VasiliyNovosad/encounter-engine.git'
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/deploy/encounter-engine'
 set :deploy_user, 'deploy'
+set :pty, true
 
 # Default value for :linked_files is []
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', '.env', 'config/secrets.yml', 'config/cloudinary.yml')
