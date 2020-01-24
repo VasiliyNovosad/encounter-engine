@@ -7,7 +7,6 @@ set :repo_url, 'git@github.com:VasiliyNovosad/encounter-engine.git'
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/deploy/encounter-engine'
 set :deploy_user, 'deploy'
-set :pty, true
 
 # Default value for :linked_files is []
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', '.env', 'config/secrets.yml', 'config/cloudinary.yml')
@@ -16,7 +15,6 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', '.env', 
 set :linked_dirs, fetch(:linked_dirs, []).push('bin', 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 
 set :default_env, { path: "/usr/lib/fullstaq-ruby/versions/2.6-jemalloc/bin:$PATH" }
-set :anycable_systemctl_service_name, 'anycable-rpc.service'
 
 namespace :deploy do
 
@@ -30,25 +28,3 @@ namespace :deploy do
   after :publishing, :restart
 
 end
-
-namespace :anycable do
-  task :stop do
-    on roles(:app) do
-      execute :sudo, :systemctl, :stop, fetch(:anycable_systemctl_service_name)
-    end
-  end
-
-  task :start do
-    on roles(:app) do
-      execute :sudo, :systemctl, :start, fetch(:anycable_systemctl_service_name)
-    end
-  end
-
-  task :restart do
-    on roles(:app) do
-      execute :sudo, :systemctl, :restart, fetch(:anycable_systemctl_service_name)
-    end
-  end
-end
-
-after 'deploy:restart', 'anycable:restart'
