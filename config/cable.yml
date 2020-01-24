@@ -7,4 +7,4 @@ test:
   adapter: async
 
 production:
-  adapter: anycable
+  adapter: any_cable
