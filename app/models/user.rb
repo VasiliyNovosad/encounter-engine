@@ -61,15 +61,17 @@ class User < ApplicationRecord
       return_user = self.where(email: auth.info.email).first
       return_user.provider = auth.provider
       return_user.uid = auth.uid
-      return_user.save
+      return_user.save!
     else
-      return_user = create do |user|
-        user.provider = auth.provider
-        user.uid = auth.uid
-        user.password = Devise.friendly_token[0, 20]
-        user.nickname = auth.info.name
-        user.email = auth.info.email
-      end
+      return_user = new(
+        provider: auth.provider,
+        uid: auth.uid,
+        password: Devise.friendly_token[0, 20],
+        nickname: auth.info.name,
+        email: auth.info.email
+      )
+      return_user.skip_confirmation!
+      return_user.save!
     end
 
     return_user
