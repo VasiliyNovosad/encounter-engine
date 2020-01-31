@@ -2,7 +2,8 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :session_limitable,
-         :recoverable, :rememberable, :confirmable, :validatable
+         :recoverable, :rememberable, :confirmable, :validatable,
+         :omniauthable, omniauth_providers: [:facebook]
 
   belongs_to :team
   belongs_to :single_team, class_name: 'Team', foreign_key: 'single_team_id'
@@ -44,6 +45,32 @@ class User < ApplicationRecord
 
   def author_of?(game)
     game.author_id == id || game.author_ids.include?(id)
+  end
+
+  def self.new_with_session(params, session)
+    super.tap do |user|
+      if data = session['devise.facebook_data'] && session['devise.facebook_data']['extra']['raw_info']
+        user.email = data['email'] if user.email.blank?
+      end
+    end
+  end
+
+  def self.from_omniauth(auth)
+    if self.where(email: auth.info.email).exists?
+      return_user = self.where(email: auth.info.email).first
+      return_user.provider = auth.provider
+      return_user.uid = auth.uid
+      return_user.save
+    else
+      return_user = self.create do |user|
+        user.provider = auth.provider
+        user.uid = auth.uid
+        user.nickname = auth.info.name
+        user.email = auth.info.email
+      end
+    end
+
+    return_user
   end
 
   # def forem_name

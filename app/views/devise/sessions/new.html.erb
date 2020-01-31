@@ -1,5 +1,4 @@
 <h2><%= t('.login_caption') %></h2>
-
 <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form-signin'}) do |f| %>
   <div class="form-label-group">
     <%= f.email_field :email, class: "form-control", placeholder: 'Email', required: true, autofocus: true %>
@@ -19,5 +18,7 @@
   <% end %>
   <%= f.submit t('.login'), class: 'btn btn-sm btn-light btn-block' %>
 <% end %>
-
+<p>або</p>
+<%= render "devise/shared/fb_login" %>
+<hr>
 <%= render "devise/shared/links" %>
