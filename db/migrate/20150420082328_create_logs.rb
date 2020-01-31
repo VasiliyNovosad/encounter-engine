@@ -1,4 +1,4 @@
-class CreateLogs < ActiveRecord::Migration
+class CreateLogs < ActiveRecord::Migration[5.2]
   def change
     create_table :logs do |t|
       t.integer :game_id

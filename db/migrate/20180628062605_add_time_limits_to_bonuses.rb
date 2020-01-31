@@ -1,4 +1,4 @@
-class AddTimeLimitsToBonuses < ActiveRecord::Migration
+class AddTimeLimitsToBonuses < ActiveRecord::Migration[5.2]
   def change
     add_column :bonuses, :is_absolute_limited, :boolean, default: false
     add_column :bonuses, :valid_from, :datetime

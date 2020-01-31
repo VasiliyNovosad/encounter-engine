@@ -1,4 +1,4 @@
-class CreateInputLocks < ActiveRecord::Migration
+class CreateInputLocks < ActiveRecord::Migration[5.2]
   def change
     create_table :input_locks do |t|
       t.integer :game_id

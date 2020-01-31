@@ -1,4 +1,4 @@
-class AddDeviseToUsers < ActiveRecord::Migration
+class AddDeviseToUsers < ActiveRecord::Migration[5.2]
   def self.up
     remove_column :users, :email, :string
     remove_column :users, :crypted_password, :string

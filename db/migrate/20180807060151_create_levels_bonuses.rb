@@ -1,4 +1,4 @@
-class CreateLevelsBonuses < ActiveRecord::Migration
+class CreateLevelsBonuses < ActiveRecord::Migration[5.2]
   def change
     create_table :levels_bonuses, id: false do |t|
       t.belongs_to :bonus, index: true

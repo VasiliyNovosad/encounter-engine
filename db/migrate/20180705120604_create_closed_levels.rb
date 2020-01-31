@@ -1,4 +1,4 @@
-class CreateClosedLevels < ActiveRecord::Migration
+class CreateClosedLevels < ActiveRecord::Migration[5.2]
   def change
     create_table :closed_levels do |t|
       t.integer :game_id

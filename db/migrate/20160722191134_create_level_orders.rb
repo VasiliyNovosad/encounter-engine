@@ -1,4 +1,4 @@
-class CreateLevelOrders < ActiveRecord::Migration
+class CreateLevelOrders < ActiveRecord::Migration[5.2]
   def change
     create_table :level_orders do |t|
       t.integer :game_id

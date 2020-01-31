@@ -51,20 +51,22 @@ class User < ApplicationRecord
     super.tap do |user|
       if data = session['devise.facebook_data'] && session['devise.facebook_data']['extra']['raw_info']
         user.email = data['email'] if user.email.blank?
+        user.nickname = data['name'] if user.nickname.blank?
       end
     end
   end
 
   def self.from_omniauth(auth)
-    if self.where(email: auth.info.email).exists?
+    if where(email: auth.info.email).exists?
       return_user = self.where(email: auth.info.email).first
       return_user.provider = auth.provider
       return_user.uid = auth.uid
       return_user.save
     else
-      return_user = self.create do |user|
+      return_user = create do |user|
         user.provider = auth.provider
         user.uid = auth.uid
+        user.password = Devise.friendly_token[0, 20]
         user.nickname = auth.info.name
         user.email = auth.info.email
       end

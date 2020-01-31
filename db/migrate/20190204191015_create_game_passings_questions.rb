@@ -1,4 +1,4 @@
-class CreateGamePassingsQuestions < ActiveRecord::Migration
+class CreateGamePassingsQuestions < ActiveRecord::Migration[5.2]
   def change
     create_table :game_passings_questions do |t|
       t.belongs_to :game_passing, index: true

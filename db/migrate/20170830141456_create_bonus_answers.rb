@@ -1,4 +1,4 @@
-class CreateBonusAnswers < ActiveRecord::Migration
+class CreateBonusAnswers < ActiveRecord::Migration[5.2]
   def change
     create_table :bonus_answers do |t|
       t.integer :bonus_id

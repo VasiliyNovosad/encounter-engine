@@ -1,4 +1,4 @@
-class AddInputLocksToLevels < ActiveRecord::Migration
+class AddInputLocksToLevels < ActiveRecord::Migration[5.2]
   def change
     add_column :levels, :input_lock, :boolean, default: false
     add_column :levels, :inputs_count, :integer, default: 0

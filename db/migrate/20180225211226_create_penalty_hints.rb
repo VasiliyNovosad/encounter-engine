@@ -1,4 +1,4 @@
-class CreatePenaltyHints < ActiveRecord::Migration
+class CreatePenaltyHints < ActiveRecord::Migration[5.2]
   def change
     create_table :penalty_hints do |t|
       t.integer :level_id

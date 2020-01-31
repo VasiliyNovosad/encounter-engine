@@ -1,4 +1,4 @@
-class CreateBonuses < ActiveRecord::Migration
+class CreateBonuses < ActiveRecord::Migration[5.2]
   def change
     create_table :bonuses do |t|
       t.integer :level_id
