@@ -14,10 +14,10 @@ class Hint < ApplicationRecord
 
   def ready_to_show?(current_level_entered_at)
     seconds_passed = Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time - current_level_entered_at
-    seconds_passed >= delay
+    seconds_passed >= (delay || 0)
   end
 
   def available_in(current_level_entered_at)
-    (current_level_entered_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + delay
+    (current_level_entered_at - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time).to_i + (delay || 0)
   end
 end
