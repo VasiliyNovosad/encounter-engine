@@ -41,17 +41,17 @@
     <% end %>
   </div>
   <script>
-      $("#levels").sortable({
-          update: function(e, ui) {
-              $('.level-position').each(function( index ) {
-                  $( this ).text(index + 1);
-              });
-              $.ajax({
-                  url: $(this).data("url"),
-                  type: "PATCH",
-                  data: $(this).sortable('serialize'),
-              });
-          }
-      });
+    $("#levels").sortable({
+      update: function(e, ui) {
+        /*$('.level-position').each(function( index ) {
+          $( this ).text(index + 1);
+        });*/
+        $.ajax({
+          url: $(this).data("url"),
+          type: "PATCH",
+          data: $(this).sortable('serialize'),
+        });
+      }
+    });
   </script>
 <% end %>

@@ -9,10 +9,10 @@
         <% end %>
         <% unless game.author_finished? %>
           <em>
-            <%= link_to "(редагувати)", edit_game_level_bonus_path(game, level, bonus) %>
-            <%= link_to "(видалити)", game_level_bonus_path(game, level, bonus), method: :delete, data: { confirm: 'Ви впевнені?' } %>
-            <%= link_to "(скопіювати)", copy_game_level_bonus_path(game, level, bonus), method: :post %>
-            <%= link_to "(скопіювати в сектор)", copy_to_sector_game_level_bonus_path(game, level, bonus), method: :post %>
+            <%= link_to "редагувати", edit_game_level_bonus_path(game, level, bonus), class: 'btn btn-sm btn-primary' %>
+            <%= link_to "видалити", game_level_bonus_path(game, level, bonus), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Ви впевнені?' } %>
+            <%= link_to "скопіювати", copy_game_level_bonus_path(game, level, bonus), class: 'btn btn-sm btn-info', method: :post %>
+            <%= link_to "скопіювати в сектор", copy_to_sector_game_level_bonus_path(game, level, bonus), class: 'btn btn-sm btn-info', method: :post %>
           </em>
         <% end %>
       </legend>

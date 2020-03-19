@@ -5,7 +5,7 @@ class LevelOrder < ApplicationRecord
   validates :level_id, uniqueness: { scope: [:game, :team] }
 
   scope :of_game, ->(game_id) { where(game_id: game_id) }
-  scope :of_team, ->(team_id) { where(team_id: team_id).order(:position) }
+  scope :of_team, ->(team_id) { where(team_id: team_id) }
 
   def self.of(game_id, team_id)
     of_game(game_id).of_team(team_id)

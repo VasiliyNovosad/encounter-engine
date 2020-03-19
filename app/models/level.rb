@@ -17,7 +17,7 @@ class Level < ApplicationRecord
   validates :name, presence: { message: 'Не введено назву завдання' }
   # validates :name, uniqueness: { scope: :game, message: 'Рівень з такою назвою уже є в даній грі' }
 
-  scope :of_game, ->(game_id) { where(game_id: game_id).order(:position) }
+  scope :of_game, ->(game_id) { where(game_id: game_id) }
 
   delegate :starts_at, to: :game, prefix: true
 

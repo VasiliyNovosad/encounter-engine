@@ -357,7 +357,7 @@ class LogsController < ApplicationController
 
   def show_full_log
     @logs = Log.of_game(@game.id).order_by_time.preload(:user)
-    @levels = Level.of_game(@game.id).includes(questions: :answers, bonuses: :bonus_answers)
+    @levels = Level.of_game(@game.id).order(:position).includes(questions: :answers, bonuses: :bonus_answers)
     @teams = Team.find_by_sql("select t.* from teams t inner join game_passings gp on t.id = gp.team_id where gp.game_id = #{@game.id}")
   end
 
@@ -365,7 +365,7 @@ class LogsController < ApplicationController
     if @game.starts_at < DateTime.new(2018, 7, 5, 0, 0, 0)
       logs = Log.of_game(@game.id).order_by_time.preload(:user).to_a
       logs = logs.group_by { |log| [log.team_id, log.level_id]}
-      @levels = Level.of_game(@game.id).to_a
+      @levels = Level.of_game(@game.id).order(:position).to_a
       game_passings = GamePassing.of_game(@game.id).preload(:team).to_a
       game_bonuses = GameBonus.of_game(@game.id).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
       @teams = game_passings.map(&:team)
@@ -412,7 +412,7 @@ class LogsController < ApplicationController
       @level_logs << results
     else
       @level_logs = []
-      @levels = Level.of_game(@game.id).to_a
+      @levels = Level.of_game(@game.id).order(:position).to_a
       game_passings = GamePassing.of_game(@game.id).preload(:team).to_a
       game_bonuses = GameBonus.of_game(@game.id).select('team_id, level_id, sum(award) as award').group(:level_id, :team_id).to_a
       @teams = game_passings.map(&:team)

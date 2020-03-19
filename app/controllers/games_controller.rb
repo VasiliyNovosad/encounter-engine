@@ -154,7 +154,7 @@ class GamesController < ApplicationController
     @level_orders = {}
     @teams = GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").map{ |game_entry| game_entry.team }
     @teams.each do |team|
-      ordered_levels = LevelOrder.of(@game.id, team.id).pluck(:level_id)
+      ordered_levels = LevelOrder.of(@game.id, team.id).order(:position).pluck(:level_id)
       last_levels = Level.of_game(@game.id).where.not(id: ordered_levels).order(:position).to_a
       @level_orders[team] = ordered_levels.map { |level_id| Level.find(level_id) } + last_levels
 

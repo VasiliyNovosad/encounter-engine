@@ -6,8 +6,8 @@
       <legend>
         <% unless game.author_finished? %>
           <em>
-            <%= link_to "(редагувати)", edit_game_level_message_path(game, level, message) %>
-            <%= link_to "(видалити)", game_level_message_path(game, level, message), method: :delete, data: { confirm: 'Ви впевнені?' } %>
+            <%= link_to "редагувати", edit_game_level_message_path(game, level, message), class: 'btn btn-sm btn-primary' %>
+            <%= link_to "видалити", game_level_message_path(game, level, message), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Ви впевнені?' } %>
           </em>
         <% end %>
       </legend>

@@ -56,7 +56,7 @@
 <% end %>
 
 <p>
-  <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level) unless @game.author_finished? %>
+  <%= link_to "Редагувати параметри рівня", edit_game_level_path(@game, @level), class: 'btn btn-sm btn-secondary' unless @game.author_finished? %>
 </p>
 
 <br>
@@ -203,7 +203,7 @@
 </p>
 <br>
 <p>
-  <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game) %>
+  <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game), class: 'btn btn-sm btn-info' %>
 </p>
 <br>
 <% unless @game.author_finished? %>
@@ -212,7 +212,7 @@
   <br>
   <br>
   <p>
-    <%= link_to "Видалити даний рівень", game_level_path(@game, @level), method: :delete, data: { confirm: 'Ви впевнені?' } %> <br>
+    <%= link_to "Видалити", game_level_path(@game, @level), method: :delete, class: 'btn btn-sm btn-danger', data: { confirm: 'Ви впевнені?' } %> <br>
   </p>
 <% end %>
 
