@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.6.5'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '5.2.4.1'
+gem 'rails', '5.2.4.2'
 gem 'pg'
 
 group :development do
