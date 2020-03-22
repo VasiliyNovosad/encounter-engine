@@ -390,6 +390,7 @@ class GamesController < ApplicationController
   "startDate":"#{game.starts_at}",
   "endDate":"#{game.starts_at + 12 * 3600}",
   "eventAttendanceMode": "https://schema.org/#{ game.game_size == 'Онлайн' ? 'Online' : 'Mixed' }EventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
   "location":{
     "@type":"Place",
     "name":"#{game.place && game.place != '' ? game.place : 'Центр, біля Бім-Бома'}",
