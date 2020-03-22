@@ -388,7 +388,8 @@ class GamesController < ApplicationController
     "sameAs":"https://t.me/#{telegram_user(game.author_telegram) || 'questwtf'}"
     },
   "startDate":"#{game.starts_at}",
-  "endDate":"2018",
+  "endDate":"#{game.starts_at + 12 * 3600}",
+  "eventAttendanceMode": "https://schema.org/#{ game.game_size == 'Онлайн' ? 'Online' : 'Mixed' }EventAttendanceMode",
   "location":{
     "@type":"Place",
     "name":"#{game.place && game.place != '' ? game.place : 'Центр, біля Бім-Бома'}",
