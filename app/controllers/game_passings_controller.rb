@@ -7,6 +7,7 @@ class GamePassingsController < ApplicationController
   before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :show_penalty_hint, :get_current_level_bonus, :miss_current_level_bonus]
   before_action :find_team, except: [:show_results, :index]
   before_action :ensure_team_is_accepted, except: [:show_results, :index]
+  before_action :ensure_team_size_is_accepted, except: [:show_results, :index]
   before_action :ensure_game_is_started
   before_action :ensure_not_author_of_the_game, except: [:index, :show_results]
   before_action :find_or_create_game_passing, except: [:show_results, :index]
@@ -360,6 +361,12 @@ class GamePassingsController < ApplicationController
 
   def ensure_team_is_accepted
     redirect_to game_path(@game), alert: 'Команду не прийнято в гру' if (GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id).first.nil? || GameEntry.of_game(@game.id).of_team(@game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id).first.status != 'accepted') && !@game.is_testing?
+  end
+
+  def ensure_team_size_is_accepted
+    if @game.team_type == 'multy' && @game.game_size == 'Онлайн' && (@game.team_size_limit || 0) > 0 && current_user.team.members.count > (@game.team_size_limit || 0)
+      redirect_to game_path(@game), alert: 'В команді забагато гравців'
+    end
   end
 
   def ensure_not_finished

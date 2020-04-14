@@ -20,6 +20,17 @@
 <p>
   <em>Тип команди:</em> <%= {'single' => ' Одиночна', 'multy' => ' Командна' }[game.team_type] %>
 </p>
+<% if game.game_size == 'Онлайн' && game.team_type == 'multy' %>
+  <p>
+    <em>Максимальна кількість гравців в команді: </em>
+    <% if game.team_size_limit.equal?(10000) || game.team_size_limit.equal?(0) || game.team_size_limit.nil? %>
+      Необмежено
+      <% game.team_size_limit = 10000 %>
+    <% else %>
+      <%= game.team_size_limit %>
+    <% end %>
+  </p>
+<% end %>
 
 <p>
   <em>Тип гри:</em> <%= game.game_size || 'Лайт' %>

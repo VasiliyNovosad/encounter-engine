@@ -45,11 +45,22 @@
   <label for="max_team_checkbox" class="col-sm-2 col-form-label">Обмежити кількість команд</label>
   <div class="col-sm-1 col-2">
     <div class="form-check">
-      <input id="max_team_checkbox" type="checkbox" onclick="toggle(this)" class="form-check-input"/>
+      <input id="max_team_checkbox" type="checkbox" onclick="toggleMaxTeamNumber(this)" class="form-check-input"/>
     </div>
   </div>
   <div class="col-sm-9 col-10">
     <%= f.number_field :max_team_number, class: 'form-control form-control-sm' %>
+  </div>
+</div>
+<div class="form-group row" id="team-size-limit-block">
+  <label for="team_size_limit_checkbox" class="col-sm-2 col-form-label">Обмежити кількість учасників команди</label>
+  <div class="col-sm-1 col-2">
+    <div class="form-check">
+      <input id="team_size_limit_checkbox" type="checkbox" onclick="toggleTeamSize(this)" class="form-check-input"/>
+    </div>
+  </div>
+  <div class="col-sm-9 col-10">
+    <%= f.number_field :team_size_limit, class: 'form-control form-control-sm' %>
   </div>
 </div>
 <div class="form-group row">
@@ -142,108 +153,156 @@
 </div>
 
 <script type="text/javascript">
-    $('#game_starts_at').datetimepicker({
-        format:'d.m.Y H:i',
-        lang:'uk' });
-    $('#game_registration_deadline').datetimepicker({
-        format:'d.m.Y H:i',
-        lang:'uk' });
+  $('#game_starts_at').datetimepicker({
+      format:'d.m.Y H:i',
+      lang:'uk' });
+  $('#game_registration_deadline').datetimepicker({
+      format:'d.m.Y H:i',
+      lang:'uk' });
 
-    function toggle(sourceCheckbox) {
-        var game_max_team_number = $('#game_max_team_number');
-        if (sourceCheckbox.checked) {
-            game_max_team_number.css('display', 'block');
-            game_max_team_number.focus();
-        }
-        else {
-            game_max_team_number.css('display', 'none');
-            game_max_team_number.val(0);
-        }
+  function toggleMaxTeamNumber(sourceCheckbox) {
+      var game_max_team_number = $('#game_max_team_number');
+      if (sourceCheckbox.checked) {
+          game_max_team_number.css('display', 'block');
+          game_max_team_number.focus();
+      }
+      else {
+          game_max_team_number.css('display', 'none');
+          game_max_team_number.val(0);
+      }
+  }
+
+  function toggleTeamSizeLimitBlock() {
+    var team_size_limit_block = $('#team-size-limit-block');
+    if ($('#game_game_size').val() === 'Онлайн' && $('#game_team_type').val() === 'multy') {
+      team_size_limit_block.css('display', 'flex');
+      toggleTeamSize($('#team_size_limit_checkbox'));
     }
+    else {
+      team_size_limit_block.css('display', 'none');
+      $('#game_max_team_number').val(0);
+    }
+  }
 
-    $('#game_game_type').on('change', function() {
-        if ($('#game_game_type').val() == 'panic') {
-            $('#duration-block').css('display', 'flex');
-        } else {
-            $('#duration-block').css('display', 'none');
-        }
+  function toggleTeamSize(sourceCheckbox) {
+    var game_team_size_limit = $('#game_team_size_limit');
+    if (sourceCheckbox.checked) {
+      game_team_size_limit.css('display', 'block');
+      game_team_size_limit.focus();
+    }
+    else {
+      game_team_size_limit.css('display', 'none');
+      game_team_size_limit.val(0);
+    }
+  }
+
+  $('#game_game_type').on('change', function() {
+      if ($('#game_game_type').val() == 'panic') {
+          $('#duration-block').css('display', 'flex');
+      } else {
+          $('#duration-block').css('display', 'none');
+      }
+  });
+
+  $('#game_game_size').on('change', function() {
+    toggleTeamSizeLimitBlock();
+  });
+
+  $('#game_team_type').on('change', function() {
+    toggleTeamSizeLimitBlock();
+  });
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+    if ($('#game_game_type').val() != 'panic') {
+        $('#duration-block').css('display', 'none');
+    }
+    var game_max_team_number = $('#game_max_team_number');
+    if (game_max_team_number.val() == 0 || game_max_team_number.val() == 10000) {
+        $('#max_team_checkbox').prop('checked', false);
+        game_max_team_number.css('display', 'none');
+    } else {
+        $('#max_team_checkbox').prop('checked', true);
+        game_max_team_number.css('display', 'block');
+    }
+    var team_size_limit_block = $('#team-size-limit-block');
+    if ($('#game_game_size').val() === 'Онлайн' && $('#game_team_type').val() === 'multy') {
+      team_size_limit_block.css('display', 'flex');
+      var game_team_size_limit = $('#game_team_size_limit');
+      if (game_team_size_limit.val() == 0 || game_team_size_limit.val() == 10000) {
+        $('#team_size_limit_checkbox').prop('checked', false);
+        game_team_size_limit.css('display', 'none');
+      } else {
+        $('#team_size_limit_checkbox').prop('checked', true);
+        game_team_size_limit.css('display', 'block');
+      }
+    }
+    else {
+      team_size_limit_block.css('display', 'none');
+      $('#game_max_team_number').val(0);
+    }
+  });
+
+  function set_field_duration(element_selector, form_selector) {
+    $(element_selector).val(
+      parseInt($(form_selector + ' .time-hours').val()) * 60 +
+      parseInt($(form_selector + ' .time-minutes').val())
+    );
+  }
+
+  $(document).ready(function() {
+    var form_selector = '#game-duration-form';
+    var duration_time = parseInt($('#game_duration').val());
+    var minutes = duration_time % 60;
+    var hours = Math.trunc(duration_time / 60);
+    $(form_selector + ' .time-hours').val(hours);
+    $(form_selector + ' .time-minutes').val(minutes);
+
+    $('#game-duration-form .time-hours').on('change', function() {
+        set_field_duration('#game_duration', '#game-duration-form');
     });
 
-    document.addEventListener("DOMContentLoaded", function(event) {
-        if ($('#game_game_type').val() != 'panic') {
-            $('#duration-block').css('display', 'none');
-        }
-        var game_max_team_number = $('#game_max_team_number');
-        if (game_max_team_number.val() == 0 || game_max_team_number.val() == 10000) {
-            $('#max_team_checkbox').prop('checked', false);
-            game_max_team_number.css('display', 'none');
-        } else {
-            $('#max_team_checkbox').prop('checked', true);
-            game_max_team_number.css('display', 'block');
-        }
+    $('#game-duration-form .time-minutes').on('change', function() {
+        set_field_duration('#game_duration', '#game-duration-form');
     });
 
-    function set_field_duration(element_selector, form_selector) {
-        $(element_selector).val(
-            parseInt($(form_selector + ' .time-hours').val()) * 60 +
-            parseInt($(form_selector + ' .time-minutes').val())
-        );
+    if (!$('#game_hide_stat').prop("checked")) {
+        $('#hide-stat-form').addClass('invisible');
     }
 
-    $(document).ready(function() {
-        var form_selector = '#game-duration-form';
-        var duration_time = parseInt($('#game_duration').val());
-        var minutes = duration_time % 60;
-        var hours = Math.trunc(duration_time / 60);
-        $(form_selector + ' .time-hours').val(hours);
-        $(form_selector + ' .time-minutes').val(minutes);
-
-        $('#game-duration-form .time-hours').on('change', function() {
-            set_field_duration('#game_duration', '#game-duration-form');
-        });
-
-        $('#game-duration-form .time-minutes').on('change', function() {
-            set_field_duration('#game_duration', '#game-duration-form');
-        });
-
-        if (!$('#game_hide_stat').prop("checked")) {
-            $('#hide-stat-form').addClass('invisible');
-        }
-
-        $('#game_hide_stat').on("click", function () {
-            toggle($('#game_hide_stat'), $('#hide-stat-form'));
-        });
-
-        var hide_stat_type_field = $('#game_hide_stat_type');
-        var hide_stat_level = $('#game_hide_stat_level');
-        if (hide_stat_type_field.val() === 'all') {
-            $("#hide_stat_type_all").prop("checked", true);
-            $("#hide_stat_type_level").prop("checked", false);
-            hide_stat_level.prop('readonly', true);
-        } else {
-            $("#hide_stat_type_all").prop("checked", false);
-            $("#hide_stat_type_level").prop("checked", true);
-            hide_stat_level.prop('readonly', false);
-        }
-
-        $('#hide-stat-form input[type="radio"]').on('change', function () {
-            var hide_stat_level = $('#game_hide_stat_level');
-            if ($("#hide_stat_type_all").prop("checked")) {
-                $("#game_hide_stat_type").val('all');
-                hide_stat_level.prop('readonly', true);
-            } else {
-                hide_stat_level.prop('readonly', false);
-                $("#game_hide_stat_type").val('level');
-                hide_stat_level.select();
-            }
-        });
+    $('#game_hide_stat').on("click", function () {
+        toggle($('#game_hide_stat'), $('#hide-stat-form'));
     });
 
-    function toggle(elem, form) {
-        if (elem.prop("checked")) {
-            form.removeClass('invisible');
-        } else {
-            form.addClass('invisible');
-        }
+    var hide_stat_type_field = $('#game_hide_stat_type');
+    var hide_stat_level = $('#game_hide_stat_level');
+    if (hide_stat_type_field.val() === 'all') {
+        $("#hide_stat_type_all").prop("checked", true);
+        $("#hide_stat_type_level").prop("checked", false);
+        hide_stat_level.prop('readonly', true);
+    } else {
+        $("#hide_stat_type_all").prop("checked", false);
+        $("#hide_stat_type_level").prop("checked", true);
+        hide_stat_level.prop('readonly', false);
     }
+
+    $('#hide-stat-form input[type="radio"]').on('change', function () {
+      var hide_stat_level = $('#game_hide_stat_level');
+      if ($("#hide_stat_type_all").prop("checked")) {
+        $("#game_hide_stat_type").val('all');
+        hide_stat_level.prop('readonly', true);
+      } else {
+        hide_stat_level.prop('readonly', false);
+        $("#game_hide_stat_type").val('level');
+        hide_stat_level.select();
+      }
+    });
+  });
+
+  function toggle(elem, form) {
+    if (elem.prop("checked")) {
+      form.removeClass('invisible');
+    } else {
+      form.addClass('invisible');
+    }
+  }
 </script>
