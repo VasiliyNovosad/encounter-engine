@@ -6,6 +6,7 @@ class GamePassingsController < ApplicationController
   before_action :find_game_by_id, only: [:exit_game]
   before_action :ensure_user_has_team, only: [:show_current_level, :get_current_level_tip, :post_answer, :autocomplete_level, :show_penalty_hint, :get_current_level_bonus, :miss_current_level_bonus]
   before_action :find_team, except: [:show_results, :index]
+  before_action :ensure_game_is_not_in_testing, except: [:show_results, :index]
   before_action :ensure_team_is_accepted, except: [:show_results, :index]
   before_action :ensure_team_size_is_accepted, except: [:show_results, :index]
   before_action :ensure_game_is_started
@@ -349,6 +350,10 @@ class GamePassingsController < ApplicationController
 
   def ensure_not_author_of_the_game
     redirect_to game_path(@game), alert: 'Заборонено грати власні ігри' unless @game.is_testing? || !@game.created_by?(current_user)
+  end
+
+  def ensure_game_is_not_in_testing
+    redirect_to game_path(@game), alert: 'Гра в режимі тестування, повідомте автора!!!' if @game.is_testing? && !@game.created_by?(current_user)
   end
 
   def author_finished_at

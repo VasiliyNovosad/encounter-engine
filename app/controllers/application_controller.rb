@@ -66,6 +66,10 @@ class ApplicationController < ActionController::Base
     redirect_to root_path, alert: 'Заборонено редагувати гру після її закриття' if @game.author_finished?
   end
 
+  def ensure_game_is_not_in_testing
+    redirect_to game_path(@game), alert: 'Гра в режимі тестування!!!' if @game.is_testing? && @game.created_by?(current_user)
+  end
+
   def find_teams
     @teams = [['Для всіх', nil]] + GameEntry.of_game(@game.id).where("status in ('new', 'accepted')").includes(:team).map do |game_entry|
       team = game_entry.team

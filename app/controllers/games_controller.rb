@@ -2,6 +2,7 @@ class GamesController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :find_game, except: %i[index new create show_scenario]
   before_action :find_game_with_associations, only: :show_scenario
+  before_action :ensure_game_is_not_in_testing, only: %i[edit update]
   before_action :ensure_game_was_not_finished, only: %i[edit update destroy]
   before_action :find_team, only: [:show]
   before_action :ensure_author_if_game_is_draft, only: [:show]
