@@ -227,10 +227,8 @@ class Game < ApplicationRecord
   end
 
   def valid_max_num
-    if self.max_team_number
-      if self.max_team_number < self.requested_teams_number
-        errors.add(:max_team_number, 'Кількість команд, що подали заявку, перевищує дозволене число')
-      end
+    if (self.max_team_number || 0) > 0 && self.max_team_number < self.requested_teams_number
+      errors.add(:max_team_number, 'Кількість команд, що подали заявку, перевищує дозволене число')
     end
   end
 
