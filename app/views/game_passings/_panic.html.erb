@@ -9,6 +9,7 @@
       <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: false) %>
       <%= submit_tag " надіслати " %>
       <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <%= hidden_field_tag(:level, level.position) %>
       <%= hidden_field_tag(:level_id, level.id) %>
       <%= hidden_field_tag(:closed_level, game_passing.closed?(level)) %>
       <%= hidden_field_tag(:closed_levels, game_passing.closed_levels.size) %>
