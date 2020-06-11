@@ -18,6 +18,8 @@ class LevelsController < ApplicationController
   end
 
   def show
+    @previous_level = @game.levels.where(position: @level.position - 1).first unless @level.first?
+    @next_level = @game.levels.where(position: @level.position + 1).first unless @level.last?
     render
   end
 

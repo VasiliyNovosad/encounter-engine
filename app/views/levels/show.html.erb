@@ -204,6 +204,9 @@
 <br>
 <p>
   <%= link_to "Повернутися до гри \"#{@level.game.name}\"", game_path(@level.game), class: 'btn btn-sm btn-info' %>
+
+  <%= link_to "Перейти до \"#{@previous_level.position}. #{@previous_level.name}\"", game_level_path(@level.game, @previous_level), class: 'btn btn-sm btn-success' unless @previous_level.nil? %>
+  <%= link_to "Перейти до \"#{@next_level.position}. #{@next_level.name}\"", game_level_path(@level.game, @next_level), class: 'btn btn-sm btn-success' unless @next_level.nil? %>
 </p>
 <br>
 <% unless @game.author_finished? %>
