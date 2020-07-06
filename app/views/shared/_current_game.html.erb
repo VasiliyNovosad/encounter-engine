@@ -67,6 +67,16 @@
     <%= game.max_team_number %>
   <% end %>
 </p>
+
+<br>
+
+<p>
+  <em>Опис:</em>
+</p>
+<p>
+  <%= game.description.html_safe %>
+</p>
+
 <br>
 <% if user_signed_in? && current_user.author_of?(game) %>
   <p><%= link_to "Статистика", url_for("/logs/short/#{game.id}") %></p>
