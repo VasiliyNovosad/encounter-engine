@@ -75,7 +75,7 @@
   <br>
 <% end %>
 <%= render 'shared/countdown', game: game, team: current_user ? (game.team_type == 'multy' ? current_user.team : current_user.single_team) : nil %>
-<div id="<%= "start-countdown#{game.id}" %>"></div>
+<div id="<%= "start-countdown#{game.id}" %>" class="start-countdown"></div>
 <br>
 
 <%= game.description.html_safe %>
@@ -95,7 +95,7 @@
     var date = new Date(dateObj);
     <% end %>
 
-    $("#start-countdown").countdown(date, {
+    $("<%= "#start-countdown#{game.id}" %>").countdown(date, {
         prefix:'До початку лишилось: '
     });
 </script>

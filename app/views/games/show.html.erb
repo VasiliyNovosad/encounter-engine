@@ -128,7 +128,7 @@
   <br>
 <% end %>
 <%= render 'shared/countdown', game: @game, team: @team %>
-<div id="<%= "start-countdown#{@game.id}" %>"></div>
+<div id="<%= "start-countdown#{@game.id}" %>" class="start-countdown"></div>
 <br>
 
 <p><%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></p>
@@ -275,7 +275,7 @@
     var date = new Date(dateObj);
   <% end %>
 
-  $("#start-countdown").countdown(date, {
+  $("<%= "#start-countdown#{@game.id}" %>").countdown(date, {
     prefix:'До початку лишилось: '
   });
 </script>
