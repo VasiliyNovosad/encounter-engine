@@ -14,7 +14,7 @@
       },
       prefix: "Лишилось: ",
       finish : function() {
-        var countdown_element = $('#start-countdown');
+        var countdown_element = $('<%= "#start-countdown#{game.id}" %>');
         <% if user_signed_in? and current_user.author_of?(game) %>
           countdown_element.css('display', 'none');
           return;
