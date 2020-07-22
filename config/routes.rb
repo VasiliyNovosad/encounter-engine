@@ -67,11 +67,13 @@ Rails.application.routes.draw do
     resources :game_bonuses
     get 'show_scenario', on: :member
     get 'new_level_order', on: :member
+    get 'new_clone', on: :member
     post 'create_level_order', on: :member
     post 'end_game', on: :member
     post 'open_game', on: :member
     post 'start_test', on: :member
     post 'finish_test', on: :member
+    post 'create_clone', on: :member
   end
 
   match '/game_entries/recall/:id', to: 'game_entries#recall', via: 'post'

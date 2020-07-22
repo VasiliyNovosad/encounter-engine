@@ -1,0 +1,5 @@
+<%= form_for @cloned_game, url: create_clone_game_path(@game) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <%= render 'form', f: f, game: @cloned_game %>
+  <%= f.submit "Створити гру", class: 'btn btn-light' %>
+<% end %>

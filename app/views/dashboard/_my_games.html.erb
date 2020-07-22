@@ -4,14 +4,16 @@
   </legend>
 
   <p>
+    <%= link_to "Створити гру >> ", new_game_path, class: 'btn btn-primary btn-sm' %>
+  </p>
+  <hr class="short-line" />
+  <p>
     <%= render 'games/list', games: my_games %>
   </p>
-
-  <br>
-  
-  <hr class="short-line" />
-
-  <p>
-    <%= link_to "Створити гру >> ", new_game_path %>
-  </p>
+  <% if my_games.count > 10 %>
+    <hr class="short-line" />
+    <p>
+      <%= link_to "Створити гру >> ", new_game_path, class: 'btn btn-primary btn-sm' %>
+    </p>
+  <% end %>
 </fieldset>

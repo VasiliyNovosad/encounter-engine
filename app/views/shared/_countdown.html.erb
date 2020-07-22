@@ -47,7 +47,7 @@
           <% game_entry = GameEntry.of(team.id, game.id) %>
           countdown_element.css('display', 'none');
           <% if game_entry && game_entry.status == "accepted" %>
-            $('#playButton').css('display', 'inline-block');
+            $('<%= "#playButton#{game.id}" %>').css('display', 'inline-block');
           <% end %>
         <% end %>
 

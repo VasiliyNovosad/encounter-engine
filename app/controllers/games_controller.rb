@@ -11,6 +11,7 @@ class GamesController < ApplicationController
     edit update new_level_order
     create_level_order open_game
     end_game start_test finish_test destroy
+    new_clone create_clone
   ]
   before_action :max_team_number_from_nz, only: [:update]
   before_action :ensure_author_if_no_finish_time, only: [:show_scenario]
@@ -39,6 +40,29 @@ class GamesController < ApplicationController
       redirect_to game_path(@game)
     else
       render 'new'
+    end
+  end
+
+  def new_clone
+    @cloned_game = @game.dup
+    @cloned_game.id = nil
+  end
+
+  def create_clone
+    @cloned_game = Game.new(game_params)
+    @cloned_game.id = nil
+    @cloned_game.author = current_user
+    @authors = User.where(id: params[:organizing_team])
+    @cloned_game.authors << @authors
+    if @cloned_game.save
+      begin
+        copy_levels(from: @game, to: @cloned_game)
+      rescue
+        flash[:notice] = 'ERROR: Levels can\'t be cloned.'
+      end
+      redirect_to game_path(@cloned_game)
+    else
+      render 'new_clone'
     end
   end
 
@@ -188,8 +212,6 @@ class GamesController < ApplicationController
     @game.open_game!
     redirect_to game_path(@game)
   end
-
-
 
   protected
 
@@ -410,5 +432,54 @@ class GamesController < ApplicationController
     }
   }
     }
+  end
+
+  def copy_levels(params)
+    game_bonuses = {}
+    params[:from].bonuses.each do |bonus|
+      new_bonus = bonus.dup
+      new_bonus.game_id = params[:to].id
+      bonus.bonus_answers.each do |answer|
+        new_answer = answer.dup
+        new_answer.bonus_id = nil
+        new_bonus.bonus_answers << new_answer
+      end
+      new_bonus.save
+      game_bonuses[bonus.id] = new_bonus
+    end
+
+    params[:from].levels.each do |level|
+      new_level = level.dup
+      new_level.game_id = params[:to].id
+      level.tasks.each do |task|
+        new_task = task.dup
+        new_task.level_id = nil
+        new_level.tasks << new_task
+      end
+      level.hints.each do |hint|
+        new_hint = hint.dup
+        new_hint.level_id = nil
+        new_level.hints << new_hint
+      end
+      level.penalty_hints.each do |hint|
+        new_hint = hint.dup
+        new_hint.level_id = nil
+        new_level.penalty_hints << new_hint
+      end
+      level.questions.each do |question|
+        new_question = question.dup
+        new_question.level_id = nil
+        question.answers.each do |answer|
+          new_answer = answer.dup
+          new_answer.question_id = nil
+          new_question.answers << new_answer
+        end
+        new_level.questions << new_question
+      end
+      level.bonuses.each do |bonus|
+        new_level.bonuses << game_bonuses[bonus.id]
+      end
+      new_level.save
+    end
   end
 end

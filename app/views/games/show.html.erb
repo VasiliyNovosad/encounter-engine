@@ -67,12 +67,6 @@
   <em>Місце старту:</em> <%= " #{@game.place}" %>
 </p>
 
-<%# unless @topic.nil? %>
-<!--  <p>-->
-<!--    <em>Обговорення:</em> <%#= link_to " #{@topic.posts.count} повідомлень", forem.forum_topic_path(@topic.forum, @topic) %>-->
-<!--  </p>-->
-<%# end %>
-
 <p>
   <em>Максимальна кількість команд: </em>
   <% if @game.max_team_number.equal?(10000) || @game.max_team_number.equal?(0) || @game.max_team_number.nil? %>
@@ -115,13 +109,21 @@
   <br>
 <% end %>
 
+<% if user_signed_in? && current_user.author_of?(@game) %>
+  <br>
+  <p>
+    <%= link_to "Створити копію гри", new_clone_game_path(@game), class: 'btn btn-primary btn-sm' %>
+  </p>
+  <br>
+<% end %>
+
 
 
 <% if user_signed_in? %>
   <% if (@game.is_testing? ? @game.test_date : @game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !@game.author_finished? %>
-    <div id="playButton" class="btn btn-lg btn-success"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+    <div id="<%= "playButton#{@game.id}" %>" class="btn btn-lg btn-success"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% else %>
-    <div id="playButton" class="btn btn-lg btn-success" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
+    <div id="<%= "playButton#{@game.id}" %>" class="btn btn-lg btn-success" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{@game.id}") %></div>
   <% end %>
   <br>
 <% end %>

@@ -66,6 +66,18 @@
 </p>
 <br>
 
+<% if user_signed_in? %>
+  <% if (game.is_testing? ? game.test_date : game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !game.author_finished? %>
+    <div id="<%= "playButton#{game.id}" %>" class="btn btn-lg btn-success"><%= link_to "Вхід у гру", url_for("/play/#{game.id}") %></div>
+  <% else %>
+    <div id="<%= "playButton#{game.id}" %>" class="btn btn-lg btn-success" style="display: none;"><%= link_to "Вхід у гру", url_for("/play/#{game.id}") %></div>
+  <% end %>
+  <br>
+<% end %>
+<%= render 'shared/countdown', game: game, team: game.team_type == 'multy' ? current_user.team : current_user.single_team %>
+<div id="start-countdown"></div>
+<br>
+
 <%= game.description.html_safe %>
 
 <br>
@@ -74,3 +86,16 @@
 <br>
 <%= render 'games/teams', accepted_game_entries: GameEntry.of_game(game.id).with_status('accepted'), game: game %>
 <br>
+
+<script type="text/javascript">
+    <% unless game.starts_at.nil? %>
+    var seconds_to_game = <%= ((game.is_testing? ? game.test_date : game.starts_at) - Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time + 1) %>;
+    var dateObj = Date.now();
+    dateObj += 1000 * seconds_to_game;
+    var date = new Date(dateObj);
+    <% end %>
+
+    $("#start-countdown").countdown(date, {
+        prefix:'До початку лишилось: '
+    });
+</script>

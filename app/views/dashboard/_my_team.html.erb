@@ -14,7 +14,7 @@
     <% end %>
     <br>
     <p>
-      <%= link_to "Вступити до команди", new_team_request_path %>
+      <%= link_to "Вступити до команди", new_team_request_path, class: 'btn btn-primary btn-sm' %>
     </p>
     <br>
 <% end %>
@@ -23,12 +23,12 @@
 
     <p>
       <%=  current_user.captain? ? "Ви - капітан команди" : "Ви входите в склад команди"  %>
-      <strong><%= current_user.team.name %></strong>
+      <strong><%= link_to current_user.team.name, team_path(current_user.team) %></strong>
     </p>
 
-    <p>
-      <%=  link_to "Перейти в кімнату команди", team_path(current_user.team)  %>
-    </p>
+<!--    <p>-->
+      <%#=  link_to "Перейти в кімнату команди", team_path(current_user.team)  %>
+<!--    </p>-->
 
   <% else %>
 
@@ -37,7 +37,7 @@
     </p>
 
     <p>
-      <%=  link_to "Створити команду", new_team_path  %>
+      <%=  link_to "Створити команду", new_team_path, class: 'btn btn-primary btn-sm'  %>
     </p>
 
     <br>
