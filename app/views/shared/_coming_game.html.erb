@@ -74,7 +74,7 @@
   <% end %>
   <br>
 <% end %>
-<%= render 'shared/countdown', game: game, team: game.team_type == 'multy' ? current_user.team : current_user.single_team %>
+<%= render 'shared/countdown', game: game, team: current_user ? (game.team_type == 'multy' ? current_user.team : current_user.single_team) : nil %>
 <div id="start-countdown"></div>
 <br>
 
