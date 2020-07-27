@@ -15,7 +15,7 @@ class DashboardController < ApplicationController
         @teams << entry.team
       end
     end
-    @my_games = Game.all.select { |game| game.created_by?(current_user) }
+    @my_games = Game.all.order(starts_at: :desc).select { |game| game.created_by?(current_user) }
     render :index, locals: {invitations: @invitations, my_games: @my_games}
   end
 
