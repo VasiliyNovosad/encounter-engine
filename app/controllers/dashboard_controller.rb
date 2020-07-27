@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   before_action :find_team
 
   def index
-    @games = Game.by(current_user.id)
+    @games = Game.by(current_user.id).order(starts_at: :desc)
     @game_entries = []
     @teams = []
     @games.each do |game|
