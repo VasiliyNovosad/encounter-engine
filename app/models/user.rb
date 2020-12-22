@@ -2,8 +2,8 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :session_limitable,
-         :recoverable, :rememberable, :confirmable, :validatable,
-         :omniauthable, omniauth_providers: [:facebook]
+         :recoverable, :rememberable, :confirmable, :validatable
+         # :omniauthable, omniauth_providers: [:facebook]
 
   belongs_to :team
   belongs_to :single_team, class_name: 'Team', foreign_key: 'single_team_id'
