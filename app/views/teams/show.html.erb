@@ -13,12 +13,11 @@
   <% end %>
 
   <br>
-  <hr class="short-line" />
 
   <% if @team.members.include?(current_user) && current_user.captain? %>
     <p>
-    <span class="btn btn-primary"><%= link_to "Запросити учасників", new_invitation_path if @team.members.include?(current_user) && current_user.captain? %></span>
-    <span class="btn btn-success"><%= link_to "Редагувати команду", edit_team_path(@team) if @team.members.include?(current_user) && current_user.captain? %></span>
+    <span class="btn btn-primary btn-sm"><%= link_to "Запросити учасників", new_invitation_path if @team.members.include?(current_user) && current_user.captain? %></span>
+    <span class="btn btn-success btn-sm"><%= link_to "Редагувати команду", edit_team_path(@team) if @team.members.include?(current_user) && current_user.captain? %></span>
     </p>
   <% end %>
   <% if @team.members.include?(current_user) && !current_user.captain? %>

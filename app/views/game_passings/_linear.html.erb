@@ -8,17 +8,18 @@
     <br>Код:
     <%= text_field_tag(:answer, nil, autofocus: true, autocomplete: :off) %>
     <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-    <%= submit_tag " надіслати ", id: 'code_submit' %>
+    <%= submit_tag " ввести ", id: 'code_submit' %>
     <br>
   <% end %>
   <br>
   <div id="entered-code">
     <% unless answer.nil? || answer == '' %>
       <% if answer_was_correct? %>
-        Код <span class="right_code"><%= answer %></span> вірний.<br><hr>
+        Код <span class="right_code"><%= answer %></span> вірний.
       <% else %>
-        Код <span class="wrong_code"><%= answer %></span> невірний.<br><hr>
+        Код <span class="wrong_code"><%= answer %></span> невірний.
       <% end %>
+      <br><hr>
     <% end %>
   </div>
   <br>
@@ -27,6 +28,7 @@
       <p><%= "#{answer[:time].strftime("%H:%M:%S")} #{answer[:user]} #{answer[:answer]}".html_safe %></p>
     <% end %>
   </div>
+  <br>
   <hr>
   <br>
 </div>
@@ -62,7 +64,7 @@
       <div>
         <br>
         <strong id="codes-closed">Вірних кодів <%= (game_passing.question_ids.to_set & team_questions.map(&:id).to_set).size %> із <%= team_questions.size %>:</strong>
-        <hr>
+        <br>
         <hr>
       </div>
     <% end %>
@@ -72,6 +74,7 @@
     <%= render 'penalty_hints', penalty_hints: penalty_hints, game_passing: game_passing, level: level, team_id: team_id %>
 
     <%= render level.olymp? ? 'olymp' : 'multy', sectors: sectors, level: level if sectors.size > 1 %>
+    <br>
     <hr>
     <br>
     <%= render 'bonuses', level: level, bonuses: bonuses, game_passing: game_passing, team_id: team_id if bonuses.size > 0 %>
