@@ -131,14 +131,13 @@
 <div id="<%= "start-countdown#{@game.id}" %>" class="start-countdown"></div>
 <br>
 
-<p><%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}") if @game.started? && !@game.is_testing? %></p>
+<%= link_to "Cтатистика", url_for("/logs/short/#{@game.id}"), class: 'btn btn-success btn-sm' if @game.started? && !@game.is_testing? %>
 <% if @game.started? && !@game.is_testing? %>
   <% if user_signed_in? && (current_user.author_of?(@game) || @game.author_finished?) %>
-    <p><%= link_to "Моніторинг", url_for("/logs/livechannel/#{@game.id}")%></p>
-<!--    <p><%#= link_to "Лог відповідей", url_for("/logs/full/#{@game.id}")%></p>-->
-    <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}") %></p>
+    <%= link_to "Моніторинг", url_for("/logs/livechannel/#{@game.id}"), class: 'btn btn-danger btn-sm' %>
+    <%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}"), class: 'btn btn-primary btn-sm' %>
   <% else %>
-    <p><%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}") %></p>
+    <%= link_to "Результати", url_for("/game_passings/show_results?game_id=#{@game.id}"), class: 'btn btn-primary btn-sm' %>
   <% end %>
 <% end %>
 

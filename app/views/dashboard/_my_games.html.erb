@@ -6,12 +6,11 @@
   <p>
     <%= link_to "Створити гру >> ", new_game_path, class: 'btn btn-primary btn-sm' %>
   </p>
-  <hr class="short-line" />
+  <br>
   <p>
     <%= render 'games/list', games: my_games %>
   </p>
   <% if my_games.count > 10 %>
-    <hr class="short-line" />
     <p>
       <%= link_to "Створити гру >> ", new_game_path, class: 'btn btn-primary btn-sm' %>
     </p>

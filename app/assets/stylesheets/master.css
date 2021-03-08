@@ -91,8 +91,8 @@ a:hover {
 
 }
 
-#main-container ul, #main-game-container ul {
-    margin-left: 3.0em;
+#main-container ul, #main-game-container ul, #main-container ol, #main-game-container ol {
+    margin-left: 1.0em;
 }
 
 .error {
@@ -131,10 +131,6 @@ fieldset legend {
     font-size: 0.75rem;
     width: auto;
     margin-bottom: 0;
-}
-
-hr#short-line {
-    width:150px;
 }
 
 label {
@@ -569,4 +565,8 @@ div.dismissed-level {
 .nav-link.active {
     background-color: #414141;
     border-color: #ccc;
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
 }
