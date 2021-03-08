@@ -265,6 +265,18 @@
   <% if @game.game_type == 'selected' && @teams_for_test.size > 0 && !@game.author_finished? %>
     <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
   <% end %>
+  <script>
+    $(document).load(
+      $('#toggleLevelListButton').click(function() {
+        $('#levels-list').toggleClass('d-none');
+        if ($(this).text() === 'Сховати') {
+          $(this).text('Показати');
+        } else {
+          $(this).text('Сховати');
+        }
+      })
+    )
+  </script>
 <% end %>
 
 <script type="text/javascript">
@@ -294,16 +306,3 @@
     <%= link_to "Видалити гру", @game, method: :delete, data: { confirm: 'Ви впевнені?' }, class: 'btn btn-sm btn-danger' unless @game.started? || @game.author_finished? %>
   </p>
 <% end %>
-
-<script>
-  $(document).load(
-      $('#toggleLevelListButton').click(function() {
-          $('#levels-list').toggleClass('d-none');
-          if ($(this).text() === 'Сховати') {
-              $(this).text('Показати');
-          } else {
-              $(this).text('Сховати');
-          }
-      })
-  )
-</script>

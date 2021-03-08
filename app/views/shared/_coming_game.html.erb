@@ -46,26 +46,27 @@
   </p>
 <% end %>
 
+<% if game.price %>
+  <p>
+    <em>Внесок за участь:</em> <%= " #{game.price} грн" %>
+  </p>
+<% end %>
+<p>
+  <em>Максимальна кількість команд:</em>
+  <% if game.max_team_number.equal?(10000) || game.max_team_number.equal?(0) || game.max_team_number.nil? %>
+    Необмежено
+  <% else %>
+    <%= game.max_team_number %>
+  <% end %>
+</p>
+<br>
 <% if current_user && (current_user.captain? || game.team_type == 'single') %>
   <p>
     <% game_entry = GameEntry.of(game.team_type == 'multy' ? current_user.team_id : current_user.single_team_id, game.id)%>
     <%= render 'shared/game_entry_controls', game_entry: game_entry, game: game, team: game.team_type == 'multy' ? current_user.team : current_user.single_team %>
   </p>
 <% end %>
-
-<p>
-  <em>Максимальна кількість команд:</em>
-</p>
-<p>
-  <% if game.max_team_number.equal?(10000) || game.max_team_number.equal?(0) || game.max_team_number.nil? %>
-    Необмежено
-    <% game.max_team_number = 10000 %>
-  <% else %>
-    <%= game.max_team_number %>
-  <% end %>
-</p>
 <br>
-
 <% if user_signed_in? %>
   <% if (game.is_testing? ? game.test_date : game.starts_at) <= Time.zone.now.strftime("%d.%m.%Y %H:%M:%S.%L").to_time && !game.author_finished? %>
     <div id="<%= "playButton#{game.id}" %>" class="btn btn-lg btn-success"><%= link_to "Вхід у гру", url_for("/play/#{game.id}") %></div>

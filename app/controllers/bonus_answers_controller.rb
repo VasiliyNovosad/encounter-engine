@@ -1,6 +1,6 @@
 class BonusAnswersController < ApplicationController
   before_action :find_game
-  before_action :ensure_game_was_not_finished, except: [:index, :show]
+  before_action :ensure_game_was_not_finished, except: [:index]
   before_action :ensure_author
   before_action :find_level
   before_action :find_bonus

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 # ruby '2.6.5'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '5.2.4.4'
+gem 'rails', '5.2.4.5'
 gem 'pg'
 
 group :development do
@@ -12,10 +12,6 @@ group :development do
   gem 'capistrano-rvm', require: false
   gem 'listen'
   gem 'puma'
-end
-
-group :test do
-  gem 'cucumber-rails', require: false
 end
 
 group :development, :test do
@@ -47,7 +43,7 @@ gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageuplo
 gem 'cloudinary'
 gem 'jquery-ui-rails'
 gem 'touchpunch-rails', github: 'VasiliyNovosad/touchpunch-rails'
-gem 'sentry-raven'
+gem 'sentry-ruby'
 source 'https://rails-assets.org' do
   gem 'rails-assets-datetimepicker'
 end
