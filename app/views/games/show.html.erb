@@ -265,7 +265,7 @@
     <p><%= link_to 'Задати порядок проходження', url_for("/games/#{@game.id}/new_level_order"), class: 'btn btn-primary btn-sm' %></p>
   <% end %>
   <script>
-    $(document).load(
+    $(document).ready(
       $('#toggleLevelListButton').click(function() {
         $('#levels-list').toggleClass('d-none');
         if ($(this).text() === 'Сховати') {
