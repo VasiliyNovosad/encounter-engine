@@ -1,0 +1,57 @@
+<nav class="navbar navbar-dark navbar-expand-sm">
+  <%= link_to image_tag("quest_wtf_logo.png", class: 'quest-logo', alt: 'logo'), "/", class: 'navbar-brand logo' %>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-2" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-between" id="navbar-list-2">
+    <ul class="navbar-nav">
+      <% if user_signed_in? %>
+        <li class="nav-item">
+          <%= link_to "Особистий кабінет", dashboard_path, class: "nav-link #{active_class(dashboard_path)}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Профіль", edit_user_registration_path, class: "nav-link #{active_class(edit_user_registration_path)}" %>
+        </li>
+        <% if current_user.member_of_any_team? %>
+          <li class="nav-item">
+            <%= link_to "Кімната команди", team_path(current_user.team), class: "nav-link #{active_class(team_path(current_user.team))}" %>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Створити команду", new_team_path, class: "nav-link #{active_class(new_team_path)}" %>
+          </li>
+        <% end %>
+        <li class="nav-item">
+          <%= link_to "Архів ігор", games_path, class: "nav-link #{active_class(games_path)}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Допомога", help_path, class: "nav-link #{active_class(help_path)}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Вийти", destroy_user_session_path, method: :delete, class: 'nav-link' %>
+        </li>
+      <% else %>
+        <li class="nav-item">
+          <%= link_to "Увійти", new_user_session_path, class: "nav-link #{active_class(new_user_session_path)}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Зареєструватися", new_user_registration_path, class: "nav-link #{active_class(new_user_registration_path)}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Архів ігор", games_path, class: "nav-link #{active_class(games_path)}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Допомога", help_path, class: "nav-link #{active_class(help_path)}" %>
+        </li>
+      <% end %>
+    </ul>
+    <% if user_signed_in? %>
+      <span class="navbar-text">
+        <%= link_to current_user.nickname, dashboard_path %>
+        <% if current_user.member_of_any_team? %>
+                (<%= link_to current_user.team.name, team_path(current_user.team) %>)
+        <% end %>
+      </span>
+    <% end %>
+  </div>
+</nav>
