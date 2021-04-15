@@ -12,6 +12,7 @@ group :development do
   gem 'capistrano-rvm', require: false
   gem 'listen'
   gem 'puma'
+  gem 'letter_opener'
 end
 
 group :development, :test do

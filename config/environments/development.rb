@@ -27,19 +27,21 @@ Rails.application.configure do
   end
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { host: ENV['GMAIL_DOMAIN'] || Rails.application.secrets.GMAIL_DOMAIN }
-  # config.action_mailer.register_interceptor(SendGrid::MailInterceptor)
-  config.action_mailer.smtp_settings = {
-      user_name: ENV['GMAIL_USERNAME'] || Rails.application.secrets.GMAIL_USERNAME,
-      password: ENV['GMAIL_PASSWORD'] || Rails.application.secrets.GMAIL_PASSWORD,
-      domain: ENV['GMAIL_DOMAIN'] || Rails.application.secrets.GMAIL_DOMAIN,
-      address: 'smtp.gmail.com',
-      port: 587,
-      authentication: :plain,
-      enable_starttls_auto: true
-  }
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.perform_deliveries = true
+  # config.action_mailer.raise_delivery_errors = false
+  # config.action_mailer.default_url_options = { host: ENV['GMAIL_DOMAIN'] || Rails.application.secrets.GMAIL_DOMAIN }
+  # # config.action_mailer.register_interceptor(SendGrid::MailInterceptor)
+  # config.action_mailer.smtp_settings = {
+  #     user_name: ENV['GMAIL_USERNAME'] || Rails.application.secrets.GMAIL_USERNAME,
+  #     password: ENV['GMAIL_PASSWORD'] || Rails.application.secrets.GMAIL_PASSWORD,
+  #     domain: ENV['GMAIL_DOMAIN'] || Rails.application.secrets.GMAIL_DOMAIN,
+  #     address: 'smtp.gmail.com',
+  #     port: 587,
+  #     authentication: :plain,
+  #     enable_starttls_auto: true
+  # }
+  # config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
   # Print deprecation notices to the Rails logger.
