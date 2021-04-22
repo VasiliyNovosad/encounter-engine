@@ -9,6 +9,8 @@ group :development do
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
+  gem 'capistrano-rbenv', require: false
+  gem 'capistrano-rbenv-install'
   gem 'capistrano-rvm', require: false
   gem 'listen'
   gem 'puma'
