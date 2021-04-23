@@ -110,6 +110,6 @@ Rails.application.configure do
 
   config.action_cable.mount_path = '/cable'
   config.action_cable.url = "ws://192.168.31.97:8080/cable"
-  config.action_cable.allowed_request_origins = ['http://192.168.31.97']
+  # config.action_cable.allowed_request_origins = ['http://192.168.31.97']
 
 end
