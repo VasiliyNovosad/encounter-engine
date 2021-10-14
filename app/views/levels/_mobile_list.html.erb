@@ -1,7 +1,7 @@
 <% if game.author_finished? %>
   <div id="levels" class="list-group container-fluid">
     <% levels.each do |level| %>
-      <div class="list-group-item row col-10" id="<%= dom_id(level) %>">
+      <div class="list-group-item row col-12" id="<%= dom_id(level) %>">
         <div class="col-lg-3 col-md-5 col-sm-3 col-12">
           <span class="level-position"><%= level.position %></span>. <%= link_to level.name, game_level_path(game, level) %>
         </div>
@@ -11,7 +11,7 @@
 <% else %>
   <div id="levels" class="list-group">
     <% levels.each do |level| %>
-      <div class="list-group-item row col-10">
+      <div class="list-group-item row col-12">
         <div class="col-lg-3 col-md-5 col-sm-3 col-12">
           <span class="level-position"><%= level.position %></span>. <%= link_to level.name, game_level_path(game, level) %>
         </div>
