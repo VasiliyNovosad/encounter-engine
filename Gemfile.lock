@@ -203,7 +203,7 @@ GEM
     net-ssh (6.1.0)
     netrc (0.11.0)
     nio4r (2.5.8)
-    nokogiri (1.13.1-x86_64-linux)
+    nokogiri (1.13.2-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     passenger_monit (0.1.1)
