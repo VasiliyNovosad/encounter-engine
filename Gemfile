@@ -6,7 +6,7 @@ gem 'rails', '~> 5.0'
 gem 'pg'
 
 group :development do
-  gem 'capistrano', require: false
+  gem 'capistrano', '3.16.0', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false

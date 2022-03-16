@@ -23,6 +23,8 @@ GIT
 GEM
   remote: https://rails-assets.org/
   specs:
+    airbrussh (1.4.0)
+      sshkit (>= 1.6.1, != 1.7.0)
     rails-assets-datetimepicker (2.5.20)
       rails-assets-jquery (>= 1.7.2)
       rails-assets-jquery-mousewheel (>= 3.1.13)
@@ -78,8 +80,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    airbrussh (1.4.0)
-      sshkit (>= 1.6.1, != 1.7.0)
     anycable (1.2.2)
       anycable-core (= 1.2.2)
       grpc (~> 1.37)
@@ -97,7 +97,7 @@ GEM
     bcrypt (3.1.17)
     browser (5.3.1)
     builder (3.2.4)
-    capistrano (3.17.0)
+    capistrano (3.16.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -325,7 +325,7 @@ DEPENDENCIES
   acts_as_list!
   anycable-rails
   browser
-  capistrano
+  capistrano (= 3.16.0)
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
