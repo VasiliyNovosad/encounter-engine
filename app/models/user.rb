@@ -23,6 +23,10 @@ class User < ApplicationRecord
     if single_team_id.nil?
       new_team = Team.create!(name: self.nickname, team_type: 'single')
       self.single_team_id = new_team.id
+    else
+      team = Team.find(single_team_id)
+      team.name = nickname
+      team.save
     end
   end
 
