@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 # ruby '2.7.5'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '~> 5.0'
+gem 'rails', '~> 6.0'
 gem 'pg'
 
 group :development do
@@ -22,7 +22,7 @@ end
 
 gem 'passenger_monit', group: :production
 
-# Use SCSS for stylesheets
+# Use SCSS for stylesheetsrvm
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier'
@@ -41,7 +41,7 @@ gem 'devise'
 gem 'devise-security'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
-gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageupload'
+# gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageupload'
 gem 'cloudinary'
 gem 'jquery-ui-rails'
 gem 'touchpunch-rails', github: 'VasiliyNovosad/touchpunch-rails'

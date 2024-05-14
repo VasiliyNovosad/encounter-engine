@@ -1,5 +1,5 @@
 toolbar:
-  - insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image uploadimage
+  - insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image
   - print preview media | forecolor backcolor emoticons | fontselect fontsizeselect
 plugins:
   - image
@@ -33,10 +33,12 @@ plugins:
   - colorpicker 
   - textpattern 
   - imagetools
-  - uploadimage
 fontsize_formats:
   - 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 18pt 24pt 36pt 48pt
-skin: tundora
+skin: 'oxide-dark'
+# content_css: 'dark'
 extended_valid_elements: 'script[language|type|src],style[type],a-scene,a-text,a-camera'
 custom_elements: 'a-scene,a-text,a-camera'
 valid_children: '+body[style]'
+images_upload_url: '/tinymce_assets' # for automatic_uploads
+images_upload_credentials: true # sends session information with the upload

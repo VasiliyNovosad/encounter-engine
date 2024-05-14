@@ -15,7 +15,7 @@
 //= require jquery-ui/widgets/mouse
 //= require jquery.ui.touch-punch
 //= require jquery_ujs
-//= require tinymce-jquery
+//= require tinymce
 //= require datetimepicker
 //= require cocoon
 //= require_tree ./application/
