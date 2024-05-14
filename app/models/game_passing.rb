@@ -1,14 +1,14 @@
 class GamePassing < ActiveRecord::Base
 
-  serialize :answered_questions
+  serialize :answered_questions, coder: YAML
   default_value_for :answered_questions, []
-  serialize :answered_bonuses
+  serialize :answered_bonuses, coder: YAML
   default_value_for :answered_bonuses, []
-  serialize :closed_levels
+  serialize :closed_levels, coder: YAML
   default_value_for :closed_levels, []
-  serialize :penalty_hints
+  serialize :penalty_hints, coder: YAML
   default_value_for :penalty_hints, []
-  serialize :missed_bonuses
+  serialize :missed_bonuses, coder: YAML
   default_value_for :missed_bonuses, []
 
   belongs_to :team

@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 # ruby '2.7.5'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '~> 6.0'
+gem 'rails', '~> 7.0'
 gem 'pg'
 
 group :development do
-  gem 'capistrano', '3.16.0', require: false
+  gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false
