@@ -36,7 +36,7 @@ plugins:
 fontsize_formats:
   - 6pt 7pt 8pt 9pt 10pt 11pt 12pt 13pt 14pt 15pt 16pt 18pt 24pt 36pt 48pt
 skin: 'oxide-dark'
-# content_css: 'dark'
+content_css: 'content.css'
 extended_valid_elements: 'script[language|type|src],style[type],a-scene,a-text,a-camera'
 custom_elements: 'a-scene,a-text,a-camera'
 valid_children: '+body[style]'

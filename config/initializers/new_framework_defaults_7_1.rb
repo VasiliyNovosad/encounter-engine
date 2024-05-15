@@ -282,3 +282,6 @@
 # In previous versions of Rails, these test helpers always used an HTML4 parser.
 #++
 # Rails.application.config.dom_testing_default_html_version = :html5
+Rails.application.config.action_view.form_with_generates_remote_forms = false
+
+Rails.application.config.active_record.belongs_to_required_by_default = false
