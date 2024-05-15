@@ -26,7 +26,7 @@ class TasksController < ApplicationController
   end
 
   def update
-    if @task.update_attributes(task_params)
+    if @task.update(task_params)
       redirect_to game_level_path(@level.game, @level, anchor: "task-#{@task.id}")
     else
       render 'edit'

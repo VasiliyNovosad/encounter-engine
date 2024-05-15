@@ -28,7 +28,7 @@ class LevelsController < ApplicationController
   end
 
   def update
-    if @level.update_attributes(level_params)
+    if @level.update(level_params)
       redirect_to game_level_path(@game, @level)
     else
       render :edit

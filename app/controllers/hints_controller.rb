@@ -26,7 +26,7 @@ class HintsController < ApplicationController
   end
 
   def update
-    if @hint.update_attributes(hint_params)
+    if @hint.update(hint_params)
       redirect_to game_level_path(@game, @level, anchor: "hint-#{@hint.id}")
     else
       render :edit

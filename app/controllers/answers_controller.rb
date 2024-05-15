@@ -33,7 +33,7 @@ class AnswersController < ApplicationController
 
   def update
     @answer.level = @level if @answer.level.nil?
-    if @answer.update_attributes(answer_params)
+    if @answer.update(answer_params)
       redirect_to game_level_path(@level.game, @level)
     else
       render 'edit'

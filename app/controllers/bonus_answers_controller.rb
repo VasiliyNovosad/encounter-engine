@@ -30,7 +30,7 @@ class BonusAnswersController < ApplicationController
   end
 
   def update
-    if @bonus_answer.update_attributes(bonus_answer_params)
+    if @bonus_answer.update(bonus_answer_params)
       redirect_to game_level_path(@level.game, @level)
     else
       render 'edit'

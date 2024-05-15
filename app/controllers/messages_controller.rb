@@ -34,7 +34,7 @@ class MessagesController < ApplicationController
 
   def update
     params[:message][:level_ids] ||= [@level.id]
-    if @message.update_attributes(message_params)
+    if @message.update(message_params)
       redirect_to game_level_path(@game, @level, anchor: 'messages-block')
     else
       render :edit

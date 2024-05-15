@@ -36,7 +36,7 @@ gem 'turbolinks'
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'browser'
-gem 'default_value_for'
+gem 'default_value_for', github: 'VasiliyNovosad/default_value_for'
 gem 'devise'
 gem 'devise-security'
 gem 'tinymce-rails'

@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/VasiliyNovosad/default_value_for.git
+  revision: 0af018318cb330c3d811fb1ba8ed35a427b9a96e
+  specs:
+    default_value_for (3.6.0)
+      activerecord (>= 3.2.0, < 7.2)
+
+GIT
   remote: https://github.com/VasiliyNovosad/touchpunch-rails.git
   revision: 8b68a75c931fb831a01f6f6aff4797c8a4663a5e
   specs:
@@ -150,7 +157,6 @@ GEM
     connection_pool (2.4.1)
     crass (1.0.6)
     date (3.3.4)
-    default_value_for (2.0.3)
     devise (4.9.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -402,7 +408,7 @@ DEPENDENCIES
   cocoon
   concurrent-ruby
   concurrent-ruby-ext
-  default_value_for
+  default_value_for!
   devise
   devise-security
   dotenv-rails

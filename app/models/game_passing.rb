@@ -102,18 +102,20 @@ class GamePassing < ActiveRecord::Base
     Concurrent::Future.execute do
       ActionCable.server.broadcast(
         "game_passings_#{id}_#{level.id}_0",
-        answers: answered,
-        sectors: answer_was_correct[:sectors],
-        bonuses: answer_was_correct[:bonuses],
-        needed: answer_was_correct[:needed],
-        closed: answer_was_correct[:closed],
-        input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
-        timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil,
-        game: { id: game.id, type: game.game_type },
-        level: {
-          id: level.id,
-          olymp: level.olymp?,
-          position: game.game_type == 'selected' ? current_level_position(team_id) : level.position
+        {
+          answers: answered,
+          sectors: answer_was_correct[:sectors],
+          bonuses: answer_was_correct[:bonuses],
+          needed: answer_was_correct[:needed],
+          closed: answer_was_correct[:closed],
+          input_lock: input_lock.nil? || level.input_lock_type == 'member' ? { input_lock: false, duration: 0 } : { input_lock: true, duration: input_lock.lock_ends_at - time },
+          timer_left: level.complete_later&.positive? ? (finish_time - time).to_i : nil,
+          game: { id: game.id, type: game.game_type },
+          level: {
+            id: level.id,
+            olymp: level.olymp?,
+            position: game.game_type == 'selected' ? current_level_position(team_id) : level.position
+          }
         }
       )
     end
@@ -121,7 +123,9 @@ class GamePassing < ActiveRecord::Base
       Concurrent::Future.execute do
         ActionCable.server.broadcast(
           "game_passings_#{id}_#{level.id}_#{user.id}",
-          input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+          {
+            input_lock: { input_lock: true, duration: input_lock.lock_ends_at - time }
+          }
         )
       end
     end
@@ -173,7 +177,9 @@ class GamePassing < ActiveRecord::Base
     Concurrent::Future.execute do
       ActionCable.server.broadcast(
         "game_passings_#{id}_#{level.id}_0",
-        url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
+        {
+          url: finished? ? "/game_passings/show_results?game_id=#{game_id}" : game_url(level)
+        }
       )
     end
   end
@@ -280,12 +286,14 @@ class GamePassing < ActiveRecord::Base
     Concurrent::Future.execute do
       ActionCable.server.broadcast(
         "game_passings_#{id}_#{level.id}_0",
-        hint: {
-          id: penalty_hint.id,
-          name: penalty_hint.name,
-          text: penalty_hint.text,
-          used: true,
-          penalty: penalty_hint.penalty
+        {
+          hint: {
+            id: penalty_hint.id,
+            name: penalty_hint.name,
+            text: penalty_hint.text,
+            used: true,
+            penalty: penalty_hint.penalty
+          }
         }
       )
     end
@@ -529,17 +537,19 @@ class GamePassing < ActiveRecord::Base
       Concurrent::Future.execute do
         ActionCable.server.broadcast(
           "game_passings_#{id}_#{k}_0",
-          answers: [],
-          sectors: [],
-          bonuses: v[:bonuses],
-          needed: [],
-          closed: [],
-          input_lock: { input_lock: false, duration: 0 },
-          game: { id: game.id, type: game.game_type },
-          level: {
-            id: k,
-            olymp: v[:olymp],
-            position: game.game_type == 'selected' ? current_level_position(team_id) : level.position
+          {
+            answers: [],
+            sectors: [],
+            bonuses: v[:bonuses],
+            needed: [],
+            closed: [],
+            input_lock: { input_lock: false, duration: 0 },
+            game: { id: game.id, type: game.game_type },
+            level: {
+              id: k,
+              olymp: v[:olymp],
+              position: game.game_type == 'selected' ? current_level_position(team_id) : level.position
+            }
           }
         )
       end

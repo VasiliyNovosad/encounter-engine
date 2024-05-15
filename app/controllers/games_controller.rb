@@ -128,7 +128,7 @@ class GamesController < ApplicationController
     @authors = User.where(id: params[:organizing_team])
     @game.authors.destroy_all
     @game.authors << @authors
-    if @game.update_attributes(game_params)
+    if @game.update(game_params)
       redirect_to game_path(@game)
     else
       render 'edit'

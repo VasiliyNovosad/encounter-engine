@@ -33,7 +33,7 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    if @question.update_attributes(question_params)
+    if @question.update(question_params)
       redirect_to game_level_path(@game, @level, anchor: "question-#{@question.id}")
     else
       render :edit

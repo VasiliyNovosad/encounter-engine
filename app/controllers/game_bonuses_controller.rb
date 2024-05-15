@@ -33,7 +33,7 @@ class GameBonusesController < ApplicationController
   end
 
   def update
-    if @game_bonus.update_attributes(game_bonus_params)
+    if @game_bonus.update(game_bonus_params)
       redirect_to game_game_bonuses_path(@game)
     else
       render 'edit'
