@@ -30,6 +30,7 @@ Rails.application.configure do
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :terser
+  config.tinymce.install = :copy
 
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
