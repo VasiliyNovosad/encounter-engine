@@ -62,7 +62,7 @@ class BonusesController < ApplicationController
 
   def update
     params[:bonus][:level_ids] ||= [@level.id]
-    if @bonus.update_attributes(bonus_params)
+    if @bonus.update(bonus_params)
       redirect_to game_level_path(@game, @level, anchor: "bonus-#{@bonus.id}")
     else
       render :edit, locals: { teams: @teams, game: @game, bonus: @bonus, level: @level }

@@ -29,7 +29,7 @@ class TeamsController < ApplicationController
 
   def update
     params[:team][:name] = params[:team_old_name] if params[:team][:name].blank?
-    if @team.update_attributes(team_params)
+    if @team.update(team_params)
       redirect_to team_path(@team)
     else
       render 'edit'

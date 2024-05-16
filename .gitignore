@@ -25,3 +25,5 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+/vendor/bundle

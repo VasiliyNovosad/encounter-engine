@@ -1,4 +1,5 @@
 class TinymceAssetsController < ApplicationController
+  protect_from_forgery with: :null_session
   respond_to :json
 
   def create
@@ -17,6 +18,7 @@ class TinymceAssetsController < ApplicationController
     else
       upload = Cloudinary::Uploader.upload(params['file'])
     end
-    render json: { file: { url: upload['secure_url'] }, content_type: params['file'].content_type }, content_type: 'text/html'
+    # render json: { file: { url: upload['secure_url'] }, content_type: params['file'].content_type }, content_type: 'text/html'
+    render json: { location: upload['secure_url'] }
   end
 end

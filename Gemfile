@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 # ruby '2.7.5'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '~> 5.0'
+gem 'rails', '~> 7.0'
 gem 'pg'
 
 group :development do
-  gem 'capistrano', '3.16.0', require: false
+  gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false
@@ -22,7 +22,7 @@ end
 
 gem 'passenger_monit', group: :production
 
-# Use SCSS for stylesheets
+# Use SCSS for stylesheetsrvm
 gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier'
@@ -36,12 +36,12 @@ gem 'turbolinks'
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'browser'
-gem 'default_value_for'
+gem 'default_value_for', github: 'VasiliyNovosad/default_value_for'
 gem 'devise'
 gem 'devise-security'
 gem 'tinymce-rails'
 gem 'tinymce-rails-langs'
-gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageupload'
+# gem 'tinymce-rails-imageupload', github: 'VasiliyNovosad/tinymce-rails-imageupload'
 gem 'cloudinary'
 gem 'jquery-ui-rails'
 gem 'touchpunch-rails', github: 'VasiliyNovosad/touchpunch-rails'

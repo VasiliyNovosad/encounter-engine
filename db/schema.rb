@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_14_195429) do
-
+ActiveRecord::Schema[7.1].define(version: 2024_05_14_210907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,8 +18,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "question_id"
     t.integer "level_id"
     t.string "value", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "team_id"
     t.index ["question_id"], name: "index_answers_on_question_id"
   end
@@ -29,8 +28,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "bonus_id"
     t.integer "team_id"
     t.string "value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["bonus_id"], name: "index_bonus_answers_on_bonus_id"
   end
 
@@ -42,11 +41,11 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "team_id"
     t.integer "award_time"
     t.integer "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "is_absolute_limited", default: false
-    t.datetime "valid_from"
-    t.datetime "valid_to"
+    t.datetime "valid_from", precision: nil
+    t.datetime "valid_to", precision: nil
     t.boolean "is_delayed", default: false
     t.integer "delay_for"
     t.boolean "is_relative_limited", default: false
@@ -61,17 +60,17 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "team_id"
     t.integer "level_id"
     t.integer "user_id"
-    t.datetime "started_at"
-    t.datetime "closed_at"
+    t.datetime "started_at", precision: nil
+    t.datetime "closed_at", precision: nil
     t.boolean "timeouted", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "forem_categories", id: :serial, force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "slug"
     t.integer "position", default: 0
     t.index ["slug"], name: "index_forem_categories_on_slug", unique: true
@@ -108,8 +107,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "topic_id"
     t.text "text"
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "reply_to_id"
     t.string "state", default: "approved", null: false
     t.boolean "notified", default: false
@@ -128,12 +127,12 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "forum_id"
     t.integer "user_id"
     t.string "subject"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "locked", default: false, null: false
     t.boolean "pinned", default: false
     t.boolean "hidden", default: false
-    t.datetime "last_post_at"
+    t.datetime "last_post_at", precision: nil
     t.string "state", default: "pending_review"
     t.integer "views_count", default: 0
     t.string "slug"
@@ -146,12 +145,12 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
   create_table "forem_views", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "viewable_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "count", default: 0
     t.string "viewable_type"
-    t.datetime "current_viewed_at"
-    t.datetime "past_viewed_at"
+    t.datetime "current_viewed_at", precision: nil
+    t.datetime "past_viewed_at", precision: nil
     t.index ["updated_at"], name: "index_forem_views_on_updated_at"
     t.index ["user_id"], name: "index_forem_views_on_user_id"
     t.index ["viewable_id"], name: "index_forem_views_on_viewable_id"
@@ -162,7 +161,7 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
     t.string "scope"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
@@ -177,8 +176,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.text "description"
     t.integer "user_id"
     t.string "reason"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["game_id"], name: "index_game_bonuses_on_game_id"
   end
 
@@ -192,12 +191,12 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "game_id"
     t.integer "team_id"
     t.integer "current_level_id"
-    t.datetime "finished_at"
-    t.datetime "current_level_entered_at"
+    t.datetime "finished_at", precision: nil
+    t.datetime "current_level_entered_at", precision: nil
     t.text "answered_questions"
     t.string "status", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.text "closed_levels"
     t.text "answered_bonuses"
     t.integer "sum_bonuses", default: 0
@@ -223,16 +222,16 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.string "name", limit: 255
     t.text "description"
     t.integer "author_id"
-    t.datetime "starts_at"
+    t.datetime "starts_at", precision: nil
     t.boolean "is_draft", default: false, null: false
     t.integer "max_team_number"
     t.integer "requested_teams_number", default: 0
-    t.datetime "registration_deadline"
-    t.datetime "author_finished_at"
+    t.datetime "registration_deadline", precision: nil
+    t.datetime "author_finished_at", precision: nil
     t.boolean "is_testing", default: false, null: false
-    t.datetime "test_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "test_date", precision: nil
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "game_type", default: "linear"
     t.integer "duration"
     t.integer "tested_team_id"
@@ -265,8 +264,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "level_id"
     t.text "text"
     t.integer "delay"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "team_id"
     t.index ["level_id"], name: "index_hints_on_level_id"
   end
@@ -277,9 +276,9 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.string "file_file_name"
     t.string "file_content_type"
     t.integer "file_file_size"
-    t.datetime "file_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "file_updated_at", precision: nil
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "image"
   end
 
@@ -288,16 +287,16 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "level_id"
     t.integer "team_id"
     t.integer "user_id"
-    t.datetime "lock_ends_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "lock_ends_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "invitations", id: :serial, force: :cascade do |t|
     t.integer "to_team_id"
     t.integer "for_user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "level_orders", id: :serial, force: :cascade do |t|
@@ -305,8 +304,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "team_id"
     t.integer "level_id"
     t.integer "position"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "levels", id: :serial, force: :cascade do |t|
@@ -314,8 +313,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "game_id"
     t.integer "position"
     t.string "name", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "olymp", default: false
     t.integer "complete_later"
     t.integer "olymp_base", default: 2
@@ -346,7 +345,7 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.string "team", limit: 255
     t.string "level", limit: 255
     t.string "answer", limit: 255
-    t.datetime "time"
+    t.datetime "time", precision: nil
     t.integer "user_id"
     t.integer "team_id"
     t.integer "level_id"
@@ -358,8 +357,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "game_id"
     t.integer "user_id"
     t.string "text"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "messages_levels", id: false, force: :cascade do |t|
@@ -376,8 +375,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.text "text"
     t.integer "penalty"
     t.integer "team_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "is_delayed", default: false
     t.integer "delay_for"
     t.index ["level_id"], name: "index_penalty_hints_on_level_id"
@@ -386,8 +385,8 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
   create_table "questions", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.integer "level_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "position"
     t.integer "team_id"
     t.boolean "change_level_autocomplete", default: false
@@ -398,31 +397,31 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.integer "game_id"
     t.integer "team_id"
     t.integer "place"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "tasks", id: :serial, force: :cascade do |t|
     t.integer "level_id"
     t.text "text"
     t.integer "team_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["level_id"], name: "index_tasks_on_level_id"
   end
 
   create_table "team_requests", id: :serial, force: :cascade do |t|
     t.integer "team_id"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "teams", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.integer "captain_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "team_type", default: "multy"
   end
 
@@ -430,16 +429,16 @@ ActiveRecord::Schema.define(version: 2020_04_14_195429) do
     t.string "nickname", limit: 255
     t.integer "team_id"
     t.string "phone_number", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
     t.boolean "forem_admin", default: false
     t.string "forem_state", default: "pending_review"
