@@ -24,8 +24,8 @@ gem 'passenger_monit', group: :production
 
 # Use SCSS for stylesheetsrvm
 gem 'sass-rails'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier'
+# Use Terser as compressor for JavaScript assets
+gem 'terser'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'mini_racer', platforms: :ruby
 
