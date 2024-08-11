@@ -16,6 +16,7 @@
 /config/database.yml
 /config/cloudinary.yml
 /config/private_pub*.yml
+/config/master.key
 
 /public/tmp
 /public/uploads
@@ -27,3 +28,7 @@
 /tmp
 
 /vendor/bundle
+
+/config/credentials/development.key
+
+/config/credentials/production.key
