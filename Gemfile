@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 # ruby '2.7.5'
 
 gem 'dotenv-rails', require: 'dotenv/rails-now'
-gem 'rails', '~> 7.0'
+gem 'rails'
 gem 'pg'
 
 group :development do
@@ -36,7 +36,7 @@ gem 'turbolinks'
 
 gem 'acts_as_list', github: 'swanandp/acts_as_list', require: 'acts_as_list'
 gem 'browser'
-gem 'default_value_for', github: 'VasiliyNovosad/default_value_for'
+gem 'default_value_for'
 gem 'devise'
 gem 'devise-security'
 gem 'tinymce-rails'
