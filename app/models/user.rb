@@ -81,10 +81,6 @@ class User < ApplicationRecord
     return_user
   end
 
-  def remember_me
-    true
-  end
-
   # def forem_name
   #   nickname
   # end
