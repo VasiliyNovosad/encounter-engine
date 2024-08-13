@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 # ruby '2.7.5'
 
-gem 'dotenv-rails', require: 'dotenv/rails-now'
+# gem 'dotenv-rails', require: 'dotenv/rails-now'
 gem 'rails'
 gem 'pg'
 
