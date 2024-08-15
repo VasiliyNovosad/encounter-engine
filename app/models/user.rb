@@ -51,39 +51,39 @@ class User < ApplicationRecord
     game.author_id == id || game.author_ids.include?(id)
   end
 
-  def self.new_with_session(params, session)
-    super.tap do |user|
-      if data = session['devise.facebook_data'] && session['devise.facebook_data']['extra']['raw_info']
-        user.email = data['email'] if user.email.blank?
-        user.nickname = data['name'] if user.nickname.blank?
-      end
-    end
-  end
+  # def self.new_with_session(params, session)
+  #   super.tap do |user|
+  #     if data = session['devise.facebook_data'] && session['devise.facebook_data']['extra']['raw_info']
+  #       user.email = data['email'] if user.email.blank?
+  #       user.nickname = data['name'] if user.nickname.blank?
+  #     end
+  #   end
+  # end
 
-  def self.from_omniauth(auth)
-    if where(email: auth.info.email).exists?
-      return_user = self.where(email: auth.info.email).first
-      return_user.provider = auth.provider
-      return_user.uid = auth.uid
-      return_user.save!
-    else
-      return_user = new(
-        provider: auth.provider,
-        uid: auth.uid,
-        password: Devise.friendly_token[0, 20],
-        nickname: auth.info.name,
-        email: auth.info.email
-      )
-      return_user.skip_confirmation!
-      return_user.save!
-    end
+  # def self.from_omniauth(auth)
+  #   if where(email: auth.info.email).exists?
+  #     return_user = self.where(email: auth.info.email).first
+  #     return_user.provider = auth.provider
+  #     return_user.uid = auth.uid
+  #     return_user.save!
+  #   else
+  #     return_user = new(
+  #       provider: auth.provider,
+  #       uid: auth.uid,
+  #       password: Devise.friendly_token[0, 20],
+  #       nickname: auth.info.name,
+  #       email: auth.info.email
+  #     )
+  #     return_user.skip_confirmation!
+  #     return_user.save!
+  #   end
+  #
+  #   return_user
+  # end
 
-    return_user
-  end
-
-  def remember_me
-    true
-  end
+  # def remember_me
+  #   true
+  # end
 
   # def forem_name
   #   nickname
