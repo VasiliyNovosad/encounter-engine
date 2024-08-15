@@ -33,6 +33,7 @@
 
     <% @team_requests.each do |team_request| %>
       <% if team_request.user %>
+        <br>
         <p>До команди хоче приєднатись гравець <b class="right_code"><%= team_request.user.nickname %></b></p>
         <p>
           <span class="btn btn-danger btn-sm"><%= link_to "Прийняти", accept_team_request_path(team_request.id), method: :post %></span>

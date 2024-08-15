@@ -6,6 +6,7 @@
   <% unless current_user.captain? %>
     <% invitations.each do |invitation| %>
         <% if invitation.to_team %>
+        <br>
         <p>Вас запрошено в команду <b class="right_code"><%= invitation.to_team.name %></b></p>
           <p>
             <span class="btn btn-danger btn-sm"><%= link_to "Прийняти", accept_invitation_path(invitation.id), method: :post %></span>
