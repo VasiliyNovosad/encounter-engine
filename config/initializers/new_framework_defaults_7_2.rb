@@ -68,3 +68,6 @@
 # deploying to a memory constrained environment you may want to set this to `false`.
 #++
 # Rails.application.config.yjit = true
+Rails.application.config.action_view.form_with_generates_remote_forms = false
+
+Rails.application.config.active_record.belongs_to_required_by_default = false
