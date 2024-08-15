@@ -33,7 +33,7 @@
         <span class="btn btn-danger btn-sm"><%= link_to "Вилучити гравця", url_for("/teams/edit/delete_member?member_id=#{member.id}"), method: :post %></span>
         <span class="btn btn-info btn-sm"><%= link_to "Призначити капітаном", url_for("/teams/edit/captain?member_id=#{member.id}"), method: :post %></span>
       </p>
-      <br>
     <% end %>
+    <br>
   <% end %>
 </fieldset>
