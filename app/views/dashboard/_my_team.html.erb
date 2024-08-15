@@ -6,9 +6,10 @@
   <% unless current_user.captain? %>
     <% invitations.each do |invitation| %>
         <% if invitation.to_team %>
-          <p>Вас запрошено в команду <%= invitation.to_team.name %>
-            <em><%= link_to "(прийняти)", accept_invitation_path(invitation.id), method: :post %></em>
-            <em><%= link_to "(відмовитись)", reject_invitation_path(invitation.id), method: :post %></em>
+        <p>Вас запрошено в команду <b class="right_code"><%= invitation.to_team.name %></b></p>
+          <p>
+            <span class="btn btn-danger btn-sm"><%= link_to "Прийняти", accept_invitation_path(invitation.id), method: :post %></span>
+            <span class="btn btn-info btn-sm"><%= link_to "Відмовитись", reject_invitation_path(invitation.id), method: :post %></span>
           </p>
         <% end %>
     <% end %>
